@@ -1,0 +1,5 @@
+{
+   "enabled":true,
+   "port": 8266,
+   "password": "esp-react"
+}

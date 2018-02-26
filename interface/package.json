@@ -1,0 +1,29 @@
+{
+  "name": "fresh",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "compression-webpack-plugin": "^1.1.8",
+    "material-ui": "^1.0.0-beta.32",
+    "material-ui-icons": "^1.0.0-beta.17",
+    "moment": "^2.20.1",
+    "prop-types": "^15.6.0",
+    "react": "^16.2.0",
+    "react-autosuggest": "^9.3.3",
+    "react-dom": "^16.2.0",
+    "react-form-validator-core": "^0.3.0",
+    "react-material-ui-form-validator": "^2.0.0-beta.4",
+    "react-router": "^4.2.0",
+    "react-router-dom": "^4.2.2",
+    "react-scripts": "1.0.17"
+  },
+  "scripts": {
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build && rm -rf ../data/www && cp -r build ../data/www",
+    "test": "react-app-rewired test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "devDependencies": {
+    "react-app-rewired": "^1.4.1"
+  }
+}

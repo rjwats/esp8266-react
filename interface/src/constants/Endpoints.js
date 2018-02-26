@@ -1,0 +1,28 @@
+export const ENDPOINT_ROOT = "";
+
+export const NTP_STATUS_PATH = "/ntpStatus";
+export const NTP_STATUS_ENDPOINT = ENDPOINT_ROOT + NTP_STATUS_PATH;
+
+export const NTP_SETTINGS_PATH = "/ntpSettings";
+export const NTP_SETTINGS_ENDPOINT = ENDPOINT_ROOT + NTP_SETTINGS_PATH;
+
+export const AP_SETTINGS_PATH = "/apSettings";
+export const AP_SETTINGS_ENDPOINT = ENDPOINT_ROOT + AP_SETTINGS_PATH;
+
+export const AP_STATUS_PATH = "/apStatus";
+export const AP_STATUS_ENDPOINT = ENDPOINT_ROOT + AP_STATUS_PATH;
+
+export const SCAN_NETWORKS_PATH = "/scanNetworks";
+export const SCAN_NETWORKS_ENDPOINT = ENDPOINT_ROOT + SCAN_NETWORKS_PATH;
+
+export const LIST_NETWORKS_PATH = "/listNetworks";
+export const LIST_NETWORKS_ENDPOINT = ENDPOINT_ROOT + LIST_NETWORKS_PATH;
+
+export const WIFI_SETTINGS_PATH = "/wifiSettings";
+export const WIFI_SETTINGS_ENDPOINT = ENDPOINT_ROOT + WIFI_SETTINGS_PATH;
+
+export const WIFI_STATUS_PATH = "/wifiStatus";
+export const WIFI_STATUS_ENDPOINT = ENDPOINT_ROOT + WIFI_STATUS_PATH;
+
+export const OTA_SETTINGS_PATH = "/otaSettings";
+export const OTA_SETTINGS_ENDPOINT = ENDPOINT_ROOT + OTA_SETTINGS_PATH;
