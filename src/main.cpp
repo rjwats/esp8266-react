@@ -44,13 +44,22 @@ void setup() {
     server.serveStatic("/app/", SPIFFS, "/www/app/");
 
     // Serving all other get requests with "/www/index.htm"
+    // OPTIONS get a straight up 200 response
     server.onNotFound([](AsyncWebServerRequest *request) {
     	if (request->method() == HTTP_GET) {
         request->send(SPIFFS, "/www/index.html");
+      } else if (request->method() == HTTP_OPTIONS) {
+		    request->send(200);
       } else {
     		request->send(404);
     	}
     });
+
+    // Disable CORS if required
+    #if defined(ENABLE_CORS)
+    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
+    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Headers", "*");
+    #endif
 
     server.begin();
 }
