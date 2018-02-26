@@ -90,8 +90,8 @@ wifiSettings.json | WiFi connection settings
 
 The default settings configure the device to bring up an access point on start up which can be used to configure the device:
 
-* SSID: "ESP8266-React"
-* Password: "esp-react"
+* SSID: ESP8266-React
+* Password: esp-react
 
 ## Software Overview
 
