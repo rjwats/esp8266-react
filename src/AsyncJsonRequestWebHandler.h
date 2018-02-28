@@ -82,7 +82,7 @@ class AsyncJsonRequestWebHandler: public AsyncWebHandler {
       }
 
       // fallthrough, we have a null pointer, return 500.
-      // this can be due to running out of memory or never recieving body data.
+      // this can be due to running out of memory or never receiving body data.
       request->send(500);
     }
 
