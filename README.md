@@ -108,7 +108,9 @@ class ExampleSettingsService : public SettingsService {
 
   public:
 
-    ExampleSettingsService(AsyncWebServer* server, FS* fs) : SettingsService(server, fs, "/apSettings", "/config/apSettings.json") {}
+    ExampleSettingsService(AsyncWebServer* server, FS* fs)
+    : SettingsService(server, fs, "/exampleSettings", "/config/exampleSettings.json") {}
+
     ~ExampleSettingsService(){}
 
   protected:
@@ -131,8 +133,47 @@ class ExampleSettingsService : public SettingsService {
 };
 ```
 
-## Future Extensions
+Now this can be constructed, added to the server, and started as such:
 
+```cpp
+ExampleSettingsService exampleSettingsService = ExampleSettingsService(&server, &SPIFFS);
+
+exampleSettingsService.begin();
+```
+
+There will now be a REST service exposed on "/exampleSettings" for reading and writing (GET/POST) the settings. Any modifications will be persisted in SPIFFS, in this case to "/config/exampleSettings.json"
+
+Sometimes you need to perform an action when the settings are updated, you can achieve this by overriding the onConfigUpdated() function which gets called every time the settings are updated. You can also perform an action when the service starts by overriding the begin() function, being sure to call super.begin():
+
+```cpp
+
+void begin() {
+  // make sure we call super, so the settings get read!
+  SettingsService::begin();  
+  reconfigureTheService();
+}
+
+void onConfigUpdated() {
+  reconfigureTheService();
+}
+
+void reconfigureTheService() {
+  // do whatever is required to react to the new settings
+}
+
+```
+
+### Front End
+
+The front end is a bit of a work in progress (as are my react skills), but it has been designed to be a "mobile first" interface and as such should feel very much like an App.
+
+I've tried to keep the use of libraries to a minimum to reduce the artefact size (it's about 150k gzipped ATM) and haven't seen the need to use Redux for this yet as the data is very simple.
+
+It's functional at the moment but I plan to improve the structure of the code and reduce boilerplate where possible.
+
+## Future Improvements
+
+- [ ] Reduce boilerplate in interface
 - [ ] Provide an emergency config reset feature, via a pin held low for a few seconds
 - [ ] Access point should provide captive portal
 - [ ] Perhaps have more configuration options for Access point: IP address, Subnet, etc
@@ -148,4 +189,4 @@ class ExampleSettingsService : public SettingsService {
 * [ArduinoJson](https://github.com/bblanchon/ArduinoJson)
 * [ESPAsyncWebServer](https://github.com/me-no-dev/ESPAsyncWebServer)
 
-**NB: The project doesn't currently fix it's dependencies to a particular version. PlatformIO will always use the latest version.**
+**NB: The project doesn't currently fix it's dependencies to a particular version. PlatformIO will always use the latest version of it's dependencies, npm will always use the latest minor version, which could be a problem for material-ui-next which is still in flux. **
