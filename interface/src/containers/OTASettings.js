@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 
 import { OTA_SETTINGS_ENDPOINT }  from  '../constants/Endpoints';
+import {withNotifier} from '../components/SnackbarNotification';
 import SectionContent from '../components/SectionContent';
-import SnackbarNotification from '../components/SnackbarNotification';
 import OTASettingsForm from '../forms/OTASettingsForm';
 import { simpleGet }  from  '../helpers/SimpleGet';
 import { simplePost } from '../helpers/SimplePost';
@@ -31,7 +31,7 @@ class OTASettings extends Component {
     simpleGet(
       OTA_SETTINGS_ENDPOINT,
       this.setState,
-      this.raiseNotification,
+      this.props.raiseNotification,
       "otaSettings",
       "otaSettingsFetched"
     );
@@ -42,7 +42,7 @@ class OTASettings extends Component {
       OTA_SETTINGS_ENDPOINT,
       this.state,
       this.setState,
-      this.raiseNotification,
+      this.props.raiseNotification,
       "otaSettings",
       "otaSettingsFetched"
     );
@@ -64,7 +64,6 @@ class OTASettings extends Component {
     const { otaSettingsFetched, otaSettings, errorMessage } = this.state;
     return (
       <SectionContent title="OTA Settings">
-        <SnackbarNotification notificationRef={(raiseNotification)=>this.raiseNotification = raiseNotification} />
       	<OTASettingsForm otaSettingsFetched={otaSettingsFetched} otaSettings={otaSettings} errorMessage={errorMessage}
           onSubmit={this.saveOTASettings} onReset={this.loadOTASettings} handleValueChange={this.otaSettingValueChange}
           handleCheckboxChange={this.otaSettingCheckboxChange} />
@@ -74,4 +73,4 @@ class OTASettings extends Component {
 
 }
 
-export default OTASettings;
+export default withNotifier(OTASettings);

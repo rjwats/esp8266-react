@@ -11,7 +11,7 @@ import SettingsInputAntennaIcon from 'material-ui-icons/SettingsInputAntenna';
 import DeviceHubIcon from 'material-ui-icons/DeviceHub';
 import ComputerIcon from 'material-ui-icons/Computer';
 
-import SnackbarNotification from '../components/SnackbarNotification'
+import {withNotifier} from '../components/SnackbarNotification';
 import SectionContent from '../components/SectionContent'
 
 import * as Highlight from '../constants/Highlight';
@@ -48,7 +48,6 @@ class APStatus extends Component {
 
     this.setState = this.setState.bind(this);
     this.loadAPStatus = this.loadAPStatus.bind(this);
-    this.raiseNotification=this.raiseNotification.bind(this);
   }
 
   componentDidMount() {
@@ -59,12 +58,8 @@ class APStatus extends Component {
     simpleGet(
       AP_STATUS_ENDPOINT,
       this.setState,
-      this.raiseNotification
+      this.props.raiseNotification
     );
-  }
-
-  raiseNotification(errorMessage) {
-    this.snackbarNotification(errorMessage);
   }
 
   apStatusHighlight(status){
@@ -136,7 +131,6 @@ class APStatus extends Component {
 
     return (
       <SectionContent title="AP Status">
-        <SnackbarNotification notificationRef={(snackbarNotification)=>this.snackbarNotification = snackbarNotification} />
         {
          !fetched ?
          <div>
@@ -162,4 +156,4 @@ class APStatus extends Component {
   }
 }
 
-export default withStyles(styles)(APStatus);
+export default withNotifier(withStyles(styles)(APStatus));

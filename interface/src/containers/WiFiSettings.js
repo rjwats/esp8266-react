@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import { WIFI_SETTINGS_ENDPOINT }  from  '../constants/Endpoints';
+import {withNotifier} from '../components/SnackbarNotification';
 import SectionContent from '../components/SectionContent';
-import SnackbarNotification from '../components/SnackbarNotification';
 import WiFiSettingsForm from '../forms/WiFiSettingsForm';
 import { simpleGet }  from  '../helpers/SimpleGet';
 import { simplePost } from '../helpers/SimplePost';
@@ -48,7 +48,7 @@ class WiFiSettings extends Component {
     simpleGet(
       WIFI_SETTINGS_ENDPOINT,
       this.setState,
-      this.raiseNotification,
+      this.props.raiseNotification,
       "wifiSettings",
       "wifiSettingsFetched"
     );
@@ -59,7 +59,7 @@ class WiFiSettings extends Component {
       WIFI_SETTINGS_ENDPOINT,
       this.state,
       this.setState,
-      this.raiseNotification,
+      this.props.raiseNotification,
       "wifiSettings",
       "wifiSettingsFetched"
     );
@@ -85,7 +85,6 @@ class WiFiSettings extends Component {
     const { wifiSettingsFetched, wifiSettings, errorMessage, selectedNetwork } = this.state;
     return (
       <SectionContent title="WiFi Settings">
-        <SnackbarNotification notificationRef={(raiseNotification)=>this.raiseNotification = raiseNotification} />
       	<WiFiSettingsForm wifiSettingsFetched={wifiSettingsFetched} wifiSettings={wifiSettings} errorMessage={errorMessage} selectedNetwork={selectedNetwork} deselectNetwork={this.deselectNetwork}
           onSubmit={this.saveWiFiSettings} onReset={this.loadWiFiSettings} handleValueChange={this.wifiSettingValueChange} handleCheckboxChange={this.wifiSettingCheckboxChange} />
       </SectionContent>
@@ -99,4 +98,4 @@ WiFiSettings.propTypes = {
   selectedNetwork: PropTypes.object
 };
 
-export default WiFiSettings;
+export default withNotifier(WiFiSettings);

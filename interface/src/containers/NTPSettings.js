@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 
 import { NTP_SETTINGS_ENDPOINT }  from  '../constants/Endpoints';
+import {withNotifier} from '../components/SnackbarNotification';
 import SectionContent from '../components/SectionContent';
-import SnackbarNotification from '../components/SnackbarNotification';
 import NTPSettingsForm from '../forms/NTPSettingsForm';
 import { simpleGet }  from  '../helpers/SimpleGet';
 import { simplePost } from '../helpers/SimplePost';
@@ -31,7 +31,7 @@ class NTPSettings extends Component {
     simpleGet(
       NTP_SETTINGS_ENDPOINT,
       this.setState,
-      this.raiseNotification,
+      this.props.raiseNotification,
       "ntpSettings",
       "ntpSettingsFetched"
     );
@@ -42,7 +42,7 @@ class NTPSettings extends Component {
       NTP_SETTINGS_ENDPOINT,
       this.state,
       this.setState,
-      this.raiseNotification,
+      this.props.raiseNotification,
       "ntpSettings",
       "ntpSettingsFetched"
     );
@@ -58,7 +58,6 @@ class NTPSettings extends Component {
     const { ntpSettingsFetched, ntpSettings, errorMessage } = this.state;
     return (
       <SectionContent title="NTP Settings">
-        <SnackbarNotification notificationRef={(raiseNotification)=>this.raiseNotification = raiseNotification} />
       	<NTPSettingsForm ntpSettingsFetched={ntpSettingsFetched} ntpSettings={ntpSettings} errorMessage={errorMessage}
           onSubmit={this.saveNTPSettings} onReset={this.loadNTPSettings} handleValueChange={this.ntpSettingValueChange} />
       </SectionContent>
@@ -67,4 +66,4 @@ class NTPSettings extends Component {
 
 }
 
-export default NTPSettings;
+export default withNotifier(NTPSettings);

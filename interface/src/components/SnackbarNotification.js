@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import Snackbar from 'material-ui/Snackbar';
@@ -13,6 +13,20 @@ const styles = theme => ({
 });
 
 class SnackbarNotification extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.raiseNotification=this.raiseNotification.bind(this);
+  }
+
+  static childContextTypes = {
+    raiseNotification: PropTypes.func.isRequired
+  }
+
+  getChildContext = () => {
+    return {raiseNotification : this.raiseNotification};
+  };
+
   state = {
     open: false,
     message: null
@@ -29,15 +43,10 @@ class SnackbarNotification extends React.Component {
     this.setState({ open: false });
   };
 
-  componentWillReceiveProps(nextProps){
-    if (nextProps.notificationRef){
-      nextProps.notificationRef(this.raiseNotification);
-    }
-  }
-
   render() {
     const { classes } = this.props;
     return (
+      <Fragment>
         <Snackbar
           anchorOrigin={{
             vertical: 'bottom',
@@ -60,15 +69,27 @@ class SnackbarNotification extends React.Component {
             >
               <CloseIcon />
             </IconButton>
-          }
-        />
+            }
+          />
+          {this.props.children}
+        </Fragment>
     );
   }
 }
 
 SnackbarNotification.propTypes = {
-  classes: PropTypes.object.isRequired,
-  notificationRef: PropTypes.func.isRequired,
+  classes: PropTypes.object.isRequired
 };
 
 export default withStyles(styles)(SnackbarNotification);
+
+export function withNotifier(WrappedComponent) {
+  return class extends React.Component {
+    static contextTypes = {
+      raiseNotification: PropTypes.func.isRequired
+    };
+    render() {
+      return <WrappedComponent raiseNotification={this.context.raiseNotification} {...this.props} />;
+    }
+  };
+}

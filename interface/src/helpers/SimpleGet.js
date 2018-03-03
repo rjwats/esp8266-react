@@ -28,7 +28,7 @@ export const simpleGet = (
     .then(json => {setState({[dataKey]: json, [fetchedKey]:true})})
     .catch(error =>{
       if (raiseNotification) {
-        raiseNotification("Problem fetching. " + error.message);
+        raiseNotification("Problem fetching: " + error.message);
       }
       setState({[dataKey]: null, [fetchedKey]:true, [errorMessageKey]:error.message});
     });

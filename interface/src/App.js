@@ -2,11 +2,12 @@ import React, { Component } from 'react';
 
 import AppRouting from './AppRouting';
 
+import SnackbarNotification from './components/SnackbarNotification';
+
 import JssProvider from 'react-jss/lib/JssProvider';
 import { create } from 'jss';
 
 import Reboot from 'material-ui/Reboot';
-
 import blueGrey from 'material-ui/colors/blueGrey';
 import indigo from 'material-ui/colors/indigo';
 import orange from 'material-ui/colors/orange';
@@ -43,8 +44,10 @@ class App extends Component {
 	   return (
 		 <JssProvider jss={jss} generateClassName={generateClassName}>
 			<MuiThemeProvider theme={theme}>
-				<Reboot />
-        <AppRouting />
+        <SnackbarNotification>
+				  <Reboot />
+          <AppRouting />
+        </SnackbarNotification>
 			</MuiThemeProvider>
 		 </JssProvider>
 		)

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 
 import { AP_SETTINGS_ENDPOINT }  from  '../constants/Endpoints';
+import {withNotifier} from '../components/SnackbarNotification';
 import SectionContent from '../components/SectionContent';
-import SnackbarNotification from '../components/SnackbarNotification';
 import APSettingsForm from '../forms/APSettingsForm';
 import { simpleGet } from  '../helpers/SimpleGet';
 import { simplePost } from '../helpers/SimplePost';
@@ -31,7 +31,7 @@ class APSettings extends Component {
     simpleGet(
       AP_SETTINGS_ENDPOINT,
       this.setState,
-      this.raiseNotification,
+      this.props.raiseNotification,
       "apSettings",
       "apSettingsFetched"
     );
@@ -42,7 +42,7 @@ class APSettings extends Component {
       AP_SETTINGS_ENDPOINT,
       this.state,
       this.setState,
-      this.raiseNotification,
+      this.props.raiseNotification,
       "apSettings",
       "apSettingsFetched"
     );
@@ -58,7 +58,6 @@ class APSettings extends Component {
     const { apSettingsFetched, apSettings, errorMessage } = this.state;
     return (
       <SectionContent title="AP Settings">
-        <SnackbarNotification notificationRef={(raiseNotification)=>this.raiseNotification = raiseNotification} />
       	<APSettingsForm  apSettingsFetched={apSettingsFetched} apSettings={apSettings} errorMessage={errorMessage}
           onSubmit={this.saveAPSettings} onReset={this.loadAPSettings} handleValueChange={this.wifiSettingValueChange} />
       </SectionContent>
@@ -67,4 +66,4 @@ class APSettings extends Component {
 
 }
 
-export default APSettings;
+export default withNotifier(APSettings);

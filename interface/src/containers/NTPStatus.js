@@ -19,7 +19,7 @@ import * as Highlight from '../constants/Highlight';
 import { unixTimeToTimeAndDate } from '../constants/TimeFormat';
 import { NTP_STATUS_ENDPOINT }  from  '../constants/Endpoints';
 
-import SnackbarNotification from '../components/SnackbarNotification';
+import {withNotifier} from '../components/SnackbarNotification';
 import SectionContent from '../components/SectionContent';
 
 import { simpleGet }  from  '../helpers/SimpleGet';
@@ -59,7 +59,6 @@ class NTPStatus extends Component {
 
     this.setState = this.setState.bind(this);
     this.loadNTPStatus = this.loadNTPStatus.bind(this);
-    this.raiseNotification=this.raiseNotification.bind(this);
   }
 
   componentDidMount() {
@@ -70,12 +69,8 @@ class NTPStatus extends Component {
     simpleGet(
       NTP_STATUS_ENDPOINT,
       this.setState,
-      this.raiseNotification
+      this.props.raiseNotification
     );
-  }
-
-  raiseNotification(errorMessage) {
-    this.snackbarNotification(errorMessage);
   }
 
   renderNTPStatus(status, fullDetails, classes){
@@ -160,7 +155,6 @@ class NTPStatus extends Component {
 
     return (
       <SectionContent title="NTP Status">
-        <SnackbarNotification notificationRef={(snackbarNotification)=>this.snackbarNotification = snackbarNotification} />
         {
          !fetched ?
          <div>
@@ -186,4 +180,4 @@ class NTPStatus extends Component {
   }
 }
 
-export default withStyles(styles)(NTPStatus);
+export default withNotifier(withStyles(styles)(NTPStatus));

@@ -5,7 +5,7 @@ import Button from 'material-ui/Button';
 import { LinearProgress } from 'material-ui/Progress';
 import Typography from 'material-ui/Typography';
 
-import SnackbarNotification from '../components/SnackbarNotification';
+import {withNotifier} from '../components/SnackbarNotification';
 import SectionContent from '../components/SectionContent';
 
 import { WIFI_STATUS_ENDPOINT }  from  '../constants/Endpoints';
@@ -75,7 +75,7 @@ class WiFiStatus extends Component {
     simpleGet(
       WIFI_STATUS_ENDPOINT,
       this.setState,
-      this.raiseNotification
+      this.props.raiseNotification
     );
   }
 
@@ -159,7 +159,6 @@ class WiFiStatus extends Component {
 
     return (
       <SectionContent title="WiFi Status">
-        <SnackbarNotification notificationRef={(raiseNotification)=>this.raiseNotification = raiseNotification} />
         {
          !fetched ?
          <div>
@@ -185,4 +184,4 @@ class WiFiStatus extends Component {
   }
 }
 
-export default withStyles(styles)(WiFiStatus);
+export default withNotifier(withStyles(styles)(WiFiStatus));

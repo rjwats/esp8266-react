@@ -32,7 +32,7 @@ export const simplePost = (
     raiseNotification("Changes successfully applied.");
     setState({[dataKey]: json, [fetchedKey]:true});
   }).catch(error => {
-    raiseNotification("Problem saving. " + error.message);
+    raiseNotification("Problem saving: " + error.message);
     setState({[dataKey]: null, [fetchedKey]:true, [errorMessageKey]:error.message});
   });
 }
