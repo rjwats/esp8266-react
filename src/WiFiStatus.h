@@ -23,7 +23,7 @@ class WiFiStatus {
     WiFiEventHandler _onStationModeDisconnectedHandler;
     WiFiEventHandler _onStationModeGotIPHandler;
 
-    // static functions for logging wifi events to the UART
+    // static functions for logging WiFi events to the UART
     static void onStationModeConnected(const WiFiEventStationModeConnected& event);
     static void onStationModeDisconnected(const WiFiEventStationModeDisconnected& event);
     static void onStationModeGotIP(const WiFiEventStationModeGotIP& event);
