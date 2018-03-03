@@ -14,16 +14,6 @@ class APConfiguration extends Component {
         selectedTab: "apStatus",
         selectedNetwork: null
     };
-    this.selectNetwork = this.selectNetwork.bind(this);
-    this.deselectNetwork = this.deselectNetwork.bind(this);
-  }
-
-  selectNetwork(network) {
-    this.setState({ selectedTab: "wifiSettings", selectedNetwork:network });
-  }
-
-  deselectNetwork(network) {
-    this.setState({ selectedNetwork:null });
   }
 
   handleTabChange = (event, selectedTab) => {

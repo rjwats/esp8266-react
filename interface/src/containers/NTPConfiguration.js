@@ -14,7 +14,6 @@ class NTPConfiguration extends Component {
     };
   }
 
-
   handleTabChange = (event, selectedTab) => {
     this.setState({ selectedTab });
   };
