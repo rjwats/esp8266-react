@@ -116,7 +116,7 @@ class APStatus extends Component {
         <ListItemText primary="AP Clients" secondary={status.station_num} />
       </ListItem>
     );
-    listItems.push(<Divider key="mac_address_divider" inset component="li" />);
+    listItems.push(<Divider key="station_num_divider" inset component="li" />);
 
     return  (
       <div>
