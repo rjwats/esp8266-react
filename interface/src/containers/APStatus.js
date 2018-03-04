@@ -16,7 +16,6 @@ import SectionContent from '../components/SectionContent'
 
 import * as Highlight from '../constants/Highlight';
 import { AP_STATUS_ENDPOINT }  from  '../constants/Endpoints';
-import { simpleGet }  from  '../helpers/SimpleGet';
 
 const styles = theme => ({
   ["apStatus_" + Highlight.SUCCESS]: {

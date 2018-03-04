@@ -1,6 +1,13 @@
 import React from 'react';
 import {withNotifier} from '../components/SnackbarNotification';
 
+/*
+* It is unlikely this application will grow complex enough to require redux.
+*
+* This HOC acts as an interface to a REST service, providing data and change
+* event callbacks to the wrapped components along with a function to persist the
+* changes.
+*/
 export const restComponent = (endpointUrl, FormComponent) => {
 
   return withNotifier(
@@ -8,6 +15,12 @@ export const restComponent = (endpointUrl, FormComponent) => {
 
       constructor(props) {
         super(props);
+
+        this.state={
+                 data:null,
+                 fetched: false,
+                 errorMessage:null
+               };
 
         this.setState = this.setState.bind(this);
         this.loadData = this.loadData.bind(this);
@@ -47,7 +60,7 @@ export const restComponent = (endpointUrl, FormComponent) => {
         this.setState({fetched: false});
         fetch(endpointUrl, {
           method: 'POST',
-          body: JSON.stringify(this.statedata),
+          body: JSON.stringify(this.state.data),
           headers: new Headers({
             'Content-Type': 'application/json'
           })
@@ -67,13 +80,13 @@ export const restComponent = (endpointUrl, FormComponent) => {
         });
       }
 
-      valueChange = name => event => {
+      handleValueChange = name => event => {
         const { data } = this.state;
         data[name] = event.target.value;
         this.setState({data});
       };
 
-      checkboxChange = name => event => {
+      handleCheckboxChange = name => event => {
         const { data } = this.state;
         data[name] = event.target.checked;
         this.setState({data});
@@ -81,8 +94,8 @@ export const restComponent = (endpointUrl, FormComponent) => {
 
       render() {
         return <FormComponent
-                  valueChange={this.valueChange}
-                  checkboxChange={this.checkboxChange}
+                  handleValueChange={this.handleValueChange}
+                  handleCheckboxChange={this.handleCheckboxChange}
                   setData={this.setData}
                   saveData={this.saveData}
                   loadData={this.loadData}

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import { WIFI_SETTINGS_ENDPOINT }  from  '../constants/Endpoints';
-import {withNotifier} from '../components/SnackbarNotification';
+import { restComponent } from '../components/RestComponent';
 import SectionContent from '../components/SectionContent';
 import WiFiSettingsForm from '../forms/WiFiSettingsForm';
 import { simpleGet }  from  '../helpers/SimpleGet';
@@ -14,15 +14,8 @@ class WiFiSettings extends Component {
     super(props);
 
     this.state = {
-             wifiSettingsFetched: false,
-             wifiSettings:{},
              selectedNetwork: null,
-             errorMessage:null
            };
-
-    this.setState = this.setState.bind(this);
-    this.loadWiFiSettings = this.loadWiFiSettings.bind(this);
-    this.saveWiFiSettings = this.saveWiFiSettings.bind(this);
     this.deselectNetwork = this.deselectNetwork.bind(this);
   }
 
@@ -35,58 +28,39 @@ class WiFiSettings extends Component {
         hostname:"esp8266-react",
         static_ip_config:false,
       }
-      this.setState({wifiSettingsFetched:true, wifiSettings, selectedNetwork, errorMessage:null});
+      this.props.setData(wifiSettings);
+      this.setState({ selectedNetwork });
       deselectNetwork();
     }else {
-      this.loadWiFiSettings();
+      this.props.loadData();
     }
   }
 
-  loadWiFiSettings() {
+  deselectNetworkAndLoadData() {
     this.deselectNetwork();
-
-    simpleGet(
-      WIFI_SETTINGS_ENDPOINT,
-      this.setState,
-      this.props.raiseNotification,
-      "wifiSettings",
-      "wifiSettingsFetched"
-    );
+    this.props.loadData();
   }
 
-  saveWiFiSettings(e) {
-    simplePost(
-      WIFI_SETTINGS_ENDPOINT,
-      this.state,
-      this.setState,
-      this.props.raiseNotification,
-      "wifiSettings",
-      "wifiSettingsFetched"
-    );
-  }
-
-  deselectNetwork(nextNetwork) {
-    this.setState({selectedNetwork:null});
-  }
-
-  wifiSettingValueChange = name => event => {
-    const { wifiSettings } = this.state;
-    wifiSettings[name] = event.target.value;
-    this.setState({wifiSettings});
-  };
-
-  wifiSettingCheckboxChange = name => event => {
-    const { wifiSettings } = this.state;
-    wifiSettings[name] = event.target.checked;
-    this.setState({wifiSettings});
+  deselectNetwork() {
+    this.setState({ selectedNetwork:null });
   }
 
   render() {
-    const { wifiSettingsFetched, wifiSettings, errorMessage, selectedNetwork } = this.state;
+    const { selectedNetwork } = this.state;
+    const { data, fetched, errorMessage } = this.props;
     return (
       <SectionContent title="WiFi Settings">
-      	<WiFiSettingsForm wifiSettingsFetched={wifiSettingsFetched} wifiSettings={wifiSettings} errorMessage={errorMessage} selectedNetwork={selectedNetwork} deselectNetwork={this.deselectNetwork}
-          onSubmit={this.saveWiFiSettings} onReset={this.loadWiFiSettings} handleValueChange={this.wifiSettingValueChange} handleCheckboxChange={this.wifiSettingCheckboxChange} />
+      	<WiFiSettingsForm
+          wifiSettings={data}
+          wifiSettingsFetched={fetched}
+          errorMessage={errorMessage}
+          selectedNetwork={selectedNetwork}
+          deselectNetwork={this.deselectNetwork}
+          onSubmit={this.props.saveData}
+          onReset={this.deselectNetworkAndLoadData}
+          handleValueChange={this.props.handleValueChange}
+          handleCheckboxChange={this.props.handleCheckboxChange}
+        />
       </SectionContent>
     )
   }
@@ -98,4 +72,4 @@ WiFiSettings.propTypes = {
   selectedNetwork: PropTypes.object
 };
 
-export default withNotifier(WiFiSettings);
+export default restComponent(WIFI_SETTINGS_ENDPOINT, WiFiSettings);

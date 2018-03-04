@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import { OTA_SETTINGS_ENDPOINT }  from  '../constants/Endpoints';
-import {withNotifier} from '../components/SnackbarNotification';
+import {restComponent} from '../components/RestComponent';
 import SectionContent from '../components/SectionContent';
 import OTASettingsForm from '../forms/OTASettingsForm';
 import { simpleGet }  from  '../helpers/SimpleGet';
@@ -9,68 +9,27 @@ import { simplePost } from '../helpers/SimplePost';
 
 class OTASettings extends Component {
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-             otaSettings:null,
-             otaSettingsFetched: false,
-             errorMessage:null
-           };
-
-    this.setState = this.setState.bind(this);
-    this.loadOTASettings = this.loadOTASettings.bind(this);
-    this.saveOTASettings = this.saveOTASettings.bind(this);
-  }
-
   componentDidMount() {
-      this.loadOTASettings();
-  }
-
-  loadOTASettings() {
-    simpleGet(
-      OTA_SETTINGS_ENDPOINT,
-      this.setState,
-      this.props.raiseNotification,
-      "otaSettings",
-      "otaSettingsFetched"
-    );
-  }
-
-  saveOTASettings(e) {
-    simplePost(
-      OTA_SETTINGS_ENDPOINT,
-      this.state,
-      this.setState,
-      this.props.raiseNotification,
-      "otaSettings",
-      "otaSettingsFetched"
-    );
-  }
-
-  otaSettingValueChange = name => event => {
-    const { otaSettings } = this.state;
-    otaSettings[name] = event.target.value;
-    this.setState({otaSettings});
-  };
-
-  otaSettingCheckboxChange = name => event => {
-    const { otaSettings } = this.state;
-    otaSettings[name] = event.target.checked;
-    this.setState({otaSettings});
+      this.props.loadData();
   }
 
   render() {
-    const { otaSettingsFetched, otaSettings, errorMessage } = this.state;
+    const { data, fetched, errorMessage } = this.props;
     return (
       <SectionContent title="OTA Settings">
-      	<OTASettingsForm otaSettingsFetched={otaSettingsFetched} otaSettings={otaSettings} errorMessage={errorMessage}
-          onSubmit={this.saveOTASettings} onReset={this.loadOTASettings} handleValueChange={this.otaSettingValueChange}
-          handleCheckboxChange={this.otaSettingCheckboxChange} />
+      	<OTASettingsForm
+          otaSettings={data}
+          otaSettingsFetched={fetched}
+          errorMessage={errorMessage}
+          onSubmit={this.props.saveData}
+          onReset={this.props.loadData}
+          handleValueChange={this.props.handleValueChange}
+          handleCheckboxChange={this.props.handleCheckboxChange}
+        />
       </SectionContent>
     )
   }
 
 }
 
-export default withNotifier(OTASettings);
+export default restComponent(OTA_SETTINGS_ENDPOINT, OTASettings);
