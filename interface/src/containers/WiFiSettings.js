@@ -16,6 +16,7 @@ class WiFiSettings extends Component {
     this.state = {
              selectedNetwork: null,
            };
+    this.deselectNetworkAndLoadData = this.deselectNetworkAndLoadData.bind(this);
     this.deselectNetwork = this.deselectNetwork.bind(this);
   }
 
