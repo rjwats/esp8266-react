@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import PropTypes from 'prop-types';
 
 import { withStyles } from 'material-ui/styles';
@@ -142,8 +142,8 @@ class WiFiSettingsForm extends React.Component {
 
         		{
           		wifiSettings.static_ip_config &&
-          		[
-          			<TextValidator key="local_ip"
+          		<Fragment>
+          			<TextValidator
           			  validators={['required', 'isIP']}
           			  errorMessages={['Local IP is required', 'Must be an IP address']}
           			  name="local_ip"
@@ -152,8 +152,8 @@ class WiFiSettingsForm extends React.Component {
           			  value={wifiSettings.local_ip}
           			  onChange={handleValueChange('local_ip')}
           			  margin="normal"
-          			/>,
-                <TextValidator key="gateway_ip"
+          			/>
+                <TextValidator
                   validators={['required', 'isIP']}
                   errorMessages={['Gateway IP is required', 'Must be an IP address']}
                   name="gateway_ip"
@@ -162,8 +162,8 @@ class WiFiSettingsForm extends React.Component {
                   value={wifiSettings.gateway_ip}
                   onChange={handleValueChange('gateway_ip')}
                   margin="normal"
-                />,
-                <TextValidator key="subnet_mask"
+                />
+                <TextValidator
           			  validators={['required', 'isIP']}
           			  errorMessages={['Subnet mask is required', 'Must be an IP address']}
           			  name="subnet_mask"
@@ -172,8 +172,8 @@ class WiFiSettingsForm extends React.Component {
           			  value={wifiSettings.subnet_mask}
           			  onChange={handleValueChange('subnet_mask')}
                   margin="normal"
-          			/>,
-                <TextValidator key="dns_ip_1"
+          			/>
+                <TextValidator
           			  validators={['isOptionalIP']}
           			  errorMessages={['Must be an IP address']}
           			  name="dns_ip_1"
@@ -182,8 +182,8 @@ class WiFiSettingsForm extends React.Component {
           			  value={wifiSettings.dns_ip_1}
           			  onChange={handleValueChange('dns_ip_1')}
                   margin="normal"
-          			/>,
-                <TextValidator key="dns_ip_2"
+          			/>
+                <TextValidator
           			  validators={['isOptionalIP']}
           			  errorMessages={['Must be an IP address']}
           			  name="dns_ip_2"
@@ -193,7 +193,7 @@ class WiFiSettingsForm extends React.Component {
           			  onChange={handleValueChange('dns_ip_2')}
                   margin="normal"
           			/>
-          		]
+          		</Fragment>
       		  }
 
           <Button variant="raised" color="primary" className={classes.button} type="submit">

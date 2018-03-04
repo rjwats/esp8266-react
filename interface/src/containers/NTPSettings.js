@@ -4,8 +4,6 @@ import { NTP_SETTINGS_ENDPOINT }  from  '../constants/Endpoints';
 import {restComponent} from '../components/RestComponent';
 import SectionContent from '../components/SectionContent';
 import NTPSettingsForm from '../forms/NTPSettingsForm';
-import { simpleGet }  from  '../helpers/SimpleGet';
-import { simplePost } from '../helpers/SimplePost';
 
 class NTPSettings extends Component {
 

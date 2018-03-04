@@ -5,24 +5,18 @@ import { WIFI_SETTINGS_ENDPOINT }  from  '../constants/Endpoints';
 import { restComponent } from '../components/RestComponent';
 import SectionContent from '../components/SectionContent';
 import WiFiSettingsForm from '../forms/WiFiSettingsForm';
-import { simpleGet }  from  '../helpers/SimpleGet';
-import { simplePost } from '../helpers/SimplePost';
 
 class WiFiSettings extends Component {
 
   constructor(props) {
     super(props);
 
-    this.state = {
-             selectedNetwork: null,
-           };
     this.deselectNetworkAndLoadData = this.deselectNetworkAndLoadData.bind(this);
-    this.deselectNetwork = this.deselectNetwork.bind(this);
   }
 
   componentDidMount() {
-    const { selectedNetwork, deselectNetwork } = this.props;
-    if (selectedNetwork){
+    const { selectedNetwork } = this.props;
+    if (selectedNetwork) {
       var wifiSettings = {
         ssid:selectedNetwork.ssid,
         password:"",
@@ -30,25 +24,18 @@ class WiFiSettings extends Component {
         static_ip_config:false,
       }
       this.props.setData(wifiSettings);
-      this.setState({ selectedNetwork });
-      deselectNetwork();
-    }else {
+    } else {
       this.props.loadData();
     }
   }
 
   deselectNetworkAndLoadData() {
-    this.deselectNetwork();
+    this.props.deselectNetwork();
     this.props.loadData();
   }
 
-  deselectNetwork() {
-    this.setState({ selectedNetwork:null });
-  }
-
   render() {
-    const { selectedNetwork } = this.state;
-    const { data, fetched, errorMessage } = this.props;
+    const { data, fetched, errorMessage, selectedNetwork } = this.props;
     return (
       <SectionContent title="WiFi Settings">
       	<WiFiSettingsForm
@@ -56,7 +43,7 @@ class WiFiSettings extends Component {
           wifiSettingsFetched={fetched}
           errorMessage={errorMessage}
           selectedNetwork={selectedNetwork}
-          deselectNetwork={this.deselectNetwork}
+          deselectNetwork={this.props.deselectNetwork}
           onSubmit={this.props.saveData}
           onReset={this.deselectNetworkAndLoadData}
           handleValueChange={this.props.handleValueChange}

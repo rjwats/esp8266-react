@@ -4,8 +4,6 @@ import { OTA_SETTINGS_ENDPOINT }  from  '../constants/Endpoints';
 import {restComponent} from '../components/RestComponent';
 import SectionContent from '../components/SectionContent';
 import OTASettingsForm from '../forms/OTASettingsForm';
-import { simpleGet }  from  '../helpers/SimpleGet';
-import { simplePost } from '../helpers/SimplePost';
 
 class OTASettings extends Component {
 
