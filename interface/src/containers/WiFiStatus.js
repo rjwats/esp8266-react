@@ -5,14 +5,13 @@ import Button from 'material-ui/Button';
 import { LinearProgress } from 'material-ui/Progress';
 import Typography from 'material-ui/Typography';
 
-import {withNotifier} from '../components/SnackbarNotification';
 import SectionContent from '../components/SectionContent';
 
 import { WIFI_STATUS_ENDPOINT }  from  '../constants/Endpoints';
 import { isConnected, connectionStatus, connectionStatusHighlight }  from  '../constants/WiFiConnectionStatus';
 import * as Highlight from '../constants/Highlight';
 
-import { simpleGet }  from  '../helpers/SimpleGet';
+import { restComponent }  from  '../components/RestComponent';
 
 import List, { ListItem, ListItemText } from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
@@ -47,21 +46,8 @@ const styles = theme => ({
 
 class WiFiStatus extends Component {
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-             status:null,
-             fetched: false,
-             errorMessage:null
-           };
-
-    this.setState = this.setState.bind(this);
-    this.loadWiFiStatus = this.loadWiFiStatus.bind(this);
-  }
-
   componentDidMount() {
-    this.loadWiFiStatus();
+    this.props.loadData();
   }
 
   dnsServers(status) {
@@ -71,27 +57,19 @@ class WiFiStatus extends Component {
     return status.dns_ip_1 + (status.dns_ip_2 ? ','+status.dns_ip_2 : '');
   }
 
-  loadWiFiStatus() {
-    simpleGet(
-      WIFI_STATUS_ENDPOINT,
-      this.setState,
-      this.props.raiseNotification
-    );
-  }
-
-  renderWiFiStatus(status, fullDetails, classes) {
+  renderWiFiStatus(data, fullDetails, classes) {
     const listItems = [];
 
     listItems.push(
       <ListItem key="connection_status">
-        <Avatar className={classes["wifiStatus_" + connectionStatusHighlight(status)]}>
+        <Avatar className={classes["wifiStatus_" + connectionStatusHighlight(data)]}>
           <WifiIcon />
         </Avatar>
-        <ListItemText primary="Connection Status" secondary={connectionStatus(status)} />
+        <ListItemText primary="Connection Status" secondary={connectionStatus(data)} />
       </ListItem>
     );
 
-    if (fullDetails && isConnected(status)) {
+    if (fullDetails && isConnected(data)) {
       listItems.push(<Divider key="connection_status_divider" inset component="li" />);
 
       listItems.push(
@@ -99,7 +77,7 @@ class WiFiStatus extends Component {
           <Avatar>
             <SettingsInputAntennaIcon />
           </Avatar>
-          <ListItemText primary="SSID" secondary={status.ssid} />
+          <ListItemText primary="SSID" secondary={data.ssid} />
         </ListItem>
       );
       listItems.push(<Divider key="ssid_divider" inset component="li" />);
@@ -107,7 +85,7 @@ class WiFiStatus extends Component {
       listItems.push(
         <ListItem key="ip_address">
           <Avatar>IP</Avatar>
-          <ListItemText primary="IP Address" secondary={status.local_ip} />
+          <ListItemText primary="IP Address" secondary={data.local_ip} />
         </ListItem>
       );
       listItems.push(<Divider key="ip_address_divider" inset component="li" />);
@@ -115,7 +93,7 @@ class WiFiStatus extends Component {
       listItems.push(
         <ListItem key="subnet_mask">
           <Avatar>#</Avatar>
-          <ListItemText primary="Subnet Mask" secondary={status.subnet_mask} />
+          <ListItemText primary="Subnet Mask" secondary={data.subnet_mask} />
         </ListItem>
       );
       listItems.push(<Divider key="subnet_mask_divider" inset component="li" />);
@@ -125,7 +103,7 @@ class WiFiStatus extends Component {
           <Avatar>
             <SettingsInputComponentIcon />
           </Avatar>
-          <ListItemText primary="Gateway IP" secondary={status.gateway_ip ? status.gateway_ip : "none"} />
+          <ListItemText primary="Gateway IP" secondary={data.gateway_ip ? data.gateway_ip : "none"} />
         </ListItem>
       );
       listItems.push(<Divider key="gateway_ip_divider" inset component="li" />);
@@ -135,7 +113,7 @@ class WiFiStatus extends Component {
           <Avatar>
             <DNSIcon />
           </Avatar>
-          <ListItemText primary="DNS Server IP" secondary={this.dnsServers(status)} />
+          <ListItemText primary="DNS Server IP" secondary={this.dnsServers(data)} />
         </ListItem>
       );
     }
@@ -145,7 +123,7 @@ class WiFiStatus extends Component {
         <List>
         {listItems}
         </List>
-        <Button variant="raised" color="secondary" className={classes.button} onClick={this.loadWiFiStatus}>
+        <Button variant="raised" color="secondary" className={classes.button} onClick={this.props.loadData}>
           Refresh
         </Button>
       </div>
@@ -154,8 +132,7 @@ class WiFiStatus extends Component {
   }
 
   render() {
-    const { status, fetched, errorMessage } = this.state;
-    const { classes, fullDetails }  = this.props;
+    const { data, fetched, errorMessage, classes, fullDetails }  = this.props;
 
     return (
       <SectionContent title="WiFi Status">
@@ -168,13 +145,13 @@ class WiFiStatus extends Component {
            </Typography>
          </div>
        :
-        status ? this.renderWiFiStatus(status, fullDetails, classes)
+        data ? this.renderWiFiStatus(data, fullDetails, classes)
        :
         <div>
           <Typography variant="display1" className={classes.fetching}>
             {errorMessage}
           </Typography>
-          <Button variant="raised" color="secondary" className={classes.button} onClick={this.loadWiFiStatus}>
+          <Button variant="raised" color="secondary" className={classes.button} onClick={this.props.loadData}>
             Refresh
           </Button>
         </div>
@@ -184,4 +161,4 @@ class WiFiStatus extends Component {
   }
 }
 
-export default withNotifier(withStyles(styles)(WiFiStatus));
+export default restComponent(WIFI_STATUS_ENDPOINT, withStyles(styles)(WiFiStatus));

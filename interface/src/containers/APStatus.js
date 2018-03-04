@@ -11,7 +11,7 @@ import SettingsInputAntennaIcon from 'material-ui-icons/SettingsInputAntenna';
 import DeviceHubIcon from 'material-ui-icons/DeviceHub';
 import ComputerIcon from 'material-ui-icons/Computer';
 
-import {withNotifier} from '../components/SnackbarNotification';
+import {restComponent} from '../components/RestComponent';
 import SectionContent from '../components/SectionContent'
 
 import * as Highlight from '../constants/Highlight';
@@ -37,50 +37,29 @@ const styles = theme => ({
 
 class APStatus extends Component {
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-             status:null,
-             fetched: false,
-             errorMessage:null
-           };
-
-    this.setState = this.setState.bind(this);
-    this.loadAPStatus = this.loadAPStatus.bind(this);
-  }
-
   componentDidMount() {
-    this.loadAPStatus();
+    this.props.loadData();
   }
 
-  loadAPStatus() {
-    simpleGet(
-      AP_STATUS_ENDPOINT,
-      this.setState,
-      this.props.raiseNotification
-    );
+  apStatusHighlight(data){
+    return data.active ? Highlight.SUCCESS : Highlight.IDLE;
   }
 
-  apStatusHighlight(status){
-    return status.active ? Highlight.SUCCESS : Highlight.IDLE;
-  }
-
-  apStatus(status){
-    return status.active ? "Active" : "Inactive";
+  apStatus(data){
+    return data.active ? "Active" : "Inactive";
   }
 
   // active, ip_address, mac_address, station_num
 
-  renderAPStatus(status, fullDetails, classes){
+  renderAPStatus(data, fullDetails, classes){
     const listItems = [];
 
     listItems.push(
       <ListItem key="ap_status">
-        <Avatar className={classes["apStatus_" + this.apStatusHighlight(status)]}>
+        <Avatar className={classes["apStatus_" + this.apStatusHighlight(data)]}>
           <SettingsInputAntennaIcon />
         </Avatar>
-        <ListItemText primary="Status" secondary={this.apStatus(status)} />
+        <ListItemText primary="Status" secondary={this.apStatus(data)} />
       </ListItem>
     );
     listItems.push(<Divider key="ap_status_divider" inset component="li" />);
@@ -88,7 +67,7 @@ class APStatus extends Component {
     listItems.push(
       <ListItem key="ip_address">
         <Avatar>IP</Avatar>
-        <ListItemText primary="IP Address" secondary={status.ip_address} />
+        <ListItemText primary="IP Address" secondary={data.ip_address} />
       </ListItem>
     );
     listItems.push(<Divider key="ip_address_divider" inset component="li" />);
@@ -98,7 +77,7 @@ class APStatus extends Component {
         <Avatar>
           <DeviceHubIcon />
         </Avatar>
-        <ListItemText primary="MAC Address" secondary={status.mac_address} />
+        <ListItemText primary="MAC Address" secondary={data.mac_address} />
       </ListItem>
     );
     listItems.push(<Divider key="mac_address_divider" inset component="li" />);
@@ -108,7 +87,7 @@ class APStatus extends Component {
         <Avatar>
           <ComputerIcon />
         </Avatar>
-        <ListItemText primary="AP Clients" secondary={status.station_num} />
+        <ListItemText primary="AP Clients" secondary={data.station_num} />
       </ListItem>
     );
     listItems.push(<Divider key="station_num_divider" inset component="li" />);
@@ -118,7 +97,7 @@ class APStatus extends Component {
         <List>
           {listItems}
         </List>
-        <Button variant="raised" color="secondary" className={classes.button} onClick={this.loadAPStatus}>
+        <Button variant="raised" color="secondary" className={classes.button} onClick={this.props.loadData}>
           Refresh
         </Button>
       </div>
@@ -126,8 +105,7 @@ class APStatus extends Component {
   }
 
   render() {
-    const { status, fetched, errorMessage } = this.state;
-    const { classes, fullDetails }  = this.props;
+    const { data, fetched, errorMessage, classes, fullDetails }  = this.props;
 
     return (
       <SectionContent title="AP Status">
@@ -140,13 +118,13 @@ class APStatus extends Component {
            </Typography>
          </div>
        :
-        status ? this.renderAPStatus(status, fullDetails, classes)
+        data ? this.renderAPStatus(data, fullDetails, classes)
        :
         <div>
           <Typography variant="display1" className={classes.fetching}>
             {errorMessage}
           </Typography>
-          <Button variant="raised" color="secondary" className={classes.button} onClick={this.loadAPStatus}>
+          <Button variant="raised" color="secondary" className={classes.button} onClick={this.props.loadData}>
             Refresh
           </Button>
         </div>
@@ -156,4 +134,4 @@ class APStatus extends Component {
   }
 }
 
-export default withNotifier(withStyles(styles)(APStatus));
+export default restComponent(AP_STATUS_ENDPOINT, withStyles(styles)(APStatus));
