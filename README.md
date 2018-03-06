@@ -173,9 +173,9 @@ It's functional at the moment but I plan to improve the structure of the code an
 
 ## Future Improvements
 
-- [ ] Reduce boilerplate in interface
+- [x] Reduce boilerplate in interface
 - [ ] Provide an emergency config reset feature, via a pin held low for a few seconds
-- [ ] Access point should provide captive portal
+- [x] Access point should provide captive portal
 - [ ] Perhaps have more configuration options for Access point: IP address, Subnet, etc
 - [ ] Enable configurable mDNS
 - [ ] Introduce authentication to secure the device
