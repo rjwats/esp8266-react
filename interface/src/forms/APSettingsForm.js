@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 
 import { withStyles } from 'material-ui/styles';
@@ -62,8 +62,8 @@ class APSettingsForm extends React.Component {
 
           {
             isAPEnabled(apSettings.provision_mode) &&
-            [
-              <TextValidator key="ssid"
+            <Fragment>
+              <TextValidator
                 validators={['required', 'matchRegexp:^.{0,32}$']}
                 errorMessages={['Access Point SSID is required', 'Access Point SSID must be 32 characeters or less']}
                 name="ssid"
@@ -72,8 +72,8 @@ class APSettingsForm extends React.Component {
                 value={apSettings.ssid}
                 onChange={handleValueChange('ssid')}
                 margin="normal"
-              />,
-              <TextValidator key="password"
+              />
+              <TextValidator
                     validators={['required', 'matchRegexp:^.{0,64}$']}
                     errorMessages={['Access Point Password is required', 'Access Point Password must be 64 characters or less']}
                     name="password"
@@ -83,7 +83,7 @@ class APSettingsForm extends React.Component {
                     onChange={handleValueChange('password')}
                     margin="normal"
               />
-            ]
+            </Fragment>
           }
 
           <Button variant="raised" color="primary" className={classes.button} type="submit">

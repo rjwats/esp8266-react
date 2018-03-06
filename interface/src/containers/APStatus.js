@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 
 import { withStyles } from 'material-ui/styles';
 import Button from 'material-ui/Button';
@@ -48,53 +48,46 @@ class APStatus extends Component {
     return data.active ? "Active" : "Inactive";
   }
 
-  // active, ip_address, mac_address, station_num
+  createListItems(data, fullDetails, classes){
+    return (
+      <Fragment>
+        <ListItem>
+          <Avatar className={classes["apStatus_" + this.apStatusHighlight(data)]}>
+            <SettingsInputAntennaIcon />
+          </Avatar>
+          <ListItemText primary="Status" secondary={this.apStatus(data)} />
+        </ListItem>
+        <Divider inset component="li" />
+        <ListItem>
+          <Avatar>IP</Avatar>
+          <ListItemText primary="IP Address" secondary={data.ip_address} />
+        </ListItem>
+        <Divider inset component="li" />
+        <ListItem>
+          <Avatar>
+            <DeviceHubIcon />
+          </Avatar>
+          <ListItemText primary="MAC Address" secondary={data.mac_address} />
+        </ListItem>
+        <Divider inset component="li" />
+        <ListItem>
+          <Avatar>
+            <ComputerIcon />
+          </Avatar>
+          <ListItemText primary="AP Clients" secondary={data.station_num} />
+        </ListItem>
+        <Divider inset component="li" />
+      </Fragment>
+    );
+  }
 
   renderAPStatus(data, fullDetails, classes){
-    const listItems = [];
-
-    listItems.push(
-      <ListItem key="ap_status">
-        <Avatar className={classes["apStatus_" + this.apStatusHighlight(data)]}>
-          <SettingsInputAntennaIcon />
-        </Avatar>
-        <ListItemText primary="Status" secondary={this.apStatus(data)} />
-      </ListItem>
-    );
-    listItems.push(<Divider key="ap_status_divider" inset component="li" />);
-
-    listItems.push(
-      <ListItem key="ip_address">
-        <Avatar>IP</Avatar>
-        <ListItemText primary="IP Address" secondary={data.ip_address} />
-      </ListItem>
-    );
-    listItems.push(<Divider key="ip_address_divider" inset component="li" />);
-
-    listItems.push(
-      <ListItem key="mac_address">
-        <Avatar>
-          <DeviceHubIcon />
-        </Avatar>
-        <ListItemText primary="MAC Address" secondary={data.mac_address} />
-      </ListItem>
-    );
-    listItems.push(<Divider key="mac_address_divider" inset component="li" />);
-
-    listItems.push(
-      <ListItem key="station_num">
-        <Avatar>
-          <ComputerIcon />
-        </Avatar>
-        <ListItemText primary="AP Clients" secondary={data.station_num} />
-      </ListItem>
-    );
-    listItems.push(<Divider key="station_num_divider" inset component="li" />);
-
     return  (
       <div>
         <List>
-          {listItems}
+          <Fragment>
+            {this.createListItems(data, fullDetails, classes)}
+          </Fragment>
         </List>
         <Button variant="raised" color="secondary" className={classes.button} onClick={this.props.loadData}>
           Refresh

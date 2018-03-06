@@ -54,7 +54,7 @@ class WiFiSettingsForm extends React.Component {
     const { selectedNetwork, deselectNetwork } = this.props;
     return (
       <List>
-        <ListItem key={selectedNetwork.ssid}>
+        <ListItem>
           <ListItemAvatar>
             <Avatar>
               {isNetworkOpen(selectedNetwork) ? <LockOpenIcon /> : <LockIcon />}

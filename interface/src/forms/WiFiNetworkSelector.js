@@ -36,24 +36,23 @@ class WiFiNetworkSelector extends Component {
   }
 
   renderNetwork(network) {
-    return ([
-        <ListItem key={network.ssid} button onClick={() => this.props.selectNetwork(network)}>
-          <ListItemAvatar>
-            <Avatar>
-              {isNetworkOpen(network) ? <LockOpenIcon /> : <LockIcon />}
-            </Avatar>
-          </ListItemAvatar>
-          <ListItemText
-            primary={network.ssid}
-            secondary={"Security: "+ networkSecurityMode(network) + ", Ch: " + network.channel}
-          />
-          <ListItemIcon>
-            <Badge badgeContent={network.rssi + "db"}>
-              <WifiIcon />
-            </Badge>
-          </ListItemIcon>
-        </ListItem>
-      ]
+    return (
+      <ListItem key={network.bssid} button onClick={() => this.props.selectNetwork(network)}>
+        <ListItemAvatar>
+          <Avatar>
+            {isNetworkOpen(network) ? <LockOpenIcon /> : <LockIcon />}
+          </Avatar>
+        </ListItemAvatar>
+        <ListItemText
+          primary={network.ssid}
+          secondary={"Security: "+ networkSecurityMode(network) + ", Ch: " + network.channel}
+        />
+        <ListItemIcon>
+          <Badge badgeContent={network.rssi + "db"}>
+            <WifiIcon />
+          </Badge>
+        </ListItemIcon>
+      </ListItem>
     );
   }
 

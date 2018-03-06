@@ -61,7 +61,6 @@ class SnackbarNotification extends React.Component {
           message={<span id="message-id">{this.state.message}</span>}
           action={
             <IconButton
-              key="close"
               aria-label="Close"
               color="inherit"
               className={classes.close}

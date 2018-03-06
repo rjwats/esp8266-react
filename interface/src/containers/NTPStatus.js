@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 
 import { withStyles } from 'material-ui/styles';
 import Button from 'material-ui/Button';
@@ -50,74 +50,64 @@ class NTPStatus extends Component {
     this.props.loadData();
   }
 
-  renderNTPStatus(data, fullDetails, classes){
-    const listItems = [];
-
-    listItems.push(
-      <ListItem key="ntp_status">
-        <Avatar className={classes["ntpStatus_" + ntpStatusHighlight(data)]}>
-          <UpdateIcon />
-        </Avatar>
-        <ListItemText primary="Status" secondary={ntpStatus(data)} />
-      </ListItem>
-    );
-    listItems.push(<Divider key="ntp_status_divider" inset component="li" />);
-
-    if (isSynchronized(data)) {
-      listItems.push(
-        <ListItem key="time_now">
-          <Avatar>
-            <AccessTimeIcon />
+  createListItems(data, fullDetails, classes){
+    return (
+      <Fragment>
+        <ListItem>
+          <Avatar className={classes["ntpStatus_" + ntpStatusHighlight(data)]}>
+            <UpdateIcon />
           </Avatar>
-          <ListItemText primary="Time Now" secondary={unixTimeToTimeAndDate(data.now)} />
+          <ListItemText primary="Status" secondary={ntpStatus(data)} />
         </ListItem>
-      );
-      listItems.push(<Divider key="time_now_divider" inset component="li" />);
-    }
-
-    listItems.push(
-      <ListItem key="last_sync">
-        <Avatar>
-          <SwapVerticalCircleIcon />
-        </Avatar>
-        <ListItemText primary="Last Sync" secondary={data.last_sync > 0 ? unixTimeToTimeAndDate(data.last_sync) : "never" } />
-      </ListItem>
+        <Divider inset component="li" />
+        { isSynchronized(data) &&
+          <Fragment>
+            <ListItem>
+              <Avatar>
+                <AccessTimeIcon />
+              </Avatar>
+              <ListItemText primary="Time Now" secondary={unixTimeToTimeAndDate(data.now)} />
+            </ListItem>
+            <Divider inset component="li" />
+            <ListItem>
+              <Avatar>
+                <SwapVerticalCircleIcon />
+              </Avatar>
+              <ListItemText primary="Last Sync" secondary={data.last_sync > 0 ? unixTimeToTimeAndDate(data.last_sync) : "never" } />
+            </ListItem>
+            <Divider inset component="li" />
+          </Fragment>
+        }
+        <ListItem>
+          <Avatar>
+            <DNSIcon />
+          </Avatar>
+          <ListItemText primary="NTP Server" secondary={data.server} />
+        </ListItem>
+        <Divider inset component="li" />
+        <ListItem>
+          <Avatar>
+            <TimerIcon />
+          </Avatar>
+          <ListItemText primary="Sync Interval" secondary={moment.duration(data.interval, 'seconds').humanize()} />
+        </ListItem>
+        <Divider inset component="li" />
+        <ListItem>
+          <Avatar>
+            <AvTimerIcon />
+          </Avatar>
+          <ListItemText primary="Uptime" secondary={moment.duration(data.uptime, 'seconds').humanize()} />
+        </ListItem>
+        <Divider inset component="li" />
+      </Fragment>
     );
-    listItems.push(<Divider key="last_sync_divider" inset component="li" />);
+  }
 
-    listItems.push(
-      <ListItem key="ntp_server">
-        <Avatar>
-          <DNSIcon />
-        </Avatar>
-        <ListItemText primary="NTP Server" secondary={data.server} />
-      </ListItem>
-    );
-    listItems.push(<Divider key="ntp_server_divider" inset component="li" />);
-
-    listItems.push(
-      <ListItem key="sync_interval">
-        <Avatar>
-          <TimerIcon />
-        </Avatar>
-        <ListItemText primary="Sync Interval" secondary={moment.duration(data.interval, 'seconds').humanize()} />
-      </ListItem>
-    );
-    listItems.push(<Divider key="sync_interval_divider" inset component="li" />);
-
-    listItems.push(
-      <ListItem key="uptime">
-        <Avatar>
-          <AvTimerIcon />
-        </Avatar>
-        <ListItemText primary="Uptime" secondary={moment.duration(data.uptime, 'seconds').humanize()} />
-      </ListItem>
-    );
-
+  renderNTPStatus(data, fullDetails, classes){
     return  (
       <div>
         <List>
-          {listItems}
+          {this.createListItems(data, fullDetails, classes)}
         </List>
         <Button variant="raised" color="secondary" className={classes.button} onClick={this.props.loadData}>
           Refresh

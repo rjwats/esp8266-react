@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 
 import { withStyles } from 'material-ui/styles';
 import Button from 'material-ui/Button';
@@ -57,71 +57,61 @@ class WiFiStatus extends Component {
     return status.dns_ip_1 + (status.dns_ip_2 ? ','+status.dns_ip_2 : '');
   }
 
-  renderWiFiStatus(data, fullDetails, classes) {
-    const listItems = [];
-
-    listItems.push(
-      <ListItem key="connection_status">
-        <Avatar className={classes["wifiStatus_" + connectionStatusHighlight(data)]}>
-          <WifiIcon />
-        </Avatar>
-        <ListItemText primary="Connection Status" secondary={connectionStatus(data)} />
-      </ListItem>
+  createListItems(data, fullDetails, classes) {
+    return (
+      <Fragment>
+        <ListItem>
+          <Avatar className={classes["wifiStatus_" + connectionStatusHighlight(data)]}>
+            <WifiIcon />
+          </Avatar>
+          <ListItemText primary="Connection Status" secondary={connectionStatus(data)} />
+        </ListItem>
+        <Divider inset component="li" />
+        {
+          (fullDetails && isConnected(data)) &&
+          <Fragment>
+            <ListItem>
+              <Avatar>
+                <SettingsInputAntennaIcon />
+              </Avatar>
+              <ListItemText primary="SSID" secondary={data.ssid} />
+            </ListItem>
+            <Divider inset component="li" />
+            <ListItem>
+              <Avatar>IP</Avatar>
+              <ListItemText primary="IP Address" secondary={data.local_ip} />
+            </ListItem>
+            <Divider inset component="li" />
+            <ListItem>
+              <Avatar>#</Avatar>
+              <ListItemText primary="Subnet Mask" secondary={data.subnet_mask} />
+            </ListItem>
+            <Divider inset component="li" />
+            <ListItem>
+              <Avatar>
+                <SettingsInputComponentIcon />
+              </Avatar>
+              <ListItemText primary="Gateway IP" secondary={data.gateway_ip ? data.gateway_ip : "none"} />
+            </ListItem>
+            <Divider inset component="li" />
+            <ListItem>
+              <Avatar>
+                <DNSIcon />
+              </Avatar>
+              <ListItemText primary="DNS Server IP" secondary={this.dnsServers(data)} />
+            </ListItem>
+            <Divider inset component="li" />
+          </Fragment>
+        }
+      </Fragment>
     );
+  }
 
-    if (fullDetails && isConnected(data)) {
-      listItems.push(<Divider key="connection_status_divider" inset component="li" />);
-
-      listItems.push(
-        <ListItem key="ssid">
-          <Avatar>
-            <SettingsInputAntennaIcon />
-          </Avatar>
-          <ListItemText primary="SSID" secondary={data.ssid} />
-        </ListItem>
-      );
-      listItems.push(<Divider key="ssid_divider" inset component="li" />);
-
-      listItems.push(
-        <ListItem key="ip_address">
-          <Avatar>IP</Avatar>
-          <ListItemText primary="IP Address" secondary={data.local_ip} />
-        </ListItem>
-      );
-      listItems.push(<Divider key="ip_address_divider" inset component="li" />);
-
-      listItems.push(
-        <ListItem key="subnet_mask">
-          <Avatar>#</Avatar>
-          <ListItemText primary="Subnet Mask" secondary={data.subnet_mask} />
-        </ListItem>
-      );
-      listItems.push(<Divider key="subnet_mask_divider" inset component="li" />);
-
-      listItems.push(
-        <ListItem key="gateway_ip">
-          <Avatar>
-            <SettingsInputComponentIcon />
-          </Avatar>
-          <ListItemText primary="Gateway IP" secondary={data.gateway_ip ? data.gateway_ip : "none"} />
-        </ListItem>
-      );
-      listItems.push(<Divider key="gateway_ip_divider" inset component="li" />);
-
-      listItems.push(
-        <ListItem key="dns_server_ip">
-          <Avatar>
-            <DNSIcon />
-          </Avatar>
-          <ListItemText primary="DNS Server IP" secondary={this.dnsServers(data)} />
-        </ListItem>
-      );
-    }
-
+  renderWiFiStatus(data, fullDetails, classes) {
     return  (
       <div>
         <List>
-        {listItems}
+        {this.createListItems(data, fullDetails, classes)}
         </List>
         <Button variant="raised" color="secondary" className={classes.button} onClick={this.props.loadData}>
           Refresh
