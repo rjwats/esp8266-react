@@ -8,19 +8,52 @@ APSettingsService::~APSettingsService() {}
 void APSettingsService::loop() {
   unsigned long now = millis();
   if (_manageAtMillis <= now){
-    WiFiMode_t currentWiFiMode = WiFi.getMode();
-    if (_provisionMode == AP_MODE_ALWAYS || (_provisionMode == AP_MODE_DISCONNECTED && WiFi.status() != WL_CONNECTED)) {
-      if (currentWiFiMode == WIFI_OFF || currentWiFiMode == WIFI_STA){
-        Serial.println("Starting software access point");
-        WiFi.softAP(_ssid.c_str(), _password.c_str());
-      }
-    } else {
-      if (currentWiFiMode == WIFI_AP || currentWiFiMode == WIFI_AP_STA){
-        Serial.println("Stopping software access point");
-        WiFi.softAPdisconnect(true);
-      }
-    }
+    manageAP();
     _manageAtMillis = now + MANAGE_NETWORK_DELAY;
+  }
+  handleDNS();
+}
+
+void APSettingsService::manageAP() {
+  WiFiMode_t currentWiFiMode = WiFi.getMode();
+  if (_provisionMode == AP_MODE_ALWAYS || (_provisionMode == AP_MODE_DISCONNECTED && WiFi.status() != WL_CONNECTED)) {
+    if (currentWiFiMode == WIFI_OFF || currentWiFiMode == WIFI_STA) {
+      startAP();
+    }
+  } else {
+    if (currentWiFiMode == WIFI_AP || currentWiFiMode == WIFI_AP_STA) {
+      stopAP();
+    }
+  }
+}
+
+void APSettingsService::startAP() {
+  Serial.println("Starting software access point");
+  WiFi.softAP(_ssid.c_str(), _password.c_str());
+
+  if (!_dnsServer) {
+    IPAddress apIp = WiFi.softAPIP();
+    Serial.print("Starting captive portal on ");
+    Serial.println(apIp);
+    _dnsServer = new DNSServer;
+    _dnsServer->start(DNS_PORT, "*", apIp);
+  }
+}
+
+void APSettingsService::stopAP() {
+  if (_dnsServer) {
+    Serial.println("Stopping captive portal");
+    _dnsServer->stop();
+    delete _dnsServer;
+    _dnsServer = NULL;
+  }
+  Serial.println("Stopping software access point");
+  WiFi.softAPdisconnect(true);
+}
+
+void APSettingsService::handleDNS() {
+  if (_dnsServer) {
+    _dnsServer->processNextRequest();
   }
 }
 

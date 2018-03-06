@@ -1,6 +1,7 @@
 #ifndef APSettingsConfig_h
 #define APSettingsConfig_h
 
+#include <DNSServer.h>
 #include <IPAddress.h>
 #include <SettingsService.h>
 
@@ -9,6 +10,8 @@
 #define AP_MODE_ALWAYS 0
 #define AP_MODE_DISCONNECTED 1
 #define AP_MODE_NEVER 2
+
+#define DNS_PORT 53
 
 #define AP_DEFAULT_SSID "ssid"
 #define AP_DEFAULT_PASSWORD "password"
@@ -33,10 +36,21 @@ class APSettingsService : public SettingsService {
 
   private:
 
+    // access point settings
     int _provisionMode;
     String _ssid;
     String _password;
+
+    // for the mangement delay loop
     unsigned long _manageAtMillis;
+
+    // for the captive portal
+    DNSServer *_dnsServer;
+
+    void manageAP();
+    void startAP();
+    void stopAP();
+    void handleDNS();
 
 };
 
