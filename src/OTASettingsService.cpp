@@ -40,7 +40,10 @@ void OTASettingsService::writeToJsonObject(JsonObject& root) {
 }
 
 void OTASettingsService::configureArduinoOTA() {
-  delete _arduinoOTA;
+  if (_arduinoOTA){
+    delete _arduinoOTA;
+    _arduinoOTA = NULL;
+  }
   if (_enabled) {
     _arduinoOTA = new ArduinoOTAClass;
     _arduinoOTA->setPort(_port);
