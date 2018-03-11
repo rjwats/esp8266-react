@@ -16,11 +16,12 @@
 AsyncWebServer server(80);
 
 WiFiSettingsService wifiSettingsService = WiFiSettingsService(&server, &SPIFFS);
-WiFiStatus wifiStatus = WiFiStatus(&server);
-WiFiScanner wifiScanner = WiFiScanner(&server);
 APSettingsService apSettingsService = APSettingsService(&server, &SPIFFS);
 NTPSettingsService ntpSettingsService = NTPSettingsService(&server, &SPIFFS);
 OTASettingsService otaSettingsService = OTASettingsService(&server, &SPIFFS);
+
+WiFiScanner wifiScanner = WiFiScanner(&server);
+WiFiStatus wifiStatus = WiFiStatus(&server);
 NTPStatus ntpStatus = NTPStatus(&server);
 APStatus apStatus = APStatus(&server);
 
