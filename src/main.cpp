@@ -11,6 +11,8 @@
 #include <OTASettingsService.h>
 #include <APStatus.h>
 
+#include <lightstrip/LightStripService.h>
+
 #define SERIAL_BAUD_RATE 115200
 
 AsyncWebServer server(80);
@@ -19,6 +21,8 @@ WiFiSettingsService wifiSettingsService = WiFiSettingsService(&server, &SPIFFS);
 APSettingsService apSettingsService = APSettingsService(&server, &SPIFFS);
 NTPSettingsService ntpSettingsService = NTPSettingsService(&server, &SPIFFS);
 OTASettingsService otaSettingsService = OTASettingsService(&server, &SPIFFS);
+
+LightStripService lightStripService = LightStripService(&server);
 
 WiFiScanner wifiScanner = WiFiScanner(&server);
 WiFiStatus wifiStatus = WiFiStatus(&server);
@@ -37,6 +41,9 @@ void setup() {
     otaSettingsService.begin();
     apSettingsService.begin();
     wifiSettingsService.begin();
+
+    // start the light strip
+    lightStripService.begin();
 
     // Serving static resources from /www/
     server.serveStatic("/js/", SPIFFS, "/www/js/");
@@ -69,4 +76,7 @@ void loop() {
   apSettingsService.loop();
   ntpSettingsService.loop();
   otaSettingsService.loop();
+
+  // service the light strip
+  lightStripService.loop();
 }
