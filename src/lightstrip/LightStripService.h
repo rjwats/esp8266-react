@@ -11,6 +11,7 @@
 #include <lightstrip/OffMode.h>
 #include <lightstrip/SmoothMode.h>
 #include <lightstrip/FadeMode.h>
+#include <lightstrip/FlashMode.h>
 #include <lightstrip/IRCodes.h>
 #include <lightstrip/Strip.h>
 #include <lightstrip/SimpleService.h>
@@ -50,6 +51,7 @@ class LightStripService : public SimpleService {
     OffMode offMode = OffMode(&strip);
     FadeMode fadeMode = FadeMode(&strip);
     StrobeMode strobeMode = StrobeMode(&strip);
+    FlashMode flashMode = FlashMode(&strip);
 
     Mode *currentMode = &offMode;
 

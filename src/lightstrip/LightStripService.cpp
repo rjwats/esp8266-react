@@ -25,6 +25,7 @@ bool LightStripService::isModeCode(uint64_t code) {
     case IR_SMOOTH:
     case IR_FADE:
     case IR_STROBE:
+    case IR_FLASH:
       return true;
     default:
       return false;
@@ -43,6 +44,8 @@ Mode* LightStripService::getModeForCode(uint64_t code) {
       return &fadeMode;
     case IR_STROBE:
       return &strobeMode;
+    case IR_FLASH:
+      return &flashMode;
     default:
       return currentMode;
   }
