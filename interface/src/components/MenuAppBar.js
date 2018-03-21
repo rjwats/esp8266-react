@@ -98,6 +98,13 @@ class MenuAppBar extends React.Component {
         </Toolbar>
         <Divider />
         <List>
+          <ListItem button component={Link} to='/light-strip-controls'>
+            <ListItemIcon>
+              <SystemUpdateIcon />
+            </ListItemIcon>
+            <ListItemText primary="Light Strip Controls" />
+          </ListItem>
+          <Divider />
           <ListItem button component={Link} to='/wifi-configuration'>
             <ListItemIcon>
               <WifiIcon />
