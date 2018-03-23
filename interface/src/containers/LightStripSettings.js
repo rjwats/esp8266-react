@@ -3,7 +3,8 @@ import React, { Component } from 'react';
 import { LIGHT_STRIP_ENDPOINT }  from  '../constants/Endpoints';
 import {restComponent} from '../components/RestComponent';
 import SectionContent from '../components/SectionContent';
-import { CirclePicker } from 'react-color'
+
+import LightStripSettingsForm from '../forms/LightStripSettingsForm';
 
 class LightStripSettings extends Component {
 
@@ -17,15 +18,15 @@ class LightStripSettings extends Component {
     const { data, fetched, errorMessage } = this.props;
     return (
       <SectionContent title="Light Strip Settings">
-        {data && JSON.stringify(data)}
-        {fetched}
-        {errorMessage}
-
-        <CirclePicker
-          color="#333"
-          onChangeComplete={ this.handleColorChange }
+        <LightStripSettingsForm
+          lightStripSettings={data}
+          lightStripSettingsFetched={fetched}
+          errorMessage={errorMessage}
+          onSubmit={this.props.saveData}
+          onReset={this.props.loadData}
+          handleValueChange={this.props.handleValueChange}
+          handleColorChange={this.props.handleColorChange}
         />
-
       </SectionContent>
     );
   }

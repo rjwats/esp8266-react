@@ -80,22 +80,29 @@ export const restComponent = (endpointUrl, FormComponent) => {
         });
       }
 
-      handleValueChange = name => event => {
+      handleColorChange = (name, callback) => color => {
         const { data } = this.state;
-        data[name] = event.target.value;
-        this.setState({data});
+        data[name] = color.hex;
+        this.setState({data}, callback);
       };
 
-      handleCheckboxChange = name => event => {
+      handleValueChange = (name, callback) => event => {
+        const { data } = this.state;
+        data[name] = event.target.value;
+        this.setState({data}, callback);
+      };
+
+      handleCheckboxChange = (name, callback) => event => {
         const { data } = this.state;
         data[name] = event.target.checked;
-        this.setState({data});
+        this.setState({data}, callback);
       }
 
       render() {
         return <FormComponent
                   handleValueChange={this.handleValueChange}
                   handleCheckboxChange={this.handleCheckboxChange}
+                  handleColorChange={this.handleColorChange}
                   setData={this.setData}
                   saveData={this.saveData}
                   loadData={this.loadData}
