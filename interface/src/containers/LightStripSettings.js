@@ -10,9 +10,12 @@ class LightStripSettings extends Component {
 
   componentDidMount() {
       this.props.loadData();
+      this.handleChangeMode = this.handleChangeMode.bind(this);
   }
 
-  handleColorChange = ({ hex }) => console.log(hex);
+  handleChangeMode(event) {
+    this.props.setDataAndSave({mode_code: event.target.value}, true, false);
+  }
 
   render() {
     const { data, fetched, errorMessage } = this.props;
@@ -26,6 +29,8 @@ class LightStripSettings extends Component {
           onReset={this.props.loadData}
           handleValueChange={this.props.handleValueChange}
           handleColorChange={this.props.handleColorChange}
+          handleChange={this.props.handleChange}
+          handleChangeMode={this.handleChangeMode}
         />
       </SectionContent>
     );

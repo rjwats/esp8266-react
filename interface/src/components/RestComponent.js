@@ -26,6 +26,7 @@ export const restComponent = (endpointUrl, FormComponent) => {
         this.loadData = this.loadData.bind(this);
         this.saveData = this.saveData.bind(this);
         this.setData = this.setData.bind(this);
+        this.setDataAndSave = this.setDataAndSave.bind(this);
       }
 
       setData(data) {
@@ -34,6 +35,14 @@ export const restComponent = (endpointUrl, FormComponent) => {
                  fetched: true,
                  errorMessage:null
                });
+      }
+
+      setDataAndSave(data, silent = false, setOnly = false) {
+        this.setState({
+                 data:data,
+                 fetched: false,
+                 errorMessage:null
+               }, () => this.saveData(silent, setOnly));
       }
 
       loadData() {
@@ -56,8 +65,10 @@ export const restComponent = (endpointUrl, FormComponent) => {
           });
       }
 
-      saveData(e) {
-        this.setState({fetched: false});
+      saveData(silent = false, setOnly = false) {
+        if (!setOnly){
+          this.setState({fetched: false});
+        }
         fetch(endpointUrl, {
           method: 'POST',
           body: JSON.stringify(this.state.data),
@@ -72,17 +83,29 @@ export const restComponent = (endpointUrl, FormComponent) => {
           throw Error("Invalid status code: " + response.status);
         })
         .then(json => {
-          this.props.raiseNotification("Changes successfully applied.");
-          this.setState({data: json, fetched:true});
+          if (!silent){
+            this.props.raiseNotification("Changes successfully applied.");
+          }
+          if (!setOnly) {
+            this.setState({data: json, fetched:true});
+          }
         }).catch(error => {
           this.props.raiseNotification("Problem saving: " + error.message);
           this.setState({data: null, fetched:true, errorMessage:error.message});
         });
       }
 
+      handleChange = (name, callback) => value => {
+        const { data } = this.state;
+        data[name] = value;
+        this.setState({data}, callback);
+      };
+
       handleColorChange = (name, callback) => color => {
         const { data } = this.state;
         data[name] = color.hex;
+        console.log(color.hex);
+        console.log(callback);
         this.setState({data}, callback);
       };
 
@@ -103,7 +126,9 @@ export const restComponent = (endpointUrl, FormComponent) => {
                   handleValueChange={this.handleValueChange}
                   handleCheckboxChange={this.handleCheckboxChange}
                   handleColorChange={this.handleColorChange}
+                  handleChange={this.handleChange}
                   setData={this.setData}
+                  setDataAndSave={this.setDataAndSave}
                   saveData={this.saveData}
                   loadData={this.loadData}
                   {...this.state}

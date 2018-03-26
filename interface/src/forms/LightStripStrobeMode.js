@@ -6,7 +6,7 @@ import { SimpleColors } from '../constants/Colors.js'
 import Slider from 'react-rangeslider';
 import 'react-rangeslider/lib/index.css'
 
-export class LightStripColorMode extends React.Component {
+export class LightStripStrobeMode extends React.Component {
 
   render() {
     const { lightStripSettings, handleColorChange, handleChange } = this.props;
@@ -28,15 +28,15 @@ export class LightStripColorMode extends React.Component {
           min={0}
           max={255}
           step={1}
-          value={lightStripSettings.brightness}
-          onChange={handleChange('brightness')}
+          value={lightStripSettings.strobe_speed}
+          onChange={handleChange('strobe_speed')}
         />
       </div>
     );
   }
 }
 
-LightStripColorMode.propTypes = {
+LightStripStrobeMode.propTypes = {
   lightStripSettings: PropTypes.object,
   onSubmit: PropTypes.func.isRequired,
   handleColorChange: PropTypes.func.isRequired,

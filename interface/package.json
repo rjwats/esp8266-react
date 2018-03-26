@@ -14,6 +14,7 @@
     "react-dom": "^16.2.0",
     "react-form-validator-core": "^0.3.0",
     "react-material-ui-form-validator": "^2.0.0-beta.4",
+    "react-rangeslider": "^2.2.0",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.0.17"

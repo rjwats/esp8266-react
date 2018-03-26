@@ -8,8 +8,8 @@
 #include <lightstrip/JsonUtil.h>
 
 #define FADE_SPEED_ADJUST 15
-#define FADE_MAX_DELAY 150
-#define FADE_MIN_DELAY 3
+#define FADE_MAX_DELAY 100
+#define FADE_MIN_DELAY 2
 
 class FlashMode : public Mode {
 

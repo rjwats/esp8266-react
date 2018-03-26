@@ -57,6 +57,10 @@ uint64_t StrobeMode::getModeCode() {
 void StrobeMode::updateConfig(JsonObject& root) {
   updateByteFromJson(root, &strobeSpeed, "strobe_speed");
   updateColorFromJson(root, &color);
+
+  // make sure stobe is in on state, and apply change.
+  strobeState = 0;
+  nextStrobe = millis();
 }
 
 void StrobeMode::writeConfig(JsonObject& root) {
