@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import Websocket from 'react-websocket';
-
 import { LIGHT_STRIP_ENDPOINT, WS_URI }  from  '../constants/Endpoints';
 import {restComponent} from '../components/RestComponent';
 import SectionContent from '../components/SectionContent';
