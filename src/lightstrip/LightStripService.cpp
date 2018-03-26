@@ -1,9 +1,23 @@
 #include <lightstrip/LightStripService.h>
 
 LightStripService::LightStripService(AsyncWebServer* server) : SimpleService(server, LIGHT_STRIP_SETTINGS_SERVICE_PATH) {
+  ws.onEvent(std::bind(&LightStripService::onWSEvent, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4, std::placeholders::_5, std::placeholders::_6));
+  server->addHandler(&ws);
 }
 
 LightStripService::~LightStripService() {}
+
+void LightStripService::onWSEvent(AsyncWebSocket * server,
+  AsyncWebSocketClient * client, AwsEventType type, void * arg,
+  uint8_t *data, size_t len) {
+  // on connect, send the client their id
+  if (type == WS_EVT_CONNECT) {
+    client->printf("ClientID:%u", client->id());
+  }
+  // will be simlified to recieving only.... and only payloads under the buffer threshold
+  // we won't have enough data to bother with larger payloads...
+  // could concider an abstraction (much like SettingsService) at a later date.
+}
 
 void LightStripService::readFromJsonObject(JsonObject& root) {
   unsigned long modeCode = root["mode_code"];

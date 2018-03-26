@@ -16,6 +16,9 @@
 #include <lightstrip/Strip.h>
 #include <lightstrip/SimpleService.h>
 
+#include <ESPAsyncTCP.h>
+#include <ESPAsyncWebServer.h>
+
 #define RECV_PIN 13
 #define R_PIN 14
 #define G_PIN 12
@@ -42,8 +45,9 @@ class LightStripService : public SimpleService {
 
   private:
 
-    IRrecv irrecv = IRrecv(RECV_PIN);
+    AsyncWebSocket ws = AsyncWebSocket("/ws");
 
+    IRrecv irrecv = IRrecv(RECV_PIN);
     Strip strip = Strip(R_PIN, G_PIN, B_PIN);
 
     ColorMode colorMode = ColorMode(&strip);
@@ -65,7 +69,9 @@ class LightStripService : public SimpleService {
     Mode* getModeForCode(uint64_t code);
     void handleIRCode(uint64_t irCode, boolean repeat);
     void handleIRSensor();
-
+    void onWSEvent(AsyncWebSocket * server,
+      AsyncWebSocketClient * client, AwsEventType type, void * arg,
+      uint8_t *data, size_t len);
 };
 
 #endif // end LightStripService_h
