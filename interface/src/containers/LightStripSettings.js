@@ -8,10 +8,6 @@ import Sockette from 'sockette';
 
 class LightStripSettings extends Component {
 
-  constructor(props) {
-    super(props);
-  }
-
   componentDidMount() {
     this.props.loadData();
     this.handleChangeMode = this.handleChangeMode.bind(this);
