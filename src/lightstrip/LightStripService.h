@@ -14,8 +14,8 @@
 #include <lightstrip/FlashMode.h>
 #include <lightstrip/IRCodes.h>
 #include <lightstrip/Strip.h>
-#include <lightstrip/SimpleService.h>
 
+#include <SimpleService.h>
 #include <ESPAsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 
