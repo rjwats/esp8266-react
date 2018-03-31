@@ -1,5 +1,5 @@
-#ifndef Service_h
-#define Service_h
+#ifndef SimpleService_h
+#define SimpleService_h
 
 #include <ESP8266WiFi.h>
 #include <ESPAsyncTCP.h>
@@ -7,7 +7,6 @@
 #include <AsyncJson.h>
 #include <ArduinoJson.h>
 #include <AsyncJsonRequestWebHandler.h>
-#include <AsyncJsonCallbackResponse.h>
 
 /**
 * At the moment, not expecting services to have to deal with large JSON
@@ -38,10 +37,10 @@ private:
   void updateConfig(AsyncWebServerRequest *request, JsonVariant &json){
     if (json.is<JsonObject>()){
       JsonObject& newConfig = json.as<JsonObject>();
-      readFromJsonObject(newConfig);
+      readFromJsonObject(newConfig, "service");
 
       // write settings back with a callback to reconfigure the wifi
-      AsyncJsonCallbackResponse * response = new AsyncJsonCallbackResponse([this] () {onConfigUpdated();});
+      AsyncJsonResponse * response = new AsyncJsonResponse();
       writeToJsonObject(response->getRoot());
       response->setLength();
       request->send(response);
@@ -56,11 +55,8 @@ private:
     AsyncWebServer* _server;
 
     // reads the local config from the
-    virtual void readFromJsonObject(JsonObject& root){}
-    virtual void writeToJsonObject(JsonObject& root){}
-
-    // implement to perform action when config has been updated
-    virtual void onConfigUpdated(){}
+    virtual void readFromJsonObject(JsonObject& root, String originId){}
+    virtual void writeToJsonObject(JsonObject& root) {}
 
   public:
 

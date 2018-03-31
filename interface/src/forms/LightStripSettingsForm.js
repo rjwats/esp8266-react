@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { withStyles } from 'material-ui/styles';
-import Button from 'material-ui/Button';
 import { LinearProgress } from 'material-ui/Progress';
 import Typography from 'material-ui/Typography';
 import { MenuItem } from 'material-ui/Menu';
@@ -82,8 +81,7 @@ class LightStripSettingsForm extends React.Component {
       lightStripSettingsFetched,
       lightStripSettings,
       errorMessage,
-      onSubmit,
-      onReset
+      onSubmit
     } = this.props;
 
     return (
@@ -129,9 +127,6 @@ class LightStripSettingsForm extends React.Component {
           <Typography variant="display1" className={classes.loadingSettingsDetails}>
             {errorMessage}
           </Typography>
-          <Button variant="raised" color="secondary" className={classes.button} onClick={onReset}>
-      		  Reset
-      		</Button>
         </div>
       }
       </div>
@@ -141,11 +136,10 @@ class LightStripSettingsForm extends React.Component {
 
 LightStripSettingsForm.propTypes = {
   classes: PropTypes.object.isRequired,
-  lightStripSettingsFetched: PropTypes.bool.isRequired,
+  lightStripSettingsFetched: PropTypes.bool,
   lightStripSettings: PropTypes.object,
   errorMessage: PropTypes.string,
   onSubmit: PropTypes.func.isRequired,
-  onReset: PropTypes.func.isRequired,
   handleValueChange: PropTypes.func.isRequired,
   handleColorChange: PropTypes.func.isRequired,
   handleChange: PropTypes.func.isRequired,

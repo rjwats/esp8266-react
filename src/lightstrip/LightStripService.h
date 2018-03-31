@@ -16,6 +16,7 @@
 #include <lightstrip/Strip.h>
 
 #include <SimpleService.h>
+#include <SimpleSocket.h>
 #include <ESPAsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 
@@ -27,8 +28,9 @@
 #define REPEAT_TIMEOUT_DURATION 120
 
 #define LIGHT_STRIP_SETTINGS_SERVICE_PATH "/lightStrip"
+#define LIGHT_STRIP_SETTINGS_WEBSOCKET_PATH "/lightStripWS"
 
-class LightStripService : public SimpleService {
+class LightStripService : public SimpleService, public SimpleSocket {
 
   public:
 
@@ -40,13 +42,10 @@ class LightStripService : public SimpleService {
 
   protected:
 
-    void readFromJsonObject(JsonObject& root);
+    void readFromJsonObject(JsonObject& root, String originId);
     void writeToJsonObject(JsonObject& root);
 
   private:
-
-    AsyncWebSocket ws = AsyncWebSocket("/ws");
-
     IRrecv irrecv = IRrecv(RECV_PIN);
     Strip strip = Strip(R_PIN, G_PIN, B_PIN);
 
@@ -69,9 +68,7 @@ class LightStripService : public SimpleService {
     Mode* getModeForCode(uint64_t code);
     void handleIRCode(uint64_t irCode, boolean repeat);
     void handleIRSensor();
-    void onWSEvent(AsyncWebSocket * server,
-      AsyncWebSocketClient * client, AwsEventType type, void * arg,
-      uint8_t *data, size_t len);
+
 };
 
 #endif // end LightStripService_h

@@ -1,4 +1,5 @@
 export const ENDPOINT_ROOT = "http://192.168.0.20";
+export const WS_ROOT = "ws://192.168.0.20";
 
 export const NTP_STATUS_PATH = "/ntpStatus";
 export const NTP_STATUS_ENDPOINT = ENDPOINT_ROOT + NTP_STATUS_PATH;
@@ -27,8 +28,18 @@ export const WIFI_STATUS_ENDPOINT = ENDPOINT_ROOT + WIFI_STATUS_PATH;
 export const OTA_SETTINGS_PATH = "/otaSettings";
 export const OTA_SETTINGS_ENDPOINT = ENDPOINT_ROOT + OTA_SETTINGS_PATH;
 
-export const LIGHT_STRIP_ENDPOINT_PATH = "/lightStrip";
-export const LIGHT_STRIP_ENDPOINT = ENDPOINT_ROOT + LIGHT_STRIP_ENDPOINT_PATH;
+export const LIGHT_STRIP_WEBSOCKET_PATH = "/lightStripWS";
+export const LIGHT_STRIP_WEBSOCKET_URI = calculateWebSocketPath(LIGHT_STRIP_WEBSOCKET_PATH);
 
-// TODO: Need to calcualte this rather than being able to make it relative!
-export const WS_URI = "ws://192.168.0.20/ws";
+function calculateWebSocketPath(webSocketPath) {
+  if (WS_ROOT.length === 0){
+    var loc = window.location, webSocketURI;
+    if (loc.protocol === "https:") {
+        webSocketURI = "wss:";
+    } else {
+        webSocketURI = "ws:";
+    }
+    return webSocketURI + "//" + loc.host + webSocketPath;
+  }
+  return WS_ROOT + webSocketPath;
+}
