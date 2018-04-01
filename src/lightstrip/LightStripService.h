@@ -27,8 +27,8 @@
 
 #define REPEAT_TIMEOUT_DURATION 120
 
-#define LIGHT_STRIP_SETTINGS_SERVICE_PATH "/lightStrip"
-#define LIGHT_STRIP_SETTINGS_WEBSOCKET_PATH "/lightStripWS"
+#define LIGHT_STRIP_SETTINGS_SERVICE_PATH "/rest/lightStrip"
+#define LIGHT_STRIP_SETTINGS_WEBSOCKET_PATH "/ws/lightStrip"
 
 class LightStripService : public SimpleService, public SimpleSocket {
 
