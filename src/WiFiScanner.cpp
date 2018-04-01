@@ -1,8 +1,8 @@
 #include <WiFiScanner.h>
 
 WiFiScanner::WiFiScanner(AsyncWebServer *server) : _server(server) {
-  _server->on("/scanNetworks", HTTP_GET, std::bind(&WiFiScanner::scanNetworks, this, std::placeholders::_1));
-  _server->on("/listNetworks", HTTP_GET, std::bind(&WiFiScanner::listNetworks, this, std::placeholders::_1));
+  _server->on(SCAN_NETWORKS_SERVICE_PATH, HTTP_GET, std::bind(&WiFiScanner::scanNetworks, this, std::placeholders::_1));
+  _server->on(LIST_NETWORKS_SERVICE_PATH, HTTP_GET, std::bind(&WiFiScanner::listNetworks, this, std::placeholders::_1));
 }
 
 void WiFiScanner::scanNetworks(AsyncWebServerRequest *request) {

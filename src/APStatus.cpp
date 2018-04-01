@@ -1,7 +1,7 @@
 #include <APStatus.h>
 
 APStatus::APStatus(AsyncWebServer *server) : _server(server) {
-  _server->on("/apStatus", HTTP_GET, std::bind(&APStatus::apStatus, this, std::placeholders::_1));
+  _server->on(AP_STATUS_SERVICE_PATH, HTTP_GET, std::bind(&APStatus::apStatus, this, std::placeholders::_1));
 }
 
 void APStatus::apStatus(AsyncWebServerRequest *request) {

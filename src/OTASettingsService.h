@@ -12,7 +12,7 @@
 #define DEFAULT_OTA_PASSWORD "esp-react"
 
 #define OTA_SETTINGS_FILE "/config/otaSettings.json"
-#define OTA_SETTINGS_SERVICE_PATH "/otaSettings"
+#define OTA_SETTINGS_SERVICE_PATH "/rest/otaSettings"
 
 class OTASettingsService : public SettingsService {
 

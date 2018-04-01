@@ -8,10 +8,10 @@
 #define AUTH_DEFAULT_SESSION_TIMEOUT 3600
 
 #define AUTH_SETTINGS_FILE "/config/authSettings.json"
-#define AUTH_SETTINGS_SERVICE_PATH "/authSettings"
 
-#define AUTH_LOGOUT_PATH "/logout"
-#define AUTH_AUTHENTICATE_PATH "/authenticate"
+#define AUTH_SETTINGS_SERVICE_PATH "/rest/authSettings"
+#define AUTH_LOGOUT_SERVICE_PATH "/rest/logout"
+#define AUTH_AUTHENTICATE_SERVICE_PATH "/rest/authenticate"
 
 // max number of concurrently authenticated clients
 #define AUTH_MAX_CLIENTS 10

@@ -9,6 +9,8 @@
 #include <TimeLib.h>
 #include <NtpClientLib.h>
 
+#define NTP_STATUS_SERVICE_PATH "/rest/ntpStatus"
+
 class NTPStatus {
 
   public:

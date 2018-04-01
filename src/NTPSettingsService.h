@@ -16,7 +16,7 @@
 #define NTP_SETTINGS_MAX_INTERVAL 86400
 
 #define NTP_SETTINGS_FILE "/config/ntpSettings.json"
-#define NTP_SETTINGS_SERVICE_PATH "/ntpSettings"
+#define NTP_SETTINGS_SERVICE_PATH "/rest/ntpSettings"
 
 class NTPSettingsService : public SettingsService {
 
@@ -34,7 +34,7 @@ class NTPSettingsService : public SettingsService {
     void onConfigUpdated();
 
   private:
-    
+
     WiFiEventHandler _onStationModeDisconnectedHandler;
     WiFiEventHandler _onStationModeGotIPHandler;
 

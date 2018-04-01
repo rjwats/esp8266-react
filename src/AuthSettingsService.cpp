@@ -1,10 +1,10 @@
 #include <AuthSettingsService.h>
 
 AuthSettingsService::AuthSettingsService(AsyncWebServer* server, FS* fs) : SettingsService(server, fs, AUTH_SETTINGS_SERVICE_PATH, AUTH_SETTINGS_FILE) {
-  _server->on(AUTH_LOGOUT_PATH, HTTP_GET, std::bind(&AuthSettingsService::logout, this, std::placeholders::_1));
+  _server->on(AUTH_LOGOUT_SERVICE_PATH, HTTP_GET, std::bind(&AuthSettingsService::logout, this, std::placeholders::_1));
 
   // configure authentication handler
-  _authenticationHandler.setUri(AUTH_AUTHENTICATE_PATH);
+  _authenticationHandler.setUri(AUTH_AUTHENTICATE_SERVICE_PATH);
   _authenticationHandler.setMethod(HTTP_POST);
   _authenticationHandler.onRequest(std::bind(&AuthSettingsService::authenticate, this, std::placeholders::_1, std::placeholders::_2));
   _server->addHandler(&_authenticationHandler);
