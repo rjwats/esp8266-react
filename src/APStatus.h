@@ -8,6 +8,8 @@
 #include <AsyncJson.h>
 #include <IPAddress.h>
 
+#define AP_STATUS_SERVICE_PATH "/rest/apStatus"
+
 class APStatus {
 
   public:

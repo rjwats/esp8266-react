@@ -8,6 +8,8 @@
 #include <AsyncJson.h>
 #include <IPAddress.h>
 
+#define WIFI_STATUS_SERVICE_PATH "/rest/wifiStatus"
+
 class WiFiStatus {
 
   public:

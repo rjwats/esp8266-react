@@ -5,7 +5,7 @@
 #include <SettingsService.h>
 
 #define WIFI_SETTINGS_FILE "/config/wifiSettings.json"
-#define WIFI_SETTINGS_SERVICE_PATH "/wifiSettings"
+#define WIFI_SETTINGS_SERVICE_PATH "/rest/wifiSettings"
 
 class WiFiSettingsService : public SettingsService {
 
@@ -40,7 +40,7 @@ class WiFiSettingsService : public SettingsService {
 
     void readIP(JsonObject& root, String key, IPAddress& _ip);
     void writeIP(JsonObject& root, String key, IPAddress& _ip);
-    
+
 };
 
 #endif // end WiFiSettingsService_h

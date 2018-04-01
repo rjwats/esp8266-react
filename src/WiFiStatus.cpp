@@ -1,7 +1,7 @@
 #include <WiFiStatus.h>
 
 WiFiStatus::WiFiStatus(AsyncWebServer *server) : _server(server) {
-  _server->on("/wifiStatus", HTTP_GET, std::bind(&WiFiStatus::wifiStatus, this, std::placeholders::_1));
+  _server->on(WIFI_STATUS_SERVICE_PATH, HTTP_GET, std::bind(&WiFiStatus::wifiStatus, this, std::placeholders::_1));
 
   _onStationModeConnectedHandler = WiFi.onStationModeConnected(onStationModeConnected);
   _onStationModeDisconnectedHandler = WiFi.onStationModeDisconnected(onStationModeDisconnected);

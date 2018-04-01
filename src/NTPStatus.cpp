@@ -1,7 +1,7 @@
 #include <NTPStatus.h>
 
 NTPStatus::NTPStatus(AsyncWebServer *server) : _server(server) {
-  _server->on("/ntpStatus", HTTP_GET, std::bind(&NTPStatus::ntpStatus, this, std::placeholders::_1));
+  _server->on(NTP_STATUS_SERVICE_PATH, HTTP_GET, std::bind(&NTPStatus::ntpStatus, this, std::placeholders::_1));
 }
 
 void NTPStatus::ntpStatus(AsyncWebServerRequest *request) {

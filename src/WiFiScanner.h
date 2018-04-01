@@ -8,6 +8,9 @@
 #include <AsyncJson.h>
 #include <TimeLib.h>
 
+#define SCAN_NETWORKS_SERVICE_PATH "/rest/scanNetworks"
+#define LIST_NETWORKS_SERVICE_PATH "/rest/listNetworks"
+
 class WiFiScanner {
 
   public:
