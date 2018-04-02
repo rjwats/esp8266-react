@@ -1,4 +1,4 @@
-const ENDPOINT_HOST = "http://192.168.0.20";
+const ENDPOINT_HOST = "http://192.168.0.11";
 const ENDPOINT_PATH = "/rest";
 const ENDPOINT_PREFIX = ENDPOINT_HOST + ENDPOINT_PATH;
 

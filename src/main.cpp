@@ -10,6 +10,7 @@
 #include <NTPStatus.h>
 #include <OTASettingsService.h>
 #include <APStatus.h>
+#include <fermentation-chamber/ChamberController.h>
 
 #define SERIAL_BAUD_RATE 115200
 
@@ -19,6 +20,7 @@ WiFiSettingsService wifiSettingsService = WiFiSettingsService(&server, &SPIFFS);
 APSettingsService apSettingsService = APSettingsService(&server, &SPIFFS);
 NTPSettingsService ntpSettingsService = NTPSettingsService(&server, &SPIFFS);
 OTASettingsService otaSettingsService = OTASettingsService(&server, &SPIFFS);
+ChamberController chamberController = ChamberController(&server, &SPIFFS);
 
 WiFiScanner wifiScanner = WiFiScanner(&server);
 WiFiStatus wifiStatus = WiFiStatus(&server);
@@ -37,6 +39,7 @@ void setup() {
     otaSettingsService.begin();
     apSettingsService.begin();
     wifiSettingsService.begin();
+    chamberController.begin();
 
     // Serving static resources from /www/
     server.serveStatic("/js/", SPIFFS, "/www/js/");
@@ -69,4 +72,7 @@ void loop() {
   apSettingsService.loop();
   ntpSettingsService.loop();
   otaSettingsService.loop();
+
+  yield();
+  chamberController.loop();
 }
