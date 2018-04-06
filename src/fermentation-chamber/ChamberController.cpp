@@ -36,6 +36,10 @@ void ChamberController::loop() {
   prepareNextControllerLoop();
 }
 
+void ChamberController::chamberStatus(AsyncWebServerRequest *request) {
+
+}
+
 void ChamberController::sensorStatus(AsyncWebServerRequest *request) {
   AsyncJsonResponse * response = new AsyncJsonResponse();
   JsonObject& root = response->getRoot();
@@ -51,6 +55,10 @@ void ChamberController::sensorStatus(AsyncWebServerRequest *request) {
   request->send(response);
 }
 
+// configurable addresses for sensors
+DeviceAddress _chamberSensorAddress;
+DeviceAddress _ambientSensorAddress;
+
 void ChamberController::onConfigUpdated() {
 
 }
@@ -60,9 +68,35 @@ void ChamberController::configureController() {
 }
 
 void ChamberController::readFromJsonObject(JsonObject& root) {
+   deviceAddressFromString(root["chamber_sensor_address"], _chamberSensorAddress);
+   deviceAddressFromString(root["ambient_sensor_address"], _chamberSensorAddress);
 
+  _targetTemp = root["target_temp"];
+  _hysteresisHigh = root["hysteresis_high"];
+  _hysteresisLow = root["hysteresis_low"];
+
+  _minHeaterOnDuration = root["min_heater_on_duration"];
+  _minHeaterOffDuration = root["min_heater_off_duration"];
+  _minCoolerOnDuration = root["min_cooler_on_duration"];
+  _minCoolerOffDuration = root["min_cooler_off_duration"];
+
+  _enableHeater = root["enable_heater"];
+  _enableCooler = root["enable_cooler"];
 }
 
 void ChamberController::writeToJsonObject(JsonObject& root) {
+  root["chamber_sensor_address"] = deviceAddressAsString(_chamberSensorAddress);
+  root["ambient_sensor_address"] = deviceAddressAsString(_ambientSensorAddress);
 
+  root["target_temp"] = _targetTemp;
+  root["hysteresis_high"] = _hysteresisHigh;
+  root["hysteresis_low"] = _hysteresisLow;
+
+  root["min_heater_on_duration"] = _minHeaterOnDuration;
+  root["min_heater_off_duration"] = _minHeaterOffDuration;
+  root["min_cooler_on_duration"] = _minCoolerOnDuration;
+  root["min_cooler_off_duration"] = _minCoolerOffDuration;
+
+  root["enable_heater"] = _enableHeater;
+  root["enable_cooler"] = _enableCooler;
 }

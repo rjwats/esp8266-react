@@ -4,8 +4,7 @@
 #include <DallasTemperature.h>
 #include <ArduinoJson.h>
 
-void updateDeviceAddressFromJson(JsonObject& root, DeviceAddress deviceAddress, String key);
-void writeDeviceAddressToJson(JsonObject& root, DeviceAddress deviceAddress, String key);
 String deviceAddressAsString(DeviceAddress deviceAddress);
+void deviceAddressFromString(String deviceAddressString, DeviceAddress deviceAddress);
 
 #endif
