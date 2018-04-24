@@ -51,7 +51,41 @@ class ChamberSettingsForm extends React.Component {
 
         <ValidatorForm onSubmit={onSubmit}>
 
-          The form goes here....
+          <TextValidator
+              validators={['required', 'isFloat', 'minNumber:0', 'maxNumber:25']}
+              errorMessages={['Target temperature is required', "Must be a number", "Must be greater than 0 ", "Max value is 25"]}
+              name="target_temp"
+              label="Target temperature"
+              className={classes.textField}
+              value={chamberSettings.target_temp}
+              type="number"
+              onChange={handleValueChange('target_temp')}
+              margin="normal"
+            />
+
+            <TextValidator
+                validators={['required', 'isFloat', 'minNumber:0', 'maxNumber:5']}
+                errorMessages={['Hysteresis high is required', "Must be a number", "Must be greater than 0 ", "Max value is 5"]}
+                name="hysteresis_high"
+                label="Hysteresis high"
+                className={classes.textField}
+                value={chamberSettings.hysteresis_high}
+                type="number"
+                onChange={handleValueChange('hysteresis_high')}
+                margin="normal"
+            />
+
+            <TextValidator
+                  validators={['required', 'isFloat', 'minNumber:0', 'maxNumber:5']}
+                  errorMessages={['Hysteresis low is required', "Must be a number", "Must be greater than 0 ", "Max value is 5"]}
+                  name="hysteresis_low"
+                  label="Hysteresis low"
+                  className={classes.textField}
+                  value={chamberSettings.hysteresis_low}
+                  type="number"
+                  onChange={handleValueChange('hysteresis_low')}
+                  margin="normal"
+              />
 
           <Button variant="raised" color="primary" className={classes.button} type="submit">
             Save

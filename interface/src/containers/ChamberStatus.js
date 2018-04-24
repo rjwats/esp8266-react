@@ -61,7 +61,7 @@ class ChamberStatus extends Component {
     const { data, fetched, errorMessage, classes }  = this.props;
 
     return (
-      <SectionContent title="AP Status">
+      <SectionContent title="Chamber Status">
         {
          !fetched ?
          <div>

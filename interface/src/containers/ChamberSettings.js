@@ -14,7 +14,7 @@ class ChamberSettings extends Component {
   render() {
     const { data, fetched, errorMessage } = this.props;
     return (
-      <SectionContent title="AP Settings">
+      <SectionContent title="Chamber Settings">
       	<ChamberSettingsForm
           chamberSettings={data}
           chamberSettingsFetched={fetched}
