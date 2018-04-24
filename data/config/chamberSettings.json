@@ -1,0 +1,13 @@
+{
+   "chamber_sensor_address":"0000000000000000",
+   "ambient_sensor_address":"0000000000000000",
+   "target_temp":15,
+   "hysteresis_high":1.5,
+   "hysteresis_low":1.5,
+   "min_heater_on_duration":300000,
+   "min_heater_off_duration":300000,
+   "min_cooler_on_duration":300000,
+   "min_cooler_off_duration":300000,
+   "enable_heater":false,
+   "enable_cooler":false
+}

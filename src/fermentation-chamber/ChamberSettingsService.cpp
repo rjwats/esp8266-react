@@ -1,13 +1,13 @@
-#include <fermentation-chamber/ChamberController.h>
+#include <fermentation-chamber/ChamberSettingsService.h>
 
-ChamberController::ChamberController(AsyncWebServer* server, FS* fs) :
-  SettingsService(server, fs, CHAMBER_CONTROLLER_SETTINGS_SERVICE_PATH, CHAMBER_CONTROLLER_SETTINGS_FILE) {
-    server->on(SENSOR_STATUS_SERVICE_PATH, HTTP_GET, std::bind(&ChamberController::sensorStatus, this, std::placeholders::_1));
+ChamberSettingsService::ChamberSettingsService(AsyncWebServer* server, FS* fs) :
+  SettingsService(server, fs, CHAMBER_SETTINGS_SERVICE_PATH, CHAMBER_SETTINGS_FILE) {
+    server->on(CHAMBER_STATUS_SERVICE_PATH, HTTP_GET, std::bind(&ChamberSettingsService::chamberStatus, this, std::placeholders::_1));
   }
 
-ChamberController::~ChamberController() {}
+ChamberSettingsService::~ChamberSettingsService() {}
 
-void ChamberController::begin() {
+void ChamberSettingsService::begin() {
   // load settings
   SettingsService::begin();
 
@@ -24,23 +24,19 @@ void ChamberController::begin() {
   prepareNextControllerLoop();
 }
 
-void ChamberController::prepareNextControllerLoop() {
+void ChamberSettingsService::prepareNextControllerLoop() {
   _tempSensors.requestTemperatures();
   _nextEvaluation = millis() + TEMP_SENSOR_INTERVAL;
 }
 
-void ChamberController::loop() {
+void ChamberSettingsService::loop() {
   if (_tempSensors.getDS18Count() == 0 || millis() < _nextEvaluation) {
     return;
   }
   prepareNextControllerLoop();
 }
 
-void ChamberController::chamberStatus(AsyncWebServerRequest *request) {
-
-}
-
-void ChamberController::sensorStatus(AsyncWebServerRequest *request) {
+void ChamberSettingsService::chamberStatus(AsyncWebServerRequest *request) {
   AsyncJsonResponse * response = new AsyncJsonResponse();
   JsonObject& root = response->getRoot();
   DeviceAddress address;
@@ -59,15 +55,15 @@ void ChamberController::sensorStatus(AsyncWebServerRequest *request) {
 DeviceAddress _chamberSensorAddress;
 DeviceAddress _ambientSensorAddress;
 
-void ChamberController::onConfigUpdated() {
+void ChamberSettingsService::onConfigUpdated() {
 
 }
 
-void ChamberController::configureController() {
+void ChamberSettingsService::configureController() {
 
 }
 
-void ChamberController::readFromJsonObject(JsonObject& root) {
+void ChamberSettingsService::readFromJsonObject(JsonObject& root) {
    deviceAddressFromString(root["chamber_sensor_address"], _chamberSensorAddress);
    deviceAddressFromString(root["ambient_sensor_address"], _chamberSensorAddress);
 
@@ -84,7 +80,7 @@ void ChamberController::readFromJsonObject(JsonObject& root) {
   _enableCooler = root["enable_cooler"];
 }
 
-void ChamberController::writeToJsonObject(JsonObject& root) {
+void ChamberSettingsService::writeToJsonObject(JsonObject& root) {
   root["chamber_sensor_address"] = deviceAddressAsString(_chamberSensorAddress);
   root["ambient_sensor_address"] = deviceAddressAsString(_ambientSensorAddress);
 

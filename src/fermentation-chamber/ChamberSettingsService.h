@@ -1,5 +1,5 @@
-#ifndef ChamberController_h
-#define ChamberController_h
+#ifndef ChamberSettingsService_h
+#define ChamberSettingsService_h
 
 #include <SettingsService.h>
 #include <OneWire.h>
@@ -9,21 +9,21 @@
 #define TEMP_SENSOR_PIN 14
 #define TEMP_SENSOR_INTERVAL 5000
 
-#define CHAMBER_CONTROLLER_SETTINGS_FILE "/config/chamberController.json"
-#define CHAMBER_CONTROLLER_SETTINGS_SERVICE_PATH "/rest/chamberController"
+#define CHAMBER_SETTINGS_FILE "/config/chamberSettings.json"
+#define CHAMBER_SETTINGS_SERVICE_PATH "/rest/chamberSettings"
 
-#define SENSOR_STATUS_SERVICE_PATH "/rest/sensorStatus"
+#define CHAMBER_STATUS_SERVICE_PATH "/rest/chamberStatus"
 
 #define STATUS_IDLE 0
 #define STATUS_HEATING 1
 #define STATUS_COOLING 2
 
-class ChamberController : public SettingsService {
+class ChamberSettingsService : public SettingsService {
 
   public:
 
-    ChamberController(AsyncWebServer* server, FS* fs);
-    ~ChamberController();
+    ChamberSettingsService(AsyncWebServer* server, FS* fs);
+    ~ChamberSettingsService();
 
     void begin();
     void loop();
@@ -64,11 +64,10 @@ class ChamberController : public SettingsService {
     unsigned long _coolerToggleLimit;
     unsigned long _nextEvaluation;
 
-    void sensorStatus(AsyncWebServerRequest *request);
     void chamberStatus(AsyncWebServerRequest *request);
     void prepareNextControllerLoop();
     void configureController();
 
 };
 
-#endif // end ChamberController_h
+#endif // end ChamberSettingsService_h

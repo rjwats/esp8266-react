@@ -1,4 +1,4 @@
-const ENDPOINT_HOST = "http://192.168.0.11";
+const ENDPOINT_HOST = "http://192.168.0.13";
 const ENDPOINT_PATH = "/rest";
 const ENDPOINT_PREFIX = ENDPOINT_HOST + ENDPOINT_PATH;
 
@@ -11,3 +11,5 @@ export const LIST_NETWORKS_ENDPOINT = ENDPOINT_PREFIX + "/listNetworks";
 export const WIFI_SETTINGS_ENDPOINT = ENDPOINT_PREFIX + "/wifiSettings";
 export const WIFI_STATUS_ENDPOINT = ENDPOINT_PREFIX + "/wifiStatus";
 export const OTA_SETTINGS_ENDPOINT = ENDPOINT_PREFIX + "/otaSettings";
+export const CHAMBER_SETTINGS_ENDPOINT = ENDPOINT_PREFIX + "/chamberSettings";
+export const CHAMBER_STATUS_ENDPOINT = ENDPOINT_PREFIX + "/chamberStatus";

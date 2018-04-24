@@ -14,10 +14,11 @@ import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 import MenuIcon from 'material-ui-icons/Menu';
 import WifiIcon from 'material-ui-icons/Wifi';
 import SystemUpdateIcon from  'material-ui-icons/SystemUpdate';
+import ShowChartIcon from  'material-ui-icons/ShowChart';
 import AccessTimeIcon from 'material-ui-icons/AccessTime';
 import SettingsInputAntennaIcon from 'material-ui-icons/SettingsInputAntenna';
 
-const drawerWidth = 250;
+const drawerWidth = 270;
 
 const styles = theme => ({
   root: {
@@ -98,6 +99,13 @@ class MenuAppBar extends React.Component {
         </Toolbar>
         <Divider />
         <List>
+          <ListItem button component={Link} to='/chamber-configuration'>
+            <ListItemIcon>
+              <ShowChartIcon />
+            </ListItemIcon>
+            <ListItemText primary="Chamber Configuration" />
+          </ListItem>
+          <Divider />
           <ListItem button component={Link} to='/wifi-configuration'>
             <ListItemIcon>
               <WifiIcon />
