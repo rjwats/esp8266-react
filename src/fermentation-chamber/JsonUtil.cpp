@@ -1,30 +1,20 @@
 #include <fermentation-chamber/JsonUtil.h>
 
-const DeviceAddress EMPTY_ADDRESS =  {0, 0, 0, 0, 0, 0, 0, 0};
-
-void setNullDeviceAddress(DeviceAddress deviceAddress) {
-   for (int i = 0; i < 8; i++) {
-     deviceAddress[i] = 0;
-   }
-}
-
 void deviceAddressFromString(String deviceAddressString, DeviceAddress deviceAddress) {
-   if (deviceAddressString.length() == 16){
-     for (int i = 0; i < 8; i++) {
-       if (!sscanf(deviceAddressString.c_str() + 2*i, "%02x", &deviceAddress[i])) {
-         setNullDeviceAddress(deviceAddress);
-         return;
-       }
+   if (deviceAddressString.length() == 16) {
+     uint64_t deviceAddressAsLong = strtol(deviceAddressString.c_str(), NULL, 16);
+     for (int i = 0 ; i < 8 ; i++) {
+         deviceAddress[i] = deviceAddressAsLong >> (8 * i);
      }
-     return;
    }
-   setNullDeviceAddress(deviceAddress);
 }
 
-String deviceAddressAsString(DeviceAddress deviceAddress) {
-  char deviceAddressString[17];
-  for (int i = 0; i < 8; i++) {
-    sprintf(deviceAddressString + (i * 2), "%02X", deviceAddress[i]);
+ String deviceAddressAsString(DeviceAddress deviceAddress) {
+  uint64_t deviceAddressAsLong = 0;
+  for (int i = 0 ; i < 8; i++) {
+      deviceAddressAsLong |= deviceAddress[i] << (8 * i);
   }
-  return deviceAddressString;
+  char buffer[17];
+	ltoa(deviceAddressAsLong, buffer, 16);
+  return buffer;
 }

@@ -30,37 +30,30 @@ void ChamberSettingsService::prepareNextControllerLoop() {
 }
 
 void ChamberSettingsService::loop() {
-  if (_tempSensors.getDS18Count() == 0 || millis() < _nextEvaluation) {
+  if (millis() < _nextEvaluation) {
     return;
   }
+
+  switch (_chamberStatus) {
+    case STATUS_HEATING:
+     break;
+    case STATUS_COOLING:
+     break;
+    case STATUS_IDLE:
+    default:
+     break;
+  }
+
   prepareNextControllerLoop();
 }
-
-void ChamberSettingsService::chamberStatus(AsyncWebServerRequest *request) {
-  AsyncJsonResponse * response = new AsyncJsonResponse();
-  JsonObject& root = response->getRoot();
-  DeviceAddress address;
-  for (uint8_t i = 0; i < _tempSensors.getDS18Count(); i++) {
-    if (_tempSensors.getAddress(address, i)) {
-      JsonObject& sensorDetails = root.createNestedObject(deviceAddressAsString(address));
-      sensorDetails["tempC"] =  _tempSensors.getTempC(address);
-      sensorDetails["tempF"] =  _tempSensors.getTempF(address);
-    }
-  }
-  response->setLength();
-  request->send(response);
-}
-
-// configurable addresses for sensors
-DeviceAddress _chamberSensorAddress;
-DeviceAddress _ambientSensorAddress;
 
 void ChamberSettingsService::onConfigUpdated() {
 
 }
 
 void ChamberSettingsService::configureController() {
-
+  // set next evaluation to be immediately fired
+  _nextEvaluation = millis();
 }
 
 void ChamberSettingsService::readFromJsonObject(JsonObject& root) {
@@ -95,4 +88,19 @@ void ChamberSettingsService::writeToJsonObject(JsonObject& root) {
 
   root["enable_heater"] = _enableHeater;
   root["enable_cooler"] = _enableCooler;
+}
+
+void ChamberSettingsService::chamberStatus(AsyncWebServerRequest *request) {
+  AsyncJsonResponse * response = new AsyncJsonResponse();
+  JsonObject& root = response->getRoot();
+  DeviceAddress address;
+  for (uint8_t i = 0; i < _tempSensors.getDS18Count(); i++) {
+    if (_tempSensors.getAddress(address, i)) {
+      JsonObject& sensorDetails = root.createNestedObject(deviceAddressAsString(address));
+      sensorDetails["tempC"] =  _tempSensors.getTempC(address);
+      sensorDetails["tempF"] =  _tempSensors.getTempF(address);
+    }
+  }
+  response->setLength();
+  request->send(response);
 }
