@@ -22,7 +22,7 @@ class AsyncJsonRequestWebHandler: public AsyncWebHandler {
     String _uri;
     WebRequestMethodComposite _method;
     JsonRequestCallback _onRequest;
-    int _maxContentLength;
+    size_t _maxContentLength;
 
   public:
 
@@ -36,7 +36,7 @@ class AsyncJsonRequestWebHandler: public AsyncWebHandler {
 
     void setUri(const String& uri) { _uri = uri; }
     void setMethod(WebRequestMethodComposite method) { _method = method; }
-    void setMaxContentLength(int maxContentLength) { _maxContentLength = maxContentLength; }
+    void setMaxContentLength(size_t maxContentLength) { _maxContentLength = maxContentLength; }
     void onRequest(JsonRequestCallback fn) { _onRequest = fn; }
 
     virtual bool canHandle(AsyncWebServerRequest *request) override final {
