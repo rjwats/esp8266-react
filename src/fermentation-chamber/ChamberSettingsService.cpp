@@ -58,7 +58,7 @@ void ChamberSettingsService::configureController() {
 
 void ChamberSettingsService::readFromJsonObject(JsonObject& root) {
    deviceAddressFromString(root["chamber_sensor_address"], _chamberSensorAddress);
-   deviceAddressFromString(root["ambient_sensor_address"], _chamberSensorAddress);
+   deviceAddressFromString(root["ambient_sensor_address"], _ambientSensorAddress);
 
   _targetTemp = root["target_temp"];
   _hysteresisHigh = root["hysteresis_high"];
