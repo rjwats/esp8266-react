@@ -46,10 +46,6 @@ const styles = theme => ({
 
 class NTPStatus extends Component {
 
-  componentDidMount() {
-    this.props.loadData();
-  }
-
   createListItems(data, fullDetails, classes){
     return (
       <Fragment>

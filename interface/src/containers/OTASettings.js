@@ -7,10 +7,6 @@ import OTASettingsForm from '../forms/OTASettingsForm';
 
 class OTASettings extends Component {
 
-  componentDidMount() {
-      this.props.loadData();
-  }
-
   render() {
     const { data, fetched, errorMessage } = this.props;
     return (

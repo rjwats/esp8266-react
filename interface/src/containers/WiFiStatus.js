@@ -46,10 +46,6 @@ const styles = theme => ({
 
 class WiFiStatus extends Component {
 
-  componentDidMount() {
-    this.props.loadData();
-  }
-
   dnsServers(status) {
     if (!status.dns_ip_1){
       return "none";
