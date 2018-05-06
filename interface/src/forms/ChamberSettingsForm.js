@@ -6,6 +6,8 @@ import Button from 'material-ui/Button';
 import { LinearProgress } from 'material-ui/Progress';
 import Typography from 'material-ui/Typography';
 import { MenuItem } from 'material-ui/Menu';
+import Switch from 'material-ui/Switch';
+import { FormControlLabel } from 'material-ui/Form';
 
 import { TextValidator, ValidatorForm, SelectValidator } from 'react-material-ui-form-validator';
 
@@ -16,6 +18,11 @@ const styles = theme => ({
   loadingSettingsDetails: {
     margin: theme.spacing.unit * 4,
     textAlign: "center"
+  },
+  switchControl: {
+    width: "100%",
+    marginTop: theme.spacing.unit * 2,
+    marginBottom: theme.spacing.unit
   },
   textField: {
     width: "100%"
@@ -33,8 +40,19 @@ const styles = theme => ({
 
 class ChamberSettingsForm extends React.Component {
 
+  createSensorMenuItems(){
+    const { chamberSettings } = this.props;
+
+    return (
+      <Fragment>
+        
+      </Fragment>
+    );
+
+  }
+
   render() {
-    const { classes, chamberSettingsFetched, chamberSettings, errorMessage, handleValueChange, onSubmit, onReset } = this.props;
+    const { classes, chamberSettingsFetched, chamberSettings, errorMessage, handleValueChange, handleCheckboxChange, onSubmit, onReset } = this.props;
     return (
       <div>
         {
@@ -63,6 +81,17 @@ class ChamberSettingsForm extends React.Component {
               margin="normal"
             />
 
+            <FormControlLabel className={classes.switchControl}
+               control={
+                 <Switch
+                        checked={chamberSettings.enable_heater}
+                        onChange={handleCheckboxChange('enable_heater')}
+                        value="enable_heater"
+                 />
+               }
+              label="Enable Heater?"
+             />
+
             <TextValidator
                 validators={['required', 'isFloat', 'minNumber:0', 'maxNumber:5']}
                 errorMessages={['Hysteresis high is required', "Must be a number", "Must be greater than 0 ", "Max value is 5"]}
@@ -76,6 +105,41 @@ class ChamberSettingsForm extends React.Component {
             />
 
             <TextValidator
+                validators={['required', 'isNumber', 'minNumber:0', 'maxNumber:3600000']}
+                errorMessages={['Hysteresis high is required', "Must be a number", "Must be greater than 0 ", "Max value is 3600000"]}
+                name="min_heater_on_duration"
+                label="min_heater_on_duration high"
+                className={classes.textField}
+                value={chamberSettings.min_heater_on_duration}
+                type="number"
+                onChange={handleValueChange('min_heater_on_duration')}
+                margin="normal"
+            />
+
+            <TextValidator
+                validators={['required', 'isNumber', 'minNumber:0', 'maxNumber:3600000']}
+                errorMessages={['Hysteresis high is required', "Must be a number", "Must be greater than 0 ", "Max value is 3600000"]}
+                name="min_heater_off_duration"
+                label="min_heater_off_duration high"
+                className={classes.textField}
+                value={chamberSettings.min_heater_off_duration}
+                type="number"
+                onChange={handleValueChange('min_heater_off_duration')}
+                margin="normal"
+            />
+
+            <FormControlLabel className={classes.switchControl}
+               control={
+                 <Switch
+                        checked={chamberSettings.enable_cooler}
+                        onChange={handleCheckboxChange('enable_cooler')}
+                        value="enable_cooler"
+                 />
+               }
+              label="Enable Cooler?"
+             />
+
+            <TextValidator
                   validators={['required', 'isFloat', 'minNumber:0', 'maxNumber:5']}
                   errorMessages={['Hysteresis low is required', "Must be a number", "Must be greater than 0 ", "Max value is 5"]}
                   name="hysteresis_low"
@@ -86,6 +150,30 @@ class ChamberSettingsForm extends React.Component {
                   onChange={handleValueChange('hysteresis_low')}
                   margin="normal"
               />
+
+            <TextValidator
+                validators={['required', 'isNumber', 'minNumber:0', 'maxNumber:3600000']}
+                errorMessages={['Hysteresis high is required', "Must be a number", "Must be greater than 0 ", "Max value is 3600000"]}
+                name="min_cooler_on_duration"
+                label="min_cooler_on_duration high"
+                className={classes.textField}
+                value={chamberSettings.min_cooler_on_duration}
+                type="number"
+                onChange={handleValueChange('min_cooler_on_duration')}
+                margin="normal"
+            />
+
+            <TextValidator
+                validators={['required', 'isNumber', 'minNumber:0', 'maxNumber:3600000']}
+                errorMessages={['Hysteresis high is required', "Must be a number", "Must be greater than 0 ", "Max value is 3600000"]}
+                name="min_cooler_off_duration"
+                label="min_cooler_off_duration high"
+                className={classes.textField}
+                value={chamberSettings.min_cooler_off_duration}
+                type="number"
+                onChange={handleValueChange('min_cooler_off_duration')}
+                margin="normal"
+            />
 
           <Button variant="raised" color="primary" className={classes.button} type="submit">
             Save
@@ -119,7 +207,8 @@ ChamberSettingsForm.propTypes = {
   errorMessage: PropTypes.string,
   onSubmit: PropTypes.func.isRequired,
   onReset: PropTypes.func.isRequired,
-  handleValueChange: PropTypes.func.isRequired
+  handleValueChange: PropTypes.func.isRequired,
+  handleCheckboxChange: PropTypes.func.isRequired
 };
 
 export default withStyles(styles)(ChamberSettingsForm);
