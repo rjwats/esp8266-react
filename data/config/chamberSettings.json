@@ -1,6 +1,6 @@
 {
-   "chamber_sensor_address":"123456789abcdef0",
-   "ambient_sensor_address":"123456789abcdef0",
+   "chamber_sensor_address":"0000000000000000",
+   "ambient_sensor_address":"0000000000000000",
    "target_temp":15,
    "hysteresis_high":1.5,
    "hysteresis_low":1.5,

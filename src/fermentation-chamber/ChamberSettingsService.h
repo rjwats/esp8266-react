@@ -51,6 +51,7 @@ class ChamberSettingsService : public SettingsService {
     // cycle limits
     unsigned long _minHeaterOnDuration;
     unsigned long _minHeaterOffDuration;
+
     unsigned long _minCoolerOnDuration;
     unsigned long _minCoolerOffDuration;
 
@@ -60,12 +61,13 @@ class ChamberSettingsService : public SettingsService {
 
     // status variables
     uint8_t _chamberStatus = STATUS_IDLE;
-    unsigned long _heaterToggleLimit;
-    unsigned long _coolerToggleLimit;
+    unsigned long _heaterToggledAt;
+    unsigned long _coolerToggledAt;
     unsigned long _nextEvaluation;
 
     void chamberStatus(AsyncWebServerRequest *request);
     void prepareNextControllerLoop();
+    void changeStatus(uint8_t newStatus, unsigned long *previousToggle, unsigned long *toggleLimitDuration);
     void configureController();
 
 };

@@ -29,19 +29,48 @@ void ChamberSettingsService::prepareNextControllerLoop() {
   _nextEvaluation = millis() + TEMP_SENSOR_INTERVAL;
 }
 
+void ChamberSettingsService::changeStatus(uint8_t newStatus, unsigned long *previousToggle, unsigned long *toggleLimitDuration) {
+  unsigned long currentMillis = millis();
+  unsigned long toggleElapsed = (unsigned long)(currentMillis - *previousToggle);
+  if (toggleElapsed >= *toggleLimitDuration){
+    *previousToggle = currentMillis;
+    _chamberStatus = newStatus;
+  }
+}
+
 void ChamberSettingsService::loop() {
+  // exit eagerly if we have no processing to do.
   if (millis() < _nextEvaluation) {
     return;
   }
 
+  float chamberTemp = _tempSensors.getTempC(_chamberSensorAddress);
+  Serial.print("Temp is currently:");
+  Serial.println(chamberTemp);
+  Serial.print("Status is currently:");
+  Serial.println(_chamberStatus);
+
   switch (_chamberStatus) {
     case STATUS_HEATING:
-     break;
+      if (!_enableHeater || chamberTemp == DEVICE_DISCONNECTED_C || chamberTemp >= _targetTemp){
+        changeStatus(STATUS_IDLE, &_heaterToggledAt, &_minHeaterOnDuration);
+      }
+      break;
     case STATUS_COOLING:
-     break;
+      if (!_enableCooler || chamberTemp == DEVICE_DISCONNECTED_C || chamberTemp <= _targetTemp){
+        changeStatus(STATUS_IDLE, &_coolerToggledAt, &_minCoolerOnDuration);
+      }
+      break;
     case STATUS_IDLE:
     default:
-     break;
+      if (chamberTemp != DEVICE_DISCONNECTED_C){
+        if (_enableHeater && chamberTemp + _hysteresisLow <= _targetTemp){
+          changeStatus(STATUS_HEATING, &_heaterToggledAt, &_minHeaterOffDuration);
+        }
+        if (_enableCooler && chamberTemp - _hysteresisHigh >= _targetTemp){
+          changeStatus(STATUS_COOLING, &_coolerToggledAt, &_minCoolerOffDuration);
+        }
+      }
   }
 
   prepareNextControllerLoop();
@@ -93,6 +122,8 @@ void ChamberSettingsService::writeToJsonObject(JsonObject& root) {
 void ChamberSettingsService::chamberStatus(AsyncWebServerRequest *request) {
   AsyncJsonResponse * response = new AsyncJsonResponse();
   JsonObject& root = response->getRoot();
+
+  root["chamber_status"] = _chamberStatus;
 
   // write out sensors and current readings
   JsonObject& sensors = root.createNestedObject("sensors");
