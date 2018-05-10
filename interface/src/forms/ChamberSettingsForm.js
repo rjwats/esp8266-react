@@ -7,8 +7,9 @@ import { LinearProgress } from 'material-ui/Progress';
 import Typography from 'material-ui/Typography';
 import { MenuItem } from 'material-ui/Menu';
 import Switch from 'material-ui/Switch';
-import { FormControlLabel } from 'material-ui/Form';
-
+import Select from 'material-ui/Select';
+import { FormControl, FormControlLabel } from 'material-ui/Form';
+import { InputLabel } from 'material-ui/Input';
 import { TextValidator, ValidatorForm, SelectValidator } from 'react-material-ui-form-validator';
 
 const styles = theme => ({
@@ -40,23 +41,30 @@ const styles = theme => ({
 
 class ChamberSettingsForm extends React.Component {
 
-  createSensorMenuItems(){
-    const { chamberSettings } = this.props;
+  sensorMenuItem(sensorId) {
+    return <MenuItem key={sensorId} value={sensorId}>{sensorId}</MenuItem>
+  }
 
-    return (
-      <Fragment>
-        
-      </Fragment>
-    );
+  createSensorMenuItems() {
+    const { chamberStatus } = this.props;
+    return (chamberStatus.sensors ? Object.keys(chamberStatus.sensors) : []).map(this.sensorMenuItem);
+  }
 
+  sensorValue(sensorValue){
+    const { chamberStatus } = this.props;
+    return chamberStatus.sensors ? chamberStatus.sensors[sensorValue] ? sensorValue : "" : "";
   }
 
   render() {
-    const { classes, chamberSettingsFetched, chamberSettings, errorMessage, handleValueChange, handleCheckboxChange, onSubmit, onReset } = this.props;
+    const {
+      classes,
+      chamberStatus, chamberSettings, fetched, errorMessage,
+      handleValueChange, handleCheckboxChange, onSubmit, onReset
+    } = this.props;
     return (
       <div>
         {
-         !chamberSettingsFetched ?
+         !fetched ?
 
          <div className={classes.loadingSettings}>
            <LinearProgress className={classes.loadingSettingsDetails}/>
@@ -65,10 +73,9 @@ class ChamberSettingsForm extends React.Component {
            </Typography>
          </div>
 
-         : chamberSettings ?
+         : chamberSettings && chamberStatus ?
 
         <ValidatorForm onSubmit={onSubmit}>
-
           <TextValidator
               validators={['required', 'isFloat', 'minNumber:0', 'maxNumber:25']}
               errorMessages={['Target temperature is required', "Must be a number", "Must be greater than 0 ", "Max value is 25"]}
@@ -80,6 +87,22 @@ class ChamberSettingsForm extends React.Component {
               onChange={handleValueChange('target_temp')}
               margin="normal"
             />
+
+            <SelectValidator name="chamber_sensor_address" label="Chamber Sensor" value={this.sensorValue(chamberSettings.chamber_sensor_address)}  className={classes.selectField}
+             onChange={handleValueChange('chamber_sensor_address')}>
+              <MenuItem value="">
+                <em>Select chamber sensor...</em>
+              </MenuItem>
+              {this.createSensorMenuItems()}
+            </SelectValidator>
+
+            <SelectValidator name="ambient_sensor_address" label="Ambient Sensor" value={this.sensorValue(chamberSettings.ambient_sensor_address)}  className={classes.selectField}
+             onChange={handleValueChange('ambient_sensor_address')}>
+              <MenuItem value="">
+                <em>Select ambient sensor...</em>
+              </MenuItem>
+              {this.createSensorMenuItems()}
+            </SelectValidator>
 
             <FormControlLabel className={classes.switchControl}
                control={
@@ -202,8 +225,9 @@ class ChamberSettingsForm extends React.Component {
 
 ChamberSettingsForm.propTypes = {
   classes: PropTypes.object.isRequired,
-  chamberSettingsFetched: PropTypes.bool.isRequired,
   chamberSettings: PropTypes.object,
+  chamberStatus: PropTypes.object,
+  fetched: PropTypes.bool.isRequired,
   errorMessage: PropTypes.string,
   onSubmit: PropTypes.func.isRequired,
   onReset: PropTypes.func.isRequired,

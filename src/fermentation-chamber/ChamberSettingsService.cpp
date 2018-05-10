@@ -18,7 +18,7 @@ void ChamberSettingsService::begin() {
 
   Serial.print("Found ");
   Serial.print(_tempSensors.getDS18Count());
-  Serial.print(" sensor(s).");
+  Serial.println(" sensor(s).");
 
   // request temps
   prepareNextControllerLoop();
@@ -93,12 +93,15 @@ void ChamberSettingsService::writeToJsonObject(JsonObject& root) {
 void ChamberSettingsService::chamberStatus(AsyncWebServerRequest *request) {
   AsyncJsonResponse * response = new AsyncJsonResponse();
   JsonObject& root = response->getRoot();
+
+  // write out sensors and current readings
+  JsonObject& sensors = root.createNestedObject("sensors");
   DeviceAddress address;
   for (uint8_t i = 0; i < _tempSensors.getDS18Count(); i++) {
     if (_tempSensors.getAddress(address, i)) {
-      JsonObject& sensorDetails = root.createNestedObject(deviceAddressAsString(address));
-      sensorDetails["tempC"] =  _tempSensors.getTempC(address);
-      sensorDetails["tempF"] =  _tempSensors.getTempF(address);
+      JsonObject& sensorDetails = sensors.createNestedObject(deviceAddressAsString(address));
+      sensorDetails["temp_c"] =  _tempSensors.getTempC(address);
+      sensorDetails["temp_f"] =  _tempSensors.getTempF(address);
     }
   }
   response->setLength();
