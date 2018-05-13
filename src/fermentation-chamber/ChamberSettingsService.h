@@ -6,6 +6,8 @@
 #include <DallasTemperature.h>
 #include <fermentation-chamber/JsonUtil.h>
 
+#define COOLER_PIN 12
+#define HEATER_PIN 13
 #define TEMP_SENSOR_PIN 14
 #define TEMP_SENSOR_INTERVAL 5000
 
@@ -68,6 +70,7 @@ class ChamberSettingsService : public SettingsService {
     void chamberStatus(AsyncWebServerRequest *request);
     void prepareNextControllerLoop();
     void changeStatus(uint8_t newStatus, unsigned long *previousToggle, unsigned long *toggleLimitDuration);
+    void transitionToStatus(uint8_t newStatus);
     void configureController();
 
 };

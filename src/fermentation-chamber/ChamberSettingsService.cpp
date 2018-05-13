@@ -11,6 +11,13 @@ void ChamberSettingsService::begin() {
   // load settings
   SettingsService::begin();
 
+  // set both pins to output
+  pinMode(COOLER_PIN, OUTPUT);
+  pinMode(HEATER_PIN, OUTPUT);
+
+  // configure to idle mode
+  transitionToStatus(STATUS_IDLE);
+
   Serial.print("Starting temp sensor bus...");
   _tempSensors.begin();
   _tempSensors.setWaitForConversion(false);
@@ -34,7 +41,26 @@ void ChamberSettingsService::changeStatus(uint8_t newStatus, unsigned long *prev
   unsigned long toggleElapsed = (unsigned long)(currentMillis - *previousToggle);
   if (toggleElapsed >= *toggleLimitDuration){
     *previousToggle = currentMillis;
-    _chamberStatus = newStatus;
+    transitionToStatus(newStatus);
+  }
+}
+
+void ChamberSettingsService::transitionToStatus(uint8_t newStatus) {
+  _chamberStatus = newStatus;
+  switch (_chamberStatus) {
+    case STATUS_HEATING:
+      digitalWrite(COOLER_PIN, LOW);
+      digitalWrite(HEATER_PIN, HIGH);
+      break;
+    case STATUS_COOLING:
+      digitalWrite(COOLER_PIN, HIGH);
+      digitalWrite(HEATER_PIN, LOW);
+      break;
+    case STATUS_IDLE:
+    default:
+      digitalWrite(COOLER_PIN, LOW);
+      digitalWrite(HEATER_PIN, LOW);
+      break;
   }
 }
 
