@@ -20,6 +20,8 @@
 #define STATUS_HEATING 1
 #define STATUS_COOLING 2
 
+#define HYSTERSIS_FACTOR 0.7f
+
 class ChamberSettingsService : public SettingsService {
 
   public:

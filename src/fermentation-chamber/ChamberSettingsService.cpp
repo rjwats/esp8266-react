@@ -78,12 +78,12 @@ void ChamberSettingsService::loop() {
 
   switch (_chamberStatus) {
     case STATUS_HEATING:
-      if (!_enableHeater || chamberTemp == DEVICE_DISCONNECTED_C || chamberTemp >= _targetTemp){
+      if (!_enableHeater || chamberTemp == DEVICE_DISCONNECTED_C || chamberTemp + (_hysteresisLow * HYSTERSIS_FACTOR) >= _targetTemp){
         changeStatus(STATUS_IDLE, &_heaterToggledAt, &_minHeaterOnDuration);
       }
       break;
     case STATUS_COOLING:
-      if (!_enableCooler || chamberTemp == DEVICE_DISCONNECTED_C || chamberTemp <= _targetTemp){
+      if (!_enableCooler || chamberTemp == DEVICE_DISCONNECTED_C || chamberTemp - (_hysteresisHigh * HYSTERSIS_FACTOR) <= _targetTemp){
         changeStatus(STATUS_IDLE, &_coolerToggledAt, &_minCoolerOnDuration);
       }
       break;
