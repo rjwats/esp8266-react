@@ -82,22 +82,22 @@ void ChamberSettingsService::loop() {
 
   switch (_status) {
     case STATUS_HEATING:
-      if (!_enableHeater || temp == DEVICE_DISCONNECTED_C || temp + (_hysteresisLow * _hysteresisFactor) >= _targetTemp){
+      if (!_enableHeater || temp == DEVICE_DISCONNECTED_C || temp >= _heaterOffTemp){
         changeStatus(STATUS_IDLE, &_heaterToggledAt, &_minHeaterOnDuration);
       }
       break;
     case STATUS_COOLING:
-      if (!_enableCooler || temp == DEVICE_DISCONNECTED_C || temp - (_hysteresisHigh * _hysteresisFactor) <= _targetTemp){
+      if (!_enableCooler || temp == DEVICE_DISCONNECTED_C || temp <= _coolerOffTemp){
         changeStatus(STATUS_IDLE, &_coolerToggledAt, &_minCoolerOnDuration);
       }
       break;
     case STATUS_IDLE:
     default:
       if (temp != DEVICE_DISCONNECTED_C){
-        if (_enableHeater && temp + _hysteresisLow <= _targetTemp){
+        if (_enableHeater && temp <= _heaterOnTemp){
           changeStatus(STATUS_HEATING, &_heaterToggledAt, &_minHeaterOffDuration);
         }
-        if (_enableCooler && temp - _hysteresisHigh >= _targetTemp){
+        if (_enableCooler && temp >= _coolerOnTemp){
           changeStatus(STATUS_COOLING, &_coolerToggledAt, &_minCoolerOffDuration);
         }
       }
@@ -173,7 +173,7 @@ void ChamberSettingsService::chamberStatus(AsyncWebServerRequest *request) {
 
   // current status
   root["status"] = _status;
-  
+
   // write out sensors and current readings
   JsonObject& sensors = root.createNestedObject("sensors");
   DeviceAddress address;
