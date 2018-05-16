@@ -88,6 +88,42 @@ class ChamberSettingsForm extends React.Component {
               margin="normal"
             />
 
+            <TextValidator
+                validators={['required', 'isFloat', 'minNumber:0', 'maxNumber:5']}
+                errorMessages={['Hysteresis high is required', "Must be a number", "Must be greater than 0 ", "Max value is 5"]}
+                name="hysteresis_high"
+                label="Hysteresis high"
+                className={classes.textField}
+                value={chamberSettings.hysteresis_high}
+                type="number"
+                onChange={handleValueChange('hysteresis_high')}
+                margin="normal"
+            />
+
+            <TextValidator
+                  validators={['required', 'isFloat', 'minNumber:0', 'maxNumber:5']}
+                  errorMessages={['Hysteresis low is required', "Must be a number", "Must be greater than 0 ", "Max value is 5"]}
+                  name="hysteresis_low"
+                  label="Hysteresis low"
+                  className={classes.textField}
+                  value={chamberSettings.hysteresis_low}
+                  type="number"
+                  onChange={handleValueChange('hysteresis_low')}
+                  margin="normal"
+            />
+
+            <TextValidator
+                  validators={['required', 'isFloat', 'minNumber:0', 'maxNumber:1']}
+                  errorMessages={['Hysteresis low is required', "Must be a number", "Must be a positive value", "Must be no greater than 1"]}
+                  name="hysteresis_factor"
+                  label="Hysteresis factor"
+                  className={classes.textField}
+                  value={chamberSettings.hysteresis_factor}
+                  type="number"
+                  onChange={handleValueChange('hysteresis_factor')}
+                  margin="normal"
+            />
+
             <SelectValidator name="chamber_sensor_address" label="Chamber Sensor" value={this.sensorValue(chamberSettings.chamber_sensor_address)}  className={classes.selectField}
              onChange={handleValueChange('chamber_sensor_address')}>
               <MenuItem value="">
@@ -116,22 +152,10 @@ class ChamberSettingsForm extends React.Component {
              />
 
             <TextValidator
-                validators={['required', 'isFloat', 'minNumber:0', 'maxNumber:5']}
-                errorMessages={['Hysteresis high is required', "Must be a number", "Must be greater than 0 ", "Max value is 5"]}
-                name="hysteresis_high"
-                label="Hysteresis high"
-                className={classes.textField}
-                value={chamberSettings.hysteresis_high}
-                type="number"
-                onChange={handleValueChange('hysteresis_high')}
-                margin="normal"
-            />
-
-            <TextValidator
                 validators={['required', 'isNumber', 'minNumber:0', 'maxNumber:3600000']}
-                errorMessages={['Hysteresis high is required', "Must be a number", "Must be greater than 0 ", "Max value is 3600000"]}
+                errorMessages={['Min heater on duration is required', "Must be a number", "Must be greater than 0 ", "Max value is 3600000"]}
                 name="min_heater_on_duration"
-                label="min_heater_on_duration high"
+                label="Min heater on duration"
                 className={classes.textField}
                 value={chamberSettings.min_heater_on_duration}
                 type="number"
@@ -141,9 +165,9 @@ class ChamberSettingsForm extends React.Component {
 
             <TextValidator
                 validators={['required', 'isNumber', 'minNumber:0', 'maxNumber:3600000']}
-                errorMessages={['Hysteresis high is required', "Must be a number", "Must be greater than 0 ", "Max value is 3600000"]}
+                errorMessages={['Min heater off duration is required', "Must be a number", "Must be greater than 0 ", "Max value is 3600000"]}
                 name="min_heater_off_duration"
-                label="min_heater_off_duration high"
+                label="Min heater off duration"
                 className={classes.textField}
                 value={chamberSettings.min_heater_off_duration}
                 type="number"
@@ -163,22 +187,10 @@ class ChamberSettingsForm extends React.Component {
              />
 
             <TextValidator
-                  validators={['required', 'isFloat', 'minNumber:0', 'maxNumber:5']}
-                  errorMessages={['Hysteresis low is required', "Must be a number", "Must be greater than 0 ", "Max value is 5"]}
-                  name="hysteresis_low"
-                  label="Hysteresis low"
-                  className={classes.textField}
-                  value={chamberSettings.hysteresis_low}
-                  type="number"
-                  onChange={handleValueChange('hysteresis_low')}
-                  margin="normal"
-              />
-
-            <TextValidator
                 validators={['required', 'isNumber', 'minNumber:0', 'maxNumber:3600000']}
-                errorMessages={['Hysteresis high is required', "Must be a number", "Must be greater than 0 ", "Max value is 3600000"]}
+                errorMessages={['Min cooler on duration is required', "Must be a number", "Must be greater than 0 ", "Max value is 3600000"]}
                 name="min_cooler_on_duration"
-                label="min_cooler_on_duration high"
+                label="Min cooler on duration"
                 className={classes.textField}
                 value={chamberSettings.min_cooler_on_duration}
                 type="number"
@@ -188,9 +200,9 @@ class ChamberSettingsForm extends React.Component {
 
             <TextValidator
                 validators={['required', 'isNumber', 'minNumber:0', 'maxNumber:3600000']}
-                errorMessages={['Hysteresis high is required', "Must be a number", "Must be greater than 0 ", "Max value is 3600000"]}
+                errorMessages={['Min cooler off duration is required', "Must be a number", "Must be greater than 0 ", "Max value is 3600000"]}
                 name="min_cooler_off_duration"
-                label="min_cooler_off_duration high"
+                label="Min cooler off duration"
                 className={classes.textField}
                 value={chamberSettings.min_cooler_off_duration}
                 type="number"

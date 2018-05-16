@@ -4,6 +4,7 @@
    "target_temp":15,
    "hysteresis_high":1.5,
    "hysteresis_low":1.5,
+   "hysteresis_factor":0.7,
    "min_heater_on_duration":300000,
    "min_heater_off_duration":300000,
    "min_cooler_on_duration":300000,

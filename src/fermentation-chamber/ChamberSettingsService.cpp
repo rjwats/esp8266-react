@@ -78,12 +78,12 @@ void ChamberSettingsService::loop() {
 
   switch (_chamberStatus) {
     case STATUS_HEATING:
-      if (!_enableHeater || chamberTemp == DEVICE_DISCONNECTED_C || chamberTemp + (_hysteresisLow * HYSTERSIS_FACTOR) >= _targetTemp){
+      if (!_enableHeater || chamberTemp == DEVICE_DISCONNECTED_C || chamberTemp + (_hysteresisLow * _hysteresisFactor) >= _targetTemp){
         changeStatus(STATUS_IDLE, &_heaterToggledAt, &_minHeaterOnDuration);
       }
       break;
     case STATUS_COOLING:
-      if (!_enableCooler || chamberTemp == DEVICE_DISCONNECTED_C || chamberTemp - (_hysteresisHigh * HYSTERSIS_FACTOR) <= _targetTemp){
+      if (!_enableCooler || chamberTemp == DEVICE_DISCONNECTED_C || chamberTemp - (_hysteresisHigh * _hysteresisFactor) <= _targetTemp){
         changeStatus(STATUS_IDLE, &_coolerToggledAt, &_minCoolerOnDuration);
       }
       break;
@@ -118,6 +118,7 @@ void ChamberSettingsService::readFromJsonObject(JsonObject& root) {
   _targetTemp = root["target_temp"];
   _hysteresisHigh = root["hysteresis_high"];
   _hysteresisLow = root["hysteresis_low"];
+  _hysteresisFactor = root["hysteresis_factor"];
 
   _minHeaterOnDuration = root["min_heater_on_duration"];
   _minHeaterOffDuration = root["min_heater_off_duration"];
@@ -135,6 +136,7 @@ void ChamberSettingsService::writeToJsonObject(JsonObject& root) {
   root["target_temp"] = _targetTemp;
   root["hysteresis_high"] = _hysteresisHigh;
   root["hysteresis_low"] = _hysteresisLow;
+  root["hysteresis_factor"] = _hysteresisFactor;
 
   root["min_heater_on_duration"] = _minHeaterOnDuration;
   root["min_heater_off_duration"] = _minHeaterOffDuration;
