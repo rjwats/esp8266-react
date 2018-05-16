@@ -41,13 +41,13 @@ const styles = theme => ({
 
 class ChamberSettingsForm extends React.Component {
 
-  sensorMenuItem(sensorId) {
-    return <MenuItem key={sensorId} value={sensorId}>{sensorId}</MenuItem>
+  sensorMenuItem(sensorId, sensors) {
+    return <MenuItem key={sensorId} value={sensorId}>{sensorId} - {sensors[sensorId].temp_c.toFixed(1)} &#x2103;</MenuItem>
   }
 
   createSensorMenuItems() {
     const { chamberStatus } = this.props;
-    return (chamberStatus.sensors ? Object.keys(chamberStatus.sensors) : []).map(this.sensorMenuItem);
+    return (chamberStatus.sensors ? Object.keys(chamberStatus.sensors) : []).map(sensorId => this.sensorMenuItem(sensorId, chamberStatus.sensors));
   }
 
   sensorValue(sensorValue){
@@ -76,6 +76,23 @@ class ChamberSettingsForm extends React.Component {
          : chamberSettings && chamberStatus ?
 
         <ValidatorForm onSubmit={onSubmit}>
+
+          <SelectValidator name="chamber_sensor_address" label="Chamber Sensor" value={this.sensorValue(chamberSettings.chamber_sensor_address)}  className={classes.selectField}
+           onChange={handleValueChange('chamber_sensor_address')}>
+            <MenuItem value="">
+              <em>Select chamber sensor...</em>
+            </MenuItem>
+            {this.createSensorMenuItems()}
+          </SelectValidator>
+
+          <SelectValidator name="ambient_sensor_address" label="Ambient Sensor" value={this.sensorValue(chamberSettings.ambient_sensor_address)}  className={classes.selectField}
+           onChange={handleValueChange('ambient_sensor_address')}>
+            <MenuItem value="">
+              <em>Select ambient sensor...</em>
+            </MenuItem>
+            {this.createSensorMenuItems()}
+          </SelectValidator>
+
           <TextValidator
               validators={['required', 'isFloat', 'minNumber:0', 'maxNumber:25']}
               errorMessages={['Target temperature is required', "Must be a number", "Must be greater than 0 ", "Max value is 25"]}
@@ -123,22 +140,6 @@ class ChamberSettingsForm extends React.Component {
                   onChange={handleValueChange('hysteresis_factor')}
                   margin="normal"
             />
-
-            <SelectValidator name="chamber_sensor_address" label="Chamber Sensor" value={this.sensorValue(chamberSettings.chamber_sensor_address)}  className={classes.selectField}
-             onChange={handleValueChange('chamber_sensor_address')}>
-              <MenuItem value="">
-                <em>Select chamber sensor...</em>
-              </MenuItem>
-              {this.createSensorMenuItems()}
-            </SelectValidator>
-
-            <SelectValidator name="ambient_sensor_address" label="Ambient Sensor" value={this.sensorValue(chamberSettings.ambient_sensor_address)}  className={classes.selectField}
-             onChange={handleValueChange('ambient_sensor_address')}>
-              <MenuItem value="">
-                <em>Select ambient sensor...</em>
-              </MenuItem>
-              {this.createSensorMenuItems()}
-            </SelectValidator>
 
             <FormControlLabel className={classes.switchControl}
                control={

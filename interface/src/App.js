@@ -13,6 +13,7 @@ import indigo from 'material-ui/colors/indigo';
 import orange from 'material-ui/colors/orange';
 import red from 'material-ui/colors/red';
 import green from 'material-ui/colors/green';
+import blue from 'material-ui/colors/blue';
 
 import {
   MuiThemeProvider,
@@ -30,6 +31,7 @@ const theme = createMuiTheme({
     highlight_warn: orange[500],
     highlight_error: red[500],
     highlight_success: green[500],
+    highlight_info: blue[500],
   },
 });
 

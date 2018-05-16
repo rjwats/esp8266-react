@@ -51,6 +51,12 @@ class ChamberSettingsService : public SettingsService {
     float _hysteresisLow;
     float _hysteresisFactor;
 
+    // calculated off/on temps
+    float _heaterOffTemp;
+    float _coolerOffTemp;
+    float _heaterOnTemp;
+    float _coolerOnTemp;
+
     // cycle limits
     unsigned long _minHeaterOnDuration;
     unsigned long _minHeaterOffDuration;
@@ -63,7 +69,7 @@ class ChamberSettingsService : public SettingsService {
     bool _enableCooler;
 
     // status variables
-    uint8_t _chamberStatus = STATUS_IDLE;
+    uint8_t _status = STATUS_IDLE;
     unsigned long _heaterToggledAt;
     unsigned long _coolerToggledAt;
     unsigned long _nextEvaluation;

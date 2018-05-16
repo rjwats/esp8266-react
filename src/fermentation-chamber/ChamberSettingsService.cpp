@@ -20,12 +20,16 @@ void ChamberSettingsService::begin() {
 
   Serial.print("Starting temp sensor bus...");
   _tempSensors.begin();
+  _tempSensors.setResolution(12);
   _tempSensors.setWaitForConversion(false);
   Serial.println("finished!");
 
   Serial.print("Found ");
   Serial.print(_tempSensors.getDS18Count());
   Serial.println(" sensor(s).");
+
+  // pre-calculate threshold temps
+  onConfigUpdated();
 
   // request temps
   prepareNextControllerLoop();
@@ -46,8 +50,8 @@ void ChamberSettingsService::changeStatus(uint8_t newStatus, unsigned long *prev
 }
 
 void ChamberSettingsService::transitionToStatus(uint8_t newStatus) {
-  _chamberStatus = newStatus;
-  switch (_chamberStatus) {
+  _status = newStatus;
+  switch (_status) {
     case STATUS_HEATING:
       digitalWrite(COOLER_PIN, LOW);
       digitalWrite(HEATER_PIN, HIGH);
@@ -70,30 +74,30 @@ void ChamberSettingsService::loop() {
     return;
   }
 
-  float chamberTemp = _tempSensors.getTempC(_chamberSensorAddress);
+  float temp = _tempSensors.getTempC(_chamberSensorAddress);
   Serial.print("Temp is currently:");
-  Serial.println(chamberTemp);
+  Serial.println(temp);
   Serial.print("Status is currently:");
-  Serial.println(_chamberStatus);
+  Serial.println(_status);
 
-  switch (_chamberStatus) {
+  switch (_status) {
     case STATUS_HEATING:
-      if (!_enableHeater || chamberTemp == DEVICE_DISCONNECTED_C || chamberTemp + (_hysteresisLow * _hysteresisFactor) >= _targetTemp){
+      if (!_enableHeater || temp == DEVICE_DISCONNECTED_C || temp + (_hysteresisLow * _hysteresisFactor) >= _targetTemp){
         changeStatus(STATUS_IDLE, &_heaterToggledAt, &_minHeaterOnDuration);
       }
       break;
     case STATUS_COOLING:
-      if (!_enableCooler || chamberTemp == DEVICE_DISCONNECTED_C || chamberTemp - (_hysteresisHigh * _hysteresisFactor) <= _targetTemp){
+      if (!_enableCooler || temp == DEVICE_DISCONNECTED_C || temp - (_hysteresisHigh * _hysteresisFactor) <= _targetTemp){
         changeStatus(STATUS_IDLE, &_coolerToggledAt, &_minCoolerOnDuration);
       }
       break;
     case STATUS_IDLE:
     default:
-      if (chamberTemp != DEVICE_DISCONNECTED_C){
-        if (_enableHeater && chamberTemp + _hysteresisLow <= _targetTemp){
+      if (temp != DEVICE_DISCONNECTED_C){
+        if (_enableHeater && temp + _hysteresisLow <= _targetTemp){
           changeStatus(STATUS_HEATING, &_heaterToggledAt, &_minHeaterOffDuration);
         }
-        if (_enableCooler && chamberTemp - _hysteresisHigh >= _targetTemp){
+        if (_enableCooler && temp - _hysteresisHigh >= _targetTemp){
           changeStatus(STATUS_COOLING, &_coolerToggledAt, &_minCoolerOffDuration);
         }
       }
@@ -103,7 +107,10 @@ void ChamberSettingsService::loop() {
 }
 
 void ChamberSettingsService::onConfigUpdated() {
-
+  _heaterOffTemp = _targetTemp - (_hysteresisLow * _hysteresisFactor);
+  _coolerOffTemp = _targetTemp + (_hysteresisHigh * _hysteresisFactor);
+  _heaterOnTemp = _targetTemp - _hysteresisLow;
+  _coolerOnTemp = _targetTemp + _hysteresisHigh;
 }
 
 void ChamberSettingsService::configureController() {
@@ -151,8 +158,22 @@ void ChamberSettingsService::chamberStatus(AsyncWebServerRequest *request) {
   AsyncJsonResponse * response = new AsyncJsonResponse();
   JsonObject& root = response->getRoot();
 
-  root["chamber_status"] = _chamberStatus;
+  // basic config info - for display on status page
+  root["chamber_sensor_address"] = deviceAddressAsString(_chamberSensorAddress);
+  root["ambient_sensor_address"] = deviceAddressAsString(_ambientSensorAddress);
+  root["target_temp"] = _targetTemp;
+  root["enable_heater"] = _enableHeater;
+  root["enable_cooler"] = _enableCooler;
 
+  // temp thresholds
+  root["heater_on_temp"] = _heaterOnTemp;
+  root["cooler_on_temp"] = _coolerOnTemp;
+  root["heater_off_temp"] = _heaterOffTemp;
+  root["cooler_off_temp"] = _coolerOffTemp;
+
+  // current status
+  root["status"] = _status;
+  
   // write out sensors and current readings
   JsonObject& sensors = root.createNestedObject("sensors");
   DeviceAddress address;
@@ -160,9 +181,10 @@ void ChamberSettingsService::chamberStatus(AsyncWebServerRequest *request) {
     if (_tempSensors.getAddress(address, i)) {
       JsonObject& sensorDetails = sensors.createNestedObject(deviceAddressAsString(address));
       sensorDetails["temp_c"] =  _tempSensors.getTempC(address);
-      sensorDetails["temp_f"] =  _tempSensors.getTempF(address);
     }
   }
+
+  // send response
   response->setLength();
   request->send(response);
 }
