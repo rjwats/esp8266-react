@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import { withStyles } from 'material-ui/styles';
@@ -7,9 +7,7 @@ import { LinearProgress } from 'material-ui/Progress';
 import Typography from 'material-ui/Typography';
 import { MenuItem } from 'material-ui/Menu';
 import Switch from 'material-ui/Switch';
-import Select from 'material-ui/Select';
-import { FormControl, FormControlLabel } from 'material-ui/Form';
-import { InputLabel } from 'material-ui/Input';
+import { FormControlLabel } from 'material-ui/Form';
 import { TextValidator, ValidatorForm, SelectValidator } from 'react-material-ui-form-validator';
 
 const styles = theme => ({

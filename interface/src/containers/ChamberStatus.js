@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 
 import { withStyles } from 'material-ui/styles';
 import Button from 'material-ui/Button';
@@ -7,13 +7,11 @@ import Typography from 'material-ui/Typography';
 import List, { ListItem, ListItemText } from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
 import Divider from 'material-ui/Divider';
-import SettingsInputAntennaIcon from 'material-ui-icons/SettingsInputAntenna';
-import DeviceHubIcon from 'material-ui-icons/DeviceHub';
-import ComputerIcon from 'material-ui-icons/Computer';
 import KitchenIcon from 'material-ui-icons/Kitchen';
 import NaturePeopleIcon from 'material-ui-icons/NaturePeople';
 import AcUnitIcon from 'material-ui-icons/AcUnit';
 import TagFacesIcon from 'material-ui-icons/TagFaces';
+import WbSunnyIcon from 'material-ui-icons/WbSunny';
 import {restComponent} from '../components/RestComponent';
 import SectionContent from '../components/SectionContent'
 
@@ -91,6 +89,7 @@ class ChamberStatus extends Component {
             </Avatar>
             <ListItemText primary="Ambient Temperature" secondary={this.sensorTemp(ambient_sensor_address, sensors)} />
           </ListItem>
+          <Divider inset component="li" />
           <ListItem>
             <Avatar className={enable_cooler ? classes['deviceEnabled'] : ''}>
               <AcUnitIcon />
@@ -99,7 +98,7 @@ class ChamberStatus extends Component {
           </ListItem>
           <ListItem>
             <Avatar className={enable_heater ? classes['deviceEnabled'] : ''}>
-              <AcUnitIcon />
+              <WbSunnyIcon />
             </Avatar>
             <ListItemText primary="Heater Enabled?" secondary={enable_heater ? "Enabled" : "Disabled"} />
           </ListItem>
