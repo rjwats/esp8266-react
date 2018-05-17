@@ -1,8 +1,9 @@
 #include <fermentation-chamber/ChamberSettingsService.h>
 
 ChamberSettingsService::ChamberSettingsService(AsyncWebServer* server, FS* fs) :
-  SettingsService(server, fs, CHAMBER_SETTINGS_SERVICE_PATH, CHAMBER_SETTINGS_FILE) {
+  SettingsService(server, fs, CHAMBER_SETTINGS_SERVICE_PATH, CHAMBER_SETTINGS_FILE), _circularLog("/logs/hourly.dat", LOG_SLOTS) {
     server->on(CHAMBER_STATUS_SERVICE_PATH, HTTP_GET, std::bind(&ChamberSettingsService::chamberStatus, this, std::placeholders::_1));
+    server->on(LOG_DATA_SERVICE_PATH, HTTP_GET, std::bind(&ChamberSettingsService::logData, this, std::placeholders::_1));
   }
 
 ChamberSettingsService::~ChamberSettingsService() {}
@@ -10,6 +11,9 @@ ChamberSettingsService::~ChamberSettingsService() {}
 void ChamberSettingsService::begin() {
   // load settings
   SettingsService::begin();
+
+  // start the circular log, initializing the log file if required.
+  _circularLog.begin();
 
   // set both pins to output
   pinMode(COOLER_PIN, OUTPUT);
@@ -37,7 +41,7 @@ void ChamberSettingsService::begin() {
 
 void ChamberSettingsService::prepareNextControllerLoop() {
   _tempSensors.requestTemperatures();
-  _nextEvaluation = millis() + TEMP_SENSOR_INTERVAL;
+  _evaluatedAt = millis();
 }
 
 void ChamberSettingsService::changeStatus(uint8_t newStatus, unsigned long *previousToggle, unsigned long *toggleLimitDuration) {
@@ -69,8 +73,37 @@ void ChamberSettingsService::transitionToStatus(uint8_t newStatus) {
 }
 
 void ChamberSettingsService::loop() {
-  // exit eagerly if we have no processing to do.
-  if (millis() < _nextEvaluation) {
+  evaluateChamberStatus();
+  performLogging();
+}
+
+void ChamberSettingsService::performLogging() {
+  // Don't do any logging until we have synchronized with the time server
+  if (!NTP.getLastNTPSync()){
+    return;
+  }
+
+  // If we have never logged, or if enough time has elapsed since we last logged
+  unsigned long loggingTime = now();
+  if (!_loggedAt || (unsigned long)(loggingTime - _loggedAt) >= LOG_PERIOD_SECONDS) {
+    // round down to nearest LOG_PERIOD_SECONDS
+    uint16_t loggingSlot = (loggingTime / LOG_PERIOD_SECONDS) % LOG_SLOTS;
+    loggingTime = loggingTime - (loggingTime % LOG_PERIOD_SECONDS);
+
+    ChamberLogEntry entry;
+    entry.time = loggingTime;
+    entry.status = _status;
+    entry.ambientTemp = _tempSensors.getTempC(_ambientSensorAddress);
+    entry.chamberTemp = _tempSensors.getTempC(_chamberSensorAddress);
+    entry.targetTemp = _targetTemp;
+    _circularLog.writeEntry(&entry, loggingSlot);
+
+    _loggedAt = loggingTime;
+  }
+}
+
+void ChamberSettingsService::evaluateChamberStatus() {
+  if ((unsigned long)(millis() - _evaluatedAt) < EVALUATION_INTERVAL){
     return;
   }
 
@@ -102,7 +135,6 @@ void ChamberSettingsService::loop() {
         }
       }
   }
-
   prepareNextControllerLoop();
 }
 
@@ -111,11 +143,6 @@ void ChamberSettingsService::onConfigUpdated() {
   _coolerOffTemp = _targetTemp + (_hysteresisHigh * _hysteresisFactor);
   _heaterOnTemp = _targetTemp - _hysteresisLow;
   _coolerOnTemp = _targetTemp + _hysteresisHigh;
-}
-
-void ChamberSettingsService::configureController() {
-  // set next evaluation to be immediately fired
-  _nextEvaluation = millis();
 }
 
 void ChamberSettingsService::readFromJsonObject(JsonObject& root) {
@@ -153,6 +180,29 @@ void ChamberSettingsService::writeToJsonObject(JsonObject& root) {
   root["enable_heater"] = _enableHeater;
   root["enable_cooler"] = _enableCooler;
 }
+
+/**
+* Returns the last hour of log data
+*/
+void ChamberSettingsService::logData(AsyncWebServerRequest *request) {
+  uint16_t loggingSlot = ((_loggedAt + LOG_PERIOD_SECONDS) / LOG_PERIOD_SECONDS) % LOG_SLOTS;
+  AsyncJsonResponse * response = new AsyncJsonResponse();
+  JsonObject& root = response->getRoot();
+  JsonArray& data = root.createNestedArray("data");
+  _circularLog.readAllEntries(loggingSlot, [&](ChamberLogEntry *entry) {
+    JsonObject& entryData = data.createNestedObject();
+    entryData["time"] = entry->time;
+    entryData["status"] = entry->status;
+    entryData["chamber_temp"] = entry->chamberTemp;
+    entryData["ambient_temp"] = entry->ambientTemp;
+    entryData["target_temp"] = entry->targetTemp;
+  });
+
+  // send response
+  response->setLength();
+  request->send(response);
+}
+
 
 void ChamberSettingsService::chamberStatus(AsyncWebServerRequest *request) {
   AsyncJsonResponse * response = new AsyncJsonResponse();
