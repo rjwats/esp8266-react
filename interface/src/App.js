@@ -1,11 +1,7 @@
 import React, { Component } from 'react';
 
 import AppRouting from './AppRouting';
-
 import SnackbarNotification from './components/SnackbarNotification';
-
-import JssProvider from 'react-jss/lib/JssProvider';
-import { create } from 'jss';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
 import blueGrey from '@material-ui/core/colors/blueGrey';
@@ -14,6 +10,9 @@ import orange from '@material-ui/core/colors/orange';
 import red from '@material-ui/core/colors/red';
 import green from '@material-ui/core/colors/green';
 import blue from '@material-ui/core/colors/blue';
+
+import JssProvider from 'react-jss/lib/JssProvider';
+import { create } from 'jss';
 
 import {
   MuiThemeProvider,
