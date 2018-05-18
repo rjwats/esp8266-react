@@ -1,24 +1,29 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from 'material-ui/styles';
-import Drawer from 'material-ui/Drawer';
-import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
-import Typography from 'material-ui/Typography';
-import IconButton from 'material-ui/IconButton';
-import Hidden from 'material-ui/Hidden';
-import Divider from 'material-ui/Divider';
+import { withStyles } from '@material-ui/core/styles';
+import Drawer from '@material-ui/core/Drawer';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
+import Hidden from '@material-ui/core/Hidden';
+import Divider from '@material-ui/core/Divider';
+
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+
+import MenuIcon from '@material-ui/icons/Menu';
+import WifiIcon from '@material-ui/icons/Wifi';
+import SystemUpdateIcon from  '@material-ui/icons/SystemUpdate';
+import ShowChartIcon from  '@material-ui/icons/ShowChart';
+import AccessTimeIcon from '@material-ui/icons/AccessTime';
+import SettingsInputAntennaIcon from '@material-ui/icons/SettingsInputAntenna';
+
 import {  Link } from 'react-router-dom';
-import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 
-import MenuIcon from 'material-ui-icons/Menu';
-import WifiIcon from 'material-ui-icons/Wifi';
-import SystemUpdateIcon from  'material-ui-icons/SystemUpdate';
-import ShowChartIcon from  'material-ui-icons/ShowChart';
-import AccessTimeIcon from 'material-ui-icons/AccessTime';
-import SettingsInputAntennaIcon from 'material-ui-icons/SettingsInputAntenna';
-
-const drawerWidth = 270;
+const drawerWidth = 290;
 
 const styles = theme => ({
   root: {
