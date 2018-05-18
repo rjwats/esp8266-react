@@ -29,6 +29,8 @@ APStatus apStatus = APStatus(&server);
 
 void setup() {
     // Disable wifi config persistance
+    WiFi.disconnect(true);
+    WiFi.softAPdisconnect(true);
     WiFi.persistent(false);
 
     Serial.begin(SERIAL_BAUD_RATE);
