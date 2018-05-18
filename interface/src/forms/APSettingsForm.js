@@ -1,11 +1,11 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 
-import { withStyles } from 'material-ui/styles';
-import Button from 'material-ui/Button';
-import { LinearProgress } from 'material-ui/Progress';
-import Typography from 'material-ui/Typography';
-import { MenuItem } from 'material-ui/Menu';
+import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import Typography from '@material-ui/core/Typography';
+import MenuItem from '@material-ui/core/MenuItem';
 
 import { TextValidator, ValidatorForm, SelectValidator } from 'react-material-ui-form-validator';
 
