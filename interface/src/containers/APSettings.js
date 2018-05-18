@@ -7,11 +7,15 @@ import APSettingsForm from '../forms/APSettingsForm';
 
 class APSettings extends Component {
 
+  componentDidMount() {
+    this.props.loadData();
+  }
+
   render() {
     const { data, fetched, errorMessage } = this.props;
     return (
       <SectionContent title="AP Settings">
-      	<APSettingsForm
+      	<APSettingsForm          
           apSettings={data}
           apSettingsFetched={fetched}
           errorMessage={errorMessage}

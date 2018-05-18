@@ -7,6 +7,10 @@ import NTPSettingsForm from '../forms/NTPSettingsForm';
 
 class NTPSettings extends Component {
 
+  componentDidMount() {
+      this.props.loadData();
+  }
+
   render() {
     const { data, fetched, errorMessage } = this.props;
     return (

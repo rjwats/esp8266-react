@@ -28,10 +28,6 @@ export const restComponent = (endpointUrl, FormComponent) => {
         this.setData = this.setData.bind(this);
       }
 
-      componentDidMount() {
-        this.loadData();
-      }
-
       setData(data) {
         this.setState({
                  data:data,

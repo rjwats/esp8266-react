@@ -36,6 +36,10 @@ const styles = theme => ({
 
 class APStatus extends Component {
 
+  componentDidMount() {
+    this.props.loadData();
+  }
+
   apStatusHighlight(data){
     return data.active ? Highlight.SUCCESS : Highlight.IDLE;
   }
