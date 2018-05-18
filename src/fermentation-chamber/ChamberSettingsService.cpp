@@ -186,16 +186,20 @@ void ChamberSettingsService::writeToJsonObject(JsonObject& root) {
 */
 void ChamberSettingsService::logData(AsyncWebServerRequest *request) {
   uint16_t loggingSlot = ((_loggedAt + LOG_PERIOD_SECONDS) / LOG_PERIOD_SECONDS) % LOG_SLOTS;
+  unsigned long oldestExpectedTime = _loggedAt - (LOG_PERIOD_SECONDS * (LOG_SLOTS  - 1));
   AsyncJsonResponse * response = new AsyncJsonResponse();
   JsonObject& root = response->getRoot();
   JsonArray& data = root.createNestedArray("data");
+
   _circularLog.readAllEntries(loggingSlot, [&](ChamberLogEntry *entry) {
-    JsonObject& entryData = data.createNestedObject();
-    entryData["time"] = entry->time;
-    entryData["status"] = entry->status;
-    entryData["chamber_temp"] = entry->chamberTemp;
-    entryData["ambient_temp"] = entry->ambientTemp;
-    entryData["target_temp"] = entry->targetTemp;
+    if (entry->time >= oldestExpectedTime){
+      JsonObject& entryData = data.createNestedObject();
+      entryData["time"] = entry->time;
+      entryData["status"] = entry->status;
+      entryData["chamber_temp"] = entry->chamberTemp;
+      entryData["ambient_temp"] = entry->ambientTemp;
+      entryData["target_temp"] = entry->targetTemp;
+    }
   });
 
   // send response

@@ -42,11 +42,9 @@ private:
       if (slot >= _numSlots) {
         return INVALID_SLOT;
       }
-      uint8_t buffer[sizeof(T)];
-      memcpy(buffer, value, sizeof(T));
       File logFile = SPIFFS.open(_filePath, "r+");
       logFile.seek(slot * sizeof(T));
-      logFile.write(buffer, sizeof(T));
+      logFile.write((uint8_t *) value, sizeof(T));
       return 0;
     }
 
@@ -63,10 +61,8 @@ private:
       File logFile = SPIFFS.open(_filePath, "r");
       logFile.seek(startingSlot * sizeof(T));
       uint16_t currentSlot = startingSlot;
-      uint8_t buffer[sizeof(T)];
       do {
-        logFile.read(buffer, sizeof(T));
-        memcpy(&value, buffer, sizeof(T));
+        logFile.read((uint8_t *) &value, sizeof(T));
         consumer(&value);
         currentSlot++;
         if (currentSlot >= _numSlots){
