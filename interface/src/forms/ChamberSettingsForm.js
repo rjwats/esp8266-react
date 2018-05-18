@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { withStyles } from 'material-ui/styles';
-import Button from 'material-ui/Button';
-import { LinearProgress } from 'material-ui/Progress';
-import Typography from 'material-ui/Typography';
-import { MenuItem } from 'material-ui/Menu';
-import Switch from 'material-ui/Switch';
-import { FormControlLabel } from 'material-ui/Form';
+import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import Typography from '@material-ui/core/Typography';
+import MenuItem from '@material-ui/core/MenuItem';
+import Switch from '@material-ui/core/Switch';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { TextValidator, ValidatorForm, SelectValidator } from 'react-material-ui-form-validator';
 
 const styles = theme => ({
@@ -145,6 +145,7 @@ class ChamberSettingsForm extends React.Component {
                         checked={chamberSettings.enable_heater}
                         onChange={handleCheckboxChange('enable_heater')}
                         value="enable_heater"
+                        color="primary"
                  />
                }
               label="Enable Heater?"
@@ -180,6 +181,7 @@ class ChamberSettingsForm extends React.Component {
                         checked={chamberSettings.enable_cooler}
                         onChange={handleCheckboxChange('enable_cooler')}
                         value="enable_cooler"
+                        color="primary"
                  />
                }
               label="Enable Cooler?"

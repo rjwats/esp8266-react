@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
 
-import { withStyles } from 'material-ui/styles';
-import Button from 'material-ui/Button';
-import { LinearProgress } from 'material-ui/Progress';
-import Typography from 'material-ui/Typography';
-import List, { ListItem, ListItemText } from 'material-ui/List';
-import Avatar from 'material-ui/Avatar';
-import Divider from 'material-ui/Divider';
-import KitchenIcon from 'material-ui-icons/Kitchen';
-import NaturePeopleIcon from 'material-ui-icons/NaturePeople';
-import AcUnitIcon from 'material-ui-icons/AcUnit';
-import TagFacesIcon from 'material-ui-icons/TagFaces';
-import WbSunnyIcon from 'material-ui-icons/WbSunny';
+import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import Typography from '@material-ui/core/Typography';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import Avatar from '@material-ui/core/Avatar';
+import Divider from '@material-ui/core/Divider';
+import KitchenIcon from '@material-ui/icons/Kitchen';
+import NaturePeopleIcon from '@material-ui/icons/NaturePeople';
+import AcUnitIcon from '@material-ui/icons/AcUnit';
+import TagFacesIcon from '@material-ui/icons/TagFaces';
+import WbSunnyIcon from '@material-ui/icons/WbSunny';
 import {restComponent} from '../components/RestComponent';
 import SectionContent from '../components/SectionContent'
 
@@ -44,7 +46,7 @@ const styles = theme => ({
 });
 
 class ChamberStatus extends Component {
-  
+
   componentDidMount() {
       this.props.loadData();
   }
