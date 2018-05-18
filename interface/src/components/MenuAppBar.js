@@ -19,7 +19,6 @@ import ListItemText from '@material-ui/core/ListItemText';
 import MenuIcon from '@material-ui/icons/Menu';
 import WifiIcon from '@material-ui/icons/Wifi';
 import SystemUpdateIcon from  '@material-ui/icons/SystemUpdate';
-import ShowChartIcon from  '@material-ui/icons/ShowChart';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import SettingsInputAntennaIcon from '@material-ui/icons/SettingsInputAntenna';
 
