@@ -7,6 +7,10 @@ import ChamberSettingsForm from '../forms/ChamberSettingsForm';
 
 class ChamberSettings extends Component {
 
+  componentDidMount() {
+      this.props.loadData();
+  }
+
   render() {
     const {
       data, fetched, errorMessage,
@@ -16,7 +20,7 @@ class ChamberSettings extends Component {
       	<ChamberSettingsForm
           chamberSettings={data}
           chamberStatus={chamberStatus}
-          fetched={fetched || chamberStatusFetched}
+          fetched={fetched && chamberStatusFetched}
           errorMessage={errorMessage || chamberStatusErrorMessage}
           onSubmit={this.props.saveData}
           onReset={this.props.loadData}
@@ -32,6 +36,10 @@ class ChamberSettings extends Component {
 const ComponentWithSettings = restComponent(CHAMBER_SETTINGS_ENDPOINT, ChamberSettings);
 
 class ChamberSettingsWithStatus extends Component {
+
+  componentDidMount() {
+      this.props.loadData();
+  }
 
   render() {
     const { data, fetched, errorMessage } = this.props;
