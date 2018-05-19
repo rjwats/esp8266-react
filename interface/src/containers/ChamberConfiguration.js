@@ -6,6 +6,7 @@ import Tab from '@material-ui/core/Tab';
 import MenuAppBar from '../components/MenuAppBar';
 import ChamberSettings from './ChamberSettings';
 import ChamberStatus from './ChamberStatus';
+import ChamberLog from './ChamberLog';
 
 class ChamberConfiguration extends Component {
 
@@ -27,9 +28,11 @@ class ChamberConfiguration extends Component {
       <MenuAppBar sectionTitle="Chamber Configuration">
         <Tabs value={selectedTab} onChange={this.handleTabChange} indicatorColor="primary" textColor="primary" fullWidth centered scrollable>
            <Tab value="chamberStatus" label="Chamber Status" />
+           <Tab value="chamberLog" label="Chamber Log" />
            <Tab value="chamberSettings" label="Chamber Settings" />
          </Tabs>
          {selectedTab === "chamberStatus" && <ChamberStatus />}
+         {selectedTab === "chamberLog" && <ChamberLog />}
          {selectedTab === "chamberSettings" && <ChamberSettings />}
       </MenuAppBar>
     )

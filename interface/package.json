@@ -5,11 +5,13 @@
   "dependencies": {
     "@material-ui/core": "^1.0.0",
     "@material-ui/icons": "^1.0.0",
+    "chart.js": "^2.7.2",
     "compression-webpack-plugin": "^1.1.11",
     "moment": "^2.22.1",
     "prop-types": "^15.6.1",
     "react": "^16.3.2",
     "react-autosuggest": "^9.3.4",
+    "react-chartjs-2": "^2.7.2",
     "react-dom": "^16.3.2",
     "react-form-validator-core": "^0.3.0",
     "react-material-ui-form-validator": "^2.0.0-beta.10",

@@ -1,14 +1,14 @@
 {
-   "chamber_sensor_address":"0000000000000000",
-   "ambient_sensor_address":"0000000000000000",
-   "target_temp":15,
-   "hysteresis_high":1,
-   "hysteresis_low":1,
-   "hysteresis_factor":0.8,
-   "min_heater_on_duration":300000,
-   "min_heater_off_duration":300000,
-   "min_cooler_on_duration":300000,
-   "min_cooler_off_duration":300000,
-   "enable_heater":false,
-   "enable_cooler":false
+  "chamber_sensor_address": "590417030cfeff28",
+  "ambient_sensor_address": "ba0517a233edff28",
+  "target_temp": 15,
+  "hysteresis_high": 1,
+  "hysteresis_low": 1,
+  "hysteresis_factor": 0.8,
+  "min_heater_on_duration": 0,
+  "min_heater_off_duration": 300000,
+  "min_cooler_on_duration": 0,
+  "min_cooler_off_duration": 300000,
+  "enable_heater": true,
+  "enable_cooler": true
 }
