@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import {Line} from 'react-chartjs-2';
+import {Line, Pie} from 'react-chartjs-2';
 
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -138,6 +138,51 @@ class ChamberLog extends Component {
     );
   }
 
+  renderStatusChart(data, classes) {
+    const dataArray = data.data;
+
+    const chartData = {
+      datasets: [{
+        data: [10, 20, 30],
+    		backgroundColor: [
+    		'#FF6384',
+    		'#36A2EB',
+    		'#FFCE56'
+    		],
+    		hoverBackgroundColor: [
+    		'#FF6384',
+    		'#36A2EB',
+    		'#FFCE56'
+    		]
+      }],
+      labels: [
+        'Red',
+        'Yellow',
+        'Blue'
+      ]
+  };
+
+    const chartOptions = {
+      responsive: true,
+      legend: {
+          display: true,
+          position: 'right'
+      },
+      animation: {
+          duration: 0
+      }
+     };
+
+    return  (
+      <div>
+        <Pie data={chartData} options={chartOptions} />
+        <Button variant="raised" color="secondary" className={classes.button} onClick={this.props.loadData}>
+          Refresh
+        </Button>
+      </div>
+    );
+  }
+
   render() {
     const { data, fetched, errorMessage, classes }  = this.props;
 
@@ -168,7 +213,7 @@ class ChamberLog extends Component {
           </SectionContent>
         </Grid>
         <Grid item sm={12} md={6}>
-          <SectionContent title="Chamber Log">
+          <SectionContent title="Chamber Status">
             {
              !fetched ?
              <div>
@@ -178,7 +223,7 @@ class ChamberLog extends Component {
                </Typography>
              </div>
            :
-            data ? this.renderChamberLog(data, classes)
+            data ? this.renderStatusChart(data, classes)
            :
             <div>
               <Typography variant="display1" className={classes.fetching}>
