@@ -26,7 +26,7 @@ class ChamberConfiguration extends Component {
     const { selectedTab } = this.state;
     return (
       <MenuAppBar sectionTitle="Chamber Configuration">
-        <Tabs value={selectedTab} onChange={this.handleTabChange} indicatorColor="primary" textColor="primary" fullWidth scrollable scrollButtons="on">
+        <Tabs value={selectedTab} onChange={this.handleTabChange} indicatorColor="primary" textColor="primary" fullWidth centered scrollable>
            <Tab value="chamberStatus" label="Chamber Status" />
            <Tab value="chamberLog" label="Chamber Log" />
            <Tab value="chamberSettings" label="Chamber Settings" />
