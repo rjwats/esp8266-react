@@ -6,7 +6,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Typography from '@material-ui/core/Typography';
-
+import Grid from '@material-ui/core/Grid';
 import {restComponent} from '../components/RestComponent';
 import SectionContent from '../components/SectionContent'
 import { LOG_DATA_ENDPOINT }  from  '../constants/Endpoints';
@@ -93,19 +93,22 @@ class ChamberLog extends Component {
     const chartOptions = {
       fill: false,
       responsive: true,
+      legend: {
+          display: true,
+          position: 'bottom'
+      },
+      animation: {
+          duration: 0
+      },
       scales: {
           xAxes: [{
               type: 'time',
-              display: true,
-              scaleLabel: {
-                  display: true,
-                  labelString: "Time",
-              }
+              display: true
           }],
           yAxes: [{
               position: "left",
               ticks: {
-                  beginAtZero: true,
+                  beginAtZero: false,
               },
               display: true,
               scaleLabel: {
@@ -139,28 +142,56 @@ class ChamberLog extends Component {
     const { data, fetched, errorMessage, classes }  = this.props;
 
     return (
-      <SectionContent title="Chamber Log">
-        {
-         !fetched ?
-         <div>
-           <LinearProgress className={classes.fetching}/>
-           <Typography variant="display1" className={classes.fetching}>
-             Loading...
-           </Typography>
-         </div>
-       :
-        data ? this.renderChamberLog(data, classes)
-       :
-        <div>
-          <Typography variant="display1" className={classes.fetching}>
-            {errorMessage}
-          </Typography>
-          <Button variant="raised" color="secondary" className={classes.button} onClick={this.props.loadData}>
-            Refresh
-          </Button>
-        </div>
-      }
-      </SectionContent>
+      <Grid container spacing={0}>
+        <Grid item sm={12} md={6}>
+          <SectionContent title="Chamber Log">
+            {
+             !fetched ?
+             <div>
+               <LinearProgress className={classes.fetching}/>
+               <Typography variant="display1" className={classes.fetching}>
+                 Loading...
+               </Typography>
+             </div>
+           :
+            data ? this.renderChamberLog(data, classes)
+           :
+            <div>
+              <Typography variant="display1" className={classes.fetching}>
+                {errorMessage}
+              </Typography>
+              <Button variant="raised" color="secondary" className={classes.button} onClick={this.props.loadData}>
+                Refresh
+              </Button>
+            </div>
+          }
+          </SectionContent>
+        </Grid>
+        <Grid item sm={12} md={6}>
+          <SectionContent title="Chamber Log">
+            {
+             !fetched ?
+             <div>
+               <LinearProgress className={classes.fetching}/>
+               <Typography variant="display1" className={classes.fetching}>
+                 Loading...
+               </Typography>
+             </div>
+           :
+            data ? this.renderChamberLog(data, classes)
+           :
+            <div>
+              <Typography variant="display1" className={classes.fetching}>
+                {errorMessage}
+              </Typography>
+              <Button variant="raised" color="secondary" className={classes.button} onClick={this.props.loadData}>
+                Refresh
+              </Button>
+            </div>
+          }
+          </SectionContent>
+        </Grid>
+      </Grid>
     )
   }
 
