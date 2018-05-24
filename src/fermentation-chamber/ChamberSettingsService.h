@@ -13,16 +13,14 @@
 #define HEATER_PIN 13
 #define TEMP_SENSOR_PIN 14
 
-// We store 60 slots of 60 second intervals (one hour) worth of logging data
+// We store (60 * 24) slots of 60 second intervals (one day) worth of logging data
 // in a circular buffer in SPIFFS. This results in very low wear on the flash chip
-// only 24 writes per sector per day.
-//
-// We might extend this to store 24 hours worth of data if it is deemed useful.
-// The interface would need to be able to page back/forth through the data if
-// this were the case could by done by - (n hours) which would make a nice enough
-// interface.
-#define LOG_SLOTS 60
+// only 1 write per sector per day.
+#define LOG_SLOTS_PER_HOUR 60
+#define LOG_SLOTS 60 * 24
 #define LOG_PERIOD_SECONDS 60
+#define LOG_MAX_PAGE_SIZE 6
+#define LOG_DEFAULT_PAGE_SIZE 1
 
 // We evaluate the sensors and state every 5 seconds
 #define EVALUATION_INTERVAL 5000

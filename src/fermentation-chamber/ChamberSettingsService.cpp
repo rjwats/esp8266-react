@@ -77,31 +77,6 @@ void ChamberSettingsService::loop() {
   performLogging();
 }
 
-void ChamberSettingsService::performLogging() {
-  // Don't do any logging until we have synchronized with the time server
-  if (!NTP.getLastNTPSync()){
-    return;
-  }
-
-  // If we have never logged, or if enough time has elapsed since we last logged
-  unsigned long loggingTime = now();
-  if (!_loggedAt || (unsigned long)(loggingTime - _loggedAt) >= LOG_PERIOD_SECONDS) {
-    // round down to nearest LOG_PERIOD_SECONDS
-    uint16_t loggingSlot = (loggingTime / LOG_PERIOD_SECONDS) % LOG_SLOTS;
-    loggingTime = loggingTime - (loggingTime % LOG_PERIOD_SECONDS);
-
-    ChamberLogEntry entry;
-    entry.time = loggingTime;
-    entry.status = _status;
-    entry.ambientTemp = _tempSensors.getTempC(_ambientSensorAddress);
-    entry.chamberTemp = _tempSensors.getTempC(_chamberSensorAddress);
-    entry.targetTemp = _targetTemp;
-    _circularLog.writeEntry(&entry, loggingSlot);
-
-    _loggedAt = loggingTime;
-  }
-}
-
 void ChamberSettingsService::evaluateChamberStatus() {
   if ((unsigned long)(millis() - _evaluatedAt) < EVALUATION_INTERVAL){
     return;
@@ -182,7 +157,41 @@ void ChamberSettingsService::writeToJsonObject(JsonObject& root) {
 }
 
 /**
-* Returns the last hour of log data
+* Runs as part of the main loop, logging when required.
+*
+* We don't worry about missed logs, we just ignore out of date data when we
+* read the log data out.
+*/
+void ChamberSettingsService::performLogging() {
+  // Don't do any logging until we have synchronized with the time server
+  if (!NTP.getLastNTPSync()){
+    return;
+  }
+
+  // If we have never logged, or if enough time has elapsed since we last logged
+  unsigned long loggingTime = now();
+  if (!_loggedAt || (unsigned long)(loggingTime - _loggedAt) >= LOG_PERIOD_SECONDS) {
+    // round down to nearest LOG_PERIOD_SECONDS
+    uint16_t loggingSlot = (loggingTime / LOG_PERIOD_SECONDS) % LOG_SLOTS;
+    loggingTime = loggingTime - (loggingTime % LOG_PERIOD_SECONDS);
+
+    ChamberLogEntry entry;
+    entry.time = loggingTime;
+    entry.status = _status;
+    entry.ambientTemp = _tempSensors.getTempC(_ambientSensorAddress);
+    entry.chamberTemp = _tempSensors.getTempC(_chamberSensorAddress);
+    entry.targetTemp = _targetTemp;
+    _circularLog.writeEntry(&entry, loggingSlot);
+
+    _loggedAt = loggingTime;
+  }
+}
+
+/**
+* Returns pages of logging data. Starting from now back in time. Supports the following parameters:
+*
+* "pageSize" - Number of hours of log data to return, one page is one hour. (1 min (default), 6 max)
+* "" - Number of hours of log data to return, one page is one hour. (0 min (default), 24 max)
 */
 void ChamberSettingsService::logData(AsyncWebServerRequest *request) {
   uint16_t loggingSlot = ((_loggedAt + LOG_PERIOD_SECONDS) / LOG_PERIOD_SECONDS) % LOG_SLOTS;

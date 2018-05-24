@@ -14,8 +14,16 @@ private:
     uint16_t _numSlots;
     uint32_t _fileSize;
 
+    bool shouldCreateFile() {
+      if (SPIFFS.exists(_filePath)){
+        File f = SPIFFS.open(_filePath, "r");
+        return f.size() != _fileSize;
+      }
+      return true;
+    }
+
     void createFileIfRequired() {
-      if (!SPIFFS.exists(_filePath)){
+      if (shouldCreateFile()){
         File logFile = SPIFFS.open(_filePath, "w");
         for (int i=0;i<_fileSize;i++){
           logFile.write(0);

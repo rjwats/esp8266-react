@@ -31,8 +31,6 @@ class ChamberLog extends Component {
   }
 
   renderChamberLog(data, classes) {
-    const dataArray = data.data;
-
     const labels = [];
 
     const chamberDataset = {
@@ -77,7 +75,7 @@ class ChamberLog extends Component {
       data: [],
     };
 
-    dataArray.forEach(entry => {
+    data.data.forEach(entry => {
       labels.push(moment.unix(entry.time));
       chamberDataset.data.push(entry.chamber_temp);
       ambientDataset.data.push(entry.ambient_temp);
@@ -139,8 +137,6 @@ class ChamberLog extends Component {
   }
 
   renderStatusChart(data, classes) {
-    const dataArray = data.data;
-
     const chartData = {
       datasets: [{
         data: [10, 20, 30],
