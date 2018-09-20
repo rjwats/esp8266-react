@@ -1,16 +1,18 @@
 #include <APSettingsService.h>
 
 APSettingsService::APSettingsService(AsyncWebServer* server, FS* fs) : SettingsService(server, fs, AP_SETTINGS_SERVICE_PATH, AP_SETTINGS_FILE) {
+  onConfigUpdated();
 }
 
 APSettingsService::~APSettingsService() {}
 
 void APSettingsService::loop() {
-  unsigned long now = millis();
-  if (_manageAtMillis <= now){
-    manageAP();
-    _manageAtMillis = now + MANAGE_NETWORK_DELAY;
-  }
+  unsigned long currentMillis = millis();
+  unsigned long manageElapsed = (unsigned long)(currentMillis - _lastManaged);
+  if (manageElapsed >= MANAGE_NETWORK_DELAY){
+    _lastManaged = currentMillis;
+     manageAP();
+  }  
   handleDNS();
 }
 
@@ -78,5 +80,5 @@ void APSettingsService::writeToJsonObject(JsonObject& root) {
 }
 
 void APSettingsService::onConfigUpdated() {
-  _manageAtMillis = 0;
+  _lastManaged = millis() - MANAGE_NETWORK_DELAY;
 }
