@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { withStyles } from 'material-ui/styles';
-import { LinearProgress } from 'material-ui/Progress';
-import Typography from 'material-ui/Typography';
-import { MenuItem } from 'material-ui/Menu';
+import { withStyles } from '@material-ui/core/styles';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import Typography from '@material-ui/core/Typography';
+import { MenuItem } from '@material-ui/core/Menu';
 import { LightStripColorMode } from './LightStripColorMode';
 import { LightStripStrobeMode } from './LightStripStrobeMode';
 import { LightStripColorCycleMode } from './LightStripColorCycleMode';
