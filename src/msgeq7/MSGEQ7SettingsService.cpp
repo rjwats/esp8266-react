@@ -6,7 +6,6 @@ MSGEQ7SettingsService::MSGEQ7SettingsService(AsyncWebServer* server, FS* fs) : S
 MSGEQ7SettingsService::~MSGEQ7SettingsService() {}
 
 void MSGEQ7SettingsService::begin() {
-  Serial.println("Beginning MSGEQ07 Now");
 	pinMode(MSGEQ7_RESET_PIN, OUTPUT);
 	pinMode(MSGEQ7_STROBE_PIN, OUTPUT);
 	pinMode(MSGEQ7_ANALOG_PIN, INPUT);  
@@ -15,7 +14,7 @@ void MSGEQ7SettingsService::begin() {
 void MSGEQ7SettingsService::loop() {
   unsigned long currentMillis = millis();
   unsigned long sampleElapsed = (unsigned long)(currentMillis - _lastSampledAt);
-  if (sampleElapsed >= MSGEQ7_SAMPLE_FREQUENCY_MS){
+  if (sampleElapsed >= MSGEQ7_SAMPLE_DELAY_MS){
     _lastSampledAt = currentMillis;
     sampleNow();
   }
@@ -36,7 +35,7 @@ void MSGEQ7SettingsService::sampleNow() {
 	digitalWrite(MSGEQ7_RESET_PIN, LOW);
 
   for (uint8_t i = 0; i < 7; i++){
-		// trigger next value
+		// trigger each value in turn
 		digitalWrite(MSGEQ7_STROBE_PIN, HIGH);
 		digitalWrite(MSGEQ7_STROBE_PIN, LOW);
 
@@ -45,12 +44,5 @@ void MSGEQ7SettingsService::sampleNow() {
 
     // read frequency for pin
     _samples[i] = analogRead(MSGEQ7_ANALOG_PIN);
-
-   
   }
-  for (uint8_t i = 0; i < 7; i++){
-    Serial.print(_samples[i]);
-    Serial.print(", ");    
-  }
-  Serial.println();
 }

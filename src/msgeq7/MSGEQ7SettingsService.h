@@ -3,7 +3,8 @@
 
 #include <SettingsService.h>
 
-#define MSGEQ7_SAMPLE_FREQUENCY_MS 200
+// 17ms delay gets us approximatly 60 samples per second
+#define MSGEQ7_SAMPLE_DELAY_MS 17
 
 #define MSGEQ7_RESET_PIN 4
 #define MSGEQ7_STROBE_PIN 5
