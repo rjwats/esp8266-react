@@ -12,6 +12,7 @@
 
 #define MSGEQ7_SETTINGS_FILE "/config/msgeq7Settings.json"
 #define MSGEQ7_SETTINGS_SERVICE_PATH "/rest/msgeq7Settings"
+#define MSGEQ7_FREQUENCY_STREAM "/ws/frequencyStream"
 
 class MSGEQ7SettingsService : public SettingsService {
 
@@ -30,9 +31,11 @@ class MSGEQ7SettingsService : public SettingsService {
 
   private:
 
+    AsyncWebSocket _webSocket;
     unsigned long _lastSampledAt;
     uint16_t _samples[7];
     void sampleNow();
+    void transmitFrequencies();
 
 };
 
