@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
-import Tabs, { Tab } from 'material-ui/Tabs';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 
 import MenuAppBar from '../components/MenuAppBar';
 import APSettings from './APSettings';
@@ -24,7 +25,7 @@ class APConfiguration extends Component {
     const { selectedTab } = this.state;
     return (
       <MenuAppBar sectionTitle="AP Configuration">
-        <Tabs value={selectedTab} onChange={this.handleTabChange} indicatorColor="primary" textColor="primary" fullWidth centered scrollable>
+        <Tabs value={selectedTab} onChange={this.handleTabChange} indicatorColor="primary" textColor="primary" fullWidth scrollable>
            <Tab value="apStatus" label="AP Status" />
            <Tab value="apSettings" label="AP Settings" />
          </Tabs>

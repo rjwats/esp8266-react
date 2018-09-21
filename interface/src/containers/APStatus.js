@@ -1,15 +1,17 @@
 import React, { Component, Fragment } from 'react';
 
-import { withStyles } from 'material-ui/styles';
-import Button from 'material-ui/Button';
-import { LinearProgress } from 'material-ui/Progress';
-import Typography from 'material-ui/Typography';
-import List, { ListItem, ListItemText } from 'material-ui/List';
-import Avatar from 'material-ui/Avatar';
-import Divider from 'material-ui/Divider';
-import SettingsInputAntennaIcon from 'material-ui-icons/SettingsInputAntenna';
-import DeviceHubIcon from 'material-ui-icons/DeviceHub';
-import ComputerIcon from 'material-ui-icons/Computer';
+import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import Typography from '@material-ui/core/Typography';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import Avatar from '@material-ui/core/Avatar';
+import Divider from '@material-ui/core/Divider';
+import SettingsInputAntennaIcon from '@material-ui/icons/SettingsInputAntenna';
+import DeviceHubIcon from '@material-ui/icons/DeviceHub';
+import ComputerIcon from '@material-ui/icons/Computer';
 
 import {restComponent} from '../components/RestComponent';
 import SectionContent from '../components/SectionContent'

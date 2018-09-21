@@ -3,7 +3,8 @@ import MenuAppBar from '../components/MenuAppBar';
 import NTPSettings from './NTPSettings';
 import NTPStatus from './NTPStatus';
 
-import Tabs, { Tab } from 'material-ui/Tabs';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 
 class NTPConfiguration extends Component {
 
@@ -22,7 +23,7 @@ class NTPConfiguration extends Component {
     const { selectedTab } = this.state;
     return (
         <MenuAppBar sectionTitle="NTP Configuration">
-        <Tabs value={selectedTab} onChange={this.handleTabChange} indicatorColor="primary" textColor="primary" fullWidth centered scrollable>
+        <Tabs value={selectedTab} onChange={this.handleTabChange} indicatorColor="primary" textColor="primary" fullWidth scrollable>
            <Tab value="ntpStatus" label="NTP Status" />
            <Tab value="ntpSettings" label="NTP Settings" />
          </Tabs>

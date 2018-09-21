@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { withStyles } from 'material-ui/styles';
-import Button from 'material-ui/Button';
-import Switch from 'material-ui/Switch';
-import { LinearProgress } from 'material-ui/Progress';
+import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import Switch from '@material-ui/core/Switch';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
-import Typography from 'material-ui/Typography';
-import { FormControlLabel } from 'material-ui/Form';
+import Typography from '@material-ui/core/Typography';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 import isIP from '../validators/isIP';
 import isHostname from '../validators/isHostname';
@@ -65,6 +65,7 @@ class OTASettingsForm extends React.Component {
                         checked={otaSettings.enabled}
                         onChange={handleCheckboxChange('enabled')}
                         value="enabled"
+                        color="primary"
                  />
                }
               label="Enable OTA Updates?"

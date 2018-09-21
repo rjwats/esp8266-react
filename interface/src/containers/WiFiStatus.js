@@ -1,25 +1,26 @@
 import React, { Component, Fragment } from 'react';
 
-import { withStyles } from 'material-ui/styles';
-import Button from 'material-ui/Button';
-import { LinearProgress } from 'material-ui/Progress';
-import Typography from 'material-ui/Typography';
+import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import Typography from '@material-ui/core/Typography';
+
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+
+import Avatar from '@material-ui/core/Avatar';
+import Divider from '@material-ui/core/Divider';
+import WifiIcon from '@material-ui/icons/Wifi';
+import DNSIcon from '@material-ui/icons/Dns';
+import SettingsInputComponentIcon from '@material-ui/icons/SettingsInputComponent';
+import SettingsInputAntennaIcon from '@material-ui/icons/SettingsInputAntenna';
 
 import SectionContent from '../components/SectionContent';
-
 import { WIFI_STATUS_ENDPOINT }  from  '../constants/Endpoints';
 import { isConnected, connectionStatus, connectionStatusHighlight }  from  '../constants/WiFiConnectionStatus';
 import * as Highlight from '../constants/Highlight';
-
 import { restComponent }  from  '../components/RestComponent';
-
-import List, { ListItem, ListItemText } from 'material-ui/List';
-import Avatar from 'material-ui/Avatar';
-import Divider from 'material-ui/Divider';
-import WifiIcon from 'material-ui-icons/Wifi';
-import DNSIcon from 'material-ui-icons/Dns';
-import SettingsInputComponentIcon from 'material-ui-icons/SettingsInputComponent';
-import SettingsInputAntennaIcon from 'material-ui-icons/SettingsInputAntenna';
 
 const styles = theme => ({
   ["wifiStatus_" + Highlight.IDLE]: {

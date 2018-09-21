@@ -1,20 +1,25 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { withStyles } from 'material-ui/styles';
-import Button from 'material-ui/Button';
-import { LinearProgress } from 'material-ui/Progress';
-import Typography from 'material-ui/Typography';
+import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import Typography from '@material-ui/core/Typography';
+
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+
+import Avatar from '@material-ui/core/Avatar';
+import Badge from '@material-ui/core/Badge';
+
+import WifiIcon from '@material-ui/icons/Wifi';
+import LockIcon from '@material-ui/icons/Lock';
+import LockOpenIcon from '@material-ui/icons/LockOpen';
 
 import { isNetworkOpen, networkSecurityMode } from '../constants/WiFiSecurityModes';
-
-import List, { ListItem, ListItemText, ListItemIcon,  ListItemAvatar } from 'material-ui/List';
-import Avatar from 'material-ui/Avatar';
-import Badge from 'material-ui/Badge';
-
-import WifiIcon from 'material-ui-icons/Wifi';
-import LockIcon from 'material-ui-icons/Lock';
-import LockOpenIcon from 'material-ui-icons/LockOpen';
 
 const styles = theme => ({
   scanningProgress: {

@@ -1,25 +1,24 @@
 import React, { Component } from 'react';
 
 import AppRouting from './AppRouting';
-
 import SnackbarNotification from './components/SnackbarNotification';
+
+import CssBaseline from '@material-ui/core/CssBaseline';
+import blueGrey from '@material-ui/core/colors/blueGrey';
+import indigo from '@material-ui/core/colors/indigo';
+import orange from '@material-ui/core/colors/orange';
+import red from '@material-ui/core/colors/red';
+import green from '@material-ui/core/colors/green';
 
 import JssProvider from 'react-jss/lib/JssProvider';
 import { create } from 'jss';
-
-import Reboot from 'material-ui/Reboot';
-import blueGrey from 'material-ui/colors/blueGrey';
-import indigo from 'material-ui/colors/indigo';
-import orange from 'material-ui/colors/orange';
-import red from 'material-ui/colors/red';
-import green from 'material-ui/colors/green';
 
 import {
   MuiThemeProvider,
   createMuiTheme,
   createGenerateClassName,
   jssPreset,
-} from 'material-ui/styles';
+} from '@material-ui/core/styles';
 
 // Our theme
 const theme = createMuiTheme({
@@ -45,7 +44,7 @@ class App extends Component {
 		 <JssProvider jss={jss} generateClassName={generateClassName}>
 			<MuiThemeProvider theme={theme}>
         <SnackbarNotification>
-				  <Reboot />
+				  <CssBaseline />
           <AppRouting />
         </SnackbarNotification>
 			</MuiThemeProvider>
