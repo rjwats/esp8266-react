@@ -63,10 +63,7 @@ void AudioLightSettingsService::tick() {
   transmitFrequencies();
 
   // allow current mode to adjust the leds
-  _currentMode->tick();
-
-  // display the leds
-  _ledController.showLeds();
+  _colorMode.tick();
 }
 
 void AudioLightSettingsService::transmitFrequencies() {

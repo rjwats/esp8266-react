@@ -45,8 +45,8 @@ private:
   CLEDController *_ledController = &FastLED.addLeds<LED_TYPE,LED_DATA_PIN>(_leds, NUM_LEDS);
 
   // Construct modes
-  OffMode _offMode = OffMode(_ledController, _leds, _frequencies, NUM_LEDS);
-  ColorMode _colorMode = ColorMode(_ledController, _leds, _frequencies, NUM_LEDS);
+  OffMode _offMode = OffMode(_ledController, _leds, NUM_LEDS, _frequencies);
+  ColorMode _colorMode = ColorMode(_ledController, _leds, NUM_LEDS, _frequencies);
 
   // last tick tracker
   unsigned long _lastTickAt;

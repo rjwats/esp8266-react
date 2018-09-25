@@ -1,6 +1,6 @@
 #include <audiolight/OffMode.h>
 
-String OffMode::getMode() {
+String OffMode::getId() {
   return "off";
 }
 
