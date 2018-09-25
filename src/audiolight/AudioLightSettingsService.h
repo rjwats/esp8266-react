@@ -1,17 +1,18 @@
 #ifndef AudioLightSettingsService_h
 #define AudioLightSettingsService_h
 
-#include <SettingsService.h>
-
-// TODO  - Remove me when effects have been factored out into modules
 #include "FastLED.h"
+#include <SettingsService.h>
+#include <audiolight/ColorMode.h>
+
+// fast led settings
 #define LED_DATA_PIN 12
 #define COLOR_ORDER GBR
 #define LED_TYPE WS2812
 #define NUM_LEDS 9
 
 // 17ms delay gets us approximatly 60 samples per second
-#define AUDIO_LIGHT_SAMPLE_DELAY_MS 17
+#define AUDIO_LIGHT_TICK_DELAY_MS 17
 
 #define AUDIO_LIGHT_RESET_PIN 4
 #define AUDIO_LIGHT_STROBE_PIN 5
@@ -38,28 +39,29 @@ protected:
 private:
   AsyncWebSocket _webSocket;
 
-  // frequency samples
-  unsigned long _lastSampledAt;
-  uint16_t _samples[7];
+  // The LED controller and led array
+  CRGB _leds[NUM_LEDS];
+  CLEDController *_ledController = &FastLED.addLeds<LED_TYPE,LED_DATA_PIN>(_leds, NUM_LEDS);
+
+  // Construct modes
+  OffMode _offMode = OffMode(_ledController, _leds, _frequencies, NUM_LEDS);
+  ColorMode _colorMode = ColorMode(_ledController, _leds, _frequencies, NUM_LEDS);
+
+  // last tick tracker
+  unsigned long _lastTickAt;
+
+  // frequencies
+  uint16_t _frequencies[7];
 
   // for FPS reporting
   unsigned long _lastReportedAt;
   uint8_t _numSamples;
 
   // buffer for writing to the web socket clients
-  char _outputBuffer[37];
+  char _outputBuffer[37];  
 
-  // TEMP - hacking in the lightning effect
-  struct CRGB leds[NUM_LEDS];
-  uint8_t frequency = 50;
-  uint8_t flashes = 8;
-  unsigned int dimmer = 1;
-  uint8_t ledstart;
-  uint8_t ledlen;
-
-  void sampleNow();
+  void tick();
   void transmitFrequencies();
-  void makeLightning();
 };
 
 #endif // end AudioLightSettingsService_h
