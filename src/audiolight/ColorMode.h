@@ -12,9 +12,9 @@
 class ColorMode : public AudioLightMode {
 
   private:
-   CRGB color = CRGB::White;
-   uint8_t brightness = 255;
-   boolean refresh = true;
+   CRGB _color = CRGB::White;
+   uint8_t _brightness = 255;
+   boolean _refresh = true;
 
   public:
     ColorMode(CLEDController *ledController, CRGB *leds, uint16_t numLeds, uint16_t *frequencies) 

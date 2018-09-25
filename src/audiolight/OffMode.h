@@ -8,7 +8,7 @@
 class OffMode : public AudioLightMode {
 
   private:
-   boolean turnOff;
+   boolean _turnOff;
 
   public:
     OffMode(CLEDController *ledController, CRGB *leds, int numLeds, uint16_t *frequencies) 

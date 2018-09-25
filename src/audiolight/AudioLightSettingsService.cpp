@@ -1,9 +1,18 @@
 #include <audiolight/AudioLightSettingsService.h>
 
-AudioLightSettingsService::AudioLightSettingsService(AsyncWebServer *server, FS *fs) : 
-SettingsService(server, fs, AUDIO_LIGHT_SETTINGS_SERVICE_PATH, AUDIO_LIGHT_SETTINGS_FILE),
-_webSocket(AUDIO_LIGHT_FREQUENCY_STREAM) {
+AudioLightSettingsService::AudioLightSettingsService(AsyncWebServer *server, FS *fs) :
+SimpleService(server, AUDIO_LIGHT_SERVICE_PATH),SimpleSocket(server, AUDIO_LIGHT_WS_PATH), 
+_server(server), _webSocket(AUDIO_LIGHT_FREQUENCY_STREAM) {
   _server->addHandler(&_webSocket);
+
+  _ledController = &FastLED.addLeds<LED_TYPE,LED_DATA_PIN,COLOR_ORDER>(_leds, NUM_LEDS);
+  
+  _modes[0] = new OffMode(_ledController, _leds, NUM_LEDS, _frequencies);
+  _modes[1] = new ColorMode(_ledController, _leds, NUM_LEDS, _frequencies);
+
+  // off mode is default
+  _currentMode = _modes[1];
+  _currentMode->enable();
 }
 
 AudioLightSettingsService::~AudioLightSettingsService() {
@@ -34,10 +43,39 @@ void AudioLightSettingsService::loop() {
   }  
 }
 
-void AudioLightSettingsService::readFromJsonObject(JsonObject &root) {
+AudioLightMode* AudioLightSettingsService::getMode(String modeId) {
+  for (uint8_t i = 0; i<NUM_MODES; i++){
+    AudioLightMode* mode = _modes[i];
+    if (mode->getId() == modeId){
+      return mode;
+    }
+  }
+  return NULL;
 }
 
-void AudioLightSettingsService::writeToJsonObject(JsonObject &root) {
+void AudioLightSettingsService::readFromJsonObject(JsonObject& root, String originId) {
+  // update the config
+  String modeId = root["id"];
+
+  // get mode we are configuring
+  AudioLightMode *mode = getMode(modeId);
+
+  // switch mode
+  if (mode != NULL){
+    mode->updateConfig(root);
+    if (mode != _currentMode){
+      _currentMode = mode;
+      _currentMode->enable();
+    }
+  }
+
+  // push the updates out to the WebSockets
+  pushPayloadToWebSockets(originId);
+}
+
+void AudioLightSettingsService::writeToJsonObject(JsonObject& root) {
+  root["id"] = _currentMode->getId();
+  _currentMode->writeConfig(root);
 }
 
 void AudioLightSettingsService::tick() {
@@ -63,7 +101,7 @@ void AudioLightSettingsService::tick() {
   transmitFrequencies();
 
   // allow current mode to adjust the leds
-  _colorMode.tick();
+  _currentMode->tick();
 }
 
 void AudioLightSettingsService::transmitFrequencies() {

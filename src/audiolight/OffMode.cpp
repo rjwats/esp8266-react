@@ -5,11 +5,14 @@ String OffMode::getId() {
 }
 
 void OffMode::enable() {
-  turnOff = true;
+  _turnOff = true;
 }
 
 void OffMode::tick() {
-  // turn off by fading?
+  if (_turnOff) {
+    _ledController->clearLeds(_numLeds);
+    _turnOff = false;
+  }
 }
 
 

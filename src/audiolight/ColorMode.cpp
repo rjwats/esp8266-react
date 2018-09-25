@@ -5,24 +5,24 @@ String ColorMode::getId() {
 }
 
 void ColorMode::enable() {
-  refresh = true;
+  _refresh = true;
 }
 
 void ColorMode::tick() {
-  if (refresh) {
-    fill_solid( _leds, _numLeds, color);
-    
-    refresh = false;
+  if (_refresh) {
+    fill_solid(_leds, _numLeds, _color);
+    _ledController->showLeds(_brightness);
+    _refresh = false;
   }
 }
 
 void ColorMode::updateConfig(JsonObject& root) {
-  updateByteFromJson(root, &brightness, "brightness");
-  updateColorFromJson(root, &color);
-  refresh = true;
+  updateByteFromJson(root, &_brightness, "brightness");
+  updateColorFromJson(root, &_color);
+  _refresh = true;
 }
 
 void ColorMode::writeConfig(JsonObject& root) {
-  writeByteToJson(root, &brightness, "brightness");
-  writeColorToJson(root, &color);
+  writeByteToJson(root, &_brightness, "brightness");
+  writeColorToJson(root, &_color);
 }
