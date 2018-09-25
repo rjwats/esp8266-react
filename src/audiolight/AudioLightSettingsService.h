@@ -4,6 +4,7 @@
 #include "FastLED.h"
 #include <SettingsService.h>
 #include <audiolight/ColorMode.h>
+#include <audiolight/OffMode.h>
 
 // fast led settings
 #define LED_DATA_PIN 12

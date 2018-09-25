@@ -1,6 +1,6 @@
 #include <audiolight/OffMode.h>
 
-String ColorMode::getMode() {
+String OffMode::getMode() {
   return "off";
 }
 
@@ -9,7 +9,7 @@ void OffMode::enable() {
 }
 
 void OffMode::tick() {
-  _ledController.fadeToBlackBy(64);
+  // turn off by fading?
 }
 
 

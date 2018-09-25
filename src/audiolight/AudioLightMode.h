@@ -27,7 +27,7 @@ class AudioLightMode {
    /*
    * Get the code for the mode as a string
    */
-  virtual String getMode() = 0;
+  virtual String getId() = 0;
 
    /*
    * Allow the mode to animate the LEDs, called by the main loop.
