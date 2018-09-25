@@ -1,29 +1,29 @@
-#include <msgeq7/MSGEQ7SettingsService.h>
+#include <audiolight/AudioLightSettingsService.h>
 
-MSGEQ7SettingsService::MSGEQ7SettingsService(AsyncWebServer *server, FS *fs) : 
-SettingsService(server, fs, MSGEQ7_SETTINGS_SERVICE_PATH, MSGEQ7_SETTINGS_FILE),
-_webSocket(MSGEQ7_FREQUENCY_STREAM) {
+AudioLightSettingsService::AudioLightSettingsService(AsyncWebServer *server, FS *fs) : 
+SettingsService(server, fs, AUDIO_LIGHT_SETTINGS_SERVICE_PATH, AUDIO_LIGHT_SETTINGS_FILE),
+_webSocket(AUDIO_LIGHT_FREQUENCY_STREAM) {
   _server->addHandler(&_webSocket);
 }
 
-MSGEQ7SettingsService::~MSGEQ7SettingsService() {
+AudioLightSettingsService::~AudioLightSettingsService() {
   _server->removeHandler(&_webSocket);
 }
 
-void MSGEQ7SettingsService::begin() {
-  pinMode(MSGEQ7_RESET_PIN, OUTPUT);
-  pinMode(MSGEQ7_STROBE_PIN, OUTPUT);
-  pinMode(MSGEQ7_ANALOG_PIN, INPUT);
+void AudioLightSettingsService::begin() {
+  pinMode(AUDIO_LIGHT_RESET_PIN, OUTPUT);
+  pinMode(AUDIO_LIGHT_STROBE_PIN, OUTPUT);
+  pinMode(AUDIO_LIGHT_ANALOG_PIN, INPUT);
 
   // TEMP - Set  Up FAST LED
   LEDS.addLeds<LED_TYPE, LED_DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS);
   FastLED.setBrightness(255);
 }
 
-void MSGEQ7SettingsService::loop() {
+void AudioLightSettingsService::loop() {
   unsigned long currentMillis = millis();
   unsigned long sampleElapsed = (unsigned long)(currentMillis - _lastSampledAt);
-  if (sampleElapsed >= MSGEQ7_SAMPLE_DELAY_MS) {
+  if (sampleElapsed >= AUDIO_LIGHT_SAMPLE_DELAY_MS) {
     _lastSampledAt = currentMillis;
     _numSamples ++;
     sampleNow();
@@ -38,28 +38,28 @@ void MSGEQ7SettingsService::loop() {
   }  
 }
 
-void MSGEQ7SettingsService::readFromJsonObject(JsonObject &root) {
+void AudioLightSettingsService::readFromJsonObject(JsonObject &root) {
 }
 
-void MSGEQ7SettingsService::writeToJsonObject(JsonObject &root) {
+void AudioLightSettingsService::writeToJsonObject(JsonObject &root) {
 }
 
-void MSGEQ7SettingsService::sampleNow() {
+void AudioLightSettingsService::sampleNow() {
   // reset IC
-  digitalWrite(MSGEQ7_STROBE_PIN, LOW);
-  digitalWrite(MSGEQ7_RESET_PIN, HIGH);
-  digitalWrite(MSGEQ7_RESET_PIN, LOW);
+  digitalWrite(AUDIO_LIGHT_STROBE_PIN, LOW);
+  digitalWrite(AUDIO_LIGHT_RESET_PIN, HIGH);
+  digitalWrite(AUDIO_LIGHT_RESET_PIN, LOW);
 
   for (uint8_t i = 0; i < 7; i++) {
     // trigger each value in turn
-    digitalWrite(MSGEQ7_STROBE_PIN, HIGH);
-    digitalWrite(MSGEQ7_STROBE_PIN, LOW);
+    digitalWrite(AUDIO_LIGHT_STROBE_PIN, HIGH);
+    digitalWrite(AUDIO_LIGHT_STROBE_PIN, LOW);
 
     // allow the output to settle
     delayMicroseconds(36);
 
     // read frequency for pin
-    _samples[i] = analogRead(MSGEQ7_ANALOG_PIN);
+    _samples[i] = analogRead(AUDIO_LIGHT_ANALOG_PIN);
   }
 
   if (_samples[0] > 1000){
@@ -69,7 +69,7 @@ void MSGEQ7SettingsService::sampleNow() {
   transmitFrequencies();
 }
 
-void  MSGEQ7SettingsService::makeLightning(){
+void  AudioLightSettingsService::makeLightning(){
   ledstart = random8(NUM_LEDS);                               // Determine starting location of flash
   ledlen = random8(NUM_LEDS-ledstart);                        // Determine length of flash (not to go beyond NUM_LEDS-1)
   
@@ -89,7 +89,7 @@ void  MSGEQ7SettingsService::makeLightning(){
   } // for()
 }
 
-void MSGEQ7SettingsService::transmitFrequencies() {
+void AudioLightSettingsService::transmitFrequencies() {
   if (_webSocket.count() == 0) {
     return;
   }

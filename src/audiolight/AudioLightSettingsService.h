@@ -1,5 +1,5 @@
-#ifndef MSGEQ7SettingsService_h
-#define MSGEQ7SettingsService_h
+#ifndef AudioLightSettingsService_h
+#define AudioLightSettingsService_h
 
 #include <SettingsService.h>
 
@@ -11,22 +11,22 @@
 #define NUM_LEDS 9
 
 // 17ms delay gets us approximatly 60 samples per second
-#define MSGEQ7_SAMPLE_DELAY_MS 17
+#define AUDIO_LIGHT_SAMPLE_DELAY_MS 17
 
-#define MSGEQ7_RESET_PIN 4
-#define MSGEQ7_STROBE_PIN 5
-#define MSGEQ7_ANALOG_PIN 0
+#define AUDIO_LIGHT_RESET_PIN 4
+#define AUDIO_LIGHT_STROBE_PIN 5
+#define AUDIO_LIGHT_ANALOG_PIN 0
 
-#define MSGEQ7_SETTINGS_FILE "/config/msgeq7Settings.json"
-#define MSGEQ7_SETTINGS_SERVICE_PATH "/rest/msgeq7Settings"
-#define MSGEQ7_FREQUENCY_STREAM "/ws/frequencyStream"
+#define AUDIO_LIGHT_SETTINGS_FILE "/config/audioLight.json"
+#define AUDIO_LIGHT_SETTINGS_SERVICE_PATH "/rest/audioLight"
+#define AUDIO_LIGHT_FREQUENCY_STREAM "/ws/frequencyStream"
 
-class MSGEQ7SettingsService : public SettingsService
+class AudioLightSettingsService : public SettingsService
 {
 
 public:
-  MSGEQ7SettingsService(AsyncWebServer *server, FS *fs);
-  ~MSGEQ7SettingsService();
+  AudioLightSettingsService(AsyncWebServer *server, FS *fs);
+  ~AudioLightSettingsService();
 
   void begin();
   void loop();
@@ -62,4 +62,4 @@ private:
   void makeLightning();
 };
 
-#endif // end MSGEQ7SettingsService_h
+#endif // end AudioLightSettingsService_h
