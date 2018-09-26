@@ -55,7 +55,7 @@ AudioLightMode* AudioLightSettingsService::getMode(String modeId) {
 
 void AudioLightSettingsService::readFromJsonObject(JsonObject& root, String originId) {
   // update the config
-  String modeId = root["id"];
+  String modeId = root["mode_id"];
 
   // get mode we are configuring
   AudioLightMode *mode = getMode(modeId);
@@ -74,7 +74,7 @@ void AudioLightSettingsService::readFromJsonObject(JsonObject& root, String orig
 }
 
 void AudioLightSettingsService::writeToJsonObject(JsonObject& root) {
-  root["id"] = _currentMode->getId();
+  root["mode_id"] = _currentMode->getId();
   _currentMode->writeConfig(root);
 }
 

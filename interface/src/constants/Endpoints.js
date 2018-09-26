@@ -14,8 +14,6 @@ const WEB_SOCKET_ROOT = process.env.REACT_APP_WEB_SOCKET_ROOT;
 const WEB_SOCKET_PATH = "/ws";
 const WEB_SOCKET_PREFIX = calculateWebSocketPrefix(WEB_SOCKET_PATH);
 
-export const FREQUENCY_STREAM_WEBSOCKET_URI = WEB_SOCKET_PREFIX + "/frequencyStream";
-
 function calculateWebSocketPrefix(webSocketPath) {
   if (!WEB_SOCKET_ROOT || WEB_SOCKET_ROOT.length === 0){
     var loc = window.location, webSocketURI;
@@ -28,3 +26,6 @@ function calculateWebSocketPrefix(webSocketPath) {
   }
   return WEB_SOCKET_ROOT + webSocketPath;
 }
+
+export const FREQUENCY_STREAM_WEBSOCKET_URI = WEB_SOCKET_PREFIX + "/frequencyStream";
+export const AUDIO_LIGHT_WEBSOCKET_URI = WEB_SOCKET_PREFIX + "/audioLight";
