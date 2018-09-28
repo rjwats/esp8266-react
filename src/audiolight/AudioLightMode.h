@@ -11,7 +11,7 @@ class AudioLightMode {
     CLEDController *_ledController;   
     CRGB *_leds;
     int _numLeds;
-    uint16_t *frequencies;
+    uint16_t *_frequencies;
 
     void (*configChangeCallback)();
 
@@ -21,7 +21,7 @@ class AudioLightMode {
      this->_ledController = ledController;
      this->_leds = leds;  
      this->_numLeds = numLeds;
-     this->frequencies = frequencies;
+     this->_frequencies = frequencies;
    }
 
    /*
