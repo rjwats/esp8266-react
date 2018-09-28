@@ -9,6 +9,7 @@ _server(server), _webSocket(AUDIO_LIGHT_FREQUENCY_STREAM) {
   
   _modes[0] = new OffMode(_ledController, _leds, NUM_LEDS, _frequencies);
   _modes[1] = new ColorMode(_ledController, _leds, NUM_LEDS, _frequencies);
+  _modes[2] = new SpectrumMode(_ledController, _leds, NUM_LEDS, _frequencies);
 
   // off mode is default
   _currentMode = _modes[1];
