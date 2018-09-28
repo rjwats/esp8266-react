@@ -1,7 +1,7 @@
 #include <audiolight/SpectrumMode.h>
 
 String SpectrumMode::getId() {
-  return "flashy_beats";
+  return "spectrum";
 }
 
 void SpectrumMode::enable() {
