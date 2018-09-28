@@ -6,6 +6,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import Typography from '@material-ui/core/Typography';
 import MenuItem from '@material-ui/core/MenuItem';
 import { AudioLightColorMode } from './AudioLightColorMode';
+import { AudioLightSpectrumMode } from './AudioLightSpectrumMode';
 import { ValidatorForm, SelectValidator } from 'react-material-ui-form-validator';
 
 import * as AudioLightModes from '../constants/AudioLightModes';
@@ -50,6 +51,8 @@ class AudioLightSettingsForm extends React.Component {
       switch (mode_id) {
         case AudioLightModes.COLOR:
           return AudioLightColorMode;
+        case AudioLightModes.SPECTRUM:
+          return AudioLightSpectrumMode;
         default:
       }
     }
@@ -88,7 +91,7 @@ class AudioLightSettingsForm extends React.Component {
                   value={audioLightSettings.mode_id}
                   className={classes.selectField}
                   onChange={this.props.handleChangeMode}>
-                  <MenuItem  value={AudioLightModes.OFF}>Off</MenuItem>
+                  <MenuItem value={AudioLightModes.OFF}>Off</MenuItem>
                   <MenuItem value={AudioLightModes.COLOR}>Single Color</MenuItem>
                 </SelectValidator>
 

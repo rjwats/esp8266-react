@@ -3,8 +3,7 @@
 
 #include <Arduino.h>
 #include <ArduinoJson.h>
-
-#include "FastLED.h"
+#include <FastLed.h>
 
 class AudioLightMode {
   protected:  

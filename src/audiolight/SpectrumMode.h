@@ -2,12 +2,13 @@
 #define SPECTRUM_MODE_H
 
 #include <Arduino.h>
+#include <FastLed.h>
 
 #include <audiolight/AudioLightMode.h>
 #include <audiolight/JsonUtil.h>
 
 #define MIN_PEAK_DECAY_AMOUNT 1
-#define MAX_SAMPLE_SIZE = 1024
+#define MAX_SAMPLE_SIZE 1024
 
 class SpectrumMode : public AudioLightMode {
 
