@@ -13,11 +13,12 @@
 class SpectrumMode : public AudioLightMode {
 
 private:
+  // not used.. to be replaced
   uint8_t _brightness = 255;
   boolean _refresh = true;
 
   // How long should it take the peaks to decay from 100% to 0%
-  uint16_t _peakDecayMs = 500;
+  uint16_t _peakDecayMs = 1000;
   uint16_t _peakDecayAmount = 0;
   uint16_t _peaks[7];
 

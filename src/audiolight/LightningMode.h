@@ -11,7 +11,8 @@ class LightningMode : public AudioLightMode
 {
 
 private:
-  uint8_t _brightness = 255 boolean _refresh = true;
+  uint8_t _brightness = 255;
+  boolean _refresh = true;
 
   uint8_t _frequency = 50; // controls the interval between strikes
   uint8_t _flashes = 8;    //the upper limit of flashes per strike

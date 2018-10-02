@@ -10,6 +10,7 @@ _server(server), _webSocket(AUDIO_LIGHT_FREQUENCY_STREAM) {
   _modes[0] = new OffMode(_ledController, _leds, NUM_LEDS, _frequencies);
   _modes[1] = new ColorMode(_ledController, _leds, NUM_LEDS, _frequencies);
   _modes[2] = new SpectrumMode(_ledController, _leds, NUM_LEDS, _frequencies);
+  _modes[3] = new RainbowMode(_ledController, _leds, NUM_LEDS, _frequencies);
 
   // off mode is default
   _currentMode = _modes[1];
@@ -96,6 +97,9 @@ void AudioLightSettingsService::tick() {
 
     // read frequency for pin
     _frequencies[i] = analogRead(AUDIO_LIGHT_ANALOG_PIN);
+
+    // re-map frequency to eliminate low level noise
+    _frequencies[i]  = _frequencies[i] > 125 ? map(_frequencies[i]-125, 0, 1024-125, 0, 1024) : 0;
   }
 
   // transmit frequencies over web sockets if possible

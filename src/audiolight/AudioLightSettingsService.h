@@ -8,15 +8,17 @@
 #include <audiolight/ColorMode.h>
 #include <audiolight/OffMode.h>
 #include <audiolight/SpectrumMode.h>
+#include <audiolight/RainbowMode.h>
 
 // fast led settings
 #define LED_DATA_PIN 12
 #define COLOR_ORDER GRB
 #define LED_TYPE WS2812
-#define NUM_LEDS 63
-#define NUM_MODES 3
+#define NUM_LEDS 60
+#define NUM_MODES 4
 
 // 17ms delay gets us approximatly 60 samples per second
+#define AUDIO_LIGHT_FPS 60
 #define AUDIO_LIGHT_TICK_DELAY_MS 17
 
 #define AUDIO_LIGHT_RESET_PIN 4

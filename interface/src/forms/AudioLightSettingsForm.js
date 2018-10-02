@@ -93,6 +93,7 @@ class AudioLightSettingsForm extends React.Component {
                   onChange={this.props.handleChangeMode}>
                   <MenuItem value={AudioLightModes.OFF}>Off</MenuItem>
                   <MenuItem value={AudioLightModes.COLOR}>Single Color</MenuItem>
+                  <MenuItem value={AudioLightModes.SPECTRUM}>Spectrum</MenuItem>
                 </SelectValidator>
 
                 <FormComponent
