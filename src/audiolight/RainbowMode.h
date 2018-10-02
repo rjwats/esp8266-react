@@ -1,5 +1,5 @@
-#ifndef COLOR_MODE_H
-#define COLOR_MODE_H
+#ifndef RAINBOW_MODE_H
+#define RAINBOW_MODE_H
 
 #include <Arduino.h>
 
@@ -14,7 +14,7 @@ class RainbowMode : public AudioLightMode {
   private:
     // not used.. to be replaced
     uint8_t _brightness = 255;
-    boolean _refresh = true;
+    CRGB _color = CRGB::White;
 
     // various state and settings for rainbow mode
     float _smoothingFactor = 0.7;

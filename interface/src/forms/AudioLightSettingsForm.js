@@ -7,6 +7,8 @@ import Typography from '@material-ui/core/Typography';
 import MenuItem from '@material-ui/core/MenuItem';
 import { AudioLightColorMode } from './AudioLightColorMode';
 import { AudioLightSpectrumMode } from './AudioLightSpectrumMode';
+import { AudioLightRainbowMode } from './AudioLightRainbowMode';
+import { AudioLightLightningMode } from './AudioLightLightningMode';
 import { ValidatorForm, SelectValidator } from 'react-material-ui-form-validator';
 
 import * as AudioLightModes from '../constants/AudioLightModes';
@@ -53,6 +55,10 @@ class AudioLightSettingsForm extends React.Component {
           return AudioLightColorMode;
         case AudioLightModes.SPECTRUM:
           return AudioLightSpectrumMode;
+        case AudioLightModes.RAINBOW:
+          return AudioLightRainbowMode;
+        case AudioLightModes.LIGHTNING:
+          return AudioLightLightningMode;
         default:
       }
     }
@@ -94,6 +100,8 @@ class AudioLightSettingsForm extends React.Component {
                   <MenuItem value={AudioLightModes.OFF}>Off</MenuItem>
                   <MenuItem value={AudioLightModes.COLOR}>Single Color</MenuItem>
                   <MenuItem value={AudioLightModes.SPECTRUM}>Spectrum</MenuItem>
+                  <MenuItem value={AudioLightModes.RAINBOW}>Rainbow</MenuItem>
+                  <MenuItem value={AudioLightModes.LIGHTNING}>Lightning</MenuItem>
                 </SelectValidator>
 
                 <FormComponent

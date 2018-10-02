@@ -11,7 +11,8 @@ _server(server), _webSocket(AUDIO_LIGHT_FREQUENCY_STREAM) {
   _modes[1] = new ColorMode(_ledController, _leds, NUM_LEDS, _frequencies);
   _modes[2] = new SpectrumMode(_ledController, _leds, NUM_LEDS, _frequencies);
   _modes[3] = new RainbowMode(_ledController, _leds, NUM_LEDS, _frequencies);
-
+  _modes[4] = new LightningMode(_ledController, _leds, NUM_LEDS, _frequencies);
+  
   // off mode is default
   _currentMode = _modes[1];
   _currentMode->enable();
