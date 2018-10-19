@@ -21,6 +21,18 @@ void LightningMode::tick() {
     _refresh = false;
   }
 
+/*
+  uint16_t currentLevel = 0;
+  uint8_t numBands = 0;
+  for (int i=0; i<7; i++) {
+    if (_includedBands[i]) {
+      currentLevel += _frequencies[i];
+      numBands++;
+    }
+  }
+  currentLevel /= numBands;
+*/
+
   if (_state == State::IDLE && _frequencies[0] > 200) {
     // TODO: Can do a slightly better job of calculating this add some settings too
     _ledstart = random8(_numLeds);  // Determine starting location of flash
@@ -73,12 +85,28 @@ void LightningMode::resetWaitTime() {
 }
 
 void LightningMode::updateConfig(JsonObject &root) {
-  updateByteFromJson(root, &_threshold, "threshold");
-  writeByteToJson(root, &_flashes, "flashes");  
+  _threshold = root["threshold"];
+
+  updateByteFromJson(root, &_flashes, "flashes");
+  updateColorFromJson(root, &_color, "color");
+
+  JsonArray& array = root.createNestedArray("included_bands");
+  for (uint8_t i = 0; i < 7; i++) {
+     _includedBands[i] = array[i];
+  }
+
+ // reset the mode
   _refresh = true;
 }
 
 void LightningMode::writeConfig(JsonObject &root) {
-  writeByteToJson(root, &_threshold, "threshold");
+  root["threshold"] = _threshold;
+
   writeByteToJson(root, &_flashes, "flashes");  
+  writeColorToJson(root, &_color, "color");
+
+  JsonArray& array = root.get<JsonArray>("included_bands");
+  for (uint8_t i = 0; i < 7; i++) {
+      array[i] = _includedBands[i];
+  }
 }

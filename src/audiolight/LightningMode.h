@@ -13,11 +13,18 @@ private:
   enum class State { IDLE, INITIALIZED, RUNNING };
   boolean _refresh = true;
 
-  // TODO: channels to listen on
-  uint8_t _threshold = 50; // initially we'll work with a simple threshold level for triggering a strike
+  // which channels are important to triger the lightning?
+  boolean _includedBands[7] = {true, true, false, false, false, false, false};
+  
+  uint8_t _threshold = 50; // initially we'll work with a simple % based threshold level for triggering a strike
                            // in the future this could be take into account the background noise to make
-                           // sure a "significant" change is detected, which may eliminate this setting
-  uint8_t _flashes = 8;    //the upper limit of flashes per strike
+                           // sure a "significant" change is detected, which may change the settings
+ 
+  //the upper limit of flashes per strike
+  uint8_t _flashes = 8;    
+  
+  // What color, just in case we want funky colored lightning!
+  CRGB _color = CRGB::White;
 
   // STATE...
   State _state = State::IDLE;
