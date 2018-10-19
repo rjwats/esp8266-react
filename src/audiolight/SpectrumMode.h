@@ -18,12 +18,12 @@ private:
   boolean _refresh = true;
 
   // How long should it take the peaks to decay from 100% to 0%
-  uint16_t _peakDecayMs = 1000;
+  uint16_t _peakDecayMs = 2000;
   uint16_t _peakDecayAmount = 0;
   uint16_t _peaks[7];
 
   // Have a go generating rolling averages
-  float _rollingAverageFactor = 0.7;
+  float _rollingAverageFactor = 0.3;
   uint16_t _rollingAverages[7];
 
 public:

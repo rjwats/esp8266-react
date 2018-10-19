@@ -25,8 +25,8 @@ void SpectrumMode::tick() {
     _rollingAverages[i] = _rollingAverageFactor * _frequencies[i] + (1 - _rollingAverageFactor) * _rollingAverages[i];
 
     // use whatever is larger, decayed value
-     uint16_t decayedValue = (_peaks[i] > _peakDecayAmount) ? _peaks[i] - _peakDecayAmount : 0;     
-     _peaks[i] = max(_frequencies[i], decayedValue);
+     _peaks[i] = (_peaks[i] > _peakDecayAmount) ? _peaks[i] - _peakDecayAmount : 0;     
+     _peaks[i] = max(_rollingAverages[i], _peaks[i]);
   }
 
   // TEMP - Display averages and peaks on "equalizer" LEDs

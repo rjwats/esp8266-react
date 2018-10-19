@@ -23,6 +23,10 @@ class RainbowMode : public AudioLightMode {
     boolean _refresh = true;
     uint16_t _totalEnergy = 0;
 
+  // smoothed readings - using rolling average
+  float _rollingAverageFactor = 0.5;
+  uint16_t _rollingAverages[7];
+
   public:
     RainbowMode(CLEDController *ledController, CRGB *leds, uint16_t numLeds, uint16_t *frequencies) 
     : AudioLightMode(ledController, leds, numLeds, frequencies) {};

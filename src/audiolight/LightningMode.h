@@ -15,7 +15,7 @@ private:
 
   // TODO: channels to listen on
   uint8_t _threshold = 50; // initially we'll work with a simple threshold level for triggering a strike
-                           // in the future this could be take into accoun the background noise to make
+                           // in the future this could be take into account the background noise to make
                            // sure a "significant" change is detected, which may eliminate this setting
   uint8_t _flashes = 8;    //the upper limit of flashes per strike
 

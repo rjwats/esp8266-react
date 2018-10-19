@@ -15,7 +15,7 @@
 #define LED_DATA_PIN 12
 #define COLOR_ORDER GRB
 #define LED_TYPE WS2812
-#define NUM_LEDS 60
+#define NUM_LEDS 84
 #define NUM_MODES 5
 
 // 17ms delay gets us approximatly 60 samples per second

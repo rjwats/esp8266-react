@@ -26,6 +26,8 @@ void AudioLightSettingsService::begin() {
   pinMode(AUDIO_LIGHT_RESET_PIN, OUTPUT);
   pinMode(AUDIO_LIGHT_STROBE_PIN, OUTPUT);
   pinMode(AUDIO_LIGHT_ANALOG_PIN, INPUT);
+  digitalWrite(AUDIO_LIGHT_RESET_PIN, LOW);
+  digitalWrite(AUDIO_LIGHT_STROBE_PIN, HIGH);  
 }
 
 void AudioLightSettingsService::loop() {
@@ -82,15 +84,13 @@ void AudioLightSettingsService::writeToJsonObject(JsonObject& root) {
 }
 
 void AudioLightSettingsService::tick() {
-  // Reset IC
-  digitalWrite(AUDIO_LIGHT_STROBE_PIN, LOW);
+  // Reset MSGEQ7 IC
   digitalWrite(AUDIO_LIGHT_RESET_PIN, HIGH);
   digitalWrite(AUDIO_LIGHT_RESET_PIN, LOW);
 
   // read samples
   for (uint8_t i = 0; i < 7; i++) {
     // trigger each value in turn
-    digitalWrite(AUDIO_LIGHT_STROBE_PIN, HIGH);
     digitalWrite(AUDIO_LIGHT_STROBE_PIN, LOW);
 
     // allow the output to settle
@@ -101,6 +101,9 @@ void AudioLightSettingsService::tick() {
 
     // re-map frequency to eliminate low level noise
     _frequencies[i]  = _frequencies[i] > 125 ? map(_frequencies[i]-125, 0, 1024-125, 0, 1024) : 0;
+
+    // strobe pin high again for next loop
+    digitalWrite(AUDIO_LIGHT_STROBE_PIN, HIGH);
   }
 
   // transmit frequencies over web sockets if possible
