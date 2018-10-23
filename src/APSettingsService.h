@@ -42,7 +42,7 @@ class APSettingsService : public SettingsService {
     String _password;
 
     // for the mangement delay loop
-    unsigned long _manageAtMillis;
+    unsigned long _lastManaged;
 
     // for the captive portal
     DNSServer *_dnsServer;
