@@ -21,7 +21,7 @@ class AsyncJsonCallbackResponse: public AsyncJsonResponse {
 
   public:
 
-    AsyncJsonCallbackResponse(AsyncJsonCallback callback, bool isArray=false) : _callback{callback}, AsyncJsonResponse(isArray) {}
+    AsyncJsonCallbackResponse(AsyncJsonCallback callback, bool isArray=false) : AsyncJsonResponse(isArray), _callback{callback} {}
     ~AsyncJsonCallbackResponse() {
       _callback();
     }

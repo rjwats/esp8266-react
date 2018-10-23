@@ -122,7 +122,7 @@ private:
   public:
 
     SettingsService(AsyncWebServer* server, FS* fs, char const* servicePath, char const* filePath):
-    _server(server), _fs(fs), _filePath(filePath) {
+    _filePath(filePath), _server(server), _fs(fs){
 
       // configure fetch config handler
       _server->on(servicePath, HTTP_GET, std::bind(&SettingsService::fetchConfig, this, std::placeholders::_1));

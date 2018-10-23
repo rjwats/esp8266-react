@@ -37,7 +37,7 @@ class APSettingsService : public SettingsService {
   private:
 
     // access point settings
-    int _provisionMode;
+    uint8_t _provisionMode;
     String _ssid;
     String _password;
 
