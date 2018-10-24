@@ -4,6 +4,9 @@
 #include <ArduinoJson.h>
 #include <FastLed.h>
 
+void updateBooleanArrayFromJson(JsonObject& root, bool booleanArray[], uint16_t maxSize, String key);
+void writeBooleanArrayToJson(JsonObject& root, bool booleanArray[], uint16_t maxSize, String key);
+
 void updateColorFromJson(JsonObject& root, CRGB* color, String key = "color");
 void writeColorToJson(JsonObject& root, CRGB* color, String key = "color");
 

@@ -21,19 +21,27 @@ void LightningMode::tick() {
     _refresh = false;
   }
 
-/*
-  uint16_t currentLevel = 0;
-  uint8_t numBands = 0;
-  for (int i=0; i<7; i++) {
-    if (_includedBands[i]) {
-      currentLevel += _frequencies[i];
-      numBands++;
-    }
-  }
-  currentLevel /= numBands;
-*/
-
   if (_state == State::IDLE && _frequencies[0] > 200) {
+    uint16_t currentLevel = 0;
+    uint8_t numBands = 0;
+    for (int i=0; i<7; i++) {
+      if (_includedBands[i]) {
+        Serial.print("Adding band: ");      
+        Serial.println(i);
+        currentLevel += _frequencies[i];
+        numBands++;
+      }
+    }
+    Serial.print("Total was: ");  
+    Serial.print(currentLevel);
+    Serial.print(" from ");
+    Serial.print(numBands);
+    Serial.println(" bands.");
+    currentLevel = (float) currentLevel / (numBands * 1024) * 100.0;
+    Serial.print("Percentage is ");
+    Serial.print(currentLevel);
+    Serial.print("%");
+
     // TODO: Can do a slightly better job of calculating this add some settings too
     _ledstart = random8(_numLeds);  // Determine starting location of flash
     _ledlen = random8(_numLeds-_ledstart);  // Determine length of flash (not to go beyond NUM_LEDS-1)
@@ -56,7 +64,7 @@ void LightningMode::tick() {
     fill_solid(_leds+_ledstart,_ledlen,CHSV(255, 0, 255/_dimmer));
     _ledController->showLeds();
 
-    // wait a small amount of time (make this configurable?)
+    // wait a small amount of time (make this configurable? use microsecond timer to avoid delay?)
     delay(random8(4,10));
 
     // hide flash
@@ -73,7 +81,8 @@ void LightningMode::tick() {
   }
 }
 
-boolean LightningMode::isWaitTimeElapsed() {
+
+bool LightningMode::isWaitTimeElapsed() {
   unsigned long waitTimeElapsed = (unsigned long)(millis() - _waitStartedAt);
   return waitTimeElapsed >= _waitDuration;
 }
@@ -89,13 +98,9 @@ void LightningMode::updateConfig(JsonObject &root) {
 
   updateByteFromJson(root, &_flashes, "flashes");
   updateColorFromJson(root, &_color, "color");
+  updateBooleanArrayFromJson(root, _includedBands, 7, "included_bands");
 
-  JsonArray& array = root.createNestedArray("included_bands");
-  for (uint8_t i = 0; i < 7; i++) {
-     _includedBands[i] = array[i];
-  }
-
- // reset the mode
+  // reset the mode
   _refresh = true;
 }
 
@@ -104,9 +109,5 @@ void LightningMode::writeConfig(JsonObject &root) {
 
   writeByteToJson(root, &_flashes, "flashes");  
   writeColorToJson(root, &_color, "color");
-
-  JsonArray& array = root.get<JsonArray>("included_bands");
-  for (uint8_t i = 0; i < 7; i++) {
-      array[i] = _includedBands[i];
-  }
+  writeBooleanArrayToJson(root, _includedBands, 7, "included_bands");
 }

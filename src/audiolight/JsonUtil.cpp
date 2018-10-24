@@ -1,5 +1,23 @@
 #include <audiolight/JsonUtil.h>
 
+void updateBooleanArrayFromJson(JsonObject& root, bool booleanArray[], uint16_t maxLen, String key){
+  if (root.containsKey(key) && root[key].is<JsonArray>()){
+    JsonArray& jsonArray = root.get<JsonArray>(key);
+    for (uint8_t i = 0; i < maxLen && i < jsonArray.size(); i++) {   
+      if (jsonArray.is<bool>(i)) {
+        booleanArray[i] = jsonArray[i];
+      }
+    }
+  }
+}
+
+void writeBooleanArrayToJson(JsonObject& root, bool booleanArray[], uint16_t len, String key){
+  JsonArray& array = root.createNestedArray(key);
+  for (uint8_t i = 0; i < len; i++) {
+    array.add(booleanArray[i]);
+  }
+}
+
 void updateColorFromJson(JsonObject& root, CRGB* color, String key){
   if (root.containsKey(key) && root[key].is<const char*>()){
     String colorString =  root[key];
