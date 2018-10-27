@@ -16,6 +16,8 @@ _server(server), _webSocket(AUDIO_LIGHT_FREQUENCY_STREAM) {
   // off mode is default
   _currentMode = _modes[1];
   _currentMode->enable();
+
+  _audioFFT.begin();
 }
 
 AudioLightSettingsService::~AudioLightSettingsService() {
@@ -31,19 +33,19 @@ void AudioLightSettingsService::begin() {
 }
 
 void AudioLightSettingsService::loop() {
-  unsigned long currentMillis = millis();
-  unsigned long tickElapsed = (unsigned long)(currentMillis - _lastTickAt);
-  if (tickElapsed >= AUDIO_LIGHT_TICK_DELAY_MS) {
-    _lastTickAt = currentMillis;
+  unsigned long currentMicros = micros();
+  unsigned long tickElapsed = (unsigned long)(currentMicros - _lastTickAt);
+  if (tickElapsed >= AUDIO_LIGHT_TICK_DELAY_MICROS) {
+    _lastTickAt = currentMicros;
     _numSamples ++;
     tick();
   }
-  unsigned long reportedElapsed = (unsigned long)(currentMillis - _lastReportedAt);
-  if (reportedElapsed >= 1000) {
+  unsigned long reportedElapsed = (unsigned long)(currentMicros - _lastReportedAt);
+  if (reportedElapsed >= 1000000) {
     Serial.print("Made ");
     Serial.print(_numSamples);
     Serial.println(" samples in 1 second.");      
-    _lastReportedAt = currentMillis;
+    _lastReportedAt = currentMicros;
     _numSamples=0;
   }  
 }
@@ -84,6 +86,7 @@ void AudioLightSettingsService::writeToJsonObject(JsonObject& root) {
 }
 
 void AudioLightSettingsService::tick() {
+  /*
   // Reset MSGEQ7 IC
   digitalWrite(AUDIO_LIGHT_RESET_PIN, HIGH);
   digitalWrite(AUDIO_LIGHT_RESET_PIN, LOW);
@@ -105,6 +108,13 @@ void AudioLightSettingsService::tick() {
     // strobe pin high again for next loop
     digitalWrite(AUDIO_LIGHT_STROBE_PIN, HIGH);
   }
+*/
+  
+  // sample
+  _audioFFT.sampleAndFFT();
+
+  //_frequencies[0] = _adc.sample(_adc.CH0);
+  //_frequencies[1] = _adc.sample(_adc.CH1);
 
   // transmit frequencies over web sockets if possible
   transmitFrequencies();

@@ -10,6 +10,7 @@
 #include <audiolight/SpectrumMode.h>
 #include <audiolight/RainbowMode.h>
 #include <audiolight/LightningMode.h>
+#include <audiolight/AudioFFT.h>
 
 // fast led settings
 #define LED_DATA_PIN 12
@@ -20,7 +21,7 @@
 
 // 17ms delay gets us approximatly 60 samples per second
 #define AUDIO_LIGHT_FPS 60
-#define AUDIO_LIGHT_TICK_DELAY_MS 17
+#define AUDIO_LIGHT_TICK_DELAY_MICROS 16667
 
 #define AUDIO_LIGHT_RESET_PIN 4
 #define AUDIO_LIGHT_STROBE_PIN 5
@@ -61,6 +62,9 @@ private:
   AudioLightMode *_modes[NUM_MODES];
   AudioLightMode *_currentMode;
 
+  // Construct ADC driver instance
+  AudioFFT _audioFFT = AudioFFT();
+
   // last tick tracker
   unsigned long _lastTickAt;
 
@@ -70,6 +74,8 @@ private:
   // for FPS reporting
   unsigned long _lastReportedAt;
   uint8_t _numSamples;
+  // the sampling delay
+  uint16_t _samplingDelay;  
 
   // buffer for writing to the web socket clients
   char _outputBuffer[37];  
