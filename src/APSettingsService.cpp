@@ -32,7 +32,6 @@ void APSettingsService::manageAP() {
 void APSettingsService::startAP() {
   Serial.println("Starting software access point");
   WiFi.softAP(_ssid.c_str(), _password.c_str());
-
   if (!_dnsServer) {
     IPAddress apIp = WiFi.softAPIP();
     Serial.print("Starting captive portal on ");
@@ -81,4 +80,7 @@ void APSettingsService::writeToJsonObject(JsonObject& root) {
 
 void APSettingsService::onConfigUpdated() {
   _lastManaged = millis() - MANAGE_NETWORK_DELAY;
+
+  // stop softAP - forces reconfiguration in loop()
+  stopAP();
 }

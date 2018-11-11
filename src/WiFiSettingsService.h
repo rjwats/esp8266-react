@@ -21,7 +21,6 @@ class WiFiSettingsService : public SettingsService {
     void readFromJsonObject(JsonObject& root);
     void writeToJsonObject(JsonObject& root);
     void onConfigUpdated();
-
     void reconfigureWiFiConnection();
 
   private:
