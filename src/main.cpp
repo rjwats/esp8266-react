@@ -1,9 +1,15 @@
 #include <Arduino.h>
 
-#include <ESPAsyncTCP.h>
-#include <ESPAsyncWebServer.h>
-#include <FS.h>
+#if defined(ESP8266)
+  #include <ESP8266WiFi.h>
+  #include <ESPAsyncTCP.h>
+#elif defined(ESP_PLATFORM)
+  #include <WiFi.h>
+  #include <AsyncTCP.h>
+  #include <SPIFFS.h>
+#endif
 
+#include <FS.h>
 #include <WiFiSettingsService.h>
 #include <WiFiStatus.h>
 #include <WiFiScanner.h>
