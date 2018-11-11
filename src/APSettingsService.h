@@ -1,9 +1,9 @@
 #ifndef APSettingsConfig_h
 #define APSettingsConfig_h
 
+#include <SettingsService.h>
 #include <DNSServer.h>
 #include <IPAddress.h>
-#include <SettingsService.h>
 
 #define MANAGE_NETWORK_DELAY 10000
 

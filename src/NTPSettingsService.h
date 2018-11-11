@@ -2,7 +2,6 @@
 #define NTPSettingsService_h
 
 #include <SettingsService.h>
-#include <ESP8266WiFi.h>
 
 #include <TimeLib.h>
 #include <NtpClientLib.h>
