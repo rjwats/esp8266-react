@@ -45,7 +45,7 @@ void WiFiScanner::listNetworks(AsyncWebServerRequest *request) {
  * 
  * This allows us to use a single set of mappings in the UI.
  */
-uint8_t convertEncryptionType(uint8_t encryptionType){
+uint8_t WiFiScanner::convertEncryptionType(uint8_t encryptionType){
   switch (encryptionType){
     case ENC_TYPE_NONE:
       return AUTH_OPEN;
