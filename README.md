@@ -1,6 +1,6 @@
 # ESP8266 React
 
-A simple, extensible framework for getting up and running with the ESP8266 microchip and a react front end.
+A simple, extensible framework for getting up and running with the ESP8266/ESP32 microchip and a react front end.
 
 Designed to work with the PlatformIO IDE with limited setup.
 
@@ -167,9 +167,7 @@ void reconfigureTheService() {
 
 The front end is a bit of a work in progress (as are my react skills), but it has been designed to be a "mobile first" interface and as such should feel very much like an App.
 
-I've tried to keep the use of libraries to a minimum to reduce the artefact size (it's about 150k gzipped ATM) and haven't seen the need to use Redux for this yet as the data is very simple.
-
-It's functional at the moment but I plan to improve the structure of the code and reduce boilerplate where possible.
+I've tried to keep the use of libraries to a minimum to reduce the artefact size (it's about 150k gzipped ATM).
 
 ## Future Improvements
 
@@ -189,4 +187,4 @@ It's functional at the moment but I plan to improve the structure of the code an
 * [ArduinoJson](https://github.com/bblanchon/ArduinoJson)
 * [ESPAsyncWebServer](https://github.com/me-no-dev/ESPAsyncWebServer)
 
-**NB: The project doesn't currently fix it's dependencies to a particular version. PlatformIO will always use the latest version of it's dependencies, npm will always use the latest minor version, which could be a problem for material-ui-next which is still in flux. **
+**NB: The project doesn't currently fix it's dependencies to a particular version. PlatformIO will always download the latest version of the specified dependencies.**
