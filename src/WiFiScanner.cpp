@@ -40,6 +40,7 @@ void WiFiScanner::listNetworks(AsyncWebServerRequest *request) {
   }
 }
 
+#if defined(ESP8266)
 /*
  * Convert encryption type to standard used by ESP32 rather than the translated form which the esp8266 libaries expose.
  * 
@@ -60,3 +61,4 @@ uint8_t WiFiScanner::convertEncryptionType(uint8_t encryptionType){
   }
   return -1;
 }
+#endif
