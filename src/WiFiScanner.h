@@ -30,6 +30,10 @@ class WiFiScanner {
     void scanNetworks(AsyncWebServerRequest *request);
     void listNetworks(AsyncWebServerRequest *request);
 
+#if defined(ESP8266)
+    uint8_t convertEncryptionType(uint8_t encryptionType);
+#endif
+
 };
 
 #endif // end WiFiScanner_h
