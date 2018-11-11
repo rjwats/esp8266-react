@@ -25,8 +25,11 @@ void WiFiScanner::listNetworks(AsyncWebServerRequest *request) {
       network["ssid"] = WiFi.SSID(i);
       network["bssid"] = WiFi.BSSIDstr(i);
       network["channel"] = WiFi.channel(i);
+#if defined(ESP8266)
       network["encryption_type"] = WiFi.encryptionType(i);
-      network["hidden"] = WiFi.isHidden(i);
+#elif defined(ESP_PLATFORM)
+      network["encryption_type"] = (uint8_t) WiFi.encryptionType(i); 
+#endif
     }
     response->setLength();
     request->send(response);

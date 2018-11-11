@@ -1,8 +1,14 @@
 #include <NTPSettingsService.h>
 
 NTPSettingsService::NTPSettingsService(AsyncWebServer* server, FS* fs) : SettingsService(server, fs, NTP_SETTINGS_SERVICE_PATH, NTP_SETTINGS_FILE) {
+
+#if defined(ESP8266)
   _onStationModeDisconnectedHandler = WiFi.onStationModeDisconnected(std::bind(&NTPSettingsService::onStationModeDisconnected, this, std::placeholders::_1));
   _onStationModeGotIPHandler = WiFi.onStationModeGotIP(std::bind(&NTPSettingsService::onStationModeGotIP, this, std::placeholders::_1));
+#elif defined(ESP_PLATFORM)
+  WiFi.onEvent(std::bind(&NTPSettingsService::onStationModeDisconnected, this, std::placeholders::_1, std::placeholders::_2), WiFiEvent_t::SYSTEM_EVENT_AP_STADISCONNECTED); 
+  WiFi.onEvent(std::bind(&NTPSettingsService::onStationModeGotIP, this, std::placeholders::_1, std::placeholders::_2), WiFiEvent_t::SYSTEM_EVENT_STA_GOT_IP);
+#endif
 
   NTP.onNTPSyncEvent ([this](NTPSyncEvent_t ntpEvent) {
     _ntpEvent = ntpEvent;
@@ -56,6 +62,7 @@ void NTPSettingsService::onConfigUpdated() {
   _reconfigureNTP = true;
 }
 
+#if defined(ESP8266)
 void NTPSettingsService::onStationModeGotIP(const WiFiEventStationModeGotIP& event) {
   Serial.printf("Got IP address, starting NTP Synchronization\n");
   _reconfigureNTP = true;
@@ -63,11 +70,21 @@ void NTPSettingsService::onStationModeGotIP(const WiFiEventStationModeGotIP& eve
 
 void NTPSettingsService::onStationModeDisconnected(const WiFiEventStationModeDisconnected& event) {
   Serial.printf("WiFi connection dropped, stopping NTP.\n");
-
-  // stop NTP synchronization, ensuring no re-configuration can take place
   _reconfigureNTP = false;
   NTP.stop();
 }
+#elif defined(ESP_PLATFORM)
+void NTPSettingsService::onStationModeGotIP(WiFiEvent_t event, WiFiEventInfo_t info) {
+  Serial.printf("Got IP address, starting NTP Synchronization\n");
+  _reconfigureNTP = true;
+}
+
+void NTPSettingsService::onStationModeDisconnected(WiFiEvent_t event, WiFiEventInfo_t info) {
+  Serial.printf("WiFi connection dropped, stopping NTP.\n");
+  _reconfigureNTP = false;
+  NTP.stop();
+}
+#endif
 
 void NTPSettingsService::configureNTP() {
   Serial.println("Configuring NTP...");

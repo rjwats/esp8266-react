@@ -1,16 +1,14 @@
 #include <OTASettingsService.h>
 
-OTASettingsService::OTASettingsService(AsyncWebServer* server, FS* fs) : SettingsService(server, fs, OTA_SETTINGS_SERVICE_PATH, OTA_SETTINGS_FILE) {}
+OTASettingsService::OTASettingsService(AsyncWebServer* server, FS* fs) : SettingsService(server, fs, OTA_SETTINGS_SERVICE_PATH, OTA_SETTINGS_FILE) {
+#if defined(ESP8266)
+  _onStationModeGotIPHandler = WiFi.onStationModeGotIP(std::bind(&OTASettingsService::onStationModeGotIP, this, std::placeholders::_1));
+#elif defined(ESP_PLATFORM)
+  WiFi.onEvent(std::bind(&OTASettingsService::onStationModeGotIP, this, std::placeholders::_1, std::placeholders::_2), WiFiEvent_t::SYSTEM_EVENT_STA_GOT_IP);
+#endif
+}
 
 OTASettingsService::~OTASettingsService() {}
-
-void OTASettingsService::begin() {
-  // load settings
-  SettingsService::begin();
-
-  // configure arduino OTA
-  configureArduinoOTA();
-}
 
 void OTASettingsService::loop() {
   if (_enabled && _arduinoOTA){
@@ -45,6 +43,7 @@ void OTASettingsService::configureArduinoOTA() {
     _arduinoOTA = NULL;
   }
   if (_enabled) {
+    Serial.println("Starting OTA Update Service");
     _arduinoOTA = new ArduinoOTAClass;
     _arduinoOTA->setPort(_port);
     _arduinoOTA->setPassword(_password.c_str());
@@ -68,3 +67,13 @@ void OTASettingsService::configureArduinoOTA() {
     _arduinoOTA->begin();
   }
 }
+
+#if defined(ESP8266)
+void OTASettingsService::onStationModeGotIP(const WiFiEventStationModeGotIP& event) {
+  configureArduinoOTA();
+}  
+#elif defined(ESP_PLATFORM)
+void OTASettingsService::onStationModeGotIP(WiFiEvent_t event, WiFiEventInfo_t info) {
+  configureArduinoOTA();
+}  
+#endif
