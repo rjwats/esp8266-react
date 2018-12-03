@@ -17,10 +17,11 @@ class ColorMode : public AudioLightMode {
    boolean _refresh = true;
 
   public:
-    ColorMode(CLEDController *ledController, CRGB *leds, uint16_t numLeds, uint16_t *frequencies) 
-    : AudioLightMode(ledController, leds, numLeds, frequencies) {};
-    String getId();    
+    ColorMode(CLEDController *ledController, CRGB *leds, uint16_t numLeds, uint16_t *bands, uint16_t numBands) 
+    : AudioLightMode(ledController, leds, numLeds, bands, numBands) {};
+    String getId();
     void tick();
+    void sampleComplete() {};
     void enable();
     void updateConfig(JsonObject& root);
     void writeConfig(JsonObject& root);

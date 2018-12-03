@@ -4,28 +4,29 @@
 #include "FastLED.h"
 #include <SimpleSocket.h>
 #include <SimpleService.h>
+
+#include <audiolight/AudioLight.h>
 #include <audiolight/AudioLightMode.h>
 #include <audiolight/ColorMode.h>
 #include <audiolight/OffMode.h>
 #include <audiolight/SpectrumMode.h>
 #include <audiolight/RainbowMode.h>
 #include <audiolight/LightningMode.h>
-#include <audiolight/AudioFFT.h>
 
 // fast led settings
 #define LED_DATA_PIN 12
-#define COLOR_ORDER GRB
-#define LED_TYPE WS2812
-#define NUM_LEDS 84
+#define COLOR_ORDER RGB
+#define LED_TYPE WS2811
+#define NUM_LEDS 50
 #define NUM_MODES 5
 
-// 17ms delay gets us approximatly 60 samples per second
-#define AUDIO_LIGHT_FPS 60
-#define AUDIO_LIGHT_TICK_DELAY_MICROS 16667
+#define OUTPUT_BUFFER_SIZE 7 * NUM_BANDS + 2
 
 #define AUDIO_LIGHT_RESET_PIN 4
 #define AUDIO_LIGHT_STROBE_PIN 5
-#define AUDIO_LIGHT_ANALOG_PIN 0
+#define AUDIO_LIGHT_ANALOG_PIN 36
+
+#define DEAD_ZONE 256
 
 #define AUDIO_LIGHT_WS_PATH "/ws/audioLight"
 #define AUDIO_LIGHT_SERVICE_PATH "/rest/audioLight"
@@ -62,26 +63,22 @@ private:
   AudioLightMode *_modes[NUM_MODES];
   AudioLightMode *_currentMode;
 
-  // Construct ADC driver instance
-  AudioFFT _audioFFT = AudioFFT();
-
   // last tick tracker
   unsigned long _lastTickAt;
 
   // frequencies and peaks
-  uint16_t _frequencies[7];
+  uint16_t _bands[NUM_BANDS];
 
   // for FPS reporting
   unsigned long _lastReportedAt;
-  uint8_t _numSamples;
+  uint16_t _numSamples;
   // the sampling delay
   uint16_t _samplingDelay;  
 
   // buffer for writing to the web socket clients
-  char _outputBuffer[37];  
+  char _outputBuffer[OUTPUT_BUFFER_SIZE];  
 
   AudioLightMode* getMode(String modeId);
-  void tick();
   void transmitFrequencies();
 };
 

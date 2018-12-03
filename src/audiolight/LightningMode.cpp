@@ -8,6 +8,31 @@ void LightningMode::enable() {
   _refresh = true;
 }
 
+void LightningMode::sampleComplete() {
+  if (_state == State::IDLE) {
+    uint16_t currentLevel = 0;
+    uint8_t numBands = 0;
+    for (int i=0; i<_numBands; i++) {
+      if (_includedBands[i]) {
+        currentLevel += _bands[i];
+        numBands++;
+      }
+    }
+    currentLevel = (float) currentLevel / (numBands * 4096) * 100.0;
+    if (currentLevel >= _threshold) {
+      // TODO: Can do a slightly better job of calculating this add some settings too
+      _ledstart = random8(_numLeds);  // Determine starting location of flash
+      _ledlen = random8(_numLeds-_ledstart);  // Determine length of flash (not to go beyond NUM_LEDS-1)
+
+      _numFlashes = random8(3,_flashes); // Calculate the random number of flashes we will show
+      _flashCounter = 0; // The number of flashes we have shown  
+
+      // transition state to initialized
+      _state = State::INITIALIZED;    
+    }
+  }
+};
+
 void LightningMode::tick() {
   if (_refresh){
     // assert idle mode
@@ -19,38 +44,9 @@ void LightningMode::tick() {
 
     // clear refresh flag
     _refresh = false;
-  }
 
-  if (_state == State::IDLE && _frequencies[0] > 200) {
-    uint16_t currentLevel = 0;
-    uint8_t numBands = 0;
-    for (int i=0; i<7; i++) {
-      if (_includedBands[i]) {
-        Serial.print("Adding band: ");      
-        Serial.println(i);
-        currentLevel += _frequencies[i];
-        numBands++;
-      }
-    }
-    Serial.print("Total was: ");  
-    Serial.print(currentLevel);
-    Serial.print(" from ");
-    Serial.print(numBands);
-    Serial.println(" bands.");
-    currentLevel = (float) currentLevel / (numBands * 1024) * 100.0;
-    Serial.print("Percentage is ");
-    Serial.print(currentLevel);
-    Serial.print("%");
-
-    // TODO: Can do a slightly better job of calculating this add some settings too
-    _ledstart = random8(_numLeds);  // Determine starting location of flash
-    _ledlen = random8(_numLeds-_ledstart);  // Determine length of flash (not to go beyond NUM_LEDS-1)
-
-    _numFlashes = random8(3,_flashes); // Calculate the random number of flashes we will show
-    _flashCounter = 0; // The number of flashes we have shown  
-
-    // transition state to initialized
-    _state = State::INITIALIZED;    
+    // eager return
+    return;
   }
 
   if (_state == State::INITIALIZED || (_state == State::RUNNING && isWaitTimeElapsed())) {
@@ -94,11 +90,12 @@ void LightningMode::resetWaitTime() {
 }
 
 void LightningMode::updateConfig(JsonObject &root) {
-  _threshold = root["threshold"];
+  // inspect key presence?
+  _threshold = root["threshold"] | 50;
 
   updateByteFromJson(root, &_flashes, "flashes");
   updateColorFromJson(root, &_color, "color");
-  updateBooleanArrayFromJson(root, _includedBands, 7, "included_bands");
+  updateBooleanArrayFromJson(root, _includedBands, _numBands, "included_bands");
 
   // reset the mode
   _refresh = true;
@@ -109,5 +106,5 @@ void LightningMode::writeConfig(JsonObject &root) {
 
   writeByteToJson(root, &_flashes, "flashes");  
   writeColorToJson(root, &_color, "color");
-  writeBooleanArrayToJson(root, _includedBands, 7, "included_bands");
+  writeBooleanArrayToJson(root, _includedBands, _numBands, "included_bands");
 }

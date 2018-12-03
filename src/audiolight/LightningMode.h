@@ -15,7 +15,7 @@ private:
   // TODO - RENAME to "thresholdBands"
   // which channels are used to calculate the threshold to trigger the lightning?
   // we listen to the two bass channels by default - we are trying to detect thunder sounds
-  bool _includedBands[7] = {true, true, false, false, false, false, false};
+  bool *_includedBands;
   
   uint8_t _threshold = 50; // initially we'll work with a simple % based threshold level for triggering a strike
                            // in the future this could be take into account the background noise to make
@@ -40,10 +40,19 @@ private:
   uint16_t _waitDuration;
 
 public:
-  LightningMode(CLEDController *ledController, CRGB *leds, uint16_t numLeds, uint16_t *frequencies)
-      : AudioLightMode(ledController, leds, numLeds, frequencies) {};
+  LightningMode(CLEDController *ledController, CRGB *leds, uint16_t numLeds, uint16_t *bands,  uint16_t numBands)
+      : AudioLightMode(ledController, leds, numLeds, bands, numBands) {
+    _includedBands = (bool *) malloc(sizeof(bool) * _numBands);
+
+    // use the lowest half of the bands for the trigger by default
+    // TODO - move this to default loading code when these settings become persistent
+    for (int i=0; i<_numBands / 2; i++) {
+      _includedBands[i] = true;
+    }
+  };
   String getId();
   void tick();
+  void sampleComplete();
   void enable();
   void updateConfig(JsonObject &root);
   void writeConfig(JsonObject &root);

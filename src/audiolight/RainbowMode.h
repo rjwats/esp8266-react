@@ -25,13 +25,16 @@ class RainbowMode : public AudioLightMode {
 
   // smoothed readings - using rolling average
   float _rollingAverageFactor = 0.5;
-  uint16_t _rollingAverages[7];
+  uint16_t *_rollingAverages;
 
   public:
-    RainbowMode(CLEDController *ledController, CRGB *leds, uint16_t numLeds, uint16_t *frequencies) 
-    : AudioLightMode(ledController, leds, numLeds, frequencies) {};
-    String getId();    
+    RainbowMode(CLEDController *ledController, CRGB *leds, uint16_t numLeds,  uint16_t *bands, uint16_t numBands) 
+    : AudioLightMode(ledController, leds, numLeds, bands, numBands) {
+      _rollingAverages = (uint16_t *) malloc(sizeof(uint16_t) * numBands);
+    };
+    String getId();
     void tick();
+    void sampleComplete() {};
     void enable();
     void updateConfig(JsonObject& root);
     void writeConfig(JsonObject& root);

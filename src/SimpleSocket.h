@@ -1,8 +1,14 @@
 #ifndef SimpleSocket_h
 #define SimpleSocket_h
 
-#include <ESP8266WiFi.h>
-#include <ESPAsyncTCP.h>
+#if defined(ESP8266)
+  #include <ESP8266WiFi.h>
+  #include <ESPAsyncTCP.h>
+#elif defined(ESP_PLATFORM)
+  #include <WiFi.h>
+  #include <AsyncTCP.h>
+#endif
+
 #include <ESPAsyncWebServer.h>
 #include <AsyncJson.h>
 #include <ArduinoJson.h>

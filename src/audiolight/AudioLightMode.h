@@ -10,17 +10,19 @@ class AudioLightMode {
     CLEDController *_ledController;   
     CRGB *_leds;
     int _numLeds;
-    uint16_t *_frequencies;
+    uint16_t _numBands;
+    uint16_t *_bands;
 
     void (*configChangeCallback)();
 
   public:
-
-   AudioLightMode(CLEDController *ledController, CRGB *leds, uint16_t numLeds, uint16_t *frequencies) {
+  
+   AudioLightMode(CLEDController *ledController, CRGB *leds, uint16_t numLeds, uint16_t *bands, uint16_t numBands) {
      this->_ledController = ledController;
      this->_leds = leds;  
      this->_numLeds = numLeds;
-     this->_frequencies = frequencies;
+     this->_bands = bands;
+     this->_numBands = numBands;
    }
 
    /*
@@ -32,6 +34,13 @@ class AudioLightMode {
    * Allow the mode to animate the LEDs, called by the main loop.
    */
    virtual void tick() = 0;
+
+   /*
+   * Called when the bands are sampled and new data is available for rendering.
+   * 
+   * Tick method can be free running.
+   */
+   virtual void sampleComplete() = 0;
 
    /**
    * Called when the effect is enabled.

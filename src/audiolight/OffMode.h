@@ -11,13 +11,14 @@ class OffMode : public AudioLightMode {
    boolean _turnOff;
 
   public:
-    OffMode(CLEDController *ledController, CRGB *leds, int numLeds, uint16_t *frequencies) 
-    : AudioLightMode(ledController, leds, numLeds, frequencies){};
+    OffMode(CLEDController *ledController, CRGB *leds, int numLeds, uint16_t *bands, uint16_t numBands) 
+    : AudioLightMode(ledController, leds, numLeds, bands, numBands){};
     String getId();    
     void tick();
+    void sampleComplete(){};
     void enable();
     void updateConfig(JsonObject& root) {};
-    void writeConfig(JsonObject& root) {};    
+    void writeConfig(JsonObject& root) {};
 };
 
 #endif

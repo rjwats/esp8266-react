@@ -36,45 +36,45 @@ NTPStatus ntpStatus = NTPStatus(&server);
 APStatus apStatus = APStatus(&server);
 
 void setup() {
-    // Disable wifi config persistance
-    WiFi.persistent(false);
+  // Disable wifi config persistance
+  WiFi.persistent(false);
 
-    Serial.begin(SERIAL_BAUD_RATE);
-    SPIFFS.begin();
+  Serial.begin(SERIAL_BAUD_RATE);
+  SPIFFS.begin();
 
-    // start services
-    ntpSettingsService.begin();
-    otaSettingsService.begin();
-    apSettingsService.begin();
-    wifiSettingsService.begin();
-    audioLightSettingsService.begin();
+  // start services
+  ntpSettingsService.begin();
+  otaSettingsService.begin();
+  apSettingsService.begin();
+  wifiSettingsService.begin();
+  audioLightSettingsService.begin();
 
-    // Serving static resources from /www/
-    server.serveStatic("/js/", SPIFFS, "/www/js/");
-    server.serveStatic("/css/", SPIFFS, "/www/css/");
-    server.serveStatic("/fonts/", SPIFFS, "/www/fonts/");
-    server.serveStatic("/app/", SPIFFS, "/www/app/");
-    server.serveStatic("/favicon.ico", SPIFFS, "/www/favicon.ico");
+  // Serving static resources from /www/
+  server.serveStatic("/js/", SPIFFS, "/www/js/");
+  server.serveStatic("/css/", SPIFFS, "/www/css/");
+  server.serveStatic("/fonts/", SPIFFS, "/www/fonts/");
+  server.serveStatic("/app/", SPIFFS, "/www/app/");
+  server.serveStatic("/favicon.ico", SPIFFS, "/www/favicon.ico");
 
-    // Serving all other get requests with "/www/index.htm"
-    // OPTIONS get a straight up 200 response
-    server.onNotFound([](AsyncWebServerRequest *request) {
-    	if (request->method() == HTTP_GET) {
-        request->send(SPIFFS, "/www/index.html");
-      } else if (request->method() == HTTP_OPTIONS) {
-		    request->send(200);
-      } else {
-    		request->send(404);
-    	}
-    });
+  // Serving all other get requests with "/www/index.htm"
+  // OPTIONS get a straight up 200 response
+  server.onNotFound([](AsyncWebServerRequest *request) {
+    if (request->method() == HTTP_GET) {
+      request->send(SPIFFS, "/www/index.html");
+    } else if (request->method() == HTTP_OPTIONS) {
+      request->send(200);
+    } else {
+      request->send(404);
+    }
+  });
 
-    // Disable CORS if required
-    #if defined(ENABLE_CORS)
-    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
-    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Headers", "*");
-    #endif
+  // Disable CORS if required
+  #if defined(ENABLE_CORS)
+  DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
+  DefaultHeaders::Instance().addHeader("Access-Control-Allow-Headers", "*");
+  #endif
 
-    server.begin();
+  server.begin();
 }
 
 void loop() {

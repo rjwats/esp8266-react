@@ -20,17 +20,21 @@ private:
   // How long should it take the peaks to decay from 100% to 0%
   uint16_t _peakDecayMs = 2000;
   uint16_t _peakDecayAmount = 0;
-  uint16_t _peaks[7];
+  uint16_t *_peaks;
 
-  // Have a go generating rolling averages
+  // Aproximated rolling averages
   float _rollingAverageFactor = 0.3;
-  uint16_t _rollingAverages[7];
+  uint16_t *_rollingAverages;
 
 public:
-  SpectrumMode(CLEDController *ledController, CRGB *leds, uint16_t numLeds, uint16_t *frequencies)
-      : AudioLightMode(ledController, leds, numLeds, frequencies){};
+  SpectrumMode(CLEDController *ledController, CRGB *leds, uint16_t numLeds,  uint16_t *bands, uint16_t numBands) 
+      : AudioLightMode(ledController, leds, numLeds, bands, numBands) {
+      _rollingAverages = (uint16_t *) malloc(sizeof(uint16_t) * numBands);
+      _peaks = (uint16_t *) malloc(sizeof(uint16_t) * numBands);
+  };
   String getId();
   void tick();
+  void sampleComplete() {};  
   void enable();
   void updateConfig(JsonObject &root);
   void writeConfig(JsonObject &root);

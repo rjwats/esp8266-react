@@ -70,7 +70,7 @@ class AudioLightFrequencyStatus extends Component {
     for (var i = 0; i < visualizerData.length; i++) {
       var barOffset = i * barWidth;
       var barValue = visualizerData[i];
-      var barPercentage = barValue > 0 ? barValue / 1024 : 0;
+      var barPercentage = barValue > 0 ? barValue / 4096 : 0;
       var barHeight = -canvas.height * barPercentage;
       canvasContext.fillStyle = calculateColorForPercentage(barPercentage);
       canvasContext.fillRect(barOffset, canvas.height, barWidth, barHeight);
