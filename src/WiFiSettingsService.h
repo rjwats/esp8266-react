@@ -1,8 +1,8 @@
 #ifndef WiFiSettingsService_h
 #define WiFiSettingsService_h
 
-#include <IPAddress.h>
 #include <SettingsService.h>
+#include <IPAddress.h>
 
 #define WIFI_SETTINGS_FILE "/config/wifiSettings.json"
 #define WIFI_SETTINGS_SERVICE_PATH "/rest/wifiSettings"
@@ -21,7 +21,6 @@ class WiFiSettingsService : public SettingsService {
     void readFromJsonObject(JsonObject& root);
     void writeToJsonObject(JsonObject& root);
     void onConfigUpdated();
-
     void reconfigureWiFiConnection();
 
   private:

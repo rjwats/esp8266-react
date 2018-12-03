@@ -1,8 +1,10 @@
 # ESP8266 React
 
-A simple, extensible framework for getting up and running with the ESP8266 microchip and a react front end.
+A simple, extensible framework for getting up and running with the ESP8266/ESP32 microchip and a react front end.
 
-Designed to work with the PlatformIO IDE with limited setup.
+Designed to work with the PlatformIO IDE with limited setup. 
+
+This project supports ESP8266 and ESP32 devices, see build instruction below for more details.
 
 ## Why I made this project
 
@@ -72,6 +74,30 @@ npm start
 The endpoint root path can be found in Endpoint.js (./interface/src/constants/). This needs to be the root URL of the device running the back end, for example "http://192.168.0.6".
 
 CORS can be enabled on the back end by uncommenting the -D ENABLE_CORS build flag in platformio.ini and re-deploying.
+
+## Building for different devices
+
+This project supports ESP8266 and ESP32 platforms however your target device will need at least a 1MB flash chip to support OTA programming.
+
+By default this project is configured to build for the esp12e device. This is an esp8266 device with 4MB of flash. The following config in platformio.ini configures the build:
+
+```
+[env:esp12e]
+platform = espressif8266
+board = esp12e
+```
+
+If you want to build for an ESP32 device, all you need to do is re-configure playformio.ini with your devices settings:
+
+```
+[env:node32s]
+platform = espressif32
+board = node32s
+```
+
+Microcontroller	ESP8266
+Frequency	80MHz
+Flash	4MBl
 
 ## Configuration & Deployment
 
@@ -167,9 +193,7 @@ void reconfigureTheService() {
 
 The front end is a bit of a work in progress (as are my react skills), but it has been designed to be a "mobile first" interface and as such should feel very much like an App.
 
-I've tried to keep the use of libraries to a minimum to reduce the artefact size (it's about 150k gzipped ATM) and haven't seen the need to use Redux for this yet as the data is very simple.
-
-It's functional at the moment but I plan to improve the structure of the code and reduce boilerplate where possible.
+I've tried to keep the use of libraries to a minimum to reduce the artefact size (it's about 150k gzipped ATM).
 
 ## Future Improvements
 
@@ -189,4 +213,4 @@ It's functional at the moment but I plan to improve the structure of the code an
 * [ArduinoJson](https://github.com/bblanchon/ArduinoJson)
 * [ESPAsyncWebServer](https://github.com/me-no-dev/ESPAsyncWebServer)
 
-**NB: The project doesn't currently fix it's dependencies to a particular version. PlatformIO will always use the latest version of it's dependencies, npm will always use the latest minor version, which could be a problem for material-ui-next which is still in flux. **
+**NB: The project doesn't currently fix it's dependencies to a particular version. PlatformIO will always download the latest version of the specified dependencies.**

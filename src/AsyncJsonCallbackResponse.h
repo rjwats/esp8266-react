@@ -1,8 +1,8 @@
 #ifndef _AsyncJsonCallbackResponse_H_
 #define _AsyncJsonCallbackResponse_H_
 
-#include <AsyncJson.h>
 #include <ESPAsyncWebServer.h>
+#include <AsyncJson.h>
 
 /*
 * Listens for a response being destroyed and calls a callback during said distruction.

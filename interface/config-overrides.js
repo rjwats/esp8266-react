@@ -21,11 +21,11 @@ module.exports = function override(config, env) {
     const extractTextPlugin = config.plugins.find((plugin) => plugin instanceof ExtractTextPlugin);
     extractTextPlugin.filename = "css/[name].[contenthash:4].css";
 
-    // add compression plugin, compress javascript, html and css
+    // add compression plugin, compress javascript
     config.plugins.push(new CompressionPlugin({
       asset: "[path].gz[query]",
       algorithm: "gzip",
-      test: /\.(js|html|css)$/,
+      test: /\.(js)$/,
       deleteOriginalAssets: true
     }));
   }

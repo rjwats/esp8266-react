@@ -1,6 +1,14 @@
 #include <Arduino.h>
-#include <ESPAsyncTCP.h>
-#include <ESPAsyncWebServer.h>
+
+#if defined(ESP8266)
+  #include <ESP8266WiFi.h>
+  #include <ESPAsyncTCP.h>
+#elif defined(ESP_PLATFORM)
+  #include <WiFi.h>
+  #include <AsyncTCP.h>
+  #include <SPIFFS.h>
+#endif
+
 #include <FS.h>
 #include <WiFiSettingsService.h>
 #include <WiFiStatus.h>
@@ -46,6 +54,7 @@ void setup() {
     server.serveStatic("/css/", SPIFFS, "/www/css/");
     server.serveStatic("/fonts/", SPIFFS, "/www/fonts/");
     server.serveStatic("/app/", SPIFFS, "/www/app/");
+    server.serveStatic("/favicon.ico", SPIFFS, "/www/favicon.ico");
 
     // Serving all other get requests with "/www/index.htm"
     // OPTIONS get a straight up 200 response
