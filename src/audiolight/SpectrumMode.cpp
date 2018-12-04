@@ -27,7 +27,9 @@ void SpectrumMode::tick() {
   if (microsElapsed >= rotateDelayMicros){
     _lastFrameMicros = currentMicros;
     for (uint8_t i = 0; i < _numBands; i++) { 
-      _peaks[i] = _peaks[i] - 1;
+      if (_peaks[i] > 0){
+        _peaks[i] = _peaks[i] - 1;
+      }
     }
   }  
   /*
