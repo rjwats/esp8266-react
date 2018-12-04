@@ -7,6 +7,11 @@
 #include <audiolight/AudioLightMode.h>
 #include <audiolight/JsonUtil.h>
 
+#define LIGHTNING_DEFAULT_COLOR CRGB::White
+#define LIGHTNING_DEFAULT_FLASHES 8
+#define LIGHTNING_DEFAULT_THRESHOLD 50
+#define LIGHTNING_MAX_THRESHOLD 100
+
 class LightningMode : public AudioLightMode {
 
 private:
@@ -17,14 +22,14 @@ private:
   // we listen to the two bass channels by default - we are trying to detect thunder sounds
   bool *_includedBands;
   
-  uint8_t _threshold = 50; // initially we'll work with a simple % based threshold level for triggering a strike
-                           // in the future this could be take into account the background noise to make
-                           // sure a "significant" change is detected, which may change the settings
+  uint8_t _threshold = LIGHTNING_DEFAULT_THRESHOLD; // initially we'll work with a simple % based threshold level for triggering a strike
+                                                    // in the future this could be take into account the background noise to make
+                                                    // sure a "significant" change is detected, which may change the settings
   //the upper limit of flashes per strike
-  uint8_t _flashes = 8;    
+  uint8_t _flashes = LIGHTNING_DEFAULT_FLASHES;    
   
   // What color, just in case we want funky colored lightning!
-  CRGB _color = CRGB::White;
+  CRGB _color = LIGHTNING_DEFAULT_COLOR;
 
   // State variables
   State _state = State::IDLE;
@@ -42,11 +47,9 @@ private:
 public:
   LightningMode(CLEDController *ledController, CRGB *leds, uint16_t numLeds, uint16_t *bands,  uint16_t numBands)
       : AudioLightMode(ledController, leds, numLeds, bands, numBands) {
-    _includedBands = (bool *) malloc(sizeof(bool) * _numBands);
-
-    // use the lowest half of the bands for the trigger by default
-    // TODO - move this to default loading code when these settings become persistent
-    for (int i=0; i<_numBands / 2; i++) {
+    // TODO - Util for this, duplicated!
+    _includedBands = (bool *) malloc(sizeof(bool) * numBands);
+    for (int i=0; i<numBands / 2; i++) {
       _includedBands[i] = true;
     }
   };

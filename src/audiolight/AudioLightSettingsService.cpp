@@ -50,7 +50,8 @@ void AudioLightSettingsService::loop() {
       _bands[i] = analogRead(AUDIO_LIGHT_ANALOG_PIN);
 
       // re-map frequency to eliminate low level noise
-      _bands[i]  =  _bands[i] > DEAD_ZONE ? map(_bands[i]-DEAD_ZONE, 0, 4096-DEAD_ZONE, 0, 4096) : 0;
+      _bands[i]  =  _bands[i] > AUDIO_LIGHT_DEAD_ZONE ? map(_bands[i]-AUDIO_LIGHT_DEAD_ZONE, 0, ADC_MAX_VALUE-AUDIO_LIGHT_DEAD_ZONE, 0, ADC_MAX_VALUE) : 0;
+      _rollingAverages[i] = _rollingAverageFactor * _bands[i] + (1 - _rollingAverageFactor) * _rollingAverages[i];
 
       // strobe pin high again for next loop
       digitalWrite(AUDIO_LIGHT_STROBE_PIN, HIGH);

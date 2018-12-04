@@ -36,8 +36,8 @@ void SpectrumMode::tick() {
 
   for (uint8_t i = 0; i < _numBands; i++) {
     // calculate ordinals for the average and peak
-    uint16_t averageOrdinal = map(_rollingAverages[i], 0, 4096, 0, ledsPerChannel);
-    uint16_t peakOrdinal = map(_peaks[i], 0, 4096, 0, ledsPerChannel);
+    uint16_t averageOrdinal = map(_rollingAverages[i], 0, ADC_MAX_VALUE, 0, ledsPerChannel);
+    uint16_t peakOrdinal = map(_peaks[i], 0, ADC_MAX_VALUE, 0, ledsPerChannel);
 
     // draw the leds, red over blue if red=blue
     //_leds[(i * ledsPerChannel) + averageOrdinal] = CRGB::Blue;
@@ -53,7 +53,7 @@ void SpectrumMode::tick() {
 }
 
 void SpectrumMode::updateConfig(JsonObject &root) {
-  updateByteFromJson(root, &_brightness, "brightness");
+  updateByteFromJson(root, &_brightness, SPECTRUM_DEFAULT_BRIGHTNESS, "brightness");
   _refresh = true;
 }
 

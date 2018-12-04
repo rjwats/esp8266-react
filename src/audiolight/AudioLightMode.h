@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include <ArduinoJson.h>
 #include <FastLed.h>
+#include <audiolight/AudioLight.h>
 
 class AudioLightMode {
   protected:  
@@ -14,6 +15,25 @@ class AudioLightMode {
     uint16_t *_bands;
 
     void (*configChangeCallback)();
+
+    /**
+     * Calculates the energy level as a total of the maximum possible value in the range 0 to 1.
+     */
+    float calculateEnergyFloat(bool *includedBands=NULL) {
+      uint16_t currentLevel = 0;
+      uint16_t numBands = 0;
+      for (uint16_t i=0; i<_numBands; i++) {
+        if (includedBands == NULL || includedBands[i]) {
+          currentLevel += _bands[i];
+          numBands++;
+        }
+      }
+      return (float) currentLevel / (_numBands * ADC_MAX_VALUE);
+    }
+
+    uint8_t calculateEnergyPercentage(bool *includedBands=NULL) {
+      return calculateEnergyFloat(includedBands) * 100;
+    }
 
   public:
   

@@ -9,12 +9,12 @@
 
 #define MIN_PEAK_DECAY_AMOUNT 1
 #define MAX_SAMPLE_SIZE 1024
+#define SPECTRUM_DEFAULT_BRIGHTNESS 128
 
 class SpectrumMode : public AudioLightMode {
 
 private:
-  // not used.. to be replaced
-  uint8_t _brightness = 255;
+  uint8_t _brightness = SPECTRUM_DEFAULT_BRIGHTNESS;
   boolean _refresh = true;
 
   // How long should it take the peaks to decay from 100% to 0%

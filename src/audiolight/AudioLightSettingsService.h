@@ -26,7 +26,8 @@
 #define AUDIO_LIGHT_STROBE_PIN 5
 #define AUDIO_LIGHT_ANALOG_PIN 36
 
-#define DEAD_ZONE 256
+#define AUDIO_LIGHT_DEAD_ZONE 1024
+#define AUDIO_LIGHT_DEFAULT_ROLLING_AVG_FACTOR 0.2
 
 #define AUDIO_LIGHT_WS_PATH "/ws/audioLight"
 #define AUDIO_LIGHT_SERVICE_PATH "/rest/audioLight"
@@ -63,17 +64,12 @@ private:
   AudioLightMode *_modes[NUM_MODES];
   AudioLightMode *_currentMode;
 
-  // last tick tracker
-  unsigned long _lastTickAt;
-
   // frequencies and peaks
   uint16_t _bands[NUM_BANDS];
+  uint16_t _rollingAverages[NUM_BANDS];
 
-  // for FPS reporting
-  unsigned long _lastReportedAt;
-  uint16_t _numSamples;
-  // the sampling delay
-  uint16_t _samplingDelay;  
+  // rolling average factor
+  float _rollingAverageFactor = AUDIO_LIGHT_DEFAULT_ROLLING_AVG_FACTOR;
 
   // buffer for writing to the web socket clients
   char _outputBuffer[OUTPUT_BUFFER_SIZE];  

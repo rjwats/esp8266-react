@@ -8,18 +8,12 @@ void LightningMode::enable() {
   _refresh = true;
 }
 
+/**
+* Analyzed threshold each time a sample is recieved
+*/
 void LightningMode::sampleComplete() {
   if (_state == State::IDLE) {
-    uint16_t currentLevel = 0;
-    uint8_t numBands = 0;
-    for (int i=0; i<_numBands; i++) {
-      if (_includedBands[i]) {
-        currentLevel += _bands[i];
-        numBands++;
-      }
-    }
-    currentLevel = (float) currentLevel / (numBands * 4096) * 100.0;
-    if (currentLevel >= _threshold) {
+    if (calculateEnergyPercentage(_includedBands) >= _threshold) {
       // TODO: Can do a slightly better job of calculating this add some settings too
       _ledstart = random8(_numLeds);  // Determine starting location of flash
       _ledlen = random8(_numLeds-_ledstart);  // Determine length of flash (not to go beyond NUM_LEDS-1)
@@ -57,8 +51,8 @@ void LightningMode::tick() {
     _dimmer = (_flashCounter == 0 ) ? 5 : random8(1,3);
 
     // show flash
-    fill_solid(_leds+_ledstart,_ledlen,CHSV(255, 0, 255/_dimmer));
-    _ledController->showLeds();
+    fill_solid(_leds+_ledstart,_ledlen,_color);
+    _ledController->showLeds(255/_dimmer);
 
     // wait a small amount of time (make this configurable? use microsecond timer to avoid delay?)
     delay(random8(4,10));
@@ -90,20 +84,21 @@ void LightningMode::resetWaitTime() {
 }
 
 void LightningMode::updateConfig(JsonObject &root) {
-  // inspect key presence?
-  _threshold = root["threshold"] | 50;
-
-  updateByteFromJson(root, &_flashes, "flashes");
-  updateColorFromJson(root, &_color, "color");
+  updateByteFromJson(root, &_threshold, LIGHTNING_DEFAULT_THRESHOLD, "threshold");
+  updateByteFromJson(root, &_flashes, LIGHTNING_DEFAULT_FLASHES, "flashes");
+  updateColorFromJson(root, &_color, LIGHTNING_DEFAULT_COLOR, "color");
   updateBooleanArrayFromJson(root, _includedBands, _numBands, "included_bands");
+
+  if (_threshold > LIGHTNING_MAX_THRESHOLD){
+    _threshold = LIGHTNING_DEFAULT_THRESHOLD;
+  }
 
   // reset the mode
   _refresh = true;
 }
 
 void LightningMode::writeConfig(JsonObject &root) {
-  root["threshold"] = _threshold;
-
+  writeByteToJson(root, &_threshold, "threshold"); 
   writeByteToJson(root, &_flashes, "flashes");  
   writeColorToJson(root, &_color, "color");
   writeBooleanArrayToJson(root, _includedBands, _numBands, "included_bands");
