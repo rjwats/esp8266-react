@@ -85,13 +85,13 @@ void LightningMode::resetWaitTime() {
 
 void LightningMode::updateConfig(JsonObject &root) {
   updateByteFromJson(root, &_threshold, LIGHTNING_DEFAULT_THRESHOLD, "threshold");
-  updateByteFromJson(root, &_flashes, LIGHTNING_DEFAULT_FLASHES, "flashes");
-  updateColorFromJson(root, &_color, LIGHTNING_DEFAULT_COLOR, "color");
-  updateBooleanArrayFromJson(root, _includedBands, _numBands, "included_bands");
-
   if (_threshold > LIGHTNING_MAX_THRESHOLD){
     _threshold = LIGHTNING_DEFAULT_THRESHOLD;
   }
+
+  updateByteFromJson(root, &_flashes, LIGHTNING_DEFAULT_FLASHES, "flashes");
+  updateColorFromJson(root, &_color, LIGHTNING_DEFAULT_COLOR, "color");
+  updateBooleanArrayFromJson(root, _includedBands, _numBands, "included_bands");
 
   // reset the mode
   _refresh = true;

@@ -7,11 +7,11 @@ _server(server), _webSocket(AUDIO_LIGHT_FREQUENCY_STREAM) {
 
   _ledController = &FastLED.addLeds<LED_TYPE,LED_DATA_PIN,COLOR_ORDER>(_leds, NUM_LEDS);
   
-  _modes[0] = new OffMode(_ledController, _leds, NUM_LEDS, _bands, NUM_BANDS);
-  _modes[1] = new ColorMode(_ledController, _leds, NUM_LEDS, _bands, NUM_BANDS);
-  _modes[2] = new SpectrumMode(_ledController, _leds, NUM_LEDS, _bands, NUM_BANDS);
-  _modes[3] = new RainbowMode(_ledController, _leds, NUM_LEDS, _bands, NUM_BANDS);
-  _modes[4] = new LightningMode(_ledController, _leds, NUM_LEDS, _bands, NUM_BANDS);
+  _modes[0] = new OffMode(_ledController, _leds, NUM_LEDS, _rollingAverages, NUM_BANDS);
+  _modes[1] = new ColorMode(_ledController, _leds, NUM_LEDS, _rollingAverages, NUM_BANDS);
+  _modes[2] = new SpectrumMode(_ledController, _leds, NUM_LEDS, _rollingAverages, NUM_BANDS);
+  _modes[3] = new RainbowMode(_ledController, _leds, NUM_LEDS, _rollingAverages, NUM_BANDS);
+  _modes[4] = new LightningMode(_ledController, _leds, NUM_LEDS, _rollingAverages, NUM_BANDS);
   
   // off mode is default
   _currentMode = _modes[1];
@@ -84,6 +84,14 @@ void AudioLightSettingsService::readFromJsonObject(JsonObject& root, String orig
   // update the config
   String modeId = root["mode_id"];
 
+  _rollingAverageFactor = root["rolling_average_factor"] | AUDIO_LIGHT_DEFAULT_ROLLING_AVG_FACTOR;
+  if (_rollingAverageFactor < AUDIO_LIGHT_MIN_ROLLING_AVG_FACTOR) {
+    _rollingAverageFactor = AUDIO_LIGHT_MIN_ROLLING_AVG_FACTOR;
+  }
+  if (_rollingAverageFactor > AUDIO_LIGHT_MAX_ROLLING_AVG_FACTOR){
+    _rollingAverageFactor = AUDIO_LIGHT_MAX_ROLLING_AVG_FACTOR;
+  }
+
   // get mode we are configuring
   AudioLightMode *mode = getMode(modeId);
 
@@ -102,6 +110,7 @@ void AudioLightSettingsService::readFromJsonObject(JsonObject& root, String orig
 
 void AudioLightSettingsService::writeToJsonObject(JsonObject& root) {
   root["mode_id"] = _currentMode->getId();
+  root["rolling_average_factor"] = _rollingAverageFactor;  
   _currentMode->writeConfig(root);
 }
 
@@ -112,7 +121,7 @@ void AudioLightSettingsService::transmitFrequencies() {
   DynamicJsonBuffer jsonBuffer;
   JsonArray& array = jsonBuffer.createArray();
   for (uint16_t i = 0; i< NUM_BANDS; i++){
-    array.add(_bands[i]);
+    array.add(_rollingAverages[i]);
   }
   size_t length = array.printTo(_outputBuffer, OUTPUT_BUFFER_SIZE);
   _webSocket.textAll(_outputBuffer, length);  

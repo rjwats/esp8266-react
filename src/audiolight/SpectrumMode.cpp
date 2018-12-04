@@ -5,46 +5,58 @@ String SpectrumMode::getId() {
 }
 
 void SpectrumMode::enable() {
+  _lastFrameMicros = micros();
+  for (uint8_t i = 0; i < _numBands; i++) { 
+    _peaks[i] = 0;
+  }   
   _refresh = true;
 }
 
+void SpectrumMode::sampleComplete() {
+  for (uint8_t i = 0; i < _numBands; i++) { 
+     _peaks[i] = max(_bands[i], _peaks[i]);
+  }
+}
+
 void SpectrumMode::tick() {
+
+  // rotate hue in time based manner
+  unsigned long rotateDelayMicros = 500000 / 255;
+  unsigned long currentMicros = micros();
+  unsigned long microsElapsed = (unsigned long)(currentMicros - _lastFrameMicros);
+  if (microsElapsed >= rotateDelayMicros){
+    _lastFrameMicros = currentMicros;
+    for (uint8_t i = 0; i < _numBands; i++) { 
+      _peaks[i] = _peaks[i] - 1;
+    }
+  }  
   /*
   EVERY_N_MILLIS(20) {
     if (refresh){
-      _peakDecayAmount = max(MIN_PEAK_DECAY_AMOUNT, (uint16_t)(((float)1000 / _peakDecayMs) * MAX_SAMPLE_SIZE) / 20);
+      
       Serial.print("Set decay ammount to ");
       Serial.println(_peakDecayAmount);
       _refresh = false;
     }
   }
   */
+ // decay the peak
+  /*
+  for (uint8_t i = 0; i < _numBands; i++) { 
+     _peaks[i] = max(_bands[i], _peaks[i]);
+  }*/
 
-  // refresh
-  for (uint8_t i = 0; i < _numBands; i++) {
-    // use approx approach for rolling averages
-    _rollingAverages[i] = _rollingAverageFactor * _bands[i] + (1 - _rollingAverageFactor) * _rollingAverages[i];
-
-     _peaks[i] = (_peaks[i] > _peakDecayAmount) ? _peaks[i] - _peakDecayAmount : 0;     
-     _peaks[i] = max(_rollingAverages[i], _peaks[i]);
-  }
-
-  // TEMP - Display averages and peaks on "equalizer" LEDs
-  // TODO - calculate leds per channel once only...
-  uint16_t ledsPerChannel = _numLeds / _numBands;
+  
   fill_solid(_leds, _numLeds, CRGB::Black);
 
   for (uint8_t i = 0; i < _numBands; i++) {
     // calculate ordinals for the average and peak
-    uint16_t averageOrdinal = map(_rollingAverages[i], 0, ADC_MAX_VALUE, 0, ledsPerChannel);
-    uint16_t peakOrdinal = map(_peaks[i], 0, ADC_MAX_VALUE, 0, ledsPerChannel);
+    uint16_t averageOrdinal = map(_bands[i], 0, ADC_MAX_VALUE, 0, _ledsPerChannel);
+    uint16_t peakOrdinal = map(_peaks[i], 0, ADC_MAX_VALUE, 0, _ledsPerChannel);
 
-    // draw the leds, red over blue if red=blue
-    //_leds[(i * ledsPerChannel) + averageOrdinal] = CRGB::Blue;
-
-    fill_solid(_leds + (i * ledsPerChannel), averageOrdinal, CRGB::Blue);
-
-    _leds[(i * ledsPerChannel) + peakOrdinal] = 0x440000;    
+    // draw main bar and the peak
+    fill_solid(_leds + (i * _ledsPerChannel), averageOrdinal, CRGB::Blue);
+    _leds[(i * _ledsPerChannel) + peakOrdinal] = 0x440000;
   }
 
   // refresh the led strip
