@@ -19,9 +19,9 @@ void SpectrumMode::sampleComplete() {
 }
 
 void SpectrumMode::tick() {
-
   // rotate hue in time based manner
-  unsigned long rotateDelayMicros = 500000 / 255;
+  // TODO - calculate based on time from max -> min rather than fixed per pixel.
+  unsigned long rotateDelayMicros = 250000 / _decaySpeed;
   unsigned long currentMicros = micros();
   unsigned long microsElapsed = (unsigned long)(currentMicros - _lastFrameMicros);
   if (microsElapsed >= rotateDelayMicros){
@@ -32,22 +32,6 @@ void SpectrumMode::tick() {
       }
     }
   }  
-  /*
-  EVERY_N_MILLIS(20) {
-    if (refresh){
-      
-      Serial.print("Set decay ammount to ");
-      Serial.println(_peakDecayAmount);
-      _refresh = false;
-    }
-  }
-  */
- // decay the peak
-  /*
-  for (uint8_t i = 0; i < _numBands; i++) { 
-     _peaks[i] = max(_bands[i], _peaks[i]);
-  }*/
-
   
   fill_solid(_leds, _numLeds, CRGB::Black);
 
@@ -57,20 +41,25 @@ void SpectrumMode::tick() {
     uint16_t peakOrdinal = map(_peaks[i], 0, ADC_MAX_VALUE, 0, _ledsPerChannel);
 
     // draw main bar and the peak
-    fill_solid(_leds + (i * _ledsPerChannel), averageOrdinal, CRGB::Blue);
-    _leds[(i * _ledsPerChannel) + peakOrdinal] = 0x440000;
+    fill_solid(_leds + (i * _ledsPerChannel), averageOrdinal, _barColor);
+    _leds[(i * _ledsPerChannel) + peakOrdinal] = _peakColor;
   }
 
   // refresh the led strip
   _ledController->showLeds(_brightness);
-
 }
 
 void SpectrumMode::updateConfig(JsonObject &root) {
-  updateByteFromJson(root, &_brightness, SPECTRUM_DEFAULT_BRIGHTNESS, "brightness");
+  updateColorFromJson(root, &_barColor, SPECTRUM_DEFAULT_BAR_COLOR), "bar_color"; 
+  updateColorFromJson(root, &_peakColor, SPECTRUM_DEFAULT_PEAK_COLOR, "peak_color"); 
+  updateByteFromJson(root, &_brightness, SPECTRUM_DEFAULT_BRIGHTNESS, "brightness");  
+  updateByteFromJson(root, &_decaySpeed, SPECTRUM_DEFAULT_DECAY_SPEED, "decay_speed");
   _refresh = true;
 }
 
 void SpectrumMode::writeConfig(JsonObject &root) {
+  writeColorToJson(root, &_barColor, "bar_color");
+  writeColorToJson(root, &_peakColor, "peak_color");   
   writeByteToJson(root, &_brightness, "brightness");
+  writeByteToJson(root, &_decaySpeed, "decay_speed");
 }

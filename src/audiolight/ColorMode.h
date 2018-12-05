@@ -14,8 +14,8 @@ class ColorMode : public AudioLightMode {
 
   private:
     CRGB _color = COLOR_DEFAULT_COLOR;
-    bool _audioEnabled = COLOR_DEFAULT_AUDIO_ENABLED;
     uint8_t _brightness = COLOR_DEFAULT_BRIGHTNESS;
+    bool _audioEnabled = COLOR_DEFAULT_AUDIO_ENABLED;
     bool *_includedBands;
     boolean _refresh = true;
 

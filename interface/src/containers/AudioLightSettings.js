@@ -4,7 +4,7 @@ import { wsComponent } from '../components/WSComponent';
 import SectionContent from '../components/SectionContent';
 import AudioLightSettingsForm from '../forms/AudioLightSettingsForm';
 
-class LightStripSettings extends Component {
+class AudioLightSettings extends Component {
 
   constructor(props) {
     super(props);
@@ -27,7 +27,8 @@ class LightStripSettings extends Component {
       saveData,
       handleValueChange,
       handleColorChange,
-      handleChange
+      handleChange,
+      handleCheckboxChange
     } = this.props;
 
     return (
@@ -40,6 +41,7 @@ class LightStripSettings extends Component {
           handleValueChange={handleValueChange}
           handleColorChange={handleColorChange}
           handleChange={handleChange}
+          handleCheckboxChange={handleCheckboxChange}
           handleChangeMode={this.handleChangeMode}
         />
       </SectionContent>
@@ -48,4 +50,4 @@ class LightStripSettings extends Component {
 
 }
 
-export default wsComponent(AUDIO_LIGHT_WEBSOCKET_URI, LightStripSettings);
+export default wsComponent(AUDIO_LIGHT_WEBSOCKET_URI, AudioLightSettings);

@@ -18,15 +18,15 @@ void ColorMode::tick() {
 
 void ColorMode::updateConfig(JsonObject& root) {
   updateColorFromJson(root, &_color, COLOR_DEFAULT_COLOR);
+  updateByteFromJson(root, &_brightness, COLOR_DEFAULT_BRIGHTNESS, "brightness");  
   updateBoolFromJson(root, &_audioEnabled, COLOR_DEFAULT_AUDIO_ENABLED, "audio_enabled");
-  updateByteFromJson(root, &_brightness, COLOR_DEFAULT_BRIGHTNESS, "brightness");
   updateBooleanArrayFromJson(root, _includedBands, _numBands, "included_bands");
   _refresh = true;
 }
 
 void ColorMode::writeConfig(JsonObject& root) {
-  writeColorToJson(root, &_color); 
+  writeColorToJson(root, &_color);
+  writeByteToJson(root, &_brightness, "brightness");  
   writeBoolToJson(root, &_audioEnabled, "audio_enabled");
-  writeByteToJson(root, &_brightness, "brightness");
   writeBooleanArrayToJson(root, _includedBands, _numBands, "included_bands");
 }

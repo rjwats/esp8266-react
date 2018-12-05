@@ -9,8 +9,8 @@
 
 #define LIGHTNING_DEFAULT_COLOR CRGB::White
 #define LIGHTNING_DEFAULT_FLASHES 8
-#define LIGHTNING_DEFAULT_THRESHOLD 50
-#define LIGHTNING_MAX_THRESHOLD 100
+#define LIGHTNING_DEFAULT_THRESHOLD 128
+#define LIGHTNING_DEFAULT_BRIGHTNESS 255
 
 class LightningMode : public AudioLightMode {
 
@@ -21,6 +21,8 @@ private:
   // which channels are used to calculate the threshold to trigger the lightning?
   // we listen to the two bass channels by default - we are trying to detect thunder sounds
   bool *_includedBands;
+
+  uint8_t _brightness = LIGHTNING_DEFAULT_BRIGHTNESS;
   
   uint8_t _threshold = LIGHTNING_DEFAULT_THRESHOLD; // initially we'll work with a simple % based threshold level for triggering a strike
                                                     // in the future this could be take into account the background noise to make

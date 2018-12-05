@@ -31,8 +31,8 @@ class AudioLightMode {
       return (float) currentLevel / (_numBands * ADC_MAX_VALUE);
     }
 
-    uint8_t calculateEnergyPercentage(bool *includedBands=NULL) {
-      return calculateEnergyFloat(includedBands) * 100;
+    uint8_t calculateEnergyByte(bool *includedBands=NULL) {
+      return calculateEnergyFloat(includedBands) * 255;
     }
 
   public:

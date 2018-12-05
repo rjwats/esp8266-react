@@ -1,29 +1,27 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { HuePicker, TwitterPicker } from 'react-color'
-import { SimpleColors } from '../constants/Colors.js'
+import ColorPicker  from '../components/ColorPicker'
+import IncludedBands  from '../components/IncludedBands'
 
+import FormLabel from '@material-ui/core/FormLabel';
+import Switch from '@material-ui/core/Switch';
 import Slider from 'react-rangeslider';
+
 import 'react-rangeslider/lib/index.css'
 
 export class AudioLightColorMode extends React.Component {
 
   render() {
-    const { audioLightSettings, handleColorChange, handleChange } = this.props;
+    const { audioLightSettings, handleColorChange, handleChange, handleCheckboxChange, classes } = this.props;
     return (
       <div>
-        <HuePicker
-          width="100%"
+        <FormLabel>Color</FormLabel>
+        <ColorPicker
           color={ audioLightSettings.color }
           onChange={handleColorChange("color")}
         />
-        <TwitterPicker
-          width="100%"
-          triangle="hide"
-          color={ audioLightSettings.color }
-          onChange={handleColorChange("color")}
-          colors={ SimpleColors }
-        />
+
+        <FormLabel>Brightness</FormLabel>
         <Slider
           min={0}
           max={255}
@@ -31,6 +29,23 @@ export class AudioLightColorMode extends React.Component {
           value={audioLightSettings.brightness}
           onChange={handleChange('brightness')}
         />
+
+        <FormLabel>Audio Enabled</FormLabel>
+        <div className={classes.formControl}>
+          <Switch
+            checked={audioLightSettings.audio_enabled}
+            onChange={handleCheckboxChange('audio_enabled')}
+            value="enabled"
+            color="primary"
+          />          
+        </div>
+
+        <FormLabel>Included Bands</FormLabel>
+        <IncludedBands
+          value={audioLightSettings.included_bands}
+          onChange={handleChange('included_bands')}
+        />
+
       </div>
     );
   }

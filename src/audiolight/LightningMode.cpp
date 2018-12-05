@@ -13,7 +13,7 @@ void LightningMode::enable() {
 */
 void LightningMode::sampleComplete() {
   if (_state == State::IDLE) {
-    if (calculateEnergyPercentage(_includedBands) >= _threshold) {
+    if (calculateEnergyByte(_includedBands) >= _threshold) {
       // TODO: Can do a slightly better job of calculating this add some settings too
       _ledstart = random8(_numLeds);  // Determine starting location of flash
       _ledlen = random8(_numLeds-_ledstart);  // Determine length of flash (not to go beyond NUM_LEDS-1)
@@ -52,7 +52,7 @@ void LightningMode::tick() {
 
     // show flash
     fill_solid(_leds+_ledstart,_ledlen,_color);
-    _ledController->showLeds(255/_dimmer);
+    _ledController->showLeds(_brightness/_dimmer);
 
     // wait a small amount of time (make this configurable? use microsecond timer to avoid delay?)
     delay(random8(4,10));
@@ -84,11 +84,8 @@ void LightningMode::resetWaitTime() {
 }
 
 void LightningMode::updateConfig(JsonObject &root) {
+  updateByteFromJson(root, &_brightness, LIGHTNING_DEFAULT_BRIGHTNESS, "brightness");      
   updateByteFromJson(root, &_threshold, LIGHTNING_DEFAULT_THRESHOLD, "threshold");
-  if (_threshold > LIGHTNING_MAX_THRESHOLD){
-    _threshold = LIGHTNING_DEFAULT_THRESHOLD;
-  }
-
   updateByteFromJson(root, &_flashes, LIGHTNING_DEFAULT_FLASHES, "flashes");
   updateColorFromJson(root, &_color, LIGHTNING_DEFAULT_COLOR, "color");
   updateBooleanArrayFromJson(root, _includedBands, _numBands, "included_bands");
@@ -98,6 +95,7 @@ void LightningMode::updateConfig(JsonObject &root) {
 }
 
 void LightningMode::writeConfig(JsonObject &root) {
+  writeByteToJson(root, &_brightness, "brightness");  
   writeByteToJson(root, &_threshold, "threshold"); 
   writeByteToJson(root, &_flashes, "flashes");  
   writeColorToJson(root, &_color, "color");

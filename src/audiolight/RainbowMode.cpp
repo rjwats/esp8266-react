@@ -10,13 +10,16 @@ void RainbowMode::enable() {
 
 
 void RainbowMode::tick() {
-  // rotate hue in time based manner
-  unsigned long rotateDelayMicros = 1000000 / _rotateSpeed;
-  unsigned long currentMicros = micros();
-  unsigned long microsElapsed = (unsigned long)(currentMicros - _lastFrameMicros);
-  if (microsElapsed >= rotateDelayMicros){
-    _lastFrameMicros = currentMicros;
-    _initialhue++;
+  
+  if (_rotateSpeed > 0){
+    // rotate hue in time based manner
+    unsigned long rotateDelayMicros = 1000000 / _rotateSpeed;
+    unsigned long currentMicros = micros();
+    unsigned long microsElapsed = (unsigned long)(currentMicros - _lastFrameMicros);
+    if (microsElapsed >= rotateDelayMicros){
+      _lastFrameMicros = currentMicros;
+      _initialhue++;
+    }
   }
   
   /* Approach 1 uses each frequency in turn*/
@@ -42,12 +45,12 @@ void RainbowMode::updateConfig(JsonObject& root) {
   updateByteFromJson(root, &_brightness, RAINBOW_DEFAULT_BRIGHTNESS, "brightness");
   updateByteFromJson(root, &_rotateSpeed, RAINBOW_DEFAULT_ROTATE_SPEED, "rotate_speed");
   updateBoolFromJson(root, &_audioEnabled, RAINBOW_DEFAULT_AUDIO_ENABLED, "audio_enabled"); 
-  updateByteFromJson(root, &_hueDelta, RAINBOW_DEFAULT_HUE_DELTA, "delta_hue");
+  updateByteFromJson(root, &_hueDelta, RAINBOW_DEFAULT_HUE_DELTA, "hue_delta");
 }
 
 void RainbowMode::writeConfig(JsonObject& root) {
   writeByteToJson(root, &_brightness, "brightness");
   writeByteToJson(root, &_rotateSpeed, "rotate_speed");
   writeBoolToJson(root, &_audioEnabled, "audio_enabled");
-  writeByteToJson(root, &_hueDelta, "delta_hue");
+  writeByteToJson(root, &_hueDelta, "hue_delta");
 }

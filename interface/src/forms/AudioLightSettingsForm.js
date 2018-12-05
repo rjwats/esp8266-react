@@ -5,6 +5,8 @@ import { withStyles } from '@material-ui/core/styles';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Typography from '@material-ui/core/Typography';
 import MenuItem from '@material-ui/core/MenuItem';
+import FormLabel from '@material-ui/core/FormLabel';
+
 import { AudioLightColorMode } from './AudioLightColorMode';
 import { AudioLightSpectrumMode } from './AudioLightSpectrumMode';
 import { AudioLightRainbowMode } from './AudioLightRainbowMode';
@@ -14,6 +16,14 @@ import { ValidatorForm, SelectValidator } from 'react-material-ui-form-validator
 import * as AudioLightModes from '../constants/AudioLightModes';
 
 const styles = theme => ({
+  form: {
+    "margin-top": theme.spacing.unit,
+    "margin-bottom": theme.spacing.unit
+  },
+  formControl: {
+    "margin-top": theme.spacing.unit,
+    "margin-bottom": theme.spacing.unit*2
+  },
   loadingSettings: {
     margin: theme.spacing.unit,
   },
@@ -30,8 +40,10 @@ class AudioLightSettingsForm extends React.Component {
 
   constructor(props) {
     super(props);
-    this.immediateValueChange = this.immediateValueChange.bind(this);
+    this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
     this.immediateColorChange = this.immediateColorChange.bind(this);
+    this.immediateValueChange = this.immediateValueChange.bind(this);
+    this.immediateChange = this.immediateChange.bind(this);
   }
 
   /*
@@ -46,6 +58,9 @@ class AudioLightSettingsForm extends React.Component {
 
   immediateChange = fieldId => value =>
     this.props.handleChange(fieldId, () => this.props.onSubmit(true, true))(value);
+
+  handleCheckboxChange = fieldId => value =>
+    this.props.handleCheckboxChange(fieldId, () => this.props.onSubmit(true, true))(value);
 
   selectFormComponent() {
     if (this.props.audioLightSettings) {
@@ -89,25 +104,27 @@ class AudioLightSettingsForm extends React.Component {
 
             : audioLightSettings ?
 
-              <ValidatorForm onSubmit={onSubmit}>
+              <ValidatorForm className={classes.form} onSubmit={onSubmit}>
 
-                <SelectValidator
-                  name="mode_id"
-                  label="Mode"
-                  value={audioLightSettings.mode_id}
-                  className={classes.selectField}
-                  onChange={this.props.handleChangeMode}>
-                  <MenuItem value={AudioLightModes.OFF}>Off</MenuItem>
-                  <MenuItem value={AudioLightModes.COLOR}>Single Color</MenuItem>
-                  <MenuItem value={AudioLightModes.SPECTRUM}>Spectrum</MenuItem>
-                  <MenuItem value={AudioLightModes.RAINBOW}>Rainbow</MenuItem>
-                  <MenuItem value={AudioLightModes.LIGHTNING}>Lightning</MenuItem>
-                </SelectValidator>
+                <FormLabel>Mode</FormLabel>
+                <div className={classes.formControl}>
+                  <SelectValidator
+                    name="mode_id"
+                    value={audioLightSettings.mode_id}                   
+                    onChange={this.props.handleChangeMode}>
+                    <MenuItem value={AudioLightModes.OFF}>Off</MenuItem>
+                    <MenuItem value={AudioLightModes.COLOR}>Single Color</MenuItem>
+                    <MenuItem value={AudioLightModes.SPECTRUM}>Spectrum</MenuItem>
+                    <MenuItem value={AudioLightModes.RAINBOW}>Rainbow</MenuItem>
+                    <MenuItem value={AudioLightModes.LIGHTNING}>Lightning</MenuItem>
+                  </SelectValidator>
+                </div>
 
                 <FormComponent
                   classes={classes}
                   audioLightSettings={audioLightSettings}
                   handleValueChange={this.immediateValueChange}
+                  handleCheckboxChange={this.handleCheckboxChange}
                   handleColorChange={this.immediateColorChange}
                   handleChange={this.immediateChange}
                   onSubmit={onSubmit}
@@ -137,7 +154,8 @@ AudioLightSettingsForm.propTypes = {
   handleValueChange: PropTypes.func.isRequired,
   handleColorChange: PropTypes.func.isRequired,
   handleChange: PropTypes.func.isRequired,
-  handleChangeMode: PropTypes.func.isRequired
+  handleChangeMode: PropTypes.func.isRequired,
+  handleCheckboxChange: PropTypes.func.isRequired
 };
 
 export default withStyles(styles)(AudioLightSettingsForm);
