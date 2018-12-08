@@ -11,6 +11,8 @@ import { AudioLightColorMode } from './AudioLightColorMode';
 import { AudioLightSpectrumMode } from './AudioLightSpectrumMode';
 import { AudioLightRainbowMode } from './AudioLightRainbowMode';
 import { AudioLightLightningMode } from './AudioLightLightningMode';
+import { AudioLightConfettiMode } from './AudioLightConfettiMode';
+import { AudioLightFireMode } from './AudioLightFireMode';
 import { ValidatorForm, SelectValidator } from 'react-material-ui-form-validator';
 
 import * as AudioLightModes from '../constants/AudioLightModes';
@@ -74,6 +76,10 @@ class AudioLightSettingsForm extends React.Component {
           return AudioLightRainbowMode;
         case AudioLightModes.LIGHTNING:
           return AudioLightLightningMode;
+          case AudioLightModes.CONFETTI:
+          return AudioLightConfettiMode;
+          case AudioLightModes.FIRE:
+          return AudioLightFireMode;                    
         default:
       }
     }
@@ -117,6 +123,8 @@ class AudioLightSettingsForm extends React.Component {
                     <MenuItem value={AudioLightModes.SPECTRUM}>Spectrum</MenuItem>
                     <MenuItem value={AudioLightModes.RAINBOW}>Rainbow</MenuItem>
                     <MenuItem value={AudioLightModes.LIGHTNING}>Lightning</MenuItem>
+                    <MenuItem value={AudioLightModes.CONFETTI}>Confetti</MenuItem>
+                    <MenuItem value={AudioLightModes.FIRE}>Fire</MenuItem>
                   </SelectValidator>
                 </div>
 

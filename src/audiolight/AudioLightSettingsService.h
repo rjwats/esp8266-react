@@ -12,13 +12,15 @@
 #include <audiolight/SpectrumMode.h>
 #include <audiolight/RainbowMode.h>
 #include <audiolight/LightningMode.h>
+#include <audiolight/FireMode.h>
+#include <audiolight/ConfettiMode.h>
 
 // fast led settings
 #define LED_DATA_PIN 12
 #define COLOR_ORDER RGB
 #define LED_TYPE WS2811
-#define NUM_LEDS 50
-#define NUM_MODES 5
+#define NUM_LEDS 100
+#define NUM_MODES 7
 
 #define OUTPUT_BUFFER_SIZE 7 * NUM_BANDS + 2
 
@@ -26,7 +28,7 @@
 #define AUDIO_LIGHT_STROBE_PIN 5
 #define AUDIO_LIGHT_ANALOG_PIN 36
 
-#define AUDIO_LIGHT_DEAD_ZONE 512
+#define AUDIO_LIGHT_DEAD_ZONE 700
 
 // min and max for rolling avg factors
 #define AUDIO_LIGHT_MAX_ROLLING_AVG_FACTOR 0.99
@@ -47,9 +49,20 @@ public:
   void loop();
 
 protected:
+
+    struct AudioLightModeSettings {
+      CLEDController *ledController;
+      CRGB *leds;
+      uint16_t numLeds;
+      uint16_t *bands;
+      uint16_t numBands;
+      uint8_t brightness;
+    };
+
     void readFromJsonObject(JsonObject& root){
       readFromJsonObject(root, "service");
     }
+    
     void readFromJsonObject(JsonObject& root, String originId);
     void writeToJsonObject(JsonObject& root);
 

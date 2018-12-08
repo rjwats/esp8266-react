@@ -6,11 +6,11 @@
 #include <audiolight/AudioLightMode.h>
 #include <audiolight/JsonUtil.h>
 
-#define RAINBOW_DEFAULT_HUE_DELTA 3
+#define RAINBOW_DEFAULT_HUE_DELTA 64
 #define RAINBOW_DEFAULT_BRIGHTNESS 128
 
 // rotate speed default and min
-#define RAINBOW_DEFAULT_ROTATE_SPEED 128
+#define RAINBOW_DEFAULT_ROTATE_SPEED 32
 
 // rainbow mode can be fixed brightness (non-audio enabled)
 #define RAINBOW_DEFAULT_AUDIO_ENABLED false

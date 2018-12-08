@@ -12,9 +12,11 @@ _server(server), _webSocket(AUDIO_LIGHT_FREQUENCY_STREAM) {
   _modes[2] = new SpectrumMode(_ledController, _leds, NUM_LEDS, _rollingAverages, NUM_BANDS);
   _modes[3] = new RainbowMode(_ledController, _leds, NUM_LEDS, _rollingAverages, NUM_BANDS);
   _modes[4] = new LightningMode(_ledController, _leds, NUM_LEDS, _rollingAverages, NUM_BANDS);
+  _modes[5] = new FireMode(_ledController, _leds, NUM_LEDS, _rollingAverages, NUM_BANDS);
+  _modes[6] = new ConfettiMode(_ledController, _leds, NUM_LEDS, _rollingAverages, NUM_BANDS);  
   
   // off mode is default
-  _currentMode = _modes[1];
+  _currentMode = _modes[3];
   _currentMode->enable();
 }
 
