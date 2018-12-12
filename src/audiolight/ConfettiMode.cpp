@@ -37,9 +37,9 @@ void ConfettiMode::tick() {
   }
 }
 
-void ConfettiMode::updateConfig(JsonObject &root) {
+void ConfettiMode::readFromJsonObject(JsonObject &root) {
   _refresh = true;
 }
 
-void ConfettiMode::writeConfig(JsonObject &root) {
+void ConfettiMode::writeToJsonObject(JsonObject &root) {
 }

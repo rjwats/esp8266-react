@@ -9,6 +9,7 @@
 #define COLOR_DEFAULT_COLOR CRGB::White
 #define COLOR_DEFAULT_BRIGHTNESS 128
 #define COLOR_DEFAULT_AUDIO_ENABLED false
+#define COLOR_FILE_PATH "/modes/color.json"
 
 class ColorMode : public AudioLightMode {
 
@@ -20,8 +21,8 @@ class ColorMode : public AudioLightMode {
     boolean _refresh = true;
 
   public:
-    ColorMode(CLEDController *ledController, CRGB *leds, uint16_t numLeds, uint16_t *bands, uint16_t numBands) 
-    : AudioLightMode(ledController, leds, numLeds, bands, numBands) {
+    ColorMode(FS* fs, CLEDController *ledController, CRGB *leds, uint16_t numLeds, uint16_t *bands, uint16_t numBands) 
+    : AudioLightMode(fs, ledController, leds, numLeds, bands, numBands, COLOR_FILE_PATH) {
       // TODO - Util for this, duplicated!
       _includedBands = (bool *) malloc(sizeof(bool) * numBands);
       for (int i=0; i<numBands / 2; i++) {
@@ -32,8 +33,8 @@ class ColorMode : public AudioLightMode {
     void tick();
     void sampleComplete() {};
     void enable();
-    void updateConfig(JsonObject& root);
-    void writeConfig(JsonObject& root);
+    void readFromJsonObject(JsonObject& root);
+    void writeToJsonObject(JsonObject& root);
 };
 
 #endif

@@ -65,11 +65,11 @@ void FireMode::tick() {
 
 }
 
-void FireMode::updateConfig(JsonObject &root) {
+void FireMode::readFromJsonObject(JsonObject &root) {
   // reset the mode
   _refresh = true;
 }
 
-void FireMode::writeConfig(JsonObject &root) {
+void FireMode::writeToJsonObject(JsonObject &root) {
 
 }

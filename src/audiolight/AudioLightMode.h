@@ -3,10 +3,11 @@
 
 #include <Arduino.h>
 #include <ArduinoJson.h>
+#include <SettingsPersistence.h>
 #include <FastLed.h>
 #include <audiolight/AudioLight.h>
 
-class AudioLightMode {
+class AudioLightMode : public SettingsPersistence {
   protected:  
     CLEDController *_ledController;   
     CRGB *_leds;
@@ -37,7 +38,8 @@ class AudioLightMode {
 
   public:
   
-   AudioLightMode(CLEDController *ledController, CRGB *leds, uint16_t numLeds, uint16_t *bands, uint16_t numBands) {
+   AudioLightMode(FS* fs, CLEDController *ledController, CRGB *leds, uint16_t numLeds, uint16_t *bands, uint16_t numBands, char const* filePath) : 
+     SettingsPersistence(fs, filePath) {
      this->_ledController = ledController;
      this->_leds = leds;  
      this->_numLeds = numLeds;
@@ -50,26 +52,26 @@ class AudioLightMode {
    */
   virtual String getId() = 0;
 
-   /*
-   * Allow the mode to animate the LEDs, called by the main loop.
-   */
-   virtual void tick() = 0;
+  /*
+  * Allow the mode to animate the LEDs, called by the main loop.
+  */
+  virtual void tick() = 0;
 
-   /*
-   * Called when the bands are sampled and new data is available for rendering.
-   * 
-   * Tick method can be free running.
-   */
-   virtual void sampleComplete() = 0;
+  /*
+  * Called when the bands are sampled and new data is available for rendering.
+  * 
+  * Tick method can be free running.
+  */
+  virtual void sampleComplete() = 0;
 
-   /**
-   * Called when the effect is enabled.
-   */
-   virtual void enable() = 0;
+  /**
+  * Called when the effect is enabled.
+  */
+  virtual void enable() = 0;
 
-   // to update from the web server
-   virtual void updateConfig(JsonObject& root) = 0;
-   virtual void writeConfig(JsonObject& root) = 0;
+  // serialization routene, from local config to JsonObject
+  virtual void readFromJsonObject(JsonObject& root) = 0;
+  virtual void writeToJsonObject(JsonObject& root) = 0;
 
 };
 

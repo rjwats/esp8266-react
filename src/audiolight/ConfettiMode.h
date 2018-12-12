@@ -7,6 +7,8 @@
 #include <audiolight/AudioLightMode.h>
 #include <audiolight/JsonUtil.h>
 
+#define CONFETTI_FILE_PATH "/modes/confetti.json"
+
 class ConfettiMode : public AudioLightMode {
 
 private:
@@ -30,15 +32,15 @@ private:
   bool _refresh = true;
 
 public:
-  ConfettiMode(CLEDController *ledController, CRGB *leds, uint16_t numLeds, uint16_t *bands,  uint16_t numBands)
-      : AudioLightMode(ledController, leds, numLeds, bands, numBands) {};
+  ConfettiMode(FS* fs, CLEDController *ledController, CRGB *leds, uint16_t numLeds, uint16_t *bands, uint16_t numBands)
+      : AudioLightMode(fs, ledController, leds, numLeds, bands, numBands, CONFETTI_FILE_PATH) {};
 
   String getId();
   void tick();
   void sampleComplete();
   void enable();
-  void updateConfig(JsonObject &root);
-  void writeConfig(JsonObject &root);
+  void readFromJsonObject(JsonObject& root);
+  void writeToJsonObject(JsonObject& root);
 
 };
 

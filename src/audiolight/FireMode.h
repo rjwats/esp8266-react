@@ -3,6 +3,7 @@
 
 #define FIRE_DEFAULT_COOLING 8-0
 #define FIRE_DEFAULT_SPARKING 120
+#define FIRE_FILE_PATH "/modes/fire.json"
 
 #include <Arduino.h>
 #include <FastLed.h>
@@ -25,8 +26,8 @@ private:
     uint8_t *_heatMap;
 
 public:
-  FireMode(CLEDController *ledController, CRGB *leds, uint16_t numLeds, uint16_t *bands,  uint16_t numBands)
-      : AudioLightMode(ledController, leds, numLeds, bands, numBands) {
+  FireMode(FS* fs, CLEDController *ledController, CRGB *leds, uint16_t numLeds, uint16_t *bands,  uint16_t numBands)
+      : AudioLightMode(fs, ledController, leds, numLeds, bands, numBands, FIRE_FILE_PATH) {
     _heatMap = (uint8_t *) malloc(sizeof(uint8_t) * numLeds);
     memset(_heatMap, 0, sizeof(uint8_t) * numLeds);
   };
@@ -34,8 +35,8 @@ public:
   void tick();
   void sampleComplete();
   void enable();
-  void updateConfig(JsonObject &root);
-  void writeConfig(JsonObject &root);
+  void readFromJsonObject(JsonObject& root);
+  void writeToJsonObject(JsonObject& root);
 };
 
 #endif

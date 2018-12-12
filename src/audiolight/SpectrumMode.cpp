@@ -14,7 +14,7 @@ void SpectrumMode::enable() {
 
 void SpectrumMode::sampleComplete() {
   for (uint8_t i = 0; i < _numBands; i++) { 
-     _peaks[i] = max(_bands[i], _peaks[i]);
+     _peaks[i] = _max(_bands[i], _peaks[i]);
   }
 }
 
@@ -49,7 +49,7 @@ void SpectrumMode::tick() {
   _ledController->showLeds(_brightness);
 }
 
-void SpectrumMode::updateConfig(JsonObject &root) {
+void SpectrumMode::readFromJsonObject(JsonObject &root) {
   updateColorFromJson(root, &_barColor, SPECTRUM_DEFAULT_BAR_COLOR), "bar_color"; 
   updateColorFromJson(root, &_peakColor, SPECTRUM_DEFAULT_PEAK_COLOR, "peak_color"); 
   updateByteFromJson(root, &_brightness, SPECTRUM_DEFAULT_BRIGHTNESS, "brightness");  
@@ -57,7 +57,7 @@ void SpectrumMode::updateConfig(JsonObject &root) {
   _refresh = true;
 }
 
-void SpectrumMode::writeConfig(JsonObject &root) {
+void SpectrumMode::writeToJsonObject(JsonObject &root) {
   writeColorToJson(root, &_barColor, "bar_color");
   writeColorToJson(root, &_peakColor, "peak_color");   
   writeByteToJson(root, &_brightness, "brightness");

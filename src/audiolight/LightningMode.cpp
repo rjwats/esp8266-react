@@ -83,7 +83,7 @@ void LightningMode::resetWaitTime() {
   _waitDuration = (_flashCounter==0 ? 200 : 50) + random8(100);
 }
 
-void LightningMode::updateConfig(JsonObject &root) {
+void LightningMode::readFromJsonObject(JsonObject &root) {
   updateByteFromJson(root, &_brightness, LIGHTNING_DEFAULT_BRIGHTNESS, "brightness");      
   updateByteFromJson(root, &_threshold, LIGHTNING_DEFAULT_THRESHOLD, "threshold");
   updateByteFromJson(root, &_flashes, LIGHTNING_DEFAULT_FLASHES, "flashes");
@@ -94,7 +94,7 @@ void LightningMode::updateConfig(JsonObject &root) {
   _refresh = true;
 }
 
-void LightningMode::writeConfig(JsonObject &root) {
+void LightningMode::writeToJsonObject(JsonObject &root) {
   writeByteToJson(root, &_brightness, "brightness");  
   writeByteToJson(root, &_threshold, "threshold"); 
   writeByteToJson(root, &_flashes, "flashes");  

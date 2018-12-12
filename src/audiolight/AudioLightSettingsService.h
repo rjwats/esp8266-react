@@ -17,9 +17,9 @@
 
 // fast led settings
 #define LED_DATA_PIN 12
-#define COLOR_ORDER RGB
-#define LED_TYPE WS2811
-#define NUM_LEDS 100
+#define COLOR_ORDER GRB
+#define LED_TYPE WS2812
+#define NUM_LEDS 9
 #define NUM_MODES 7
 
 #define OUTPUT_BUFFER_SIZE 7 * NUM_BANDS + 2
@@ -37,6 +37,8 @@
 
 #define AUDIO_LIGHT_WS_PATH "/ws/audioLight"
 #define AUDIO_LIGHT_SERVICE_PATH "/rest/audioLight"
+#define AUDIO_LIGHT_SAVE_MODE_CONFIG_PATH "/rest/saveAudioLightModeConfig"
+#define AUDIO_LIGHT_LOAD_MODE_CONFIG_PATH "/rest/loadAudioLightModeConfig"
 #define AUDIO_LIGHT_FREQUENCY_STREAM "/ws/frequencyStream"
 
 class AudioLightSettingsService : public SimpleService, public SimpleSocket {
@@ -63,8 +65,13 @@ protected:
       readFromJsonObject(root, "service");
     }
     
+    // serialization functions
     void readFromJsonObject(JsonObject& root, String originId);
     void writeToJsonObject(JsonObject& root);
+
+    // save and load the current mode config
+    void saveModeConfig(AsyncWebServerRequest *request);
+    void loadModeConfig(AsyncWebServerRequest *request);
 
 private:
   // will serve setting endpoints from here

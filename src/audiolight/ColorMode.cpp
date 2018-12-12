@@ -16,7 +16,7 @@ void ColorMode::tick() {
   }
 }
 
-void ColorMode::updateConfig(JsonObject& root) {
+void ColorMode::readFromJsonObject(JsonObject& root) {
   updateColorFromJson(root, &_color, COLOR_DEFAULT_COLOR);
   updateByteFromJson(root, &_brightness, COLOR_DEFAULT_BRIGHTNESS, "brightness");  
   updateBoolFromJson(root, &_audioEnabled, COLOR_DEFAULT_AUDIO_ENABLED, "audio_enabled");
@@ -24,7 +24,7 @@ void ColorMode::updateConfig(JsonObject& root) {
   _refresh = true;
 }
 
-void ColorMode::writeConfig(JsonObject& root) {
+void ColorMode::writeToJsonObject(JsonObject& root) {
   writeColorToJson(root, &_color);
   writeByteToJson(root, &_brightness, "brightness");  
   writeBoolToJson(root, &_audioEnabled, "audio_enabled");

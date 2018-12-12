@@ -1,23 +1,25 @@
 #include <audiolight/AudioLightSettingsService.h>
 
+void junkBodyHandler(AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final){}
+
 AudioLightSettingsService::AudioLightSettingsService(AsyncWebServer *server, FS *fs) :
 SimpleService(server, AUDIO_LIGHT_SERVICE_PATH),SimpleSocket(server, AUDIO_LIGHT_WS_PATH), 
 _server(server), _webSocket(AUDIO_LIGHT_FREQUENCY_STREAM) {
   _server->addHandler(&_webSocket);
+  _server->on(AUDIO_LIGHT_SAVE_MODE_CONFIG_PATH, HTTP_POST, std::bind(&AudioLightSettingsService::saveModeConfig, this, std::placeholders::_1), junkBodyHandler);
+  _server->on(AUDIO_LIGHT_LOAD_MODE_CONFIG_PATH, HTTP_POST, std::bind(&AudioLightSettingsService::loadModeConfig, this, std::placeholders::_1), junkBodyHandler);
 
   _ledController = &FastLED.addLeds<LED_TYPE,LED_DATA_PIN,COLOR_ORDER>(_leds, NUM_LEDS);
   
-  _modes[0] = new OffMode(_ledController, _leds, NUM_LEDS, _rollingAverages, NUM_BANDS);
-  _modes[1] = new ColorMode(_ledController, _leds, NUM_LEDS, _rollingAverages, NUM_BANDS);
-  _modes[2] = new SpectrumMode(_ledController, _leds, NUM_LEDS, _rollingAverages, NUM_BANDS);
-  _modes[3] = new RainbowMode(_ledController, _leds, NUM_LEDS, _rollingAverages, NUM_BANDS);
-  _modes[4] = new LightningMode(_ledController, _leds, NUM_LEDS, _rollingAverages, NUM_BANDS);
-  _modes[5] = new FireMode(_ledController, _leds, NUM_LEDS, _rollingAverages, NUM_BANDS);
-  _modes[6] = new ConfettiMode(_ledController, _leds, NUM_LEDS, _rollingAverages, NUM_BANDS);  
-  
-  // off mode is default
+  // construct modes
+  _modes[0] = new OffMode(fs, _ledController, _leds, NUM_LEDS, _rollingAverages, NUM_BANDS);
+  _modes[1] = new ColorMode(fs, _ledController, _leds, NUM_LEDS, _rollingAverages, NUM_BANDS);
+  _modes[2] = new SpectrumMode(fs, _ledController, _leds, NUM_LEDS, _rollingAverages, NUM_BANDS);
+  _modes[3] = new RainbowMode(fs, _ledController, _leds, NUM_LEDS, _rollingAverages, NUM_BANDS);
+  _modes[4] = new LightningMode(fs, _ledController, _leds, NUM_LEDS, _rollingAverages, NUM_BANDS);
+  _modes[5] = new FireMode(fs, _ledController, _leds, NUM_LEDS, _rollingAverages, NUM_BANDS);
+  _modes[6] = new ConfettiMode(fs, _ledController, _leds, NUM_LEDS, _rollingAverages, NUM_BANDS);  
   _currentMode = _modes[3];
-  _currentMode->enable();
 }
 
 AudioLightSettingsService::~AudioLightSettingsService() {
@@ -29,7 +31,11 @@ void AudioLightSettingsService::begin() {
   pinMode(AUDIO_LIGHT_STROBE_PIN, OUTPUT);
   pinMode(AUDIO_LIGHT_ANALOG_PIN, INPUT);
   digitalWrite(AUDIO_LIGHT_RESET_PIN, LOW);
-  digitalWrite(AUDIO_LIGHT_STROBE_PIN, HIGH);  
+  digitalWrite(AUDIO_LIGHT_STROBE_PIN, HIGH);
+  
+  // load defaults for initial mode from file system
+  _currentMode->readFromFS();
+  _currentMode->enable();
 }
 
 void AudioLightSettingsService::loop() {
@@ -96,24 +102,39 @@ void AudioLightSettingsService::readFromJsonObject(JsonObject& root, String orig
 
   // get mode we are configuring
   AudioLightMode *mode = getMode(modeId);
-
-  // switch mode
-  if (mode != NULL){
-    mode->updateConfig(root);
+  if (mode != NULL) {
+    if (root["mode_config"].is<JsonObject&>()){
+      // use provided value
+      mode->readFromJsonObject(root["mode_config"]);
+    }else{
+      // load defaults from file system
+      mode->readFromFS();   
+    }
+    // switch mode if required
     if (mode != _currentMode){
       _currentMode = mode;
       _currentMode->enable();
     }
   }
-
   // push the updates out to the WebSockets
   pushPayloadToWebSockets(originId);
 }
 
 void AudioLightSettingsService::writeToJsonObject(JsonObject& root) {
   root["mode_id"] = _currentMode->getId();
-  root["rolling_average_factor"] = _rollingAverageFactor;  
-  _currentMode->writeConfig(root);
+  root["rolling_average_factor"] = _rollingAverageFactor;
+  _currentMode->writeToJsonObject(root.createNestedObject("mode_config"));
+}
+
+void AudioLightSettingsService::saveModeConfig(AsyncWebServerRequest *request) {
+  _currentMode->writeToFS();
+  request->send(200, "text/plain", "Saved");
+}
+
+void AudioLightSettingsService::loadModeConfig(AsyncWebServerRequest *request) {
+  _currentMode->readFromFS();    
+  _currentMode->enable();
+  request->send(200, "text/plain", "Loaded");  
 }
 
 void AudioLightSettingsService::transmitFrequencies() {

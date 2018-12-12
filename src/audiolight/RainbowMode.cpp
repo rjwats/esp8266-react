@@ -8,7 +8,6 @@ void RainbowMode::enable() {
   _lastFrameMicros = micros();
 }
 
-
 void RainbowMode::tick() {
   
   if (_rotateSpeed > 0){
@@ -41,14 +40,14 @@ void RainbowMode::tick() {
   _ledController->showLeds(_brightness);
 }
 
-void RainbowMode::updateConfig(JsonObject& root) {
+void RainbowMode::readFromJsonObject(JsonObject& root) {
   updateByteFromJson(root, &_brightness, RAINBOW_DEFAULT_BRIGHTNESS, "brightness");
   updateByteFromJson(root, &_rotateSpeed, RAINBOW_DEFAULT_ROTATE_SPEED, "rotate_speed");
   updateBoolFromJson(root, &_audioEnabled, RAINBOW_DEFAULT_AUDIO_ENABLED, "audio_enabled"); 
   updateByteFromJson(root, &_hueDelta, RAINBOW_DEFAULT_HUE_DELTA, "hue_delta");
 }
 
-void RainbowMode::writeConfig(JsonObject& root) {
+void RainbowMode::writeToJsonObject(JsonObject& root) {
   writeByteToJson(root, &_brightness, "brightness");
   writeByteToJson(root, &_rotateSpeed, "rotate_speed");
   writeBoolToJson(root, &_audioEnabled, "audio_enabled");

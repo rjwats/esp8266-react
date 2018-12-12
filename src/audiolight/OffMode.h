@@ -1,8 +1,9 @@
 #ifndef OFF_MODE_H
 #define OFF_MODE_H
 
-#include <Arduino.h>
+#define LIGHTNING_FILE_PATH "/modes/lightning.json"
 
+#include <Arduino.h>
 #include <audiolight/AudioLightMode.h>
 
 class OffMode : public AudioLightMode {
@@ -11,14 +12,14 @@ class OffMode : public AudioLightMode {
    boolean _turnOff;
 
   public:
-    OffMode(CLEDController *ledController, CRGB *leds, int numLeds, uint16_t *bands, uint16_t numBands) 
-    : AudioLightMode(ledController, leds, numLeds, bands, numBands){};
+    OffMode(FS* fs, CLEDController *ledController, CRGB *leds, int numLeds, uint16_t *bands, uint16_t numBands) 
+    : AudioLightMode(fs, ledController, leds, numLeds, bands, numBands, LIGHTNING_FILE_PATH){};
     String getId();    
     void tick();
     void sampleComplete(){};
     void enable();
-    void updateConfig(JsonObject& root) {};
-    void writeConfig(JsonObject& root) {};
+    void readFromJsonObject(JsonObject& root) {};
+    void writeToJsonObject(JsonObject& root) {};
 };
 
 #endif

@@ -15,6 +15,8 @@
 // rainbow mode can be fixed brightness (non-audio enabled)
 #define RAINBOW_DEFAULT_AUDIO_ENABLED false
 
+#define RAINBOW_FILE_PATH "/modes/rainbow.json"
+
 class RainbowMode : public AudioLightMode {
 
   private:  
@@ -34,8 +36,8 @@ class RainbowMode : public AudioLightMode {
     boolean _refresh = true;
 
   public:
-    RainbowMode(CLEDController *ledController, CRGB *leds, uint16_t numLeds, uint16_t *bands, uint16_t numBands) 
-    : AudioLightMode(ledController, leds, numLeds, bands, numBands) {
+    RainbowMode(FS* fs, CLEDController *ledController, CRGB *leds, uint16_t numLeds, uint16_t *bands, uint16_t numBands) 
+    : AudioLightMode(fs, ledController, leds, numLeds, bands, numBands, RAINBOW_FILE_PATH) {
       _ledsPerBand = _numLeds / _numBands;
       _remainingLeds = _numLeds % _numBands;  
     };
@@ -43,8 +45,8 @@ class RainbowMode : public AudioLightMode {
     void tick();
     void sampleComplete() {};
     void enable();
-    void updateConfig(JsonObject& root);
-    void writeConfig(JsonObject& root);
+    void readFromJsonObject(JsonObject& root);
+    void writeToJsonObject(JsonObject& root);
 };
 
 #endif

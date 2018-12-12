@@ -13,6 +13,7 @@
 #define SPECTRUM_DEFAULT_DECAY_SPEED 128
 #define SPECTRUM_DEFAULT_BAR_COLOR CRGB::Blue
 #define SPECTRUM_DEFAULT_PEAK_COLOR CRGB::Red
+#define SPECTRUM_FILE_PATH "/modes/spectrum.json"
 
 class SpectrumMode : public AudioLightMode {
 
@@ -29,8 +30,8 @@ private:
   unsigned long _lastFrameMicros = 0;
   
 public:
-  SpectrumMode(CLEDController *ledController, CRGB *leds, uint16_t numLeds,  uint16_t *bands, uint16_t numBands) 
-      : AudioLightMode(ledController, leds, numLeds, bands, numBands) {
+  SpectrumMode(FS* fs, CLEDController *ledController, CRGB *leds, uint16_t numLeds,  uint16_t *bands, uint16_t numBands)
+      : AudioLightMode(fs, ledController, leds, numLeds, bands, numBands, SPECTRUM_FILE_PATH) {
       _peaks = (uint16_t *) malloc(sizeof(uint16_t) * numBands);
       for (uint8_t i = 0; i < _numBands; i++) { 
         _peaks[i] = 0;
@@ -41,8 +42,8 @@ public:
   void tick();
   void sampleComplete();  
   void enable();
-  void updateConfig(JsonObject &root);
-  void writeConfig(JsonObject &root);
+  void readFromJsonObject(JsonObject& root);
+  void writeToJsonObject(JsonObject& root);
 };
 
 #endif

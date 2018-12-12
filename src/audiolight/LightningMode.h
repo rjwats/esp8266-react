@@ -11,6 +11,7 @@
 #define LIGHTNING_DEFAULT_FLASHES 8
 #define LIGHTNING_DEFAULT_THRESHOLD 128
 #define LIGHTNING_DEFAULT_BRIGHTNESS 255
+#define LIGHTNING_FILE_PATH "/modes/lightning.json"
 
 class LightningMode : public AudioLightMode {
 
@@ -47,8 +48,8 @@ private:
   uint16_t _waitDuration;
 
 public:
-  LightningMode(CLEDController *ledController, CRGB *leds, uint16_t numLeds, uint16_t *bands,  uint16_t numBands)
-      : AudioLightMode(ledController, leds, numLeds, bands, numBands) {
+  LightningMode(FS* fs, CLEDController *ledController, CRGB *leds, uint16_t numLeds, uint16_t *bands,  uint16_t numBands)
+      : AudioLightMode(fs, ledController, leds, numLeds, bands, numBands, LIGHTNING_FILE_PATH) {
     // TODO - Util for this, duplicated!
     _includedBands = (bool *) malloc(sizeof(bool) * numBands);
     for (int i=0; i<numBands / 2; i++) {
@@ -59,8 +60,8 @@ public:
   void tick();
   void sampleComplete();
   void enable();
-  void updateConfig(JsonObject &root);
-  void writeConfig(JsonObject &root);
+  void readFromJsonObject(JsonObject& root);
+  void writeToJsonObject(JsonObject& root);
   bool isWaitTimeElapsed();
   void resetWaitTime();
 };
