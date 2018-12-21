@@ -92,12 +92,11 @@ void AudioLightSettingsService::readFromJsonObject(JsonObject& root, String orig
   // update the config
   String modeId = root["mode_id"];
 
-  _rollingAverageFactor = root["rolling_average_factor"] | AUDIO_LIGHT_DEFAULT_ROLLING_AVG_FACTOR;
-  if (_rollingAverageFactor < AUDIO_LIGHT_MIN_ROLLING_AVG_FACTOR) {
-    _rollingAverageFactor = AUDIO_LIGHT_MIN_ROLLING_AVG_FACTOR;
-  }
-  if (_rollingAverageFactor > AUDIO_LIGHT_MAX_ROLLING_AVG_FACTOR){
-    _rollingAverageFactor = AUDIO_LIGHT_MAX_ROLLING_AVG_FACTOR;
+  // handle global config
+  if (root["global_config"].is<JsonObject&>()){
+    JsonObject& globalConfig = root["global_config"];
+    _rollingAverageFactor = globalConfig["rolling_average_factor"] | AUDIO_LIGHT_DEFAULT_ROLLING_AVG_FACTOR;
+    _rollingAverageFactor = _max(AUDIO_LIGHT_MIN_ROLLING_AVG_FACTOR, _min(AUDIO_LIGHT_MAX_ROLLING_AVG_FACTOR, _rollingAverageFactor));
   }
 
   // get mode we are configuring
@@ -122,7 +121,10 @@ void AudioLightSettingsService::readFromJsonObject(JsonObject& root, String orig
 
 void AudioLightSettingsService::writeToJsonObject(JsonObject& root) {
   root["mode_id"] = _currentMode->getId();
-  root["rolling_average_factor"] = _rollingAverageFactor;
+
+  JsonObject& globalConfig = root.createNestedObject("global_config");
+  globalConfig["rolling_average_factor"] = _rollingAverageFactor;
+  
   _currentMode->writeToJsonObject(root.createNestedObject("mode_config"));
 }
 
@@ -132,7 +134,7 @@ void AudioLightSettingsService::saveModeConfig(AsyncWebServerRequest *request) {
 }
 
 void AudioLightSettingsService::loadModeConfig(AsyncWebServerRequest *request) {
-  _currentMode->readFromFS();    
+  _currentMode->readFromFS();
   _currentMode->enable();
   request->send(200, "text/plain", "Loaded");  
 }

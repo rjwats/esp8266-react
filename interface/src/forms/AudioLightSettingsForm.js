@@ -40,29 +40,23 @@ const styles = theme => ({
 
 class AudioLightSettingsForm extends React.Component {
 
-  constructor(props) {
-    super(props);
-    this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
-    this.immediateColorChange = this.immediateColorChange.bind(this);
-    this.immediateValueChange = this.immediateValueChange.bind(this);
-    this.immediateChange = this.immediateChange.bind(this);
+  handleChange = (objectName, fieldName, callback) => value => {
+    var data = this.props.audioLightSettings[objectName];
+    this.props.handleChange(objectName,callback)({...data, [fieldName]:value}, callback);    
   }
+  changeFunction = accessor => (objectName, fieldName, callback) => value => {
+    this.handleChange(objectName, fieldName, callback)(accessor(value));
+  }
+  handleColorChange = this.changeFunction(color => color.hex);  
+  handleValueChange = this.changeFunction(event => event.target.value);
+  handleCheckboxChange = this.changeFunction(event => event.target.checked);
 
-  /*
-  * Saves the settings and submits it right away, works well for our
-  * interactive light control!
-  */
-  immediateColorChange = fieldId => value =>
-    this.props.handleColorChange(fieldId, () => this.props.onSubmit(true, true))(value);
-
-  immediateValueChange = fieldId => value =>
-    this.props.handleValueChange(fieldId, () => this.props.onSubmit(true, true))(value);
-
-  immediateChange = fieldId => value =>
-    this.props.handleChange(fieldId, () => this.props.onSubmit(true, true))(value);
-
-  handleCheckboxChange = fieldId => value =>
-    this.props.handleCheckboxChange(fieldId, () => this.props.onSubmit(true, true))(value);
+  modeChangeFunction = changeFunction => fieldId => value => 
+    changeFunction("mode_config", fieldId, () => this.props.onSubmit(true, true))(value);
+  handleModeConfigChange = this.modeChangeFunction(this.handleChange);
+  handleModeConfigColorChange = this.modeChangeFunction(this.handleColorChange);
+  handleModeConfigValueChange = this.modeChangeFunction(this.handleValueChange);
+  handleModeConfigCheckboxChange = this.modeChangeFunction(this.handleCheckboxChange);
 
   selectFormComponent() {
     if (this.props.audioLightSettings) {
@@ -130,11 +124,11 @@ class AudioLightSettingsForm extends React.Component {
 
                 <FormComponent
                   classes={classes}
-                  audioLightSettings={audioLightSettings}
-                  handleValueChange={this.immediateValueChange}
-                  handleCheckboxChange={this.handleCheckboxChange}
-                  handleColorChange={this.immediateColorChange}
-                  handleChange={this.immediateChange}
+                  audioLightSettings={audioLightSettings.mode_config}
+                  handleCheckboxChange={this.handleModeConfigCheckboxChange}
+                  handleValueChange={this.handleModeConfigValueChange}
+                  handleColorChange={this.handleModeConfigColorChange}
+                  handleChange={this.handleModeConfigChange}
                   onSubmit={onSubmit}
                 />
 
