@@ -99,6 +99,8 @@ Microcontroller	ESP8266
 Frequency	80MHz
 Flash	4MBl
 
+**NB: If building under Windows you need to delete .piolibdeps/Time/Time.h - due [filesystem case insensitivity](https://github.com/me-no-dev/ESPAsyncWebServer/issues/96)*
+
 ## Configuration & Deployment
 
 Standard configuration settings, such as build flags, libraries and device configuration can be found in platformio.ini. See the [PlatformIO docs](http://docs.platformio.org/en/latest/projectconf.html) for full details on what you can do with this.
