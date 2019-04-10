@@ -71,10 +71,10 @@ npm start
 
 **NB: To run the interface locally you will need to modify the endpoint root path and enable CORS.**
 
-The endpoint root path can be found in .env.development, defined as environment variable 'REACT_APP_ENDPOINT_ROOT'. This needs to be the root URL of the device running the back end, for example:
+The endpoint root path can be found in .env.development, defined as the environment variable 'REACT_APP_ENDPOINT_ROOT'. This needs to be the root URL of the device running the back end, for example:
 
 ```
-"http://192.168.0.6/rest/".
+REACT_APP_ENDPOINT_ROOT=http://192.168.0.6/rest/
 ```
 
 CORS can be enabled on the back end by uncommenting the -D ENABLE_CORS build flag in platformio.ini and re-deploying.
