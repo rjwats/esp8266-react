@@ -10,10 +10,9 @@
 #endif
 
 #include <ESPAsyncWebServer.h>
-#include <AsyncJson.h>
 #include <ArduinoJson.h>
+#include <AsyncArduinoJson6.h>
 #include <AsyncJsonRequestWebHandler.h>
-#include <AsyncJsonCallbackResponse.h>
 
 /**
 * At the moment, not expecting services to have to deal with large JSON
@@ -35,23 +34,27 @@ private:
   AsyncJsonRequestWebHandler _updateHandler;
 
   void fetchConfig(AsyncWebServerRequest *request){
-    AsyncJsonResponse * response = new AsyncJsonResponse();
-    writeToJsonObject(response->getRoot());
+    AsyncJsonResponse * response = new AsyncJsonResponse(MAX_SETTINGS_SIZE);
+    JsonDocument root = response->getRoot();
+    JsonObject jsonObject = root.to<JsonObject>();
+    writeToJsonObject(jsonObject);
     response->setLength();
     request->send(response);
   }
 
-  void updateConfig(AsyncWebServerRequest *request, JsonVariant &json){
-    if (json.is<JsonObject>()){
-      JsonObject& newConfig = json.as<JsonObject>();
+  void updateConfig(AsyncWebServerRequest *request, JsonDocument &jsonDocument){
+    if (jsonDocument.is<JsonObject>()){
+      JsonObject newConfig = jsonDocument.as<JsonObject>();
       readFromJsonObject(newConfig);
-
+ 
       // write settings back with a callback to reconfigure the wifi
-      AsyncJsonCallbackResponse * response = new AsyncJsonCallbackResponse([this] () {onConfigUpdated();});
-      writeToJsonObject(response->getRoot());
+      AsyncJsonCallbackResponse * response = new AsyncJsonCallbackResponse([this] () {onConfigUpdated();}, MAX_SETTINGS_SIZE);
+      JsonDocument document = response->getRoot();
+      JsonObject jsonObject = document.to<JsonObject>();      
+      writeToJsonObject(jsonObject);
       response->setLength();
       request->send(response);
-    } else{
+    } else {
       request->send(400);
     }
   }
