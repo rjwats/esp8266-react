@@ -1,7 +1,6 @@
 
 /**
-*  A copy of AsyncJson.h from Async
-*
+*  A copy of AsyncJson.h from ESPAsyncWebServer, updated for ArduinoJson6.
 */
 
 #ifndef ASYNC_ARDUINO_JSON_6_H
@@ -47,15 +46,17 @@ class AsyncJsonResponse: public AsyncAbstractResponse {
   private:
     DynamicJsonDocument _jsonDocument;
     bool _isValid;
+    JsonObject _root;    
 
   public:
     AsyncJsonResponse(int maxSize): _jsonDocument(maxSize), _isValid{false} {
       _code = 200;
       _contentType = JSON_MIMETYPE;
+      _root = _jsonDocument.to<JsonObject>();
     }
     ~AsyncJsonResponse() {}    
-    JsonDocument getRoot() {
-      return _jsonDocument;
+    JsonObject getRoot() {
+      return _root;
     }
     bool _sourceValid() const {
       return _isValid; 

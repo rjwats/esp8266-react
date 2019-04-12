@@ -17,7 +17,7 @@ void WiFiScanner::listNetworks(AsyncWebServerRequest *request) {
   int numNetworks = WiFi.scanComplete();
   if (numNetworks > -1){
     AsyncJsonResponse * response = new AsyncJsonResponse(MAX_WIFI_SCANNER_SIZE);
-    JsonDocument root = response->getRoot();
+    JsonObject root = response->getRoot();
     JsonArray networks = root.createNestedArray("networks");
     for (int i=0; i<numNetworks ; i++){
       JsonObject network = networks.createNestedObject();

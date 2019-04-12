@@ -35,8 +35,7 @@ private:
 
   void fetchConfig(AsyncWebServerRequest *request){
     AsyncJsonResponse * response = new AsyncJsonResponse(MAX_SETTINGS_SIZE);
-    JsonDocument root = response->getRoot();
-    JsonObject jsonObject = root.to<JsonObject>();
+    JsonObject jsonObject = response->getRoot();    
     writeToJsonObject(jsonObject);
     response->setLength();
     request->send(response);
@@ -49,8 +48,7 @@ private:
  
       // write settings back with a callback to reconfigure the wifi
       AsyncJsonCallbackResponse * response = new AsyncJsonCallbackResponse([this] () {onConfigUpdated();}, MAX_SETTINGS_SIZE);
-      JsonDocument document = response->getRoot();
-      JsonObject jsonObject = document.to<JsonObject>();      
+      JsonObject jsonObject = response->getRoot();    
       writeToJsonObject(jsonObject);
       response->setLength();
       request->send(response);
