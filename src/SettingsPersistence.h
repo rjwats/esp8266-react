@@ -3,10 +3,9 @@
 
 #include <ESPAsyncWebServer.h>
 #include <FS.h>
-#include <AsyncJson.h>
 #include <ArduinoJson.h>
 #include <AsyncJsonRequestWebHandler.h>
-#include <AsyncJsonCallbackResponse.h>
+#include <AsyncArduinoJson6.h>
 
 /**
 * At the moment, not expecting settings service to have to deal with large JSON
@@ -30,8 +29,8 @@ protected:
 
   bool writeToFS() {
     // create and populate a new json object
-    DynamicJsonBuffer jsonBuffer;
-    JsonObject& root = jsonBuffer.createObject();
+    DynamicJsonDocument jsonDocument = DynamicJsonDocument(MAX_SETTINGS_SIZE);
+    JsonObject root = jsonDocument.to<JsonObject>();
     writeToJsonObject(root);
 
     // serialize it to filesystem
@@ -42,7 +41,7 @@ protected:
       return false;
     }
 
-    root.printTo(configFile);
+    serializeJson(jsonDocument, configFile);
     configFile.close();
 
     return true;
@@ -57,12 +56,13 @@ protected:
       // We never expect the config file to get very large, so cap it.
       size_t size = configFile.size();
       if (size <= MAX_SETTINGS_SIZE) {
-        DynamicJsonBuffer jsonBuffer;
-        JsonObject& root = jsonBuffer.parseObject(configFile);
-        if (root.success()) {
+        DynamicJsonDocument jsonDocument = DynamicJsonDocument(MAX_SETTINGS_SIZE);
+        DeserializationError error = deserializeJson(jsonDocument, configFile);
+        if (error == DeserializationError::Ok && jsonDocument.is<JsonObject>()){
+          JsonObject root = jsonDocument.as<JsonObject>();
           readFromJsonObject(root);
           configFile.close();
-          return;
+          return;     
         }
       }
       configFile.close();
@@ -81,8 +81,8 @@ protected:
     // We assume the readFromJsonObject supplies sensible defaults if an empty object
     // is supplied, this virtual function allows that to be changed.
     virtual void applyDefaultConfig(){
-      DynamicJsonBuffer jsonBuffer;
-      JsonObject& root = jsonBuffer.createObject();
+      DynamicJsonDocument jsonDocument = DynamicJsonDocument(MAX_SETTINGS_SIZE);
+      JsonObject root = jsonDocument.to<JsonObject>();
       readFromJsonObject(root);
     }
 

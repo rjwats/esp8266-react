@@ -11,11 +11,13 @@
 
 #include <ESPAsyncWebServer.h>
 #include <ArduinoJson.h>
-#include <AsyncJson.h>
+#include <AsyncArduinoJson6.h>
 #include <TimeLib.h>
 
 #define SCAN_NETWORKS_SERVICE_PATH "/rest/scanNetworks"
 #define LIST_NETWORKS_SERVICE_PATH "/rest/listNetworks"
+
+#define MAX_WIFI_SCANNER_SIZE 1024
 
 class WiFiScanner {
 
