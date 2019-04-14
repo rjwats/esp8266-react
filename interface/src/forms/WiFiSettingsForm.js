@@ -79,9 +79,9 @@ class WiFiSettingsForm extends React.Component {
   }
 
   render() {
-    const { classes, formRef, wifiSettingsFetched, wifiSettings, errorMessage, selectedNetwork, handleValueChange, handleCheckboxChange, onSubmit, onReset } = this.props;
+    const { classes, wifiSettingsFetched, wifiSettings, errorMessage, selectedNetwork, handleValueChange, handleCheckboxChange, onSubmit, onReset } = this.props;
     return (
-      <div ref={formRef}>
+      <div>
         {
          !wifiSettingsFetched ?
 
