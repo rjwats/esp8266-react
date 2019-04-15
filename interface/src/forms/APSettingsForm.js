@@ -8,6 +8,8 @@ import Typography from '@material-ui/core/Typography';
 import MenuItem from '@material-ui/core/MenuItem';
 
 import { TextValidator, ValidatorForm, SelectValidator } from 'react-material-ui-form-validator';
+import { InputAdornment } from '@material-ui/core';
+import { RemoveRedEye } from '@material-ui/icons';
 
 import {isAPEnabled} from '../constants/WiFiAPModes';
 
@@ -30,13 +32,26 @@ const styles = theme => ({
   button: {
     marginRight: theme.spacing.unit * 2,
     marginTop: theme.spacing.unit * 2,
+  },
+  eye: {
+    cursor: 'pointer',
   }
 });
 
 class APSettingsForm extends React.Component {
 
+  constructor(props) {
+    super(props);
+    this.state = {passwordIsMasked: true};
+  }
+  
+  togglePasswordMask = () => {
+    this.setState(prevState => ({passwordIsMasked: !prevState.passwordIsMasked}));
+  }
+
   render() {
     const { classes, apSettingsFetched, apSettings, errorMessage, handleValueChange, onSubmit, onReset } = this.props;
+    const { passwordIsMasked } = this.state;
     return (
       <div>
         {
@@ -82,6 +97,17 @@ class APSettingsForm extends React.Component {
                     value={apSettings.password}
                     onChange={handleValueChange('password')}
                     margin="normal"
+                    type={passwordIsMasked ? 'password' : 'text'}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <RemoveRedEye
+                            className={classes.eye}
+                            onClick={this.togglePasswordMask}
+                          />
+                        </InputAdornment>
+                      ),
+                    }}
               />
             </Fragment>
           }

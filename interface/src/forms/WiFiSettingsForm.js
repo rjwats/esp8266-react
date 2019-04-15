@@ -20,6 +20,8 @@ import LockOpenIcon from '@material-ui/icons/LockOpen';
 import DeleteIcon from '@material-ui/icons/Delete';
 
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
+import { InputAdornment } from '@material-ui/core';
+import { RemoveRedEye } from '@material-ui/icons';
 import { isNetworkOpen, networkSecurityMode } from '../constants/WiFiSecurityModes';
 
 import isIP from '../validators/isIP';
@@ -43,10 +45,22 @@ const styles = theme => ({
   button: {
     marginRight: theme.spacing.unit * 2,
     marginTop: theme.spacing.unit * 2,
+  },
+  eye: {
+    cursor: 'pointer',
   }
 });
 
 class WiFiSettingsForm extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {passwordIsMasked: true};
+  }
+  
+  togglePasswordMask = () => {
+    this.setState(prevState => ({passwordIsMasked: !prevState.passwordIsMasked}));
+  }
 
   componentWillMount() {
     ValidatorForm.addValidationRule('isIP', isIP);
@@ -80,6 +94,7 @@ class WiFiSettingsForm extends React.Component {
 
   render() {
     const { classes, wifiSettingsFetched, wifiSettings, errorMessage, selectedNetwork, handleValueChange, handleCheckboxChange, onSubmit, onReset } = this.props;
+    const { passwordIsMasked } = this.state;
     return (
       <div>
         {
@@ -119,6 +134,17 @@ class WiFiSettingsForm extends React.Component {
                   value={wifiSettings.password}
                   onChange={handleValueChange('password')}
                   margin="normal"
+                  type={passwordIsMasked ? 'password' : 'text'}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <RemoveRedEye
+                          className={classes.eye}
+                          onClick={this.togglePasswordMask}
+                        />
+                      </InputAdornment>
+                    ),
+                  }}
                 />
               }
 

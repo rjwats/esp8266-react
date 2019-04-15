@@ -8,6 +8,8 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 import Typography from '@material-ui/core/Typography';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import { InputAdornment } from '@material-ui/core';
+import { RemoveRedEye } from '@material-ui/icons';
 
 import isIP from '../validators/isIP';
 import isHostname from '../validators/isHostname';
@@ -32,10 +34,22 @@ const styles = theme => ({
   button: {
     marginRight: theme.spacing.unit * 2,
     marginTop: theme.spacing.unit * 2,
+  },
+  eye: {
+    cursor: 'pointer',
   }
 });
 
 class OTASettingsForm extends React.Component {
+  
+  constructor(props) {
+    super(props);
+    this.state = {passwordIsMasked: true};
+  }
+  
+  togglePasswordMask = () => {
+    this.setState(prevState => ({passwordIsMasked: !prevState.passwordIsMasked}));
+  }
 
   componentWillMount() {
     ValidatorForm.addValidationRule('isIPOrHostname', or(isIP, isHostname));
@@ -43,6 +57,7 @@ class OTASettingsForm extends React.Component {
 
   render() {
     const { classes, otaSettingsFetched, otaSettings, errorMessage, handleValueChange, handleCheckboxChange, onSubmit, onReset } = this.props;
+    const { passwordIsMasked } = this.state;
     return (
       <div>
         {
@@ -92,6 +107,17 @@ class OTASettingsForm extends React.Component {
                    value={otaSettings.password}
                    onChange={handleValueChange('password')}
                    margin="normal"
+                   type={passwordIsMasked ? 'password' : 'text'}
+                   InputProps={{
+                     endAdornment: (
+                       <InputAdornment position="end">
+                         <RemoveRedEye
+                           className={classes.eye}
+                           onClick={this.togglePasswordMask}
+                         />
+                       </InputAdornment>
+                     ),
+                   }}
              />
 
           <Button variant="raised" color="primary" className={classes.button} type="submit">
