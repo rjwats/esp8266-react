@@ -103,7 +103,12 @@ Microcontroller	ESP8266
 Frequency	80MHz
 Flash	4MBl
 
-**NB: If building under Windows you need to delete .piolibdeps/Time/Time.h - due [filesystem case insensitivity](https://github.com/me-no-dev/ESPAsyncWebServer/issues/96)*
+**NB: If building under Windows, you may need to perform the following:
+* Delete .piolibdeps/Time/Time.h - due [filesystem case insensitivity](https://github.com/me-no-dev/ESPAsyncWebServer/issues/96)*
+* Modify interface\package.json to use npm package build commands compatible with Git Bash for windows
+```
+"build": "react-app-rewired build && git rm -rf ../data/www && xcopy /I /Y /S build ..\\data\\www",,
+```
 
 ## Configuration & Deployment
 
