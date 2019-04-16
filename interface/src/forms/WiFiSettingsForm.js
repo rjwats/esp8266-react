@@ -25,6 +25,7 @@ import { isNetworkOpen, networkSecurityMode } from '../constants/WiFiSecurityMod
 import isIP from '../validators/isIP';
 import isHostname from '../validators/isHostname';
 import optional from '../validators/optional';
+import PasswordValidator from '../components/PasswordValidator';
 
 const styles = theme => ({
   loadingSettings: {
@@ -110,7 +111,7 @@ class WiFiSettingsForm extends React.Component {
             }
               {
                 !isNetworkOpen(selectedNetwork) &&
-         		<TextValidator
+         		<PasswordValidator
                   validators={['matchRegexp:^.{0,64}$']}
                   errorMessages={['Password must be 64 characters or less']}
                   name="password"
