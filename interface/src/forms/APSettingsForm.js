@@ -10,6 +10,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import { TextValidator, ValidatorForm, SelectValidator } from 'react-material-ui-form-validator';
 
 import {isAPEnabled} from '../constants/WiFiAPModes';
+import PasswordValidator from '../components/PasswordValidator';
 
 const styles = theme => ({
   loadingSettings: {
@@ -73,7 +74,7 @@ class APSettingsForm extends React.Component {
                 onChange={handleValueChange('ssid')}
                 margin="normal"
               />
-              <TextValidator
+              <PasswordValidator
                     validators={['required', 'matchRegexp:^.{0,64}$']}
                     errorMessages={['Access Point Password is required', 'Access Point Password must be 64 characters or less']}
                     name="password"
