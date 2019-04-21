@@ -1,11 +1,21 @@
 import React from 'react';
 import { TextValidator } from 'react-material-ui-form-validator';
+import { withStyles } from '@material-ui/core/styles';
 import { InputAdornment } from '@material-ui/core';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import IconButton from '@material-ui/core/IconButton';
 
-export default class PasswordValidator extends React.Component {
+const styles = theme => (
+  {
+    input: {
+      "&::-ms-reveal": {
+        display: "none"
+      }
+    }
+  });
+
+class PasswordValidator extends React.Component {
 
   state = {
     showPassword: false
@@ -18,11 +28,13 @@ export default class PasswordValidator extends React.Component {
   }
 
   render() {
+    const { classes, ...rest } = this.props;
     return (
       <TextValidator
-        {...this.props}
+        {...rest}
         type={this.state.showPassword ? 'text' : 'password'}
         InputProps={{
+          classes,
           endAdornment:
             <InputAdornment position="end">
               <IconButton
@@ -38,3 +50,5 @@ export default class PasswordValidator extends React.Component {
   }
 
 }
+
+export default withStyles(styles)(PasswordValidator);
