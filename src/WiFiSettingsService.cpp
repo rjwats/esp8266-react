@@ -77,7 +77,7 @@ void WiFiSettingsService::reconfigureWiFiConnection() {
 }
 
 void WiFiSettingsService::readIP(JsonObject& root, String key, IPAddress& _ip){
-  if (!root[key] || !_ip.fromString(root[key].as<String>())){
+  if ( root[key].isNull() || !_ip.fromString(root[key].as<String>())){
     _ip = INADDR_NONE;
   }
 }
