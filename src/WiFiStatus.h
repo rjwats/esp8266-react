@@ -11,9 +11,10 @@
 
 #include <ESPAsyncWebServer.h>
 #include <ArduinoJson.h>
-#include <AsyncJson.h>
+#include <AsyncArduinoJson6.h>
 #include <IPAddress.h>
 
+#define MAX_WIFI_STATUS_SIZE 1024
 #define WIFI_STATUS_SERVICE_PATH "/rest/wifiStatus"
 
 class WiFiStatus {
