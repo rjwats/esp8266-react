@@ -67,13 +67,15 @@ void WiFiSettingsService::reconfigureWiFiConnection() {
     }
 
     // connect to the network
-#if defined(ESP8266)
-    WiFi.hostname(_hostname);
-#elif defined(ESP_PLATFORM)
+#if defined(ESP_PLATFORM)
     WiFi.setHostname(_hostname.c_str());
 #endif
 
     WiFi.begin(_ssid.c_str(), _password.c_str());
+
+#if defined(ESP8266)
+    WiFi.hostname(_hostname);
+#endif
 }
 
 void WiFiSettingsService::readIP(JsonObject& root, String key, IPAddress& _ip){
