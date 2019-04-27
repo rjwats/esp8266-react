@@ -32,7 +32,7 @@ void WiFiStatus::onStationModeGotIP(const WiFiEventStationModeGotIP& event) {
 }
 #elif defined(ESP_PLATFORM)
 void WiFiStatus::onStationModeConnected(WiFiEvent_t event, WiFiEventInfo_t info) {
-  Serial.print("WiFi Connected.");
+  Serial.println("WiFi Connected.");
 }
 
 void WiFiStatus::onStationModeDisconnected(WiFiEvent_t event, WiFiEventInfo_t info) {
