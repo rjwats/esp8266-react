@@ -28,6 +28,12 @@ class ESPStatus {
 
     void espStatus(AsyncWebServerRequest *request);
 
+#if defined(ESP8266) 
+    String getChipId();
+#elif defined(ESP_PLATFORM)    
+    String getEfuseMac();
+#endif
+
 };
 
 #endif // end ESPStatus_h
