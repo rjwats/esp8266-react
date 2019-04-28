@@ -1,6 +1,6 @@
 {
-  "ssid":"VM723402-2G",
-  "password":"gmwscxnu",
-  "hostname":"audio-leds",
+  "ssid":"ssid",
+  "password":"password",
+  "hostname":"esp8266-react",
   "static_ip_config":false
 }
