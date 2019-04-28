@@ -86,7 +86,7 @@ class WiFiNetworkSelector extends Component {
           </div>
         }
 
-        <Button variant="raised" color="secondary" className={classes.button} onClick={requestNetworkScan} disabled={scanningForNetworks}>
+        <Button variant="contained" color="secondary" className={classes.button} onClick={requestNetworkScan} disabled={scanningForNetworks}>
           Scan again...
         </Button>
       </div>

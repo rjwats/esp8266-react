@@ -23,7 +23,7 @@ class NTPConfiguration extends Component {
     const { selectedTab } = this.state;
     return (
         <MenuAppBar sectionTitle="NTP Configuration">
-        <Tabs value={selectedTab} onChange={this.handleTabChange} indicatorColor="primary" textColor="primary" fullWidth scrollable>
+        <Tabs value={selectedTab} onChange={this.handleTabChange} indicatorColor="primary" textColor="primary" variant="scrollable">
            <Tab value="ntpStatus" label="NTP Status" />
            <Tab value="ntpSettings" label="NTP Settings" />
          </Tabs>

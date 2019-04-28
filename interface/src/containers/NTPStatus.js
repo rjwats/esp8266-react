@@ -60,7 +60,7 @@ class NTPStatus extends Component {
           </Avatar>
           <ListItemText primary="Status" secondary={ntpStatus(data)} />
         </ListItem>
-        <Divider inset component="li" />
+        <Divider variant="inset" component="li" />
         { isSynchronized(data) &&
           <Fragment>
             <ListItem>
@@ -69,14 +69,14 @@ class NTPStatus extends Component {
               </Avatar>
               <ListItemText primary="Time Now" secondary={unixTimeToTimeAndDate(data.now)} />
             </ListItem>
-            <Divider inset component="li" />
+            <Divider variant="inset" component="li" />
             <ListItem>
               <Avatar>
                 <SwapVerticalCircleIcon />
               </Avatar>
               <ListItemText primary="Last Sync" secondary={data.last_sync > 0 ? unixTimeToTimeAndDate(data.last_sync) : "never" } />
             </ListItem>
-            <Divider inset component="li" />
+            <Divider variant="inset" component="li" />
           </Fragment>
         }
         <ListItem>
@@ -85,21 +85,21 @@ class NTPStatus extends Component {
           </Avatar>
           <ListItemText primary="NTP Server" secondary={data.server} />
         </ListItem>
-        <Divider inset component="li" />
+        <Divider variant="inset" component="li" />
         <ListItem>
           <Avatar>
             <TimerIcon />
           </Avatar>
           <ListItemText primary="Sync Interval" secondary={moment.duration(data.interval, 'seconds').humanize()} />
         </ListItem>
-        <Divider inset component="li" />
+        <Divider variant="inset" component="li" />
         <ListItem>
           <Avatar>
             <AvTimerIcon />
           </Avatar>
           <ListItemText primary="Uptime" secondary={moment.duration(data.uptime, 'seconds').humanize()} />
         </ListItem>
-        <Divider inset component="li" />
+        <Divider variant="inset" component="li" />
       </Fragment>
     );
   }
@@ -110,7 +110,7 @@ class NTPStatus extends Component {
         <List>
           {this.createListItems(data, fullDetails, classes)}
         </List>
-        <Button variant="raised" color="secondary" className={classes.button} onClick={this.props.loadData}>
+        <Button variant="contained" color="secondary" className={classes.button} onClick={this.props.loadData}>
           Refresh
         </Button>
       </div>
@@ -137,7 +137,7 @@ class NTPStatus extends Component {
           <Typography variant="display1" className={classes.fetching}>
             {errorMessage}
           </Typography>
-          <Button variant="raised" color="secondary" className={classes.button} onClick={this.props.loadData}>
+          <Button variant="contained" color="secondary" className={classes.button} onClick={this.props.loadData}>
             Refresh
           </Button>
         </div>

@@ -59,26 +59,26 @@ class APStatus extends Component {
           </Avatar>
           <ListItemText primary="Status" secondary={this.apStatus(data)} />
         </ListItem>
-        <Divider inset component="li" />
+        <Divider variant="inset" component="li" />
         <ListItem>
           <Avatar>IP</Avatar>
           <ListItemText primary="IP Address" secondary={data.ip_address} />
         </ListItem>
-        <Divider inset component="li" />
+        <Divider variant="inset" component="li" />
         <ListItem>
           <Avatar>
             <DeviceHubIcon />
           </Avatar>
           <ListItemText primary="MAC Address" secondary={data.mac_address} />
         </ListItem>
-        <Divider inset component="li" />
+        <Divider variant="inset" component="li" />
         <ListItem>
           <Avatar>
             <ComputerIcon />
           </Avatar>
           <ListItemText primary="AP Clients" secondary={data.station_num} />
         </ListItem>
-        <Divider inset component="li" />
+        <Divider variant="inset" component="li" />
       </Fragment>
     );
   }
@@ -91,7 +91,7 @@ class APStatus extends Component {
             {this.createListItems(data, fullDetails, classes)}
           </Fragment>
         </List>
-        <Button variant="raised" color="secondary" className={classes.button} onClick={this.props.loadData}>
+        <Button variant="contained" color="secondary" className={classes.button} onClick={this.props.loadData}>
           Refresh
         </Button>
       </div>
@@ -118,7 +118,7 @@ class APStatus extends Component {
           <Typography variant="display1" className={classes.fetching}>
             {errorMessage}
           </Typography>
-          <Button variant="raised" color="secondary" className={classes.button} onClick={this.props.loadData}>
+          <Button variant="contained" color="secondary" className={classes.button} onClick={this.props.loadData}>
             Refresh
           </Button>
         </div>
