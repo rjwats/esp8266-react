@@ -2,9 +2,9 @@
 
 void updateBooleanArrayFromJson(JsonObject& root, bool booleanArray[], uint16_t maxLen, String key){
   if (root.containsKey(key) && root[key].is<JsonArray>()){
-    JsonArray& jsonArray = root.get<JsonArray>(key);
+    JsonArray jsonArray = root[key];
     for (uint8_t i = 0; i < maxLen; i++) {   
-      if (i < jsonArray.size() && jsonArray.is<bool>(i)) {
+      if (i < jsonArray.size() && jsonArray[i].is<bool>()) {
         booleanArray[i] = jsonArray[i];
       }else{
         booleanArray[i] = false;
@@ -14,7 +14,7 @@ void updateBooleanArrayFromJson(JsonObject& root, bool booleanArray[], uint16_t 
 }
 
 void writeBooleanArrayToJson(JsonObject& root, bool booleanArray[], uint16_t len, String key){
-  JsonArray& array = root.createNestedArray(key);
+  JsonArray array = root.createNestedArray(key);
   for (uint8_t i = 0; i < len; i++) {
     array.add(booleanArray[i]);
   }

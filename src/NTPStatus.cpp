@@ -5,8 +5,8 @@ NTPStatus::NTPStatus(AsyncWebServer *server) : _server(server) {
 }
 
 void NTPStatus::ntpStatus(AsyncWebServerRequest *request) {
-  AsyncJsonResponse * response = new AsyncJsonResponse();
-  JsonObject& root = response->getRoot();
+  AsyncJsonResponse * response = new AsyncJsonResponse(MAX_NTP_STATUS_SIZE);
+  JsonObject root = response->getRoot();
 
   // request time now first, this can sometimes force a sync
   time_t timeNow = now();

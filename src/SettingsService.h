@@ -11,10 +11,9 @@
 
 #include <SettingsPersistence.h>
 #include <ESPAsyncWebServer.h>
-#include <AsyncJson.h>
 #include <ArduinoJson.h>
 #include <AsyncJsonRequestWebHandler.h>
-#include <AsyncJsonCallbackResponse.h>
+#include <AsyncArduinoJson6.h>
 
 /*
 * Abstraction of a service which stores it's settings as JSON in a file system.
@@ -26,24 +25,26 @@ private:
   AsyncJsonRequestWebHandler _updateHandler;
 
   void fetchConfig(AsyncWebServerRequest *request){
-    AsyncJsonResponse * response = new AsyncJsonResponse();
-    writeToJsonObject(response->getRoot());
+    AsyncJsonResponse * response = new AsyncJsonResponse(MAX_SETTINGS_SIZE);
+    JsonObject jsonObject = response->getRoot();  
+    writeToJsonObject(jsonObject);
     response->setLength();
     request->send(response);
   }
 
-  void updateConfig(AsyncWebServerRequest *request, JsonVariant &json){
-    if (json.is<JsonObject>()){
-      JsonObject& newConfig = json.as<JsonObject>();
+  void updateConfig(AsyncWebServerRequest *request, JsonDocument &jsonDocument){
+    if (jsonDocument.is<JsonObject>()){
+      JsonObject newConfig = jsonDocument.as<JsonObject>();
       readFromJsonObject(newConfig);
       writeToFS();
 
       // write settings back with a callback to reconfigure the wifi
-      AsyncJsonCallbackResponse * response = new AsyncJsonCallbackResponse([this] () {onConfigUpdated();});
-      writeToJsonObject(response->getRoot());
+      AsyncJsonCallbackResponse * response = new AsyncJsonCallbackResponse([this] () {onConfigUpdated();}, MAX_SETTINGS_SIZE);
+      JsonObject jsonObject = response->getRoot();   
+      writeToJsonObject(jsonObject);
       response->setLength();
       request->send(response);
-    } else{
+    } else {
       request->send(400);
     }
   }

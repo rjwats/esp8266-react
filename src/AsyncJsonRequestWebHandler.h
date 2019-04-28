@@ -14,7 +14,7 @@
 * Really only of use where there is a determinate payload size.
 */
 
-typedef std::function<void(AsyncWebServerRequest *request, JsonVariant &json)> JsonRequestCallback;
+typedef std::function<void(AsyncWebServerRequest *request, JsonDocument &jsonDocument)> JsonRequestCallback;
 
 class AsyncJsonRequestWebHandler: public AsyncWebHandler {
 
@@ -72,10 +72,10 @@ class AsyncJsonRequestWebHandler: public AsyncWebHandler {
 
       // parse JSON and if possible handle the request
       if (request->_tempObject) {
-        DynamicJsonBuffer jsonBuffer;
-        JsonVariant json = jsonBuffer.parse((uint8_t *) request->_tempObject);
-        if (json.success()) {
-          _onRequest(request, json);
+        DynamicJsonDocument jsonDocument(_maxContentLength);
+        DeserializationError error = deserializeJson(jsonDocument, (uint8_t *) request->_tempObject);
+        if (error == DeserializationError::Ok) {
+          _onRequest(request, jsonDocument);
         }else{
           request->send(400);
         }

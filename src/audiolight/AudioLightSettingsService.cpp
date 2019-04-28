@@ -93,8 +93,8 @@ void AudioLightSettingsService::readFromJsonObject(JsonObject& root, String orig
   String modeId = root["mode_id"];
 
   // handle global config
-  if (root["global_config"].is<JsonObject&>()){
-    JsonObject& globalConfig = root["global_config"];
+  if (root["global_config"].is<JsonObject>()){
+    JsonObject globalConfig = root["global_config"];
     _rollingAverageFactor = globalConfig["rolling_average_factor"] | AUDIO_LIGHT_DEFAULT_ROLLING_AVG_FACTOR;
     _rollingAverageFactor = _max(AUDIO_LIGHT_MIN_ROLLING_AVG_FACTOR, _min(AUDIO_LIGHT_MAX_ROLLING_AVG_FACTOR, _rollingAverageFactor));
   }
@@ -102,9 +102,10 @@ void AudioLightSettingsService::readFromJsonObject(JsonObject& root, String orig
   // get mode we are configuring
   AudioLightMode *mode = getMode(modeId);
   if (mode != NULL) {
-    if (root["mode_config"].is<JsonObject&>()){
+    if (root["mode_config"].is<JsonObject>()){
       // use provided value
-      mode->readFromJsonObject(root["mode_config"]);
+      JsonObject jsonObject = root["mode_config"];
+      mode->readFromJsonObject(jsonObject);
     }else{
       // load defaults from file system
       mode->readFromFS();   
@@ -122,10 +123,10 @@ void AudioLightSettingsService::readFromJsonObject(JsonObject& root, String orig
 void AudioLightSettingsService::writeToJsonObject(JsonObject& root) {
   root["mode_id"] = _currentMode->getId();
 
-  JsonObject& globalConfig = root.createNestedObject("global_config");
+  JsonObject globalConfig = root.createNestedObject("global_config");
   globalConfig["rolling_average_factor"] = _rollingAverageFactor;
-  
-  _currentMode->writeToJsonObject(root.createNestedObject("mode_config"));
+  JsonObject jsonObject = root.createNestedObject("mode_config");
+  _currentMode->writeToJsonObject(jsonObject);
 }
 
 void AudioLightSettingsService::saveModeConfig(AsyncWebServerRequest *request) {
@@ -143,11 +144,15 @@ void AudioLightSettingsService::transmitFrequencies() {
   if (_webSocket.count() == 0) {
     return;
   }
-  DynamicJsonBuffer jsonBuffer;
-  JsonArray& array = jsonBuffer.createArray();
-  for (uint16_t i = 0; i< NUM_BANDS; i++){
+  DynamicJsonDocument jsonDocument = DynamicJsonDocument(MAX_SETTINGS_SIZE);
+  JsonArray array = jsonDocument.to<JsonArray>();
+  for (uint16_t i = 0; i< NUM_BANDS; i++) {
     array.add(_rollingAverages[i]);
   }
-  size_t length = array.printTo(_outputBuffer, OUTPUT_BUFFER_SIZE);
-  _webSocket.textAll(_outputBuffer, length);  
+  size_t len = measureJson(jsonDocument);
+  AsyncWebSocketMessageBuffer * buffer = _webSocket.makeBuffer(len);
+  if (buffer) {
+    serializeJson(jsonDocument, (char *)buffer->get(), len + 1);
+    _webSocket.textAll(buffer);  
+  }
 }

@@ -12,6 +12,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import isIP from '../validators/isIP';
 import isHostname from '../validators/isHostname';
 import or from '../validators/or';
+import PasswordValidator from '../components/PasswordValidator';
 
 const styles = theme => ({
   loadingSettings: {
@@ -83,7 +84,7 @@ class OTASettingsForm extends React.Component {
                margin="normal"
              />
 
-             <TextValidator
+             <PasswordValidator
                    validators={['required', 'matchRegexp:^.{0,64}$']}
                    errorMessages={['OTA Password is required', 'OTA Point Password must be 64 characters or less']}
                    name="password"

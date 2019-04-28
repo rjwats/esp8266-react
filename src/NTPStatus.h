@@ -11,10 +11,11 @@
 
 #include <ESPAsyncWebServer.h>
 #include <ArduinoJson.h>
-#include <AsyncJson.h>
+#include <AsyncArduinoJson6.h>
 #include <TimeLib.h>
 #include <NtpClientLib.h>
 
+#define MAX_NTP_STATUS_SIZE 1024
 #define NTP_STATUS_SERVICE_PATH "/rest/ntpStatus"
 
 class NTPStatus {

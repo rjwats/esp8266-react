@@ -61,23 +61,26 @@ void WiFiSettingsService::reconfigureWiFiConnection() {
     // disconnect and de-configure wifi and software access point
     WiFi.disconnect(true);
 
-    // configure static ip config for station mode (if set)
+    // configure for static IP
     if (_staticIPConfig) {
       WiFi.config(_localIP, _gatewayIP,  _subnetMask, _dnsIP1, _dnsIP2);
+    } else { 
+     // configure for DHCP
+#if defined(ESP8266) 
+      WiFi.config(INADDR_ANY, INADDR_ANY, INADDR_ANY);
+      WiFi.hostname(_hostname);
+#elif defined(ESP_PLATFORM)
+      WiFi.config(INADDR_NONE, INADDR_NONE, INADDR_NONE);
+      WiFi.setHostname(_hostname.c_str());
+#endif
     }
 
     // connect to the network
-#if defined(ESP8266)
-    WiFi.hostname(_hostname);
-#elif defined(ESP_PLATFORM)
-    WiFi.setHostname(_hostname.c_str());
-#endif
-
     WiFi.begin(_ssid.c_str(), _password.c_str());
 }
 
 void WiFiSettingsService::readIP(JsonObject& root, String key, IPAddress& _ip){
-  if (!root[key] || !_ip.fromString(root[key].as<String>())){
+  if (!root[key].is<String>() || !_ip.fromString(root[key].as<String>())){
     _ip = INADDR_NONE;
   }
 }

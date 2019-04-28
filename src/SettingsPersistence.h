@@ -3,10 +3,9 @@
 
 #include <ESPAsyncWebServer.h>
 #include <FS.h>
-#include <AsyncJson.h>
 #include <ArduinoJson.h>
 #include <AsyncJsonRequestWebHandler.h>
-#include <AsyncJsonCallbackResponse.h>
+#include <AsyncArduinoJson6.h>
 
 /**
 * At the moment, not expecting settings service to have to deal with large JSON
@@ -32,11 +31,12 @@ protected:
   virtual void readFromJsonObject(JsonObject& root) = 0;
   virtual void writeToJsonObject(JsonObject& root) = 0;
 
+
   // We assume the readFromJsonObject supplies sensible defaults if an empty object
   // is supplied, this virtual function allows that to be changed.
-  virtual void applyDefaultConfig(){
-    DynamicJsonBuffer jsonBuffer;
-    JsonObject& root = jsonBuffer.createObject();
+  virtual void applyDefaultConfig() {
+    DynamicJsonDocument jsonDocument = DynamicJsonDocument(MAX_SETTINGS_SIZE);
+    JsonObject root = jsonDocument.to<JsonObject>();
     readFromJsonObject(root);
   }
 
@@ -47,51 +47,50 @@ protected:
 
     virtual ~SettingsPersistence() {}
 
-    bool writeToFS() {
-      // create and populate a new json object
-      DynamicJsonBuffer jsonBuffer;
-      JsonObject& root = jsonBuffer.createObject();
-      writeToJsonObject(root);
+bool writeToFS() {
+    // create and populate a new json object
+    DynamicJsonDocument jsonDocument = DynamicJsonDocument(MAX_SETTINGS_SIZE);
+    JsonObject root = jsonDocument.to<JsonObject>();
+    writeToJsonObject(root);
 
-      // serialize it to filesystem
-      File configFile = _fs->open(_filePath, "w");
+    // serialize it to filesystem
+    File configFile = _fs->open(_filePath, "w");
 
-      // failed to open file, return false
-      if (!configFile) {
-        return false;
-      }
-
-      root.printTo(configFile);
-      configFile.close();
-
-      return true;
+    // failed to open file, return false
+    if (!configFile) {
+      return false;
     }
 
-    void readFromFS(){
-      File configFile = _fs->open(_filePath, "r");
+    serializeJson(jsonDocument, configFile);
+    configFile.close();
 
-      // use defaults if no config found
-      if (configFile) {
-        // Protect against bad data uploaded to file system
-        // We never expect the config file to get very large, so cap it.
-        size_t size = configFile.size();
-        if (size <= MAX_SETTINGS_SIZE) {
-          DynamicJsonBuffer jsonBuffer;
-          JsonObject& root = jsonBuffer.parseObject(configFile);
-          if (root.success()) {
-            readFromJsonObject(root);
-            configFile.close();
-            return;
-          }
+    return true;
+  }
+
+  void readFromFS() {
+    File configFile = _fs->open(_filePath, "r");
+
+    // use defaults if no config found
+    if (configFile) {
+      // Protect against bad data uploaded to file system
+      // We never expect the config file to get very large, so cap it.
+      size_t size = configFile.size();
+      if (size <= MAX_SETTINGS_SIZE) {
+        DynamicJsonDocument jsonDocument = DynamicJsonDocument(MAX_SETTINGS_SIZE);
+        DeserializationError error = deserializeJson(jsonDocument, configFile);
+        if (error == DeserializationError::Ok && jsonDocument.is<JsonObject>()){
+          JsonObject root = jsonDocument.as<JsonObject>();
+          readFromJsonObject(root);
+          configFile.close();
+          return;     
         }
-        configFile.close();
       }
-
-      // If we reach here we have not been successful in loading the config,
-      // hard-coded emergency defaults are now applied.
-      applyDefaultConfig();
-    }    
-
+      configFile.close();
+    }
+    // If we reach here we have not been successful in loading the config,
+    // hard-coded emergency defaults are now applied.
+    applyDefaultConfig();
+  }
 };
 
 #endif // end SettingsPersistence
