@@ -27,7 +27,27 @@ protected:
   // the file path our settings will be saved to
   char const* _filePath;
 
-  bool writeToFS() {
+  // serialization routene, from local config to JsonObject
+  virtual void readFromJsonObject(JsonObject& root) = 0;
+  virtual void writeToJsonObject(JsonObject& root) = 0;
+
+
+  // We assume the readFromJsonObject supplies sensible defaults if an empty object
+  // is supplied, this virtual function allows that to be changed.
+  virtual void applyDefaultConfig() {
+    DynamicJsonDocument jsonDocument = DynamicJsonDocument(MAX_SETTINGS_SIZE);
+    JsonObject root = jsonDocument.to<JsonObject>();
+    readFromJsonObject(root);
+  }
+
+  public:
+
+    SettingsPersistence(FS* fs, char const* filePath):
+      _fs(fs), _filePath(filePath) {}
+
+    virtual ~SettingsPersistence() {}
+
+bool writeToFS() {
     // create and populate a new json object
     DynamicJsonDocument jsonDocument = DynamicJsonDocument(MAX_SETTINGS_SIZE);
     JsonObject root = jsonDocument.to<JsonObject>();
@@ -47,7 +67,7 @@ protected:
     return true;
   }
 
-  void readFromFS(){
+  void readFromFS() {
     File configFile = _fs->open(_filePath, "r");
 
     // use defaults if no config found
@@ -67,32 +87,10 @@ protected:
       }
       configFile.close();
     }
-
     // If we reach here we have not been successful in loading the config,
     // hard-coded emergency defaults are now applied.
     applyDefaultConfig();
   }
-
-
-    // serialization routene, from local config to JsonObject
-    virtual void readFromJsonObject(JsonObject& root){}
-    virtual void writeToJsonObject(JsonObject& root){}
-
-    // We assume the readFromJsonObject supplies sensible defaults if an empty object
-    // is supplied, this virtual function allows that to be changed.
-    virtual void applyDefaultConfig(){
-      DynamicJsonDocument jsonDocument = DynamicJsonDocument(MAX_SETTINGS_SIZE);
-      JsonObject root = jsonDocument.to<JsonObject>();
-      readFromJsonObject(root);
-    }
-
-  public:
-
-    SettingsPersistence(FS* fs, char const* servicePath, char const* filePath):
-      _fs(fs), _filePath(filePath) {}
-
-    virtual ~SettingsPersistence() {}
-
 };
 
 #endif // end SettingsPersistence
