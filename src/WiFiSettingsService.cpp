@@ -64,15 +64,17 @@ void WiFiSettingsService::reconfigureWiFiConnection() {
     // configure static ip config for station mode (if set)
     if (_staticIPConfig) {
       WiFi.config(_localIP, _gatewayIP,  _subnetMask, _dnsIP1, _dnsIP2);
+    } else { // else setting dynamic ip config and hostname
+#if defined(ESP8266) 
+      WiFi.config(INADDR_ANY, INADDR_ANY, INADDR_ANY);
+      WiFi.hostname(_hostname);
+#elif defined(ESP_PLATFORM)
+      WiFi.config(INADDR_NONE, INADDR_NONE, INADDR_NONE);
+      WiFi.setHostname(_hostname.c_str());
+#endif
     }
 
     // connect to the network
-#if defined(ESP8266)
-    WiFi.hostname(_hostname);
-#elif defined(ESP_PLATFORM)
-    WiFi.setHostname(_hostname.c_str());
-#endif
-
     WiFi.begin(_ssid.c_str(), _password.c_str());
 }
 
