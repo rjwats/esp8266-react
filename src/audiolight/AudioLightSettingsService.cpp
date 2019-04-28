@@ -120,11 +120,15 @@ void AudioLightSettingsService::transmitFrequencies() {
   if (_webSocket.count() == 0) {
     return;
   }
-  DynamicJsonBuffer jsonBuffer;
-  JsonArray& array = jsonBuffer.createArray();
-  for (uint16_t i = 0; i< NUM_BANDS; i++){
+  DynamicJsonDocument jsonDocument = DynamicJsonDocument(MAX_SETTINGS_SIZE);
+  JsonArray array = jsonDocument.to<JsonArray>();
+  for (uint16_t i = 0; i< NUM_BANDS; i++) {
     array.add(_rollingAverages[i]);
   }
-  size_t length = array.printTo(_outputBuffer, OUTPUT_BUFFER_SIZE);
-  _webSocket.textAll(_outputBuffer, length);  
+  size_t len = measureJson(jsonDocument);
+  AsyncWebSocketMessageBuffer * buffer = _webSocket.makeBuffer(len);
+  if (buffer) {
+    serializeJson(jsonDocument, (char *)buffer->get(), len + 1);
+    _webSocket.textAll(buffer);  
+  }
 }

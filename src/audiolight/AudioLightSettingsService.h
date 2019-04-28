@@ -15,14 +15,14 @@
 #include <audiolight/FireMode.h>
 #include <audiolight/ConfettiMode.h>
 
+#define MAX_AUDIO_LIGHT_SETTINGS_SIZE 1024
+
 // fast led settings
 #define LED_DATA_PIN 12
 #define COLOR_ORDER RGB
 #define LED_TYPE WS2811
 #define NUM_LEDS 100
 #define NUM_MODES 7
-
-#define OUTPUT_BUFFER_SIZE 7 * NUM_BANDS + 2
 
 #define AUDIO_LIGHT_RESET_PIN 4
 #define AUDIO_LIGHT_STROBE_PIN 5
@@ -87,9 +87,6 @@ private:
 
   // rolling average factor
   float _rollingAverageFactor = AUDIO_LIGHT_DEFAULT_ROLLING_AVG_FACTOR;
-
-  // buffer for writing to the web socket clients
-  char _outputBuffer[OUTPUT_BUFFER_SIZE];  
 
   AudioLightMode* getMode(String modeId);
   void transmitFrequencies();

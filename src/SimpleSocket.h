@@ -10,10 +10,11 @@
 #endif
 
 #include <ESPAsyncWebServer.h>
-#include <AsyncJson.h>
 #include <ArduinoJson.h>
 #include <AsyncJsonRequestWebHandler.h>
-#include <AsyncJsonCallbackResponse.h>
+#include <AsyncArduinoJson6.h>
+
+#define MAX_SIMPLE_MSG_SIZE 1024
 
 class SimpleSocket {
 
@@ -36,10 +37,10 @@ private:
         AwsFrameInfo * info = (AwsFrameInfo*)arg;
         if(info->final && info->index == 0 && info->len == len) {
           if(info->opcode == WS_TEXT) {
-            DynamicJsonBuffer jsonBuffer;
-            JsonVariant json = jsonBuffer.parse((char*)data);
-            if (json && json.is<JsonObject>()){
-              JsonObject& newConfig = json.as<JsonObject>();
+            DynamicJsonDocument jsonDocument = DynamicJsonDocument(MAX_SIMPLE_MSG_SIZE);
+            DeserializationError error = deserializeJson(jsonDocument, (char*) data);
+            if (error == DeserializationError::Ok && jsonDocument.is<JsonObject>()){
+              JsonObject newConfig = jsonDocument.as<JsonObject>();
               readFromJsonObject(newConfig, clientId(client));
             }
           }
@@ -60,18 +61,18 @@ private:
     }
 
     void transmitPayload(AsyncWebSocketClient * client, String originId) {
-      DynamicJsonBuffer jsonBuffer;
-      JsonObject& root = jsonBuffer.createObject();
+      DynamicJsonDocument jsonDocument = DynamicJsonDocument(MAX_SIMPLE_MSG_SIZE);
+      JsonObject root = jsonDocument.to<JsonObject>();
       root["origin_id"] = originId;
-      JsonObject& payload = root.createNestedObject("payload");
+      JsonObject payload = root.createNestedObject("payload");
 
       // write to payload object
       writeToJsonObject(payload);
-
-      size_t len = root.measureLength();
+      
+      size_t len = measureJson(jsonDocument);
       AsyncWebSocketMessageBuffer * buffer = _webSocket.makeBuffer(len);
       if (buffer) {
-          root.printTo((char *)buffer->get(), len + 1);
+          serializeJson(jsonDocument, (char *)buffer->get(), len + 1);
           if (client) {
               client->text(buffer);
           } else {

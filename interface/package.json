@@ -3,21 +3,22 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@material-ui/core": "^1.5.1",
-    "@material-ui/icons": "^1.1.1",
-    "compression-webpack-plugin": "^1.1.12",
-    "moment": "^2.22.2",
-    "prop-types": "^15.6.2",
-    "react": "^16.5.1",
-    "react-color": "^2.14.1",
-    "react-dom": "^16.5.1",
-    "react-form-validator-core": "^0.3.0",
-    "react-material-ui-form-validator": "^2.0.1",
+    "@material-ui/core": "^3.9.3",
+    "@material-ui/icons": "^3.0.2",
+    "compression-webpack-plugin": "^2.0.0",
+    "moment": "^2.24.0",
+    "prop-types": "^15.7.2",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-form-validator-core": "^0.6.2",
+    "react-jss": "^8.6.1",
+    "react-material-ui-form-validator": "^2.0.7",
+    "react-router": "^5.0.0",
+    "react-router-dom": "^5.0.0",
+    "react-scripts": "2.1.8",
+    "react-color": "^2.17.2",
     "react-rangeslider": "^2.2.0",
-    "react-router": "^4.3.1",
-    "react-router-dom": "^4.3.1",
-    "react-scripts": "1.0.17",
-    "sockette": "^2.0.0"
+    "sockette": "^2.0.5"
   },
   "scripts": {
     "start": "react-app-rewired start",
@@ -26,6 +27,12 @@
     "eject": "react-scripts eject"
   },
   "devDependencies": {
-    "react-app-rewired": "^1.6.2"
-  }
+    "react-app-rewired": "^2.1.1"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }
