@@ -15,12 +15,13 @@ import WifiIcon from '@material-ui/icons/Wifi';
 import DNSIcon from '@material-ui/icons/Dns';
 import SettingsInputComponentIcon from '@material-ui/icons/SettingsInputComponent';
 import SettingsInputAntennaIcon from '@material-ui/icons/SettingsInputAntenna';
+import DeviceHubIcon from '@material-ui/icons/DeviceHub';
 
 import SectionContent from '../components/SectionContent';
-import { WIFI_STATUS_ENDPOINT }  from  '../constants/Endpoints';
-import { isConnected, connectionStatus, connectionStatusHighlight }  from  '../constants/WiFiConnectionStatus';
+import { WIFI_STATUS_ENDPOINT } from '../constants/Endpoints';
+import { isConnected, connectionStatus, connectionStatusHighlight } from '../constants/WiFiConnectionStatus';
 import * as Highlight from '../constants/Highlight';
-import { restComponent }  from  '../components/RestComponent';
+import { restComponent } from '../components/RestComponent';
 
 const styles = theme => ({
   ["wifiStatus_" + Highlight.IDLE]: {
@@ -52,10 +53,10 @@ class WiFiStatus extends Component {
   }
 
   dnsServers(status) {
-    if (!status.dns_ip_1){
+    if (!status.dns_ip_1) {
       return "none";
     }
-    return status.dns_ip_1 + (status.dns_ip_2 ? ','+status.dns_ip_2 : '');
+    return status.dns_ip_1 + (status.dns_ip_2 ? ',' + status.dns_ip_2 : '');
   }
 
   createListItems(data, classes) {
@@ -84,6 +85,13 @@ class WiFiStatus extends Component {
             </ListItem>
             <Divider variant="inset" component="li" />
             <ListItem>
+              <Avatar>
+                <DeviceHubIcon />
+              </Avatar>
+              <ListItemText primary="MAC Address" secondary={data.mac_address} />
+            </ListItem>
+            <Divider variant="inset" component="li" />
+            <ListItem>
               <Avatar>#</Avatar>
               <ListItemText primary="Subnet Mask" secondary={data.subnet_mask} />
             </ListItem>
@@ -109,44 +117,42 @@ class WiFiStatus extends Component {
   }
 
   renderWiFiStatus(data, classes) {
-    return  (
+    return (
       <div>
         <List>
-        {this.createListItems(data, classes)}
+          {this.createListItems(data, classes)}
         </List>
         <Button variant="contained" color="secondary" className={classes.button} onClick={this.props.loadData}>
           Refresh
         </Button>
       </div>
     );
-
   }
 
   render() {
-    const { data, fetched, errorMessage, classes }  = this.props;
-
+    const { data, fetched, errorMessage, classes } = this.props;
     return (
       <SectionContent title="WiFi Status">
         {
-         !fetched ?
-         <div>
-           <LinearProgress className={classes.fetching}/>
-           <Typography variant="display1" className={classes.fetching}>
-             Loading...
+          !fetched ?
+            <div>
+              <LinearProgress className={classes.fetching} />
+              <Typography variant="display1" className={classes.fetching}>
+                Loading...
            </Typography>
-         </div>
-       :
-        data ? this.renderWiFiStatus(data, classes)
-       :
-        <div>
-          <Typography variant="display1" className={classes.fetching}>
-            {errorMessage}
-          </Typography>
-          <Button variant="contained" color="secondary" className={classes.button} onClick={this.props.loadData}>
-            Refresh
+            </div>
+            :
+            data ? this.renderWiFiStatus(data, classes)
+              :
+              <div>
+                <Typography variant="display1" className={classes.fetching}>
+                  {errorMessage}
+                </Typography>
+                <Button variant="contained" color="secondary" className={classes.button} onClick={this.props.loadData}>
+                  Refresh
           </Button>
-        </div>
-      }
+              </div>
+        }
       </SectionContent>
     )
   }

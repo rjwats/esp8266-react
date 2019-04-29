@@ -55,6 +55,7 @@ void WiFiStatus::wifiStatus(AsyncWebServerRequest *request) {
   root["status"] = (uint8_t) status;
   if (status == WL_CONNECTED){
     root["local_ip"] = WiFi.localIP().toString();
+    root["mac_address"] = WiFi.macAddress();
     root["rssi"] = WiFi.RSSI();
     root["ssid"] = WiFi.SSID();
     root["bssid"] = WiFi.BSSIDstr();
