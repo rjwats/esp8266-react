@@ -60,7 +60,7 @@ private:
   public:
 
     SettingsService(AsyncWebServer* server, FS* fs, char const* servicePath, char const* filePath):
-      SettingsPersistence(fs, servicePath, filePath), _server(server) {
+      SettingsPersistence(fs, filePath), _server(server) {
 
       // configure fetch config handler
       _server->on(servicePath, HTTP_GET, std::bind(&SettingsService::fetchConfig, this, std::placeholders::_1));
