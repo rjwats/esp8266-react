@@ -51,7 +51,7 @@ class NTPStatus extends Component {
     this.props.loadData();
   }
 
-  createListItems(data, fullDetails, classes){
+  createListItems(data, classes){
     return (
       <Fragment>
         <ListItem>
@@ -104,11 +104,11 @@ class NTPStatus extends Component {
     );
   }
 
-  renderNTPStatus(data, fullDetails, classes){
+  renderNTPStatus(data, classes){
     return  (
       <div>
         <List>
-          {this.createListItems(data, fullDetails, classes)}
+          {this.createListItems(data, classes)}
         </List>
         <Button variant="contained" color="secondary" className={classes.button} onClick={this.props.loadData}>
           Refresh
@@ -118,7 +118,7 @@ class NTPStatus extends Component {
   }
 
   render() {
-    const { data, fetched, errorMessage, classes, fullDetails }  = this.props;
+    const { data, fetched, errorMessage, classes }  = this.props;
 
     return (
       <SectionContent title="NTP Status">
@@ -131,7 +131,7 @@ class NTPStatus extends Component {
            </Typography>
          </div>
        :
-        data ? this.renderNTPStatus(data, fullDetails, classes)
+        data ? this.renderNTPStatus(data, classes)
        :
         <div>
           <Typography variant="display1" className={classes.fetching}>

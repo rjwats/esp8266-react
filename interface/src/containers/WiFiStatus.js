@@ -58,7 +58,7 @@ class WiFiStatus extends Component {
     return status.dns_ip_1 + (status.dns_ip_2 ? ','+status.dns_ip_2 : '');
   }
 
-  createListItems(data, fullDetails, classes) {
+  createListItems(data, classes) {
     return (
       <Fragment>
         <ListItem>
@@ -69,7 +69,7 @@ class WiFiStatus extends Component {
         </ListItem>
         <Divider variant="inset" component="li" />
         {
-          (fullDetails && isConnected(data)) &&
+          isConnected(data) &&
           <Fragment>
             <ListItem>
               <Avatar>
@@ -108,11 +108,11 @@ class WiFiStatus extends Component {
     );
   }
 
-  renderWiFiStatus(data, fullDetails, classes) {
+  renderWiFiStatus(data, classes) {
     return  (
       <div>
         <List>
-        {this.createListItems(data, fullDetails, classes)}
+        {this.createListItems(data, classes)}
         </List>
         <Button variant="contained" color="secondary" className={classes.button} onClick={this.props.loadData}>
           Refresh
@@ -123,7 +123,7 @@ class WiFiStatus extends Component {
   }
 
   render() {
-    const { data, fetched, errorMessage, classes, fullDetails }  = this.props;
+    const { data, fetched, errorMessage, classes }  = this.props;
 
     return (
       <SectionContent title="WiFi Status">
@@ -136,7 +136,7 @@ class WiFiStatus extends Component {
            </Typography>
          </div>
        :
-        data ? this.renderWiFiStatus(data, fullDetails, classes)
+        data ? this.renderWiFiStatus(data, classes)
        :
         <div>
           <Typography variant="display1" className={classes.fetching}>

@@ -43,7 +43,7 @@ class WiFiConfiguration extends Component {
            <Tab value="networkScanner" label="Network Scanner" />
            <Tab value="wifiSettings" label="WiFi Settings" />
          </Tabs>
-         {selectedTab === "wifiStatus" && <WiFiStatus fullDetails={true} />}
+         {selectedTab === "wifiStatus" && <WiFiStatus />}
          {selectedTab === "networkScanner" && <WiFiNetworkScanner selectNetwork={this.selectNetwork} />}
          {selectedTab === "wifiSettings" && <WiFiSettings deselectNetwork={this.deselectNetwork} selectedNetwork={this.state.selectedNetwork} />}
       </MenuAppBar>

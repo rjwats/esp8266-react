@@ -50,7 +50,7 @@ class APStatus extends Component {
     return data.active ? "Active" : "Inactive";
   }
 
-  createListItems(data, fullDetails, classes){
+  createListItems(data, classes){
     return (
       <Fragment>
         <ListItem>
@@ -83,12 +83,12 @@ class APStatus extends Component {
     );
   }
 
-  renderAPStatus(data, fullDetails, classes){
+  renderAPStatus(data, classes){
     return  (
       <div>
         <List>
           <Fragment>
-            {this.createListItems(data, fullDetails, classes)}
+            {this.createListItems(data, classes)}
           </Fragment>
         </List>
         <Button variant="contained" color="secondary" className={classes.button} onClick={this.props.loadData}>
@@ -99,7 +99,7 @@ class APStatus extends Component {
   }
 
   render() {
-    const { data, fetched, errorMessage, classes, fullDetails }  = this.props;
+    const { data, fetched, errorMessage, classes }  = this.props;
 
     return (
       <SectionContent title="AP Status">
@@ -112,7 +112,7 @@ class APStatus extends Component {
            </Typography>
          </div>
        :
-        data ? this.renderAPStatus(data, fullDetails, classes)
+        data ? this.renderAPStatus(data, classes)
        :
         <div>
           <Typography variant="display1" className={classes.fetching}>

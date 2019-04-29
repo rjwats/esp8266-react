@@ -29,7 +29,7 @@ class APConfiguration extends Component {
            <Tab value="apStatus" label="AP Status" />
            <Tab value="apSettings" label="AP Settings" />
          </Tabs>
-         {selectedTab === "apStatus" && <APStatus fullDetails={true} />}
+         {selectedTab === "apStatus" && <APStatus />}
          {selectedTab === "apSettings" && <APSettings />}
       </MenuAppBar>
     )
