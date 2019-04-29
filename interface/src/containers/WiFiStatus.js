@@ -67,7 +67,7 @@ class WiFiStatus extends Component {
           </Avatar>
           <ListItemText primary="Connection Status" secondary={connectionStatus(data)} />
         </ListItem>
-        <Divider inset component="li" />
+        <Divider variant="inset" component="li" />
         {
           (fullDetails && isConnected(data)) &&
           <Fragment>
@@ -77,31 +77,31 @@ class WiFiStatus extends Component {
               </Avatar>
               <ListItemText primary="SSID" secondary={data.ssid} />
             </ListItem>
-            <Divider inset component="li" />
+            <Divider variant="inset" component="li" />
             <ListItem>
               <Avatar>IP</Avatar>
               <ListItemText primary="IP Address" secondary={data.local_ip} />
             </ListItem>
-            <Divider inset component="li" />
+            <Divider variant="inset" component="li" />
             <ListItem>
               <Avatar>#</Avatar>
               <ListItemText primary="Subnet Mask" secondary={data.subnet_mask} />
             </ListItem>
-            <Divider inset component="li" />
+            <Divider variant="inset" component="li" />
             <ListItem>
               <Avatar>
                 <SettingsInputComponentIcon />
               </Avatar>
               <ListItemText primary="Gateway IP" secondary={data.gateway_ip ? data.gateway_ip : "none"} />
             </ListItem>
-            <Divider inset component="li" />
+            <Divider variant="inset" component="li" />
             <ListItem>
               <Avatar>
                 <DNSIcon />
               </Avatar>
               <ListItemText primary="DNS Server IP" secondary={this.dnsServers(data)} />
             </ListItem>
-            <Divider inset component="li" />
+            <Divider variant="inset" component="li" />
           </Fragment>
         }
       </Fragment>
@@ -114,7 +114,7 @@ class WiFiStatus extends Component {
         <List>
         {this.createListItems(data, fullDetails, classes)}
         </List>
-        <Button variant="raised" color="secondary" className={classes.button} onClick={this.props.loadData}>
+        <Button variant="contained" color="secondary" className={classes.button} onClick={this.props.loadData}>
           Refresh
         </Button>
       </div>
@@ -142,7 +142,7 @@ class WiFiStatus extends Component {
           <Typography variant="display1" className={classes.fetching}>
             {errorMessage}
           </Typography>
-          <Button variant="raised" color="secondary" className={classes.button} onClick={this.props.loadData}>
+          <Button variant="contained" color="secondary" className={classes.button} onClick={this.props.loadData}>
             Refresh
           </Button>
         </div>

@@ -87,10 +87,10 @@ class APSettingsForm extends React.Component {
             </Fragment>
           }
 
-          <Button variant="raised" color="primary" className={classes.button} type="submit">
+          <Button variant="contained" color="primary" className={classes.button} type="submit">
             Save
           </Button>
-          <Button variant="raised" color="secondary" className={classes.button} onClick={onReset}>
+          <Button variant="contained" color="secondary" className={classes.button} onClick={onReset}>
       		  Reset
       		</Button>
 
@@ -102,7 +102,7 @@ class APSettingsForm extends React.Component {
           <Typography variant="display1" className={classes.loadingSettingsDetails}>
             {errorMessage}
           </Typography>
-          <Button variant="raised" color="secondary" className={classes.button} onClick={onReset}>
+          <Button variant="contained" color="secondary" className={classes.button} onClick={onReset}>
       		  Reset
       		</Button>
         </div>

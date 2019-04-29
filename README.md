@@ -218,5 +218,3 @@ I've tried to keep the use of libraries to a minimum to reduce the artefact size
 * [NtpClient](https://github.com/gmag11/NtpClient)
 * [ArduinoJson](https://github.com/bblanchon/ArduinoJson)
 * [ESPAsyncWebServer](https://github.com/me-no-dev/ESPAsyncWebServer)
-
-**NB: The project doesn't currently fix it's dependencies to a particular version. PlatformIO will always download the latest version of the specified dependencies.**
