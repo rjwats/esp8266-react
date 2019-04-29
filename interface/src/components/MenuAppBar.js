@@ -21,6 +21,7 @@ import WifiIcon from '@material-ui/icons/Wifi';
 import SystemUpdateIcon from  '@material-ui/icons/SystemUpdate';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import SettingsInputAntennaIcon from '@material-ui/icons/SettingsInputAntenna';
+import DeveloperBoardIcon from '@material-ui/icons/DeveloperBoard';
 
 const drawerWidth = 290;
 
@@ -126,6 +127,12 @@ class MenuAppBar extends React.Component {
               <SystemUpdateIcon />
             </ListItemIcon>
             <ListItemText primary="OTA Configuration" />
+          </ListItem>
+          <ListItem button component={Link} to='/esp-configuration'>
+            <ListItemIcon>
+              <DeveloperBoardIcon />
+            </ListItemIcon>
+            <ListItemText primary="ESP Configuration" />
           </ListItem>
         </List>
       </div>
