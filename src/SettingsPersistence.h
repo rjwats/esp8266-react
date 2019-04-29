@@ -88,7 +88,7 @@ protected:
 
   public:
 
-    SettingsPersistence(FS* fs, char const* servicePath, char const* filePath):
+    SettingsPersistence(FS* fs, char const* filePath):
       _fs(fs), _filePath(filePath) {}
 
     virtual ~SettingsPersistence() {}
