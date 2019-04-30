@@ -1,5 +1,8 @@
-#ifndef APSettingsConfig_h
-#define APSettingsConfig_h
+#ifndef SecurityManager_h
+#define SecurityManager_h
+
+#include <list>
+#include <ArduinoJWT.h>
 
 #include <SettingsService.h>
 #include <DNSServer.h>
@@ -8,16 +11,17 @@
 #define DEFAULT_JWT_SECRET "esp8266-react"
 
 #define SECURITY_SETTINGS_FILE "/config/securitySettings.json"
+
+#define USERS_PATH "/rest/users"
 #define AUTHENTICATE_PATH "/rest/authenticate"
 
 #define SECURITY_MANAGER_MAX_USERS 5
 
-#define UNAUTHENTICATED_USERNAME ""
+#define UNAUTHENTICATED_USERNAME "_anonymous"
 #define UNAUTHENTICATED_PASSWORD ""
 #define UNAUTHENTICATED_ROLE ""
 
-#define ROLE_ADMIN "admin"
-#define ROLE_GUEST "guest"
+#define MAX_USERS_SIZE 1024
 
 class User {
   private:
@@ -38,9 +42,6 @@ class User {
     bool isAuthenticated() {
       return _username != UNAUTHENTICATED_USERNAME;
     }
-    bool isAdmin() {
-      return isAuthenticated() && _username == ROLE_ADMIN;
-    }
 };
 
 const User NOT_AUTHENTICATED = User(UNAUTHENTICATED_USERNAME, UNAUTHENTICATED_PASSWORD, UNAUTHENTICATED_ROLE);
@@ -55,7 +56,7 @@ class SecurityManager :  public SettingsPersistence {
     void begin();
 
     User verifyUser(String jwt);
-    User authenticate();
+    User authenticate(String username, String password);
     String generateJWT(User user);
 
   protected:
@@ -65,10 +66,17 @@ class SecurityManager :  public SettingsPersistence {
 
   private:
 
+    // server instance
+    AsyncWebServer* _server;
+
     // access point settings
     String _jwtSecret;
-    User *_users[SECURITY_MANAGER_MAX_USERS];
-    int _numUsers;
+    std::list<String> _roles;
+    std::list<User> _users;
+
+    // endpoint functions
+    void fetchUsers(AsyncWebServerRequest *request);
+
 };
 
-#endif // end APSettingsConfig_h
+#endif // end SecurityManager_h

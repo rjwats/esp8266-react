@@ -18,10 +18,13 @@
 #include <NTPStatus.h>
 #include <OTASettingsService.h>
 #include <APStatus.h>
+#include <SecurityManager.h>
 
 #define SERIAL_BAUD_RATE 115200
 
 AsyncWebServer server(80);
+
+SecurityManager securityManager = SecurityManager(&server, &SPIFFS);
 
 WiFiSettingsService wifiSettingsService = WiFiSettingsService(&server, &SPIFFS);
 APSettingsService apSettingsService = APSettingsService(&server, &SPIFFS);
@@ -39,6 +42,9 @@ void setup() {
 
     Serial.begin(SERIAL_BAUD_RATE);
     SPIFFS.begin();
+
+    // start security manager
+    securityManager.begin();
 
     // start services
     ntpSettingsService.begin();
