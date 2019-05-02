@@ -1,7 +1,15 @@
 #include <SecurityManager.h>
 
 SecurityManager::SecurityManager(AsyncWebServer* server, FS* fs) : SettingsPersistence(fs, SECURITY_SETTINGS_FILE) {
+  // fetch users
   server->on(USERS_PATH, HTTP_GET, std::bind(&SecurityManager::fetchUsers, this, std::placeholders::_1));
+
+  // sign in request
+  _signInRequestHandler.setUri(SIGN_IN_PATH);
+  _signInRequestHandler.setMethod(HTTP_POST);
+  _signInRequestHandler.setMaxContentLength(MAX_SECURITY_MANAGER_SETTINGS_SIZE);
+  _signInRequestHandler.onRequest(std::bind(&SecurityManager::signIn, this, std::placeholders::_1, std::placeholders::_2));
+  server->addHandler(&_signInRequestHandler);
 }
 
 SecurityManager::~SecurityManager() {}
@@ -52,6 +60,35 @@ void SecurityManager::writeToJsonObject(JsonObject& root) {
   }
 }
 
+// TODO - Decide about default role behaviour, don't over-engineer (multiple roles, boolean admin flag???).
+void SecurityManager::signIn(AsyncWebServerRequest *request, JsonDocument &jsonDocument){
+  if (jsonDocument.is<JsonObject>()) {
+    // authenticate user
+    String username =  jsonDocument["username"];
+    String password = jsonDocument["password"];
+    User user = authenticate(username, password);
+
+    if (user.isAuthenticated()) {
+      // create JWT
+      DynamicJsonDocument _jsonDocument(MAX_JWT_SIZE);      
+      JsonObject jwt = _jsonDocument.to<JsonObject>();
+      jwt["user"] = user.getUsername();
+      jwt["role"] = user.getRole();
+      
+      // send JWT response
+      AsyncJsonResponse * response = new AsyncJsonResponse(MAX_USERS_SIZE);
+      JsonObject jsonObject = response->getRoot();
+      jsonObject["access_token"] = jwtHandler.encodeJWT(jwt);
+      response->setLength();
+      request->send(response);
+    }
+  }
+  
+  // authentication failed
+  AsyncWebServerResponse *response =  request->beginResponse(401);
+  request->send(response);
+}
+
 void SecurityManager::fetchUsers(AsyncWebServerRequest *request) {
   AsyncJsonResponse * response = new AsyncJsonResponse(MAX_USERS_SIZE);
   JsonObject jsonObject = response->getRoot();  
@@ -61,7 +98,11 @@ void SecurityManager::fetchUsers(AsyncWebServerRequest *request) {
 }
 
 void SecurityManager::begin() {
+  // read config
   readFromFS();
+
+  // configure secret
+  jwtHandler.setPSK(_jwtSecret);
 }
 
 User SecurityManager::verifyUser(String jwt) {

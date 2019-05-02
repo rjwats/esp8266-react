@@ -32,7 +32,7 @@ private:
     request->send(response);
   }
 
-  void updateConfig(AsyncWebServerRequest *request, JsonDocument &jsonDocument){
+  void updateConfig(AsyncWebServerRequest *request, JsonDocument &jsonDocument) {
     if (jsonDocument.is<JsonObject>()){
       JsonObject newConfig = jsonDocument.as<JsonObject>();
       readFromJsonObject(newConfig);

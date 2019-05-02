@@ -2,11 +2,11 @@
 #define SecurityManager_h
 
 #include <list>
-#include <ArduinoJWT.h>
 
 #include <SettingsService.h>
 #include <DNSServer.h>
 #include <IPAddress.h>
+#include <jwt/ArduinoJsonJWT.h>
 
 #define DEFAULT_JWT_SECRET "esp8266-react"
 
@@ -14,12 +14,15 @@
 
 #define USERS_PATH "/rest/users"
 #define AUTHENTICATE_PATH "/rest/authenticate"
+#define SIGN_IN_PATH "/rest/signIn"
 
+#define MAX_JWT_SIZE 128
+#define MAX_SECURITY_MANAGER_SETTINGS_SIZE 512
 #define SECURITY_MANAGER_MAX_USERS 5
 
-#define UNAUTHENTICATED_USERNAME "_anonymous"
-#define UNAUTHENTICATED_PASSWORD ""
-#define UNAUTHENTICATED_ROLE ""
+#define ANONYMOUS_USERNAME "_anonymous"
+#define ANONYMOUS_PASSWORD ""
+#define ANONYMOUS_ROLE ""
 
 #define MAX_USERS_SIZE 1024
 
@@ -40,11 +43,11 @@ class User {
       return _role;
     }
     bool isAuthenticated() {
-      return _username != UNAUTHENTICATED_USERNAME;
+      return _username != ANONYMOUS_USERNAME;
     }
 };
 
-const User NOT_AUTHENTICATED = User(UNAUTHENTICATED_USERNAME, UNAUTHENTICATED_PASSWORD, UNAUTHENTICATED_ROLE);
+const User NOT_AUTHENTICATED = User(ANONYMOUS_USERNAME, ANONYMOUS_PASSWORD, ANONYMOUS_ROLE);
 
 class SecurityManager :  public SettingsPersistence {
 
@@ -55,8 +58,19 @@ class SecurityManager :  public SettingsPersistence {
 
     void begin();
 
+    /*
+    * Lookup the user by JWT
+    */
     User verifyUser(String jwt);
+
+    /*
+    * Authenticate, returning the user if found.
+    */
     User authenticate(String username, String password);
+
+    /*
+    * Generate a JWT for the user provided
+    */
     String generateJWT(User user);
 
   protected:
@@ -65,9 +79,12 @@ class SecurityManager :  public SettingsPersistence {
     void writeToJsonObject(JsonObject& root);
 
   private:
+    // jwt handler
+    ArduinoJsonJWT jwtHandler = ArduinoJsonJWT(DEFAULT_JWT_SECRET);
 
     // server instance
     AsyncWebServer* _server;
+    AsyncJsonRequestWebHandler _signInRequestHandler;
 
     // access point settings
     String _jwtSecret;
@@ -76,7 +93,7 @@ class SecurityManager :  public SettingsPersistence {
 
     // endpoint functions
     void fetchUsers(AsyncWebServerRequest *request);
-
+    void signIn(AsyncWebServerRequest *request, JsonDocument &jsonDocument);
 };
 
 #endif // end SecurityManager_h
