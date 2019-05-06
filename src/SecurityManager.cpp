@@ -101,10 +101,11 @@ void SecurityManager::signIn(AsyncWebServerRequest *request, JsonDocument &jsonD
 void SecurityManager::testVerification(AsyncWebServerRequest *request, JsonDocument &jsonDocument){
   if (jsonDocument.is<JsonObject>()) {    
     String accessToken =  jsonDocument["access_token"];
-    DynamicJsonDocument parsedJwt(MAX_JWT_SIZE); 
-    if (jwtHandler.parseJWT(accessToken, parsedJwt)){
+    DynamicJsonDocument parsedJwt(MAX_JWT_SIZE);
+    jwtHandler.parseJWT(accessToken, parsedJwt);
+    if (parsedJwt.is<JsonObject>()){
       String username = parsedJwt["username"];
-
+      Serial.println(username);
     }
   }
   // authentication failed
