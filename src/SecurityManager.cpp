@@ -10,6 +10,14 @@ SecurityManager::SecurityManager(AsyncWebServer* server, FS* fs) : SettingsPersi
   _signInRequestHandler.setMaxContentLength(MAX_SECURITY_MANAGER_SETTINGS_SIZE);
   _signInRequestHandler.onRequest(std::bind(&SecurityManager::signIn, this, std::placeholders::_1, std::placeholders::_2));
   server->addHandler(&_signInRequestHandler);
+
+
+    // sign in request
+  _testVerifiction.setUri(TEST_VERIFICATION_PATH);
+  _testVerifiction.setMethod(HTTP_POST);
+  _testVerifiction.setMaxContentLength(MAX_SECURITY_MANAGER_SETTINGS_SIZE);
+  _testVerifiction.onRequest(std::bind(&SecurityManager::testVerification, this, std::placeholders::_1, std::placeholders::_2));
+  server->addHandler(&_testVerifiction);
 }
 
 SecurityManager::~SecurityManager() {}
@@ -72,18 +80,33 @@ void SecurityManager::signIn(AsyncWebServerRequest *request, JsonDocument &jsonD
       // create JWT
       DynamicJsonDocument _jsonDocument(MAX_JWT_SIZE);      
       JsonObject jwt = _jsonDocument.to<JsonObject>();
-      jwt["user"] = user.getUsername();
+      jwt["username"] = user.getUsername();
       jwt["role"] = user.getRole();
       
       // send JWT response
       AsyncJsonResponse * response = new AsyncJsonResponse(MAX_USERS_SIZE);
       JsonObject jsonObject = response->getRoot();
-      jsonObject["access_token"] = jwtHandler.encodeJWT(jwt);
+      jsonObject["access_token"] = jwtHandler.buildJWT(jwt);
       response->setLength();
       request->send(response);
+      return;
     }
   }
-  
+
+  // authentication failed
+  AsyncWebServerResponse *response =  request->beginResponse(401);
+  request->send(response);
+}
+
+void SecurityManager::testVerification(AsyncWebServerRequest *request, JsonDocument &jsonDocument){
+  if (jsonDocument.is<JsonObject>()) {    
+    String accessToken =  jsonDocument["access_token"];
+    DynamicJsonDocument parsedJwt(MAX_JWT_SIZE); 
+    if (jwtHandler.parseJWT(accessToken, parsedJwt)){
+      String username = parsedJwt["username"];
+
+    }
+  }
   // authentication failed
   AsyncWebServerResponse *response =  request->beginResponse(401);
   request->send(response);
@@ -102,7 +125,7 @@ void SecurityManager::begin() {
   readFromFS();
 
   // configure secret
-  jwtHandler.setPSK(_jwtSecret);
+  jwtHandler.setSecret(_jwtSecret);
 }
 
 User SecurityManager::verifyUser(String jwt) {

@@ -1,3 +1,5 @@
+#include "base64.h"
+
 unsigned char binary_to_base64(unsigned char v) {
   // Capital letters - 'A' is ascii 65 and base64 0
   if(v < 26) return v + 'A';

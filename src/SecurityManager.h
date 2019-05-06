@@ -6,7 +6,7 @@
 #include <SettingsService.h>
 #include <DNSServer.h>
 #include <IPAddress.h>
-#include <jwt/ArduinoJsonJWT.h>
+#include <ArduinoJsonJWT.h>
 
 #define DEFAULT_JWT_SECRET "esp8266-react"
 
@@ -15,6 +15,7 @@
 #define USERS_PATH "/rest/users"
 #define AUTHENTICATE_PATH "/rest/authenticate"
 #define SIGN_IN_PATH "/rest/signIn"
+#define TEST_VERIFICATION_PATH "/rest/verification"
 
 #define MAX_JWT_SIZE 128
 #define MAX_SECURITY_MANAGER_SETTINGS_SIZE 512
@@ -85,6 +86,7 @@ class SecurityManager :  public SettingsPersistence {
     // server instance
     AsyncWebServer* _server;
     AsyncJsonRequestWebHandler _signInRequestHandler;
+    AsyncJsonRequestWebHandler _testVerifiction;
 
     // access point settings
     String _jwtSecret;
@@ -94,6 +96,7 @@ class SecurityManager :  public SettingsPersistence {
     // endpoint functions
     void fetchUsers(AsyncWebServerRequest *request);
     void signIn(AsyncWebServerRequest *request, JsonDocument &jsonDocument);
+    void testVerification(AsyncWebServerRequest *request, JsonDocument &jsonDocument);
 };
 
 #endif // end SecurityManager_h
