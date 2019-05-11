@@ -1,11 +1,10 @@
 #ifndef ArduinoJsonJWT_H
 #define ArduinoJsonJWT_H
 
-#include "base64.h"
-
 #include <Arduino.h>
 #include <ArduinoJson.h>
-
+#include <libb64/cdecode.h>
+#include <libb64/cencode.h>
 #if defined(ESP_PLATFORM)
   #include <mbedtls/md.h>
 #else
@@ -24,8 +23,9 @@ private:
   const String JWT_HEADER = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9";
   
   String sign(String &value);
-  String encode(unsigned char * value, int length);
-  String decode(unsigned char * value);
+
+  static String encode(String value);
+  static String decode(String value);
 
 public:
   ArduinoJsonJWT(String secret);

@@ -14,7 +14,7 @@ void ArduinoJsonJWT::setSecret(String secret){
  * No need to pull in additional crypto libraries - lets use what we already have.
  */
 String ArduinoJsonJWT::sign(String &payload) {
-  unsigned char hmacResult[32];
+  unsigned char hmacResult[33];
   {
   #if defined(ESP_PLATFORM)
     mbedtls_md_context_t ctx;
@@ -34,43 +34,15 @@ String ArduinoJsonJWT::sign(String &payload) {
     br_hmac_out(&hmacCtx, hmacResult);
   #endif
   }
-  return encode(hmacResult, 32);
-}
-
-String ArduinoJsonJWT::decode(unsigned char * value) {
-  // create buffer of approperate length
-  size_t decodedLength = decode_base64_length(value) + 1;
-  char decoded[decodedLength];
-
-  // decode
-  decode_base64(value, (unsigned char *) decoded);
-  decoded[decodedLength-1] = 0;
-
-  // return as arduino string
-  return String(decoded);
-}
-
-String ArduinoJsonJWT::encode(unsigned char * value , int length) {
-  int encodedIndex = encode_base64_length(length);
-
-  // encode
-  char encoded[encodedIndex];
-  encode_base64(value, length, (unsigned char *) encoded);
-
-  // trim padding
-  while (encoded[--encodedIndex] == '=') {
-    encoded[encodedIndex] = 0;
-  }  
-
-  // return as string
-  return String(encoded);
+  hmacResult[32] = 0;
+  return encode(String((char *) hmacResult));
 }
 
 String ArduinoJsonJWT::buildJWT(JsonObject &payload) {
   // serialize, then encode payload
   String jwt;
   serializeJson(payload, jwt);
-  jwt = encode((unsigned char *) jwt.c_str(), jwt.length());
+  jwt = encode(jwt);
 
   // add the header to payload
   jwt = JWT_HEADER + '.' + jwt;
@@ -108,11 +80,60 @@ void ArduinoJsonJWT::parseJWT(String jwt, JsonDocument &jsonDocument) {
 
   // decode payload
   jwt = jwt.substring(JWT_HEADER_SIZE + 1); 
-  jwt = decode((unsigned char *) jwt.c_str());
+  jwt = decode(jwt);
   
   // parse payload, clearing json document after failure
   DeserializationError error = deserializeJson(jsonDocument, jwt);
   if (error != DeserializationError::Ok || !jsonDocument.is<JsonObject>()){
     jsonDocument.clear();
   }
+}
+
+String ArduinoJsonJWT::encode(String value) {
+  // prepare encoder
+  base64_encodestate _state;
+#if defined(ESP8266)
+  base64_init_encodestate_nonewlines(&_state);
+  size_t encodedLength = base64_encode_expected_len_nonewlines(value.length()) + 1;    
+#elif defined(ESP_PLATFORM)
+  base64_init_encodestate(&_state);
+  size_t encodedLength = base64_encode_expected_len(value.length()) + 1;    
+#endif
+
+  // prepare buffer of correct length
+  char buffer[encodedLength];
+
+  // encode to buffer
+  int len = base64_encode_block(value.c_str(), value.length(), &buffer[0], &_state);
+  len += base64_encode_blockend(&buffer[len], &_state);
+  buffer[len] = 0;
+
+  // convert to arduino string
+  value = String(buffer);
+
+  // remove padding and convert to URL safe form
+  while (value.charAt(value.length() - 1) == '='){
+    value.remove(value.length() - 1);
+  }
+  value.replace('+', '-');
+  value.replace('/', '_');
+
+  // return as string
+  return value;
+}
+
+String ArduinoJsonJWT::decode(String value) {
+  // convert to standard base64
+  value.replace('-', '+');
+  value.replace( '_', '/');
+
+  // prepare buffer of correct length
+  char buffer[base64_decode_expected_len(value.length()) + 1];
+
+  // decode
+  int len = base64_decode_chars(value.c_str(), value.length(), &buffer[0]);
+  buffer[len] = 0;
+
+  // return as string
+  return String(buffer);  
 }

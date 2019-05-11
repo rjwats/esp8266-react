@@ -104,8 +104,10 @@ void SecurityManager::testVerification(AsyncWebServerRequest *request, JsonDocum
     DynamicJsonDocument parsedJwt(MAX_JWT_SIZE);
     jwtHandler.parseJWT(accessToken, parsedJwt);
     if (parsedJwt.is<JsonObject>()){
-      String username = parsedJwt["username"];
-      Serial.println(username);
+      // authentication successful
+      AsyncWebServerResponse *response =  request->beginResponse(200);
+      request->send(response);
+      return;
     }
   }
   // authentication failed
