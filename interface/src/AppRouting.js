@@ -1,25 +1,39 @@
 import React, { Component } from 'react';
 
-import { Route, Redirect, Switch } from 'react-router';
+import { Redirect, Route, Switch } from 'react-router';
+
+// authentication
+import * as Authentication from './authentication/Authentication';
+import AuthenticationWrapper from './authentication/AuthenticationWrapper';
+import AuthenticatedRoute from './authentication/AuthenticatedRoute';
 
 // containers
 import WiFiConfiguration from './containers/WiFiConfiguration';
 import NTPConfiguration from './containers/NTPConfiguration';
 import OTAConfiguration from './containers/OTAConfiguration';
 import APConfiguration from './containers/APConfiguration';
+import LoginPage from './containers/LoginPage';
 
 class AppRouting extends Component {
-	render() {
-	   return (
-       <Switch>
-         <Route exact path="/wifi-configuration" component={WiFiConfiguration} />
-				 <Route exact path="/ap-configuration" component={APConfiguration} />
-				 <Route exact path="/ntp-configuration" component={NTPConfiguration} />
-				 <Route exact path="/ota-configuration" component={OTAConfiguration} />
-         <Redirect to="/wifi-configuration" />
-       </Switch>
-		)
-	}
+
+  componentWillMount() {
+    Authentication.clearLoginRedirect();
+  }
+
+  render() {
+    return (
+      <AuthenticationWrapper>
+        <Switch>
+          <Route exact path="/" component={LoginPage} />
+          <AuthenticatedRoute exact path="/wifi-configuration" component={WiFiConfiguration} />
+          <AuthenticatedRoute exact path="/ap-configuration" component={APConfiguration} />
+          <AuthenticatedRoute exact path="/ntp-configuration" component={NTPConfiguration} />
+          <AuthenticatedRoute exact path="/ota-configuration" component={OTAConfiguration} />
+          <Redirect to="/" />
+        </Switch>
+      </AuthenticationWrapper>
+    )
+  }
 }
 
 export default AppRouting;
