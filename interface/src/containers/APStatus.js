@@ -107,7 +107,7 @@ class APStatus extends Component {
          !fetched ?
          <div>
            <LinearProgress className={classes.fetching}/>
-           <Typography variant="display1" className={classes.fetching}>
+           <Typography variant="h4" className={classes.fetching}>
              Loading...
            </Typography>
          </div>
@@ -115,7 +115,7 @@ class APStatus extends Component {
         data ? this.renderAPStatus(data, classes)
        :
         <div>
-          <Typography variant="display1" className={classes.fetching}>
+          <Typography variant="h4" className={classes.fetching}>
             {errorMessage}
           </Typography>
           <Button variant="contained" color="secondary" className={classes.button} onClick={this.props.loadData}>

@@ -51,7 +51,7 @@ class OTASettingsForm extends React.Component {
 
          <div className={classes.loadingSettings}>
            <LinearProgress className={classes.loadingSettingsDetails}/>
-           <Typography variant="display1" className={classes.loadingSettingsDetails}>
+           <Typography variant="h4" className={classes.loadingSettingsDetails}>
              Loading...
            </Typography>
          </div>
@@ -107,7 +107,7 @@ class OTASettingsForm extends React.Component {
         :
 
         <div className={classes.loadingSettings}>
-          <Typography variant="display1" className={classes.loadingSettingsDetails}>
+          <Typography variant="h4" className={classes.loadingSettingsDetails}>
             {errorMessage}
           </Typography>
           <Button variant="contained" color="secondary" className={classes.button} onClick={onReset}>
