@@ -22,6 +22,8 @@ import SystemUpdateIcon from  '@material-ui/icons/SystemUpdate';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import SettingsInputAntennaIcon from '@material-ui/icons/SettingsInputAntenna';
 
+import { APP_NAME } from '../constants/App';
+
 const drawerWidth = 290;
 
 const styles = theme => ({
@@ -97,7 +99,7 @@ class MenuAppBar extends React.Component {
       <div>
         <Toolbar>
             <Typography variant="title" color="primary">
-              ESP8266 React
+              {APP_NAME}
             </Typography>
           <Divider absolute />
         </Toolbar>
