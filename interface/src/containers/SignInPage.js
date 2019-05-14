@@ -7,6 +7,9 @@ import Typography from '@material-ui/core/Typography';
 import Fab from '@material-ui/core/Fab';
 import { APP_NAME } from '../constants/App';
 import ForwardIcon from '@material-ui/icons/Forward';
+import { withNotifier } from '../components/SnackbarNotification';
+import { SIGN_IN_ENDPOINT } from '../constants/Endpoints';
+import { withAuthenticationContext } from '../authentication/Context';
 
 const styles = theme => ({
   loginPage: {
@@ -20,7 +23,7 @@ const styles = theme => ({
     paddingTop: "200px",
     backgroundImage: 'url("/app/icon.png")',
     backgroundRepeat: "no-repeat",
-    backgroundPosition: "50% "+ theme.spacing.unit * 2 +"px",
+    backgroundPosition: "50% " + theme.spacing.unit * 2 + "px",
     backgroundSize: "auto 150px",
     textAlign: "center"
   },
@@ -49,7 +52,8 @@ class LoginPage extends Component {
     super(props);
     this.state = {
       username: '',
-      password: ''
+      password: '',
+      fetched: false
     };
   }
 
@@ -57,8 +61,32 @@ class LoginPage extends Component {
     this.setState({ [name]: event.target.value });
   };
 
-  onSubmit = event => {
-    // TODO
+  onSubmit = () => {
+    const { username, password } = this.state;
+    const { authenticationContext } = this.props;
+    this.setState({ fetched: false });
+    fetch(SIGN_IN_ENDPOINT, {
+      method: 'POST',
+      body: JSON.stringify({ username, password }),
+      headers: new Headers({
+        'Content-Type': 'application/json'
+      })
+    })
+      .then(response => {
+        if (response.status === 200) {
+          return response.json();
+        } else if (response.status === 401) {
+          throw Error("Login details invalid!");
+        } else {
+          throw Error("Invalid status code: " + response.status);
+        }
+      }).then(json =>{
+        authenticationContext.signIn(json.access_token);
+      })
+      .catch(error => {
+        this.props.raiseNotification(error.message);
+        this.setState({ fetched: true });
+      });
   };
 
   render() {
@@ -91,7 +119,7 @@ class LoginPage extends Component {
             />
             <Fab variant="extended" color="primary" className={classes.button} type="submit">
               <ForwardIcon className={classes.extendedIcon} />
-              Login
+              Sign In
             </Fab>
           </ValidatorForm>
         </Paper>
@@ -101,4 +129,4 @@ class LoginPage extends Component {
 
 }
 
-export default withStyles(styles)(LoginPage);
+export default withAuthenticationContext(withNotifier(withStyles(styles)(LoginPage)));

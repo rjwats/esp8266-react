@@ -98,7 +98,7 @@ class MenuAppBar extends React.Component {
     const drawer = (
       <div>
         <Toolbar>
-            <Typography variant="title" color="primary">
+            <Typography variant="h6" color="primary">
               {APP_NAME}
             </Typography>
           <Divider absolute />
@@ -146,7 +146,7 @@ class MenuAppBar extends React.Component {
               >
                 <MenuIcon />
               </IconButton>
-              <Typography variant="title" color="inherit" noWrap>
+              <Typography variant="h6" color="inherit" noWrap>
                 {sectionTitle}
               </Typography>
             </Toolbar>

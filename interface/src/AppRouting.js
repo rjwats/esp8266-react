@@ -12,7 +12,7 @@ import WiFiConfiguration from './containers/WiFiConfiguration';
 import NTPConfiguration from './containers/NTPConfiguration';
 import OTAConfiguration from './containers/OTAConfiguration';
 import APConfiguration from './containers/APConfiguration';
-import LoginPage from './containers/LoginPage';
+import SignInPage from './containers/SignInPage';
 
 class AppRouting extends Component {
 
@@ -24,7 +24,7 @@ class AppRouting extends Component {
     return (
       <AuthenticationWrapper>
         <Switch>
-          <Route exact path="/" component={LoginPage} />
+          <Route exact path="/" component={SignInPage} />
           <AuthenticatedRoute exact path="/wifi-configuration" component={WiFiConfiguration} />
           <AuthenticatedRoute exact path="/ap-configuration" component={APConfiguration} />
           <AuthenticatedRoute exact path="/ntp-configuration" component={NTPConfiguration} />
