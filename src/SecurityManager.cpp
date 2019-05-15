@@ -74,9 +74,11 @@ void SecurityManager::signIn(AsyncWebServerRequest *request, JsonDocument &jsonD
     // authenticate user
     String username =  jsonDocument["username"];
     String password = jsonDocument["password"];
-    User user = authenticate(username, password);
+    Authentication authentication = authenticate(username, password);
 
-    if (user.isAuthenticated()) {
+    if (authentication.isAuthenticated()) {
+      User& user = authentication.getUser();
+
       // create JWT
       DynamicJsonDocument _jsonDocument(MAX_JWT_SIZE);      
       JsonObject jwt = _jsonDocument.to<JsonObject>();
@@ -104,7 +106,6 @@ void SecurityManager::testVerification(AsyncWebServerRequest *request, JsonDocum
     DynamicJsonDocument parsedJwt(MAX_JWT_SIZE);
     jwtHandler.parseJWT(accessToken, parsedJwt);
     if (parsedJwt.is<JsonObject>()){
-      // authentication successful
       AsyncWebServerResponse *response =  request->beginResponse(200);
       request->send(response);
       return;
@@ -131,21 +132,36 @@ void SecurityManager::begin() {
   jwtHandler.setSecret(_jwtSecret);
 }
 
-User SecurityManager::verifyUser(String jwt) {
-  // TODO
-  return NOT_AUTHENTICATED;
-}
-
-User SecurityManager::authenticate(String username, String password) {
-  for (User _user : _users) {
-    if (_user.getUsername() == username && _user.getPassword() == password){
-      return _user;
+/*
+* TODO - VERIFY JWT IS CORRECT!
+*/
+Authentication SecurityManager::verify(String jwt) {
+  DynamicJsonDocument parsedJwt(MAX_JWT_SIZE);
+  jwtHandler.parseJWT(jwt, parsedJwt);
+  if (parsedJwt.is<JsonObject>()) {
+    String username = parsedJwt["username"];
+    for (User _user : _users) {
+      if (_user.getUsername() == username){
+        return Authentication::forUser(_user);
+      }
     }
   }
-  return NOT_AUTHENTICATED;
+  return Authentication::notAuthenticated();
+}
+
+Authentication SecurityManager::authenticate(String username, String password) {
+  for (User _user : _users) {
+    if (_user.getUsername() == username && _user.getPassword() == password){
+      return Authentication::forUser(_user);
+    }
+  }
+  return Authentication::notAuthenticated();
 }
 
 String SecurityManager::generateJWT(User user) {
-  // TODO
-  return "";
+  DynamicJsonDocument _jsonDocument(MAX_JWT_SIZE);      
+  JsonObject jwt = _jsonDocument.to<JsonObject>();
+  jwt["username"] = user.getUsername();
+  jwt["role"] = user.getRole();
+  return jwtHandler.buildJWT(jwt);
 }

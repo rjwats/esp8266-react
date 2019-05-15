@@ -43,12 +43,31 @@ class User {
     String getRole() {
       return _role;
     }
-    bool isAuthenticated() {
-      return _username != ANONYMOUS_USERNAME;
-    }
 };
 
 const User NOT_AUTHENTICATED = User(ANONYMOUS_USERNAME, ANONYMOUS_PASSWORD, ANONYMOUS_ROLE);
+
+class Authentication {
+  private:
+    User _user;
+    boolean _authenticated;
+    Authentication(User user, boolean authenticated) : _user(user), _authenticated(authenticated) {}
+  public:
+    // NOOP
+    ~Authentication(){}
+    User& getUser() {
+      return _user;
+    }
+    bool isAuthenticated() {
+      return _authenticated;
+    }
+    static Authentication forUser(User user){
+      return Authentication(user, true);
+    }
+    static Authentication notAuthenticated(){
+      return Authentication(NOT_AUTHENTICATED, false);
+    }
+};
 
 class SecurityManager :  public SettingsPersistence {
 
@@ -62,12 +81,12 @@ class SecurityManager :  public SettingsPersistence {
     /*
     * Lookup the user by JWT
     */
-    User verifyUser(String jwt);
+    Authentication verify(String jwt);
 
     /*
     * Authenticate, returning the user if found.
     */
-    User authenticate(String username, String password);
+    Authentication authenticate(String username, String password);
 
     /*
     * Generate a JWT for the user provided

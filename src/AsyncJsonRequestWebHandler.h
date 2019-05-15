@@ -1,6 +1,7 @@
 #ifndef Async_Json_Request_Web_Handler_H_
 #define Async_Json_Request_Web_Handler_H_
 
+#include <ESPAsyncWebServer.h>
 #include <ArduinoJson.h>
 
 #define ASYNC_JSON_REQUEST_DEFAULT_MAX_SIZE 1024
