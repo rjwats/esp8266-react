@@ -10,15 +10,18 @@
 #endif
 
 #include <FS.h>
+
+#include <SecurityManager.h>
 #include <WiFiSettingsService.h>
-#include <WiFiStatus.h>
-#include <WiFiScanner.h>
 #include <APSettingsService.h>
 #include <NTPSettingsService.h>
-#include <NTPStatus.h>
 #include <OTASettingsService.h>
+#include <AuthenticationService.h>
+#include <WiFiScanner.h>
+#include <WiFiStatus.h>
+#include <NTPStatus.h>
 #include <APStatus.h>
-#include <SecurityManager.h>
+
 
 #define SERIAL_BAUD_RATE 115200
 
@@ -30,6 +33,7 @@ WiFiSettingsService wifiSettingsService = WiFiSettingsService(&server, &SPIFFS);
 APSettingsService apSettingsService = APSettingsService(&server, &SPIFFS);
 NTPSettingsService ntpSettingsService = NTPSettingsService(&server, &SPIFFS);
 OTASettingsService otaSettingsService = OTASettingsService(&server, &SPIFFS);
+AuthenticationService authenticationService = AuthenticationService(&server, &securityManager);
 
 WiFiScanner wifiScanner = WiFiScanner(&server);
 WiFiStatus wifiStatus = WiFiStatus(&server);

@@ -1,23 +1,7 @@
 #include <SecurityManager.h>
 
 SecurityManager::SecurityManager(AsyncWebServer* server, FS* fs) : SettingsPersistence(fs, SECURITY_SETTINGS_FILE) {
-  // fetch users
   server->on(USERS_PATH, HTTP_GET, std::bind(&SecurityManager::fetchUsers, this, std::placeholders::_1));
-
-  // sign in request
-  _signInRequestHandler.setUri(SIGN_IN_PATH);
-  _signInRequestHandler.setMethod(HTTP_POST);
-  _signInRequestHandler.setMaxContentLength(MAX_SECURITY_MANAGER_SETTINGS_SIZE);
-  _signInRequestHandler.onRequest(std::bind(&SecurityManager::signIn, this, std::placeholders::_1, std::placeholders::_2));
-  server->addHandler(&_signInRequestHandler);
-
-
-    // sign in request
-  _testVerifiction.setUri(TEST_VERIFICATION_PATH);
-  _testVerifiction.setMethod(HTTP_POST);
-  _testVerifiction.setMaxContentLength(MAX_SECURITY_MANAGER_SETTINGS_SIZE);
-  _testVerifiction.onRequest(std::bind(&SecurityManager::testVerification, this, std::placeholders::_1, std::placeholders::_2));
-  server->addHandler(&_testVerifiction);
 }
 
 SecurityManager::~SecurityManager() {}
@@ -68,54 +52,6 @@ void SecurityManager::writeToJsonObject(JsonObject& root) {
   }
 }
 
-// TODO - Decide about default role behaviour, don't over-engineer (multiple roles, boolean admin flag???).
-void SecurityManager::signIn(AsyncWebServerRequest *request, JsonDocument &jsonDocument){
-  if (jsonDocument.is<JsonObject>()) {
-    // authenticate user
-    String username =  jsonDocument["username"];
-    String password = jsonDocument["password"];
-    Authentication authentication = authenticate(username, password);
-
-    if (authentication.isAuthenticated()) {
-      User& user = authentication.getUser();
-
-      // create JWT
-      DynamicJsonDocument _jsonDocument(MAX_JWT_SIZE);      
-      JsonObject jwt = _jsonDocument.to<JsonObject>();
-      jwt["username"] = user.getUsername();
-      jwt["role"] = user.getRole();
-      
-      // send JWT response
-      AsyncJsonResponse * response = new AsyncJsonResponse(MAX_USERS_SIZE);
-      JsonObject jsonObject = response->getRoot();
-      jsonObject["access_token"] = jwtHandler.buildJWT(jwt);
-      response->setLength();
-      request->send(response);
-      return;
-    }
-  }
-
-  // authentication failed
-  AsyncWebServerResponse *response =  request->beginResponse(401);
-  request->send(response);
-}
-
-void SecurityManager::testVerification(AsyncWebServerRequest *request, JsonDocument &jsonDocument){
-  if (jsonDocument.is<JsonObject>()) {    
-    String accessToken =  jsonDocument["access_token"];
-    DynamicJsonDocument parsedJwt(MAX_JWT_SIZE);
-    jwtHandler.parseJWT(accessToken, parsedJwt);
-    if (parsedJwt.is<JsonObject>()){
-      AsyncWebServerResponse *response =  request->beginResponse(200);
-      request->send(response);
-      return;
-    }
-  }
-  // authentication failed
-  AsyncWebServerResponse *response =  request->beginResponse(401);
-  request->send(response);
-}
-
 void SecurityManager::fetchUsers(AsyncWebServerRequest *request) {
   AsyncJsonResponse * response = new AsyncJsonResponse(MAX_USERS_SIZE);
   JsonObject jsonObject = response->getRoot();  
@@ -132,36 +68,56 @@ void SecurityManager::begin() {
   jwtHandler.setSecret(_jwtSecret);
 }
 
-/*
-* TODO - VERIFY JWT IS CORRECT!
-*/
-Authentication SecurityManager::verify(String jwt) {
-  DynamicJsonDocument parsedJwt(MAX_JWT_SIZE);
-  jwtHandler.parseJWT(jwt, parsedJwt);
-  if (parsedJwt.is<JsonObject>()) {
-    String username = parsedJwt["username"];
+Authentication SecurityManager::authenticateRequest(AsyncWebServerRequest *request) {
+  AsyncWebHeader* authorizationHeader = request->getHeader(AUTHORIZATION_HEADER);
+  if (authorizationHeader) {
+    String value = authorizationHeader->value();
+    value.startsWith(AUTHORIZATION_HEADER_PREFIX);
+    value = value.substring(AUTHORIZATION_HEADER_PREFIX_LEN);
+    return authenticateJWT(value);
+  }  
+  return Authentication();
+}
+
+Authentication SecurityManager::authenticateJWT(String jwt) {
+  DynamicJsonDocument payloadDocument(MAX_JWT_SIZE);
+  jwtHandler.parseJWT(jwt, payloadDocument);
+  if (payloadDocument.is<JsonObject>()) {
+    JsonObject parsedPayload = payloadDocument.as<JsonObject>();
+    String username = parsedPayload["username"];
     for (User _user : _users) {
-      if (_user.getUsername() == username){
-        return Authentication::forUser(_user);
+      if (_user.getUsername() == username && validatePayload(parsedPayload, &_user)){
+        return Authentication(_user);
       }
     }
   }
-  return Authentication::notAuthenticated();
+  return Authentication();
 }
 
 Authentication SecurityManager::authenticate(String username, String password) {
   for (User _user : _users) {
     if (_user.getUsername() == username && _user.getPassword() == password){
-      return Authentication::forUser(_user);
+      return Authentication(_user);
     }
   }
-  return Authentication::notAuthenticated();
+  return Authentication();
 }
 
-String SecurityManager::generateJWT(User user) {
+inline void populateJWTPayload(JsonObject &payload, User *user) {
+  payload["username"] = user->getUsername();
+  payload["role"] = user->getRole();
+}
+
+boolean SecurityManager::validatePayload(JsonObject &parsedPayload, User *user) {
   DynamicJsonDocument _jsonDocument(MAX_JWT_SIZE);      
-  JsonObject jwt = _jsonDocument.to<JsonObject>();
-  jwt["username"] = user.getUsername();
-  jwt["role"] = user.getRole();
-  return jwtHandler.buildJWT(jwt);
+  JsonObject payload = _jsonDocument.to<JsonObject>();
+  populateJWTPayload(payload, user);
+  return payload == parsedPayload;
+}
+
+String SecurityManager::generateJWT(User *user) {
+  DynamicJsonDocument _jsonDocument(MAX_JWT_SIZE);      
+  JsonObject payload = _jsonDocument.to<JsonObject>();
+  populateJWTPayload(payload, user);
+  return jwtHandler.buildJWT(payload);
 }

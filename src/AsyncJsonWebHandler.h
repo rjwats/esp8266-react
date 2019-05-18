@@ -17,24 +17,25 @@
 
 typedef std::function<void(AsyncWebServerRequest *request, JsonDocument &jsonDocument)> JsonRequestCallback;
 
-class AsyncJsonRequestWebHandler: public AsyncWebHandler {
+class AsyncJsonWebHandler: public AsyncWebHandler {
 
   private:
-
-    String _uri;
     WebRequestMethodComposite _method;
     JsonRequestCallback _onRequest;
     size_t _maxContentLength;
 
+  protected:
+    String _uri;
+
   public:
 
-    AsyncJsonRequestWebHandler() :
-      _uri(),
+    AsyncJsonWebHandler() :      
       _method(HTTP_POST|HTTP_PUT|HTTP_PATCH),
       _onRequest(NULL),
-      _maxContentLength(ASYNC_JSON_REQUEST_DEFAULT_MAX_SIZE) {}
+      _maxContentLength(ASYNC_JSON_REQUEST_DEFAULT_MAX_SIZE),
+      _uri() {}
 
-    ~AsyncJsonRequestWebHandler() {}
+    ~AsyncJsonWebHandler() {}
 
     void setUri(const String& uri) { _uri = uri; }
     void setMethod(WebRequestMethodComposite method) { _method = method; }
@@ -61,7 +62,9 @@ class AsyncJsonRequestWebHandler: public AsyncWebHandler {
     virtual void handleRequest(AsyncWebServerRequest *request) override final {
       // no request configured
       if(!_onRequest) {
-        request->send(404);
+        Serial.print("No request callback was configured for endpoint: ");
+        Serial.println(_uri);           
+        request->send(500);
         return;
       }
 

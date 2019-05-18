@@ -13,17 +13,14 @@
 #define SECURITY_SETTINGS_FILE "/config/securitySettings.json"
 
 #define USERS_PATH "/rest/users"
-#define AUTHENTICATE_PATH "/rest/authenticate"
-#define SIGN_IN_PATH "/rest/signIn"
-#define TEST_VERIFICATION_PATH "/rest/verification"
+
+#define AUTHORIZATION_HEADER "Authorization"
+#define AUTHORIZATION_HEADER_PREFIX "Bearer "
+#define AUTHORIZATION_HEADER_PREFIX_LEN 7
 
 #define MAX_JWT_SIZE 128
 #define MAX_SECURITY_MANAGER_SETTINGS_SIZE 512
 #define SECURITY_MANAGER_MAX_USERS 5
-
-#define ANONYMOUS_USERNAME "_anonymous"
-#define ANONYMOUS_PASSWORD ""
-#define ANONYMOUS_ROLE ""
 
 #define MAX_USERS_SIZE 1024
 
@@ -45,31 +42,27 @@ class User {
     }
 };
 
-const User NOT_AUTHENTICATED = User(ANONYMOUS_USERNAME, ANONYMOUS_PASSWORD, ANONYMOUS_ROLE);
-
 class Authentication {
   private:
-    User _user;
+    User *_user;
     boolean _authenticated;
-    Authentication(User user, boolean authenticated) : _user(user), _authenticated(authenticated) {}
   public:
-    // NOOP
-    ~Authentication(){}
-    User& getUser() {
+    Authentication(User& user): _user(new User(user)), _authenticated(true) {}
+    Authentication() : _user(NULL), _authenticated(false) {}  
+    ~Authentication() {
+      if (_user != NULL){
+        delete(_user);
+      }      
+    }
+    User* getUser() {
       return _user;
     }
     bool isAuthenticated() {
       return _authenticated;
     }
-    static Authentication forUser(User user){
-      return Authentication(user, true);
-    }
-    static Authentication notAuthenticated(){
-      return Authentication(NOT_AUTHENTICATED, false);
-    }
 };
 
-class SecurityManager :  public SettingsPersistence {
+class SecurityManager : public SettingsPersistence {
 
   public:
 
@@ -79,19 +72,19 @@ class SecurityManager :  public SettingsPersistence {
     void begin();
 
     /*
-    * Lookup the user by JWT
-    */
-    Authentication verify(String jwt);
-
-    /*
-    * Authenticate, returning the user if found.
+    * Authenticate, returning the user if found
     */
     Authentication authenticate(String username, String password);
 
     /*
+    * Check the request header for the Authorization token
+    */
+    Authentication authenticateRequest(AsyncWebServerRequest *request);
+    
+    /*
     * Generate a JWT for the user provided
     */
-    String generateJWT(User user);
+    String generateJWT(User *user);
 
   protected:
 
@@ -102,11 +95,6 @@ class SecurityManager :  public SettingsPersistence {
     // jwt handler
     ArduinoJsonJWT jwtHandler = ArduinoJsonJWT(DEFAULT_JWT_SECRET);
 
-    // server instance
-    AsyncWebServer* _server;
-    AsyncJsonRequestWebHandler _signInRequestHandler;
-    AsyncJsonRequestWebHandler _testVerifiction;
-
     // access point settings
     String _jwtSecret;
     std::list<String> _roles;
@@ -114,8 +102,17 @@ class SecurityManager :  public SettingsPersistence {
 
     // endpoint functions
     void fetchUsers(AsyncWebServerRequest *request);
-    void signIn(AsyncWebServerRequest *request, JsonDocument &jsonDocument);
-    void testVerification(AsyncWebServerRequest *request, JsonDocument &jsonDocument);
+
+    /*
+    * Lookup the user by JWT
+    */
+    Authentication authenticateJWT(String jwt);
+
+    /*
+    * Verify the payload is correct
+    */
+    boolean validatePayload(JsonObject &parsedPayload, User *user);
+
 };
 
 #endif // end SecurityManager_h

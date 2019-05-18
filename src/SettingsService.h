@@ -12,7 +12,7 @@
 #include <SettingsPersistence.h>
 #include <ESPAsyncWebServer.h>
 #include <ArduinoJson.h>
-#include <AsyncJsonRequestWebHandler.h>
+#include <AsyncJsonWebHandler.h>
 #include <AsyncArduinoJson6.h>
 
 /*
@@ -22,7 +22,7 @@ class SettingsService : public SettingsPersistence {
 
 private:
 
-  AsyncJsonRequestWebHandler _updateHandler;
+  AsyncJsonWebHandler _updateHandler;
 
   void fetchConfig(AsyncWebServerRequest *request){
     AsyncJsonResponse * response = new AsyncJsonResponse(MAX_SETTINGS_SIZE);
