@@ -54,7 +54,7 @@ class SnackbarNotification extends React.Component {
           open={this.state.open}
           autoHideDuration={6000}
           onClose={this.handleClose}
-          SnackbarContentProps={{
+          ContentProps={{
             'aria-describedby': 'message-id',
           }}
           message={<span id="message-id">{this.state.message}</span>}

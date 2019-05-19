@@ -29,11 +29,13 @@ export function fetchLoginRedirect() {
 /**
  * Wraps the normal fetch routene with one with provides the access token if present.
  */
-export function secureFetch(url, params) {
-  if (localStorage.getItem(ACCESS_TOKEN)) {
+export function authorizedFetch(url, params) {
+  const accessToken = localStorage.getItem(ACCESS_TOKEN);
+  if (accessToken) {
     params = params || {};
-    params.headers = params.headers || new Headers();
-    params.headers.Authorization = 'Bearer ' + localStorage.getItem(ACCESS_TOKEN)
+    params.credentials = 'include';
+    params.headers = params.headers || {};
+    params.headers.Authorization = 'Bearer ' + accessToken;
   }
   return fetch(url, params);
 }
@@ -41,9 +43,9 @@ export function secureFetch(url, params) {
 /**
  * Wraps the normal fetch routene which redirects on 401 response.
  */
-export function redirectingSecureFetch(url, params) {
+export function redirectingAuthorizedFetch(url, params) {
   return new Promise(function (resolve, reject) {
-    secureFetch(url, params).then(response => {
+    authorizedFetch(url, params).then(response => {
       if (response.status === 401) {
         history.go("/");        
       } else {

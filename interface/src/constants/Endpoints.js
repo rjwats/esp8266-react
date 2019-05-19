@@ -10,3 +10,4 @@ export const WIFI_SETTINGS_ENDPOINT = ENDPOINT_ROOT + "wifiSettings";
 export const WIFI_STATUS_ENDPOINT = ENDPOINT_ROOT + "wifiStatus";
 export const OTA_SETTINGS_ENDPOINT = ENDPOINT_ROOT + "otaSettings";
 export const SIGN_IN_ENDPOINT = ENDPOINT_ROOT + "signIn";
+export const VERIFY_AUTHORIZATION_ENDPOINT = ENDPOINT_ROOT + "verifyAuthorization";
