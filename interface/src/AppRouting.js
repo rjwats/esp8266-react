@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 
-import { Redirect, Route, Switch } from 'react-router';
+import { Redirect, Switch } from 'react-router';
 
 // authentication
 import * as Authentication from './authentication/Authentication';
 import AuthenticationWrapper from './authentication/AuthenticationWrapper';
 import AuthenticatedRoute from './authentication/AuthenticatedRoute';
+import UnauthenticatedRoute from './authentication/UnauthenticatedRoute';
 
 // containers
 import WiFiConfiguration from './containers/WiFiConfiguration';
@@ -24,7 +25,7 @@ class AppRouting extends Component {
     return (
       <AuthenticationWrapper>
         <Switch>
-          <Route exact path="/" component={SignInPage} />
+          <UnauthenticatedRoute exact path="/" component={SignInPage} />
           <AuthenticatedRoute exact path="/wifi-configuration" component={WiFiConfiguration} />
           <AuthenticatedRoute exact path="/ap-configuration" component={APConfiguration} />
           <AuthenticatedRoute exact path="/ntp-configuration" component={NTPConfiguration} />
