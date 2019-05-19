@@ -20,9 +20,11 @@ import MenuIcon from '@material-ui/icons/Menu';
 import WifiIcon from '@material-ui/icons/Wifi';
 import SystemUpdateIcon from  '@material-ui/icons/SystemUpdate';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import SettingsInputAntennaIcon from '@material-ui/icons/SettingsInputAntenna';
 
 import { APP_NAME } from '../constants/App';
+import { withAuthenticationContext } from '../authentication/Context.js';
 
 const drawerWidth = 290;
 
@@ -93,7 +95,7 @@ class MenuAppBar extends React.Component {
   };
 
   render() {
-    const { classes, theme, children, sectionTitle } = this.props;
+    const { classes, theme, children, sectionTitle, authenticationContext } = this.props;
 
     const drawer = (
       <div>
@@ -128,6 +130,13 @@ class MenuAppBar extends React.Component {
               <SystemUpdateIcon />
             </ListItemIcon>
             <ListItemText primary="OTA Configuration" />
+          </ListItem>
+          <Divider />
+          <ListItem button onClick={authenticationContext.signOut}>
+            <ListItemIcon>
+              <AccountCircleIcon />
+            </ListItemIcon>
+            <ListItemText primary="Sign Out" secondary={"Signed in as: "+ authenticationContext.jwt.username} />
           </ListItem>
         </List>
       </div>
@@ -193,4 +202,4 @@ MenuAppBar.propTypes = {
   sectionTitle: PropTypes.string.isRequired,
 };
 
-export default withStyles(styles, { withTheme: true })(MenuAppBar);
+export default withAuthenticationContext(withStyles(styles, { withTheme: true })(MenuAppBar));
