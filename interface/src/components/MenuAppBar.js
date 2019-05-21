@@ -22,6 +22,7 @@ import SystemUpdateIcon from  '@material-ui/icons/SystemUpdate';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import SettingsInputAntennaIcon from '@material-ui/icons/SettingsInputAntenna';
+import PeopleIcon from '@material-ui/icons/People';
 
 import { APP_NAME } from '../constants/App';
 import { withAuthenticationContext } from '../authentication/Context.js';
@@ -131,6 +132,12 @@ class MenuAppBar extends React.Component {
             </ListItemIcon>
             <ListItemText primary="OTA Configuration" />
           </ListItem>
+          <ListItem button component={Link} to='/user-configuration'>
+            <ListItemIcon>
+              <PeopleIcon />
+            </ListItemIcon>
+            <ListItemText primary="User Configuration" />
+          </ListItem>          
           <Divider />
           <ListItem button onClick={authenticationContext.signOut}>
             <ListItemIcon>
