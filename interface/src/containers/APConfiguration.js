@@ -25,7 +25,7 @@ class APConfiguration extends Component {
     const { selectedTab } = this.state;
     return (
       <MenuAppBar sectionTitle="AP Configuration">
-        <Tabs value={selectedTab} onChange={this.handleTabChange} indicatorColor="primary" textColor="primary" variant="scrollable">
+        <Tabs value={selectedTab} onChange={this.handleTabChange} indicatorColor="primary" textColor="primary" variant="fullWidth">
            <Tab value="apStatus" label="AP Status" />
            <Tab value="apSettings" label="AP Settings" />
          </Tabs>
