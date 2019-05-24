@@ -1,23 +1,26 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { ValidatorForm } from 'react-material-ui-form-validator';
+import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Typography from '@material-ui/core/Typography';
-
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
+import TableFooter from '@material-ui/core/TableFooter';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import IconButton from '@material-ui/core/IconButton';
+import Chip from '@material-ui/core/Chip';
 
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
-import Chip from '@material-ui/core/Chip';
+import IconButton from '@material-ui/core/IconButton';
+
+import SectionContent from '../components/SectionContent';
+import UserForm from './UserForm';
 
 const styles = theme => ({
   loadingSettings: {
@@ -43,95 +46,198 @@ const styles = theme => ({
     margin: theme.spacing.unit,
   },
   table: {
-    '& td, & th': {padding: theme.spacing.unit}    
-  }    
+    '& td, & th': { padding: theme.spacing.unit }
+  },
+  actions: {
+    color: theme.palette.text.secondary,
+  }
 });
+
+function compareUsers(a, b) {
+  if (a.username < b.username) {
+    return -1;
+  }
+  if (a.username > b.username) {
+    return 1;
+  }
+  return 0;
+}
 
 class ManageUsersForm extends React.Component {
 
-  render() {
-    const { classes, users, usersFetched, errorMessage, onSubmit, onReset } = this.props;
-    return (
-      <div>
-        {
-          !usersFetched ?
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
 
+  createUser = () => {
+    this.setState({
+      creating: true,
+      user: {
+        username: "",
+        password: "",
+        roles: []
+      }
+    });
+  };
+
+  uniqueUsername = username => {
+    return !this.props.userData.users.find(u => u.username === username);
+  }
+
+  usersValid = username => {
+    return !!this.props.userData.users.find(u => u.roles.includes("admin"));
+  }
+
+  startEditingUser = user => {
+    this.setState({
+      creating: false,
+      user
+    });
+  };
+
+  cancelEditingUser = () => {
+    this.setState({
+      user: undefined
+    });
+  }
+
+  sortedUsers(users) {
+    return users.sort(compareUsers);
+  }
+
+  doneEditingUser = () => {
+    const { user } = this.state;
+    const { userData } = this.props;
+    let { users } = userData;
+    users = users.filter(u => u.username !== user.username);
+    users.push(user);
+    this.props.setData({ ...userData, users });
+    this.setState({
+      user: undefined
+    });
+  };
+
+  handleUserValueChange = name => event => {
+    const { user } = this.state;
+    if (user) {
+      this.setState({
+        user: {
+          ...user, [name]: event.target.value
+        }
+      });
+    }
+  };
+
+  render() {
+    const { classes, userData, userDataFetched, errorMessage, onSubmit, onReset, handleValueChange } = this.props;
+    const { user, creating } = this.state;
+    return (
+      <SectionContent title="Manage Users">
+        {
+          !userDataFetched ?
             <div className={classes.loadingSettings}>
               <LinearProgress className={classes.loadingSettingsDetails} />
               <Typography variant="h4" className={classes.loadingSettingsDetails}>
                 Loading...
               </Typography>
             </div>
-
-            : users ?
-
-              <ValidatorForm onSubmit={onSubmit}>
-                <Table className={classes.table}>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Username</TableCell>
-                      <TableCell>Password</TableCell>
-                      <TableCell align="center">Role(s)</TableCell>
-                      <TableCell align="center">Action</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {users.users.map(user => (
-                      <TableRow key={user.username}>
-                        <TableCell component="th" scope="row">
-                          {user.username}
+            :
+            userData ?
+              user ?
+                <UserForm
+                  user={user}
+                  creating={creating}
+                  roles={userData.roles}
+                  onDoneEditing={this.doneEditingUser}
+                  onCancelEditing={this.cancelEditingUser}
+                  handleValueChange={this.handleUserValueChange}
+                  uniqueUsername={this.uniqueUsername}
+                />
+                :
+                <ValidatorForm onSubmit={onSubmit}>  
+                  <Table className={classes.table}>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Username</TableCell>
+                        <TableCell align="center">Role(s)</TableCell>
+                        <TableCell align="center">Action</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {this.sortedUsers(userData.users).map(user => (
+                        <TableRow key={user.username}>
+                          <TableCell component="th" scope="row">
+                            {user.username}
+                          </TableCell>
+                          <TableCell align="center">
+                            {
+                              user.roles.map(role => (
+                                <Chip label={role} className={classes.chip} />
+                              ))
+                            }
+                          </TableCell>
+                          <TableCell align="center">
+                            <IconButton aria-label="Delete">
+                              <DeleteIcon />
+                            </IconButton>
+                            <IconButton aria-label="Edit" onClick={() => this.startEditingUser(user)}>
+                              <EditIcon />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                    <TableFooter>
+                      <TableRow>
+                        <TableCell colSpan={2}>
+                          {
+                            !this.usersValid() &&
+                            <Typography variant="body1" color="error">
+                              You must have at least one admin user configured.
+                            </Typography>
+                          }
                         </TableCell>
-                        <TableCell>{user.password}</TableCell>
                         <TableCell align="center">
-                          <Chip label={user.role} className={classes.chip} />
-                        </TableCell>
-                        <TableCell align="center">
-                          <IconButton aria-label="Delete">
-                            <DeleteIcon />
-                          </IconButton>
-                          <IconButton aria-label="Edit">
-                            <EditIcon />
-                          </IconButton>
+                          <Button variant="contained" color="secondary" className={classes.button} onClick={this.createUser}>
+                            Add User
+                        </Button>
                         </TableCell>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-
-                <Button variant="contained" color="primary" className={classes.button} type="submit">
-                  Save
-                </Button>
-                <Button variant="contained" color="secondary" className={classes.button} onClick={onReset}>
-                  Reset
-      		      </Button>
-
-              </ValidatorForm>
-
+                    </TableFooter>
+                  </Table>
+                  <Button variant="contained" color="primary" className={classes.button} type="submit">
+                    Save
+                  </Button>
+                  <Button variant="contained" color="secondary" className={classes.button} onClick={onReset}>
+                    Reset
+      		        </Button>
+                </ValidatorForm>
               :
-
-              <div className={classes.loadingSettings}>
+              <SectionContent title="Manage Users">
                 <Typography variant="h4" className={classes.loadingSettingsDetails}>
                   {errorMessage}
                 </Typography>
                 <Button variant="contained" color="secondary" className={classes.button} onClick={onReset}>
                   Reset
-      		</Button>
-              </div>
+      		      </Button>
+              </SectionContent>
         }
-      </div>
+      </SectionContent>
     );
   }
+
 }
 
 ManageUsersForm.propTypes = {
   classes: PropTypes.object.isRequired,
-  users: PropTypes.object,
-  usersFetched: PropTypes.bool.isRequired,
+  userData: PropTypes.object,
+  userDataFetched: PropTypes.bool.isRequired,
   errorMessage: PropTypes.string,
   onSubmit: PropTypes.func.isRequired,
   onReset: PropTypes.func.isRequired,
-  handleValueChange: PropTypes.func.isRequired,
-  handleCheckboxChange: PropTypes.func.isRequired,
+  setData: PropTypes.func.isRequired,
+  handleValueChange: PropTypes.func.isRequired
 };
 
 export default withStyles(styles)(ManageUsersForm);

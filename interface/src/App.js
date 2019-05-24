@@ -10,14 +10,12 @@ import orange from '@material-ui/core/colors/orange';
 import red from '@material-ui/core/colors/red';
 import green from '@material-ui/core/colors/green';
 
-import JssProvider from 'react-jss/lib/JssProvider';
 import { create } from 'jss';
+import { StylesProvider, jssPreset } from '@material-ui/styles';
 
 import {
   MuiThemeProvider,
-  createMuiTheme,
-  createGenerateClassName,
-  jssPreset,
+  createMuiTheme
 } from '@material-ui/core/styles';
 
 // Our theme
@@ -35,20 +33,17 @@ const theme = createMuiTheme({
 // JSS instance
 const jss = create(jssPreset());
 
-// Class name generator.
-const generateClassName = createGenerateClassName();
-
 class App extends Component {
 	render() {
 	   return (
-		 <JssProvider jss={jss} generateClassName={generateClassName}>
+		 <StylesProvider jss={jss}>
 			<MuiThemeProvider theme={theme}>
         <SnackbarNotification>
 				  <CssBaseline />
           <AppRouting />
         </SnackbarNotification>
 			</MuiThemeProvider>
-		 </JssProvider>
+		 </StylesProvider>
 		)
 	}
 }

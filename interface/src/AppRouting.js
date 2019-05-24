@@ -14,7 +14,7 @@ import NTPConfiguration from './containers/NTPConfiguration';
 import OTAConfiguration from './containers/OTAConfiguration';
 import APConfiguration from './containers/APConfiguration';
 import SignInPage from './containers/SignInPage';
-import UserConfiguration from './containers/UserConfiguration';
+import Security from './containers/Security';
 
 class AppRouting extends Component {
 
@@ -31,7 +31,7 @@ class AppRouting extends Component {
           <AuthenticatedRoute exact path="/ap-configuration" component={APConfiguration} />
           <AuthenticatedRoute exact path="/ntp-configuration" component={NTPConfiguration} />
           <AuthenticatedRoute exact path="/ota-configuration" component={OTAConfiguration} />
-          <AuthenticatedRoute exact path="/user-configuration" component={UserConfiguration} />
+          <AuthenticatedRoute exact path="/security" component={Security} />
           <Redirect to="/" />
         </Switch>
       </AuthenticationWrapper>

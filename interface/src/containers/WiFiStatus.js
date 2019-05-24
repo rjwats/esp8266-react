@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 
 import Avatar from '@material-ui/core/Avatar';
 import Divider from '@material-ui/core/Divider';
@@ -63,9 +64,11 @@ class WiFiStatus extends Component {
     return (
       <Fragment>
         <ListItem>
-          <Avatar className={classes["wifiStatus_" + connectionStatusHighlight(data)]}>
-            <WifiIcon />
-          </Avatar>
+          <ListItemAvatar>
+            <Avatar className={classes["wifiStatus_" + connectionStatusHighlight(data)]}>
+              <WifiIcon />
+            </Avatar>
+          </ListItemAvatar>
           <ListItemText primary="Connection Status" secondary={connectionStatus(data)} />
         </ListItem>
         <Divider variant="inset" component="li" />
@@ -73,40 +76,52 @@ class WiFiStatus extends Component {
           isConnected(data) &&
           <Fragment>
             <ListItem>
-              <Avatar>
-                <SettingsInputAntennaIcon />
-              </Avatar>
+              <ListItemAvatar>
+                <Avatar>
+                  <SettingsInputAntennaIcon />
+                </Avatar>
+              </ListItemAvatar>
               <ListItemText primary="SSID" secondary={data.ssid} />
             </ListItem>
             <Divider variant="inset" component="li" />
             <ListItem>
-              <Avatar>IP</Avatar>
+              <ListItemAvatar>
+                <Avatar>IP</Avatar>
+              </ListItemAvatar>
               <ListItemText primary="IP Address" secondary={data.local_ip} />
             </ListItem>
             <Divider variant="inset" component="li" />
             <ListItem>
-              <Avatar>
-                <DeviceHubIcon />
-              </Avatar>
+              <ListItemAvatar>
+                <Avatar>
+                  <DeviceHubIcon />
+                </Avatar>
+              </ListItemAvatar>
               <ListItemText primary="MAC Address" secondary={data.mac_address} />
             </ListItem>
             <Divider variant="inset" component="li" />
             <ListItem>
-              <Avatar>#</Avatar>
+              <ListItemAvatar>
+                <Avatar>#</Avatar>
+              </ListItemAvatar>
               <ListItemText primary="Subnet Mask" secondary={data.subnet_mask} />
             </ListItem>
             <Divider variant="inset" component="li" />
             <ListItem>
-              <Avatar>
-                <SettingsInputComponentIcon />
-              </Avatar>
+              <ListItemAvatar>
+                <Avatar>
+                  <SettingsInputComponentIcon />
+                </Avatar>
+              </ListItemAvatar>
               <ListItemText primary="Gateway IP" secondary={data.gateway_ip ? data.gateway_ip : "none"} />
             </ListItem>
             <Divider variant="inset" component="li" />
             <ListItem>
-              <Avatar>
-                <DNSIcon />
-              </Avatar>
+              <ListItemAvatar>
+                <Avatar>
+                  <DNSIcon />
+                </Avatar>
+              </ListItemAvatar>
               <ListItemText primary="DNS Server IP" secondary={this.dnsServers(data)} />
             </ListItem>
             <Divider variant="inset" component="li" />

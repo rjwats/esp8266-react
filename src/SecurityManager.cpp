@@ -1,9 +1,6 @@
 #include <SecurityManager.h>
 
-SecurityManager::SecurityManager(AsyncWebServer* server, FS* fs) : SettingsPersistence(fs, SECURITY_SETTINGS_FILE) {
-  server->on(USERS_PATH, HTTP_GET, std::bind(&SecurityManager::fetchUsers, this, std::placeholders::_1));
-}
-
+SecurityManager::SecurityManager(AsyncWebServer* server, FS* fs) :  SettingsService(server, fs, USERS_PATH, SECURITY_SETTINGS_FILE) {}
 SecurityManager::~SecurityManager() {}
 
 void SecurityManager::readFromJsonObject(JsonObject& root) {
@@ -22,15 +19,18 @@ void SecurityManager::readFromJsonObject(JsonObject& root) {
   // users
   _users.clear();
   if (root["users"].is<JsonArray>()) {
-    JsonArray users = root["users"];
-    for (JsonVariant user : users) {
-      String username =  user["username"];
-      String password = user["password"];
-      String role = user["role"];
-      _users.push_back(User(username, password, role));
+    for (JsonVariant user :  root["users"].as<JsonArray>()) {
+      std::list<String> roles;
+      if (user["roles"].is<JsonArray>()) {
+        for (JsonVariant role : user["roles"].as<JsonArray>()) {
+          roles.push_back(role.as<String>());
+        }
+      }
+      _users.push_back(User(user["username"], user["password"], roles));
     }
   }
 }
+
 
 void SecurityManager::writeToJsonObject(JsonObject& root) {
   // secret
@@ -48,16 +48,11 @@ void SecurityManager::writeToJsonObject(JsonObject& root) {
     JsonObject user = users.createNestedObject();
     user["username"] = _user.getUsername();
     user["password"] = _user.getPassword();
-    user["role"] = _user.getRole();
+    JsonArray roles = user.createNestedArray("roles");
+    for (String _role : _user.getRoles()){
+      roles.add(_role);
+    }   
   }
-}
-
-void SecurityManager::fetchUsers(AsyncWebServerRequest *request) {
-  AsyncJsonResponse * response = new AsyncJsonResponse(MAX_USERS_SIZE);
-  JsonObject jsonObject = response->getRoot();  
-  writeToJsonObject(jsonObject);
-  response->setLength();
-  request->send(response);
 }
 
 void SecurityManager::begin() {
@@ -105,7 +100,10 @@ Authentication SecurityManager::authenticate(String username, String password) {
 
 inline void populateJWTPayload(JsonObject &payload, User *user) {
   payload["username"] = user->getUsername();
-  payload["role"] = user->getRole();
+  JsonArray roles = payload.createNestedArray("roles");
+  for (String _role : user->getRoles()){
+    roles.add(_role);
+  }   
 }
 
 boolean SecurityManager::validatePayload(JsonObject &parsedPayload, User *user) {

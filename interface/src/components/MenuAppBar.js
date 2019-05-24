@@ -22,7 +22,7 @@ import SystemUpdateIcon from  '@material-ui/icons/SystemUpdate';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import SettingsInputAntennaIcon from '@material-ui/icons/SettingsInputAntenna';
-import PeopleIcon from '@material-ui/icons/People';
+import LockIcon from '@material-ui/icons/Lock';
 
 import { APP_NAME } from '../constants/App';
 import { withAuthenticationContext } from '../authentication/Context.js';
@@ -112,31 +112,31 @@ class MenuAppBar extends React.Component {
             <ListItemIcon>
               <WifiIcon />
             </ListItemIcon>
-            <ListItemText primary="WiFi Configuration" />
+            <ListItemText primary="WiFi Connection" />
           </ListItem>
           <ListItem button component={Link} to='/ap-configuration'>
             <ListItemIcon>
               <SettingsInputAntennaIcon />
             </ListItemIcon>
-            <ListItemText primary="AP Configuration" />
+            <ListItemText primary="Access Point" />
           </ListItem>
           <ListItem button component={Link} to='/ntp-configuration'>
             <ListItemIcon>
               <AccessTimeIcon />
             </ListItemIcon>
-            <ListItemText primary="NTP Configuration" />
+            <ListItemText primary="Network Time" />
           </ListItem>
           <ListItem button component={Link} to='/ota-configuration'>
             <ListItemIcon>
               <SystemUpdateIcon />
             </ListItemIcon>
-            <ListItemText primary="OTA Configuration" />
+            <ListItemText primary="OTA Updates" />
           </ListItem>
-          <ListItem button component={Link} to='/user-configuration'>
+          <ListItem button component={Link} to='/security'>
             <ListItemIcon>
-              <PeopleIcon />
+              <LockIcon />
             </ListItemIcon>
-            <ListItemText primary="User Configuration" />
+            <ListItemText primary="Security" />
           </ListItem>          
           <Divider />
           <ListItem button onClick={authenticationContext.signOut}>

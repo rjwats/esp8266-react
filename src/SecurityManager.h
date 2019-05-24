@@ -28,17 +28,17 @@ class User {
   private:
     String _username;
     String _password;
-    String _role;
+    std::list<String> _roles;
   public:
-    User(String username, String password, String role): _username(username), _password(password), _role(role) {}
+    User(String username, String password, std::list<String> roles): _username(username), _password(password), _roles(roles) {}
     String getUsername() {
       return _username;
     }
     String getPassword() {
       return _password;
     }    
-    String getRole() {
-      return _role;
+    std::list<String> getRoles() {
+      return _roles;
     }
 };
 
@@ -62,7 +62,7 @@ class Authentication {
     }
 };
 
-class SecurityManager : public SettingsPersistence {
+class SecurityManager : public SettingsService {
 
   public:
 

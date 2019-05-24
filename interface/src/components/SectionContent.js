@@ -16,7 +16,7 @@ function SectionContent(props) {
   const { children, classes, title } = props;
   return (
       <Paper className={classes.content}>
-        <Typography variant="h4">
+        <Typography variant="h6">
           {title}
         </Typography>
         {children}

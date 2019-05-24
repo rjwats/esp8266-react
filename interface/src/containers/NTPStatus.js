@@ -6,6 +6,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import Divider from '@material-ui/core/Divider';
@@ -16,10 +17,10 @@ import TimerIcon from '@material-ui/icons/Timer';
 import UpdateIcon from '@material-ui/icons/Update';
 import AvTimerIcon from '@material-ui/icons/AvTimer';
 
-import { isSynchronized, ntpStatusHighlight, ntpStatus }  from  '../constants/NTPStatus';
+import { isSynchronized, ntpStatusHighlight, ntpStatus } from '../constants/NTPStatus';
 import * as Highlight from '../constants/Highlight';
 import { unixTimeToTimeAndDate } from '../constants/TimeFormat';
-import { NTP_STATUS_ENDPOINT }  from  '../constants/Endpoints';
+import { NTP_STATUS_ENDPOINT } from '../constants/Endpoints';
 import { restComponent } from '../components/RestComponent';
 import SectionContent from '../components/SectionContent';
 
@@ -51,52 +52,61 @@ class NTPStatus extends Component {
     this.props.loadData();
   }
 
-  createListItems(data, classes){
+  createListItems(data, classes) {
     return (
       <Fragment>
-        <ListItem>
-          <Avatar className={classes["ntpStatus_" + ntpStatusHighlight(data)]}>
-            <UpdateIcon />
-          </Avatar>
+        <ListItem >
+          <ListItemAvatar>
+            <Avatar className={classes["ntpStatus_" + ntpStatusHighlight(data)]}>
+              <UpdateIcon />
+            </Avatar>
+          </ListItemAvatar>
           <ListItemText primary="Status" secondary={ntpStatus(data)} />
         </ListItem>
         <Divider variant="inset" component="li" />
-        { isSynchronized(data) &&
+        {isSynchronized(data) &&
           <Fragment>
             <ListItem>
-              <Avatar>
-                <AccessTimeIcon />
-              </Avatar>
+              <ListItemAvatar>
+                <Avatar>
+                  <AccessTimeIcon />
+                </Avatar>
+              </ListItemAvatar>
               <ListItemText primary="Time Now" secondary={unixTimeToTimeAndDate(data.now)} />
             </ListItem>
             <Divider variant="inset" component="li" />
             <ListItem>
-              <Avatar>
-                <SwapVerticalCircleIcon />
-              </Avatar>
-              <ListItemText primary="Last Sync" secondary={data.last_sync > 0 ? unixTimeToTimeAndDate(data.last_sync) : "never" } />
+              <ListItemAvatar>
+                <Avatar>
+                  <SwapVerticalCircleIcon />
+                </Avatar></ListItemAvatar>
+              <ListItemText primary="Last Sync" secondary={data.last_sync > 0 ? unixTimeToTimeAndDate(data.last_sync) : "never"} />
             </ListItem>
             <Divider variant="inset" component="li" />
           </Fragment>
         }
         <ListItem>
-          <Avatar>
-            <DNSIcon />
-          </Avatar>
+          <ListItemAvatar>
+            <Avatar>
+              <DNSIcon />
+            </Avatar>
+          </ListItemAvatar>
           <ListItemText primary="NTP Server" secondary={data.server} />
         </ListItem>
         <Divider variant="inset" component="li" />
         <ListItem>
-          <Avatar>
-            <TimerIcon />
-          </Avatar>
+          <ListItemAvatar>
+            <Avatar>
+              <TimerIcon />
+            </Avatar></ListItemAvatar>
           <ListItemText primary="Sync Interval" secondary={moment.duration(data.interval, 'seconds').humanize()} />
         </ListItem>
         <Divider variant="inset" component="li" />
         <ListItem>
-          <Avatar>
-            <AvTimerIcon />
-          </Avatar>
+          <ListItemAvatar>
+            <Avatar>
+              <AvTimerIcon />
+            </Avatar></ListItemAvatar>
           <ListItemText primary="Uptime" secondary={moment.duration(data.uptime, 'seconds').humanize()} />
         </ListItem>
         <Divider variant="inset" component="li" />
@@ -104,8 +114,8 @@ class NTPStatus extends Component {
     );
   }
 
-  renderNTPStatus(data, classes){
-    return  (
+  renderNTPStatus(data, classes) {
+    return (
       <div>
         <List>
           {this.createListItems(data, classes)}
@@ -118,30 +128,30 @@ class NTPStatus extends Component {
   }
 
   render() {
-    const { data, fetched, errorMessage, classes }  = this.props;
+    const { data, fetched, errorMessage, classes } = this.props;
 
     return (
       <SectionContent title="NTP Status">
         {
-         !fetched ?
-         <div>
-           <LinearProgress className={classes.fetching}/>
-           <Typography variant="h4" className={classes.fetching}>
-             Loading...
+          !fetched ?
+            <div>
+              <LinearProgress className={classes.fetching} />
+              <Typography variant="h4" className={classes.fetching}>
+                Loading...
            </Typography>
-         </div>
-       :
-        data ? this.renderNTPStatus(data, classes)
-       :
-        <div>
-          <Typography variant="h4" className={classes.fetching}>
-            {errorMessage}
-          </Typography>
-          <Button variant="contained" color="secondary" className={classes.button} onClick={this.props.loadData}>
-            Refresh
+            </div>
+            :
+            data ? this.renderNTPStatus(data, classes)
+              :
+              <div>
+                <Typography variant="h4" className={classes.fetching}>
+                  {errorMessage}
+                </Typography>
+                <Button variant="contained" color="secondary" className={classes.button} onClick={this.props.loadData}>
+                  Refresh
           </Button>
-        </div>
-      }
+              </div>
+        }
       </SectionContent>
     )
   }

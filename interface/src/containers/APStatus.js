@@ -7,17 +7,18 @@ import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import Divider from '@material-ui/core/Divider';
 import SettingsInputAntennaIcon from '@material-ui/icons/SettingsInputAntenna';
 import DeviceHubIcon from '@material-ui/icons/DeviceHub';
 import ComputerIcon from '@material-ui/icons/Computer';
 
-import {restComponent} from '../components/RestComponent';
+import { restComponent } from '../components/RestComponent';
 import SectionContent from '../components/SectionContent'
 
 import * as Highlight from '../constants/Highlight';
-import { AP_STATUS_ENDPOINT }  from  '../constants/Endpoints';
+import { AP_STATUS_ENDPOINT } from '../constants/Endpoints';
 
 const styles = theme => ({
   ["apStatus_" + Highlight.SUCCESS]: {
@@ -42,40 +43,48 @@ class APStatus extends Component {
     this.props.loadData();
   }
 
-  apStatusHighlight(data){
+  apStatusHighlight(data) {
     return data.active ? Highlight.SUCCESS : Highlight.IDLE;
   }
 
-  apStatus(data){
+  apStatus(data) {
     return data.active ? "Active" : "Inactive";
   }
 
-  createListItems(data, classes){
+  createListItems(data, classes) {
     return (
       <Fragment>
         <ListItem>
-          <Avatar className={classes["apStatus_" + this.apStatusHighlight(data)]}>
-            <SettingsInputAntennaIcon />
-          </Avatar>
+          <ListItemAvatar>
+            <Avatar className={classes["apStatus_" + this.apStatusHighlight(data)]}>
+              <SettingsInputAntennaIcon />
+            </Avatar>
+          </ListItemAvatar>
           <ListItemText primary="Status" secondary={this.apStatus(data)} />
         </ListItem>
         <Divider variant="inset" component="li" />
         <ListItem>
-          <Avatar>IP</Avatar>
+          <ListItemAvatar>
+            <Avatar>IP</Avatar>
+          </ListItemAvatar>
           <ListItemText primary="IP Address" secondary={data.ip_address} />
         </ListItem>
         <Divider variant="inset" component="li" />
         <ListItem>
-          <Avatar>
-            <DeviceHubIcon />
-          </Avatar>
+          <ListItemAvatar>
+            <Avatar>
+              <DeviceHubIcon />
+            </Avatar>
+          </ListItemAvatar>
           <ListItemText primary="MAC Address" secondary={data.mac_address} />
         </ListItem>
         <Divider variant="inset" component="li" />
         <ListItem>
-          <Avatar>
-            <ComputerIcon />
-          </Avatar>
+          <ListItemAvatar>
+            <Avatar>
+              <ComputerIcon />
+            </Avatar>
+          </ListItemAvatar>
           <ListItemText primary="AP Clients" secondary={data.station_num} />
         </ListItem>
         <Divider variant="inset" component="li" />
@@ -83,8 +92,8 @@ class APStatus extends Component {
     );
   }
 
-  renderAPStatus(data, classes){
-    return  (
+  renderAPStatus(data, classes) {
+    return (
       <div>
         <List>
           <Fragment>
@@ -99,30 +108,30 @@ class APStatus extends Component {
   }
 
   render() {
-    const { data, fetched, errorMessage, classes }  = this.props;
+    const { data, fetched, errorMessage, classes } = this.props;
 
     return (
       <SectionContent title="AP Status">
         {
-         !fetched ?
-         <div>
-           <LinearProgress className={classes.fetching}/>
-           <Typography variant="h4" className={classes.fetching}>
-             Loading...
+          !fetched ?
+            <div>
+              <LinearProgress className={classes.fetching} />
+              <Typography variant="h4" className={classes.fetching}>
+                Loading...
            </Typography>
-         </div>
-       :
-        data ? this.renderAPStatus(data, classes)
-       :
-        <div>
-          <Typography variant="h4" className={classes.fetching}>
-            {errorMessage}
-          </Typography>
-          <Button variant="contained" color="secondary" className={classes.button} onClick={this.props.loadData}>
-            Refresh
+            </div>
+            :
+            data ? this.renderAPStatus(data, classes)
+              :
+              <div>
+                <Typography variant="h4" className={classes.fetching}>
+                  {errorMessage}
+                </Typography>
+                <Button variant="contained" color="secondary" className={classes.button} onClick={this.props.loadData}>
+                  Refresh
           </Button>
-        </div>
-      }
+              </div>
+        }
       </SectionContent>
     )
   }
