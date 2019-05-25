@@ -43,9 +43,10 @@ Authentication SecurityManager::authenticateRequest(AsyncWebServerRequest *reque
   AsyncWebHeader* authorizationHeader = request->getHeader(AUTHORIZATION_HEADER);
   if (authorizationHeader) {
     String value = authorizationHeader->value();
-    value.startsWith(AUTHORIZATION_HEADER_PREFIX);
-    value = value.substring(AUTHORIZATION_HEADER_PREFIX_LEN);
-    return authenticateJWT(value);
+    if (value.startsWith(AUTHORIZATION_HEADER_PREFIX)){
+      value = value.substring(AUTHORIZATION_HEADER_PREFIX_LEN);
+      return authenticateJWT(value);
+    }   
   }  
   return Authentication();
 }

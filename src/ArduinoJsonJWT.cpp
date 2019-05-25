@@ -14,7 +14,7 @@ void ArduinoJsonJWT::setSecret(String secret){
  * No need to pull in additional crypto libraries - lets use what we already have.
  */
 String ArduinoJsonJWT::sign(String &payload) {
-  unsigned char hmacResult[33];
+  unsigned char hmacResult[32];
   {
   #if defined(ESP_PLATFORM)
     mbedtls_md_context_t ctx;
@@ -34,15 +34,14 @@ String ArduinoJsonJWT::sign(String &payload) {
     br_hmac_out(&hmacCtx, hmacResult);
   #endif
   }
-  hmacResult[32] = 0;
-  return encode(String((char *) hmacResult));
+  return encode((char *) hmacResult, 32);
 }
 
 String ArduinoJsonJWT::buildJWT(JsonObject &payload) {
   // serialize, then encode payload
   String jwt;
   serializeJson(payload, jwt);
-  jwt = encode(jwt);
+  jwt = encode(jwt.c_str(), jwt.length());
 
   // add the header to payload
   jwt = JWT_HEADER + '.' + jwt;
@@ -89,27 +88,27 @@ void ArduinoJsonJWT::parseJWT(String jwt, JsonDocument &jsonDocument) {
   }
 }
 
-String ArduinoJsonJWT::encode(String value) {
+String ArduinoJsonJWT::encode(const char *cstr, int inputLen) {
   // prepare encoder
   base64_encodestate _state;
 #if defined(ESP8266)
   base64_init_encodestate_nonewlines(&_state);
-  size_t encodedLength = base64_encode_expected_len_nonewlines(value.length()) + 1;    
+  size_t encodedLength = base64_encode_expected_len_nonewlines(inputLen) + 1;    
 #elif defined(ESP_PLATFORM)
   base64_init_encodestate(&_state);
-  size_t encodedLength = base64_encode_expected_len(value.length()) + 1;    
+  size_t encodedLength = base64_encode_expected_len(inputLen) + 1;    
 #endif
 
   // prepare buffer of correct length
   char buffer[encodedLength];
 
   // encode to buffer
-  int len = base64_encode_block(value.c_str(), value.length(), &buffer[0], &_state);
+  int len = base64_encode_block(cstr, inputLen, &buffer[0], &_state);
   len += base64_encode_blockend(&buffer[len], &_state);
   buffer[len] = 0;
 
   // convert to arduino string
-  value = String(buffer);
+  String value = String(buffer);
 
   // remove padding and convert to URL safe form
   while (value.charAt(value.length() - 1) == '='){

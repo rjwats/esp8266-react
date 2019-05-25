@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 
 import { ValidatorForm } from 'react-material-ui-form-validator';
@@ -13,6 +13,8 @@ import TableCell from '@material-ui/core/TableCell';
 import TableFooter from '@material-ui/core/TableFooter';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import Box from '@material-ui/core/Box';
+
 
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -80,6 +82,12 @@ class ManageUsersForm extends React.Component {
     return !this.props.userData.users.find(u => u.admin);
   }
 
+  removeUser = user => {
+    const { userData } = this.props;
+    const users = userData.users.filter(u => u.username !== user.username);
+    this.props.setData({ ...userData, users });
+  }
+
   startEditingUser = user => {
     this.setState({
       creating: false,
@@ -96,8 +104,7 @@ class ManageUsersForm extends React.Component {
   doneEditingUser = () => {
     const { user } = this.state;
     const { userData } = this.props;
-    let { users } = userData;
-    users = users.filter(u => u.username !== user.username);
+    const users = userData.users.filter(u => u.username !== user.username);
     users.push(user);
     this.props.setData({ ...userData, users });
     this.setState({
@@ -125,7 +132,7 @@ class ManageUsersForm extends React.Component {
 
   onSubmit = () => {
     this.props.onSubmit();
-    this.props.authenticationContex.refresh();
+    this.props.authenticationContext.refresh();
   }
 
   render() {
@@ -143,17 +150,7 @@ class ManageUsersForm extends React.Component {
             </div>
             :
             userData ?
-              user ?
-                <UserForm
-                  user={user}
-                  creating={creating}
-                  onDoneEditing={this.doneEditingUser}
-                  onCancelEditing={this.cancelEditingUser}
-                  handleValueChange={this.handleUserValueChange}
-                  handleCheckboxChange={this.handleUserCheckboxChange}
-                  uniqueUsername={this.uniqueUsername}
-                />
-                :
+              <Fragment>
                 <ValidatorForm onSubmit={this.onSubmit}>
                   <Table className={classes.table}>
                     <TableHead>
@@ -175,7 +172,7 @@ class ManageUsersForm extends React.Component {
                             }
                           </TableCell>
                           <TableCell align="center">
-                            <IconButton aria-label="Delete">
+                            <IconButton aria-label="Delete" onClick={() => this.removeUser(user)}>
                               <DeleteIcon />
                             </IconButton>
                             <IconButton aria-label="Edit" onClick={() => this.startEditingUser(user)}>
@@ -187,22 +184,23 @@ class ManageUsersForm extends React.Component {
                     </TableBody>
                     <TableFooter>
                       <TableRow>
-                        <TableCell colSpan={2}>
-                          {
-                            this.noAdminConfigured() &&
-                            <Typography variant="body1" color="error">
-                              You must have at least one admin user configured.
-                            </Typography>
-                          }
-                        </TableCell>
+                        <TableCell colSpan={2} />
                         <TableCell align="center">
                           <Button variant="contained" color="secondary" className={classes.button} onClick={this.createUser}>
                             Add User
-                        </Button>
+                          </Button>
                         </TableCell>
                       </TableRow>
                     </TableFooter>
                   </Table>
+                  {
+                    this.noAdminConfigured() &&
+                    <Typography component="div" variant="body1">
+                      <Box bgcolor="error.main" color="error.contrastText" p={2} m={1}>
+                        You must have at least one admin user configured.
+                      </Box>
+                    </Typography>
+                  }
                   <Button variant="contained" color="primary" className={classes.button} type="submit" disabled={this.noAdminConfigured()}>
                     Save
                   </Button>
@@ -210,6 +208,21 @@ class ManageUsersForm extends React.Component {
                     Reset
       		        </Button>
                 </ValidatorForm>
+                {
+                  user &&
+
+                  <UserForm
+                    user={user}
+                    creating={creating}
+                    onDoneEditing={this.doneEditingUser}
+                    onCancelEditing={this.cancelEditingUser}
+                    handleValueChange={this.handleUserValueChange}
+                    handleCheckboxChange={this.handleUserCheckboxChange}
+                    uniqueUsername={this.uniqueUsername}
+                  />
+
+                }
+              </Fragment>
               :
               <SectionContent title="Manage Users">
                 <Typography variant="h4" className={classes.loadingSettingsDetails}>
@@ -227,7 +240,7 @@ class ManageUsersForm extends React.Component {
 }
 
 ManageUsersForm.propTypes = {
-  authenticationContex: PropTypes.object.isRequired, 
+  authenticationContex: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
   userData: PropTypes.object,
   userDataFetched: PropTypes.bool.isRequired,

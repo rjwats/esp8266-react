@@ -24,7 +24,7 @@ private:
   
   String sign(String &value);
 
-  static String encode(String value);
+  static String encode(const char *cstr, int len);
   static String decode(String value);
 
 public:
