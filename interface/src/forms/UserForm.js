@@ -43,8 +43,8 @@ class UserForm extends React.Component {
     const { classes, user, creating, handleValueChange, handleCheckboxChange, onDoneEditing, onCancelEditing } = this.props;
     return (
       <ValidatorForm onSubmit={onDoneEditing} ref={this.formRef}>
-        <Dialog onClose={onCancelEditing} aria-labelledby="modify-user-dialog-title" open={true} scroll="paper">
-          <DialogTitle id="modify-user-dialog-title">Modify User</DialogTitle>
+        <Dialog onClose={onCancelEditing} aria-labelledby="user-form-dialog-title" open={true} scroll="paper">
+          <DialogTitle id="user-form-dialog-title">{creating ? 'Create' : 'Modify'} User</DialogTitle>
           <DialogContent>
             <TextValidator
               validators={creating ? ['required', 'uniqueUsername', 'matchRegexp:^[a-zA-Z0-9_\\.]{1,24}$'] : []}

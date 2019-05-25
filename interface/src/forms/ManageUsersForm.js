@@ -15,7 +15,6 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Box from '@material-ui/core/Box';
 
-
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CloseIcon from '@material-ui/icons/Close';
@@ -157,7 +156,7 @@ class ManageUsersForm extends React.Component {
                       <TableRow>
                         <TableCell>Username</TableCell>
                         <TableCell align="center">Admin?</TableCell>
-                        <TableCell align="center">Action</TableCell>
+                        <TableCell />
                       </TableRow>
                     </TableHead>
                     <TableBody>
