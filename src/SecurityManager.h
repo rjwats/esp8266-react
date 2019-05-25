@@ -28,17 +28,17 @@ class User {
   private:
     String _username;
     String _password;
-    std::list<String> _roles;
+    bool _admin;
   public:
-    User(String username, String password, std::list<String> roles): _username(username), _password(password), _roles(roles) {}
+    User(String username, String password, bool admin): _username(username), _password(password), _admin(admin) {}
     String getUsername() {
       return _username;
     }
     String getPassword() {
       return _password;
     }    
-    std::list<String> getRoles() {
-      return _roles;
+    bool isAdmin() {
+      return _admin;
     }
 };
 
@@ -97,7 +97,6 @@ class SecurityManager : public SettingsService {
 
     // access point settings
     String _jwtSecret;
-    std::list<String> _roles;
     std::list<User> _users;
 
     // endpoint functions

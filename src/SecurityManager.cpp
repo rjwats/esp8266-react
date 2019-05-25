@@ -7,26 +7,11 @@ void SecurityManager::readFromJsonObject(JsonObject& root) {
   // secret  
   _jwtSecret = root["jwt_secret"] | DEFAULT_JWT_SECRET;
 
-  // roles
-  _roles.clear();
-  if (root["roles"].is<JsonArray>()) {
-    JsonArray roles = root["roles"];
-    for (JsonVariant role : roles) {
-      _roles.push_back(role.as<String>());
-    }
-  }
-
   // users
   _users.clear();
   if (root["users"].is<JsonArray>()) {
     for (JsonVariant user :  root["users"].as<JsonArray>()) {
-      std::list<String> roles;
-      if (user["roles"].is<JsonArray>()) {
-        for (JsonVariant role : user["roles"].as<JsonArray>()) {
-          roles.push_back(role.as<String>());
-        }
-      }
-      _users.push_back(User(user["username"], user["password"], roles));
+      _users.push_back(User(user["username"], user["password"], user["admin"]));
     }
   }
 }
@@ -36,22 +21,13 @@ void SecurityManager::writeToJsonObject(JsonObject& root) {
   // secret
   root["jwt_secret"] = _jwtSecret;
 
-  // roles
-  JsonArray roles = root.createNestedArray("roles");
-  for (String _role : _roles) {
-    roles.add(_role);
-  }
-
   // users
   JsonArray users = root.createNestedArray("users");
   for (User _user : _users) {
     JsonObject user = users.createNestedObject();
     user["username"] = _user.getUsername();
     user["password"] = _user.getPassword();
-    JsonArray roles = user.createNestedArray("roles");
-    for (String _role : _user.getRoles()){
-      roles.add(_role);
-    }   
+    user["admin"] = _user.isAdmin();
   }
 }
 
@@ -100,10 +76,7 @@ Authentication SecurityManager::authenticate(String username, String password) {
 
 inline void populateJWTPayload(JsonObject &payload, User *user) {
   payload["username"] = user->getUsername();
-  JsonArray roles = payload.createNestedArray("roles");
-  for (String _role : user->getRoles()){
-    roles.add(_role);
-  }   
+  payload["admin"] = user -> isAdmin();  
 }
 
 boolean SecurityManager::validatePayload(JsonObject &parsedPayload, User *user) {

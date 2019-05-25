@@ -7,12 +7,9 @@ import Button from '@material-ui/core/Button';
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 import PasswordValidator from '../components/PasswordValidator';
 
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import Chip from '@material-ui/core/Chip';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
+import FormGroup from '@material-ui/core/FormGroup';
 
 const styles = theme => ({
   textField: {
@@ -41,7 +38,7 @@ class UserForm extends React.Component {
   }
 
   render() {
-    const { classes, user, roles, creating, handleValueChange, onDoneEditing, onCancelEditing } = this.props;
+    const { classes, user, creating, handleValueChange, handleCheckboxChange, onDoneEditing, onCancelEditing } = this.props;
     return (
       <ValidatorForm onSubmit={onDoneEditing}>
         <TextValidator
@@ -62,31 +59,15 @@ class UserForm extends React.Component {
           label="Password"
           className={classes.textField}
           value={user.password}
-          onChange={handleValueChange('password')}
+          onChange={handleCheckboxChange('password')}
           margin="normal"
         />
-        <FormControl className={classes.textField}>
-          <InputLabel htmlFor="roles">Roles</InputLabel>
-          <Select
-            multiple
-            value={user.roles}
-            onChange={handleValueChange('roles')}
-            input={<Input id="roles" />}
-            renderValue={selected => (
-              <div className={classes.chips}>
-                {selected.map(value => (
-                  <Chip key={value} label={value} className={classes.chip} />
-                ))}
-              </div>
-            )}
-          >
-            {roles.map(name => (
-              <MenuItem key={name} value={name}>
-                {name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        <FormGroup>
+          <FormControlLabel
+            control={<Switch checked={user.admin} onChange={handleCheckboxChange('admin')} id="admin" />}
+            label="Admin?"
+          />
+        </FormGroup>
         <Button variant="contained" color="primary" className={classes.button} type="submit">
           Save
         </Button>
@@ -102,11 +83,11 @@ UserForm.propTypes = {
   classes: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired,
   creating: PropTypes.bool.isRequired,
-  roles: PropTypes.array.isRequired,
   onDoneEditing: PropTypes.func.isRequired,
   onCancelEditing: PropTypes.func.isRequired,
   uniqueUsername: PropTypes.func.isRequired,
-  handleValueChange: PropTypes.func.isRequired
+  handleValueChange: PropTypes.func.isRequired,
+  handleCheckboxChange: PropTypes.func.isRequired
 };
 
 export default withStyles(styles)(UserForm);

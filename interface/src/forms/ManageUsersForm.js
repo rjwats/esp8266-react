@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
+import { ValidatorForm } from 'react-material-ui-form-validator';
 
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -13,14 +13,16 @@ import TableCell from '@material-ui/core/TableCell';
 import TableFooter from '@material-ui/core/TableFooter';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Chip from '@material-ui/core/Chip';
 
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
+import CloseIcon from '@material-ui/icons/Close';
+import CheckIcon from '@material-ui/icons/Check';
 import IconButton from '@material-ui/core/IconButton';
 
 import SectionContent from '../components/SectionContent';
 import UserForm from './UserForm';
+import { withAuthenticationContext } from '../authentication/Context';
 
 const styles = theme => ({
   loadingSettings: {
@@ -30,26 +32,15 @@ const styles = theme => ({
     margin: theme.spacing.unit * 4,
     textAlign: "center"
   },
-  switchControl: {
-    width: "100%",
-    marginTop: theme.spacing.unit * 2,
-    marginBottom: theme.spacing.unit
-  },
-  textField: {
-    width: "100%"
-  },
   button: {
     marginRight: theme.spacing.unit * 2,
     marginTop: theme.spacing.unit * 2,
-  },
-  chip: {
-    margin: theme.spacing.unit,
   },
   table: {
     '& td, & th': { padding: theme.spacing.unit }
   },
   actions: {
-    color: theme.palette.text.secondary,
+    whiteSpace: "nowrap"
   }
 });
 
@@ -76,7 +67,7 @@ class ManageUsersForm extends React.Component {
       user: {
         username: "",
         password: "",
-        roles: []
+        admin: true
       }
     });
   };
@@ -85,8 +76,8 @@ class ManageUsersForm extends React.Component {
     return !this.props.userData.users.find(u => u.username === username);
   }
 
-  usersValid = username => {
-    return !!this.props.userData.users.find(u => u.roles.includes("admin"));
+  noAdminConfigured = () => {
+    return !this.props.userData.users.find(u => u.admin);
   }
 
   startEditingUser = user => {
@@ -100,10 +91,6 @@ class ManageUsersForm extends React.Component {
     this.setState({
       user: undefined
     });
-  }
-
-  sortedUsers(users) {
-    return users.sort(compareUsers);
   }
 
   doneEditingUser = () => {
@@ -120,17 +107,29 @@ class ManageUsersForm extends React.Component {
 
   handleUserValueChange = name => event => {
     const { user } = this.state;
-    if (user) {
-      this.setState({
-        user: {
-          ...user, [name]: event.target.value
-        }
-      });
-    }
+    this.setState({
+      user: {
+        ...user, [name]: event.target.value
+      }
+    });
   };
 
+  handleUserCheckboxChange = name => event => {
+    const { user } = this.state;
+    this.setState({
+      user: {
+        ...user, [name]: event.target.checked
+      }
+    });
+  }
+
+  onSubmit = () => {
+    this.props.onSubmit();
+    this.props.authenticationContex.refresh();
+  }
+
   render() {
-    const { classes, userData, userDataFetched, errorMessage, onSubmit, onReset, handleValueChange } = this.props;
+    const { classes, userData, userDataFetched, errorMessage, onReset } = this.props;
     const { user, creating } = this.state;
     return (
       <SectionContent title="Manage Users">
@@ -148,33 +147,31 @@ class ManageUsersForm extends React.Component {
                 <UserForm
                   user={user}
                   creating={creating}
-                  roles={userData.roles}
                   onDoneEditing={this.doneEditingUser}
                   onCancelEditing={this.cancelEditingUser}
                   handleValueChange={this.handleUserValueChange}
+                  handleCheckboxChange={this.handleUserCheckboxChange}
                   uniqueUsername={this.uniqueUsername}
                 />
                 :
-                <ValidatorForm onSubmit={onSubmit}>  
+                <ValidatorForm onSubmit={this.onSubmit}>
                   <Table className={classes.table}>
                     <TableHead>
                       <TableRow>
                         <TableCell>Username</TableCell>
-                        <TableCell align="center">Role(s)</TableCell>
+                        <TableCell align="center">Admin?</TableCell>
                         <TableCell align="center">Action</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {this.sortedUsers(userData.users).map(user => (
+                      {userData.users.sort(compareUsers).map(user => (
                         <TableRow key={user.username}>
                           <TableCell component="th" scope="row">
                             {user.username}
                           </TableCell>
                           <TableCell align="center">
                             {
-                              user.roles.map(role => (
-                                <Chip label={role} className={classes.chip} />
-                              ))
+                              user.admin ? <CheckIcon /> : <CloseIcon />
                             }
                           </TableCell>
                           <TableCell align="center">
@@ -192,7 +189,7 @@ class ManageUsersForm extends React.Component {
                       <TableRow>
                         <TableCell colSpan={2}>
                           {
-                            !this.usersValid() &&
+                            this.noAdminConfigured() &&
                             <Typography variant="body1" color="error">
                               You must have at least one admin user configured.
                             </Typography>
@@ -206,7 +203,7 @@ class ManageUsersForm extends React.Component {
                       </TableRow>
                     </TableFooter>
                   </Table>
-                  <Button variant="contained" color="primary" className={classes.button} type="submit">
+                  <Button variant="contained" color="primary" className={classes.button} type="submit" disabled={this.noAdminConfigured()}>
                     Save
                   </Button>
                   <Button variant="contained" color="secondary" className={classes.button} onClick={onReset}>
@@ -230,6 +227,7 @@ class ManageUsersForm extends React.Component {
 }
 
 ManageUsersForm.propTypes = {
+  authenticationContex: PropTypes.object.isRequired, 
   classes: PropTypes.object.isRequired,
   userData: PropTypes.object,
   userDataFetched: PropTypes.bool.isRequired,
@@ -240,4 +238,4 @@ ManageUsersForm.propTypes = {
   handleValueChange: PropTypes.func.isRequired
 };
 
-export default withStyles(styles)(ManageUsersForm);
+export default withAuthenticationContext(withStyles(styles)(ManageUsersForm));
