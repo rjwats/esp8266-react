@@ -45,7 +45,7 @@ class UserForm extends React.Component {
       <ValidatorForm onSubmit={onDoneEditing} ref={this.formRef}>
         <Dialog onClose={onCancelEditing} aria-labelledby="user-form-dialog-title" open={true} scroll="paper">
           <DialogTitle id="user-form-dialog-title">{creating ? 'Create' : 'Modify'} User</DialogTitle>
-          <DialogContent>
+          <DialogContent dividers={true}>
             <TextValidator
               validators={creating ? ['required', 'uniqueUsername', 'matchRegexp:^[a-zA-Z0-9_\\.]{1,24}$'] : []}
               errorMessages={creating ? ['Username is required', "That username already exists", "Must be 1-24 characters: alpha numberic, '_' or '.'"] : []}

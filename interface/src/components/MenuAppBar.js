@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {  Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import { withStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -10,19 +10,27 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import Hidden from '@material-ui/core/Hidden';
 import Divider from '@material-ui/core/Divider';
+import Grow from '@material-ui/core/Grow';
+import MenuItem from '@material-ui/core/MenuItem';
+import MenuList from '@material-ui/core/MenuList';
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 
+import Popper from '@material-ui/core/Popper';
 import MenuIcon from '@material-ui/icons/Menu';
 import WifiIcon from '@material-ui/icons/Wifi';
-import SystemUpdateIcon from  '@material-ui/icons/SystemUpdate';
+import SystemUpdateIcon from '@material-ui/icons/SystemUpdate';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import SettingsInputAntennaIcon from '@material-ui/icons/SettingsInputAntenna';
 import LockIcon from '@material-ui/icons/Lock';
+
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+
+import Paper from '@material-ui/core/Paper';
 
 import { APP_NAME } from '../constants/App';
 import { withAuthenticationContext } from '../authentication/Context.js';
@@ -31,65 +39,61 @@ const drawerWidth = 290;
 
 const styles = theme => ({
   root: {
-    zIndex: 1,
-    width: '100%',
-    height: '100%',
-  },
-  toolbar: {
-    paddingLeft: theme.spacing.unit,
-    paddingRight:  theme.spacing.unit,
-    [theme.breakpoints.up('md')]: {
-      paddingLeft: theme.spacing.unit * 3,
-      paddingRight: theme.spacing.unit  * 3,
-    }
-  },
-  appFrame: {
-    position: 'relative',
     display: 'flex',
-    width: '100%',
-    height: '100%',
+  },
+  drawer: {
+    [theme.breakpoints.up('md')]: {
+      width: drawerWidth,
+      flexShrink: 0,
+    },
+  },
+  title: {
+    flexGrow: 1
   },
   appBar: {
-    position: 'absolute',
     marginLeft: drawerWidth,
     [theme.breakpoints.up('md')]: {
       width: `calc(100% - ${drawerWidth}px)`,
     },
   },
-  navIconHide: {
+  menuButton: {
+    marginRight: theme.spacing(2),
     [theme.breakpoints.up('md')]: {
       display: 'none',
     },
   },
+  toolbar: theme.mixins.toolbar,
   drawerPaper: {
     width: drawerWidth,
-    height: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: drawerWidth,
-      position:'fixed',
-      left:0,
-      top:0,
-      overflow:'auto'
-    },
   },
   content: {
-    backgroundColor: theme.palette.background.default,
-    width:"100%",
-    marginTop: 56,
-    [theme.breakpoints.up('md')]: {
-      paddingLeft: drawerWidth
-    },
-    [theme.breakpoints.up('sm')]: {
-      height: 'calc(100% - 64px)',
-      marginTop: 64,
-    },
+    flexGrow: 1,
+    padding: theme.spacing(),
   },
+  popper: {
+    zIndex: 3300
+  }
 });
 
 class MenuAppBar extends React.Component {
   state = {
     mobileOpen: false,
+    authMenuOpen: false
   };
+
+  anchorRef = React.createRef();
+
+  handleToggle = () => {
+    this.setState({ authMenuOpen: !this.state.authMenuOpen });
+  }
+
+  handleClose = (event) => {
+    if (this.anchorRef.current && this.anchorRef.current.contains(event.target)) {
+      return;
+    }
+
+    this.setState({ authMenuOpen: false });
+  }
 
   handleDrawerToggle = () => {
     this.setState({ mobileOpen: !this.state.mobileOpen });
@@ -97,13 +101,14 @@ class MenuAppBar extends React.Component {
 
   render() {
     const { classes, theme, children, sectionTitle, authenticationContext } = this.props;
+    const { mobileOpen, authMenuOpen } = this.state;
 
     const drawer = (
       <div>
         <Toolbar>
-            <Typography variant="h6" color="primary">
-              {APP_NAME}
-            </Typography>
+          <Typography variant="h6" color="primary">
+            {APP_NAME}
+          </Typography>
           <Divider absolute />
         </Toolbar>
         <Divider />
@@ -137,13 +142,6 @@ class MenuAppBar extends React.Component {
               <LockIcon />
             </ListItemIcon>
             <ListItemText primary="Security" />
-          </ListItem>          
-          <Divider />
-          <ListItem button onClick={authenticationContext.signOut}>
-            <ListItemIcon>
-              <AccountCircleIcon />
-            </ListItemIcon>
-            <ListItemText primary="Sign Out" secondary={"Signed in as: "+ authenticationContext.jwt.username} />
           </ListItem>
         </List>
       </div>
@@ -151,33 +149,66 @@ class MenuAppBar extends React.Component {
 
     return (
       <div className={classes.root}>
-        <div className={classes.appFrame}>
-          <AppBar className={classes.appBar}>
-            <Toolbar className={classes.toolbar} disableGutters={true}>
+        <AppBar position="fixed" className={classes.appBar}>
+          <Toolbar>
+            <IconButton
+              color="inherit"
+              aria-label="Open drawer"
+              edge="start"
+              onClick={this.handleDrawerToggle}
+              className={classes.menuButton}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" color="inherit" noWrap className={classes.title}>
+              {sectionTitle}
+            </Typography>
+            <div>
               <IconButton
+                ref={this.anchorRef}
+                aria-owns={authMenuOpen ? 'menu-list-grow' : undefined}
+                aria-haspopup="true"
+                onClick={this.handleToggle}
                 color="inherit"
-                aria-label="open drawer"
-                onClick={this.handleDrawerToggle}
-                className={classes.navIconHide}
               >
-                <MenuIcon />
+                <AccountCircleIcon />
               </IconButton>
-              <Typography variant="h6" color="inherit" noWrap>
-                {sectionTitle}
-              </Typography>
-            </Toolbar>
-          </AppBar>
-          <Hidden mdUp>
+              <Popper open={authMenuOpen} anchorEl={this.anchorRef.current} transition disablePortal>
+                {({ TransitionProps, placement }) => (
+                  <Grow
+                    {...TransitionProps}
+                    style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
+                  >
+                    <Paper id="menu-list-grow">
+                      <ClickAwayListener onClickAway={this.handleClose}>
+                        <MenuList>
+                          <MenuItem button onClick={authenticationContext.signOut}>
+                            <ListItemIcon>
+                              <AccountCircleIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Sign Out" secondary={"Signed in as: " + authenticationContext.jwt.username} />
+                          </MenuItem>
+                        </MenuList>
+                      </ClickAwayListener>
+                    </Paper>
+                  </Grow>
+                )}
+              </Popper>
+            </div>
+          </Toolbar>
+        </AppBar>
+        <nav className={classes.drawer}>
+          <Hidden mdUp implementation="css">
             <Drawer
               variant="temporary"
               anchor={theme.direction === 'rtl' ? 'right' : 'left'}
-              open={this.state.mobileOpen}
+              open={mobileOpen}
+              onClose={this.handleDrawerToggle}
               classes={{
                 paper: classes.drawerPaper,
               }}
-              onClose={this.handleDrawerToggle}
               ModalProps={{
-                keepMounted: true, // Better open performance on mobile.
+                keepMounted: true,
               }}
             >
               {drawer}
@@ -185,19 +216,20 @@ class MenuAppBar extends React.Component {
           </Hidden>
           <Hidden smDown implementation="css">
             <Drawer
-              variant="permanent"
-              open
               classes={{
                 paper: classes.drawerPaper,
               }}
+              variant="permanent"
+              open
             >
               {drawer}
             </Drawer>
           </Hidden>
-          <main className={classes.content}>
-            {children}
-          </main>
-        </div>
+        </nav>
+        <main className={classes.content}>
+          <div className={classes.toolbar} />
+          {children}
+        </main>
       </div>
     );
   }

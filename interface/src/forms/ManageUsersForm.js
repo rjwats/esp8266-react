@@ -239,7 +239,7 @@ class ManageUsersForm extends React.Component {
 }
 
 ManageUsersForm.propTypes = {
-  authenticationContex: PropTypes.object.isRequired,
+  authenticationContext: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
   userData: PropTypes.object,
   userDataFetched: PropTypes.bool.isRequired,
