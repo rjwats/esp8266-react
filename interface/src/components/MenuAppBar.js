@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 
 import { withStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -13,23 +13,19 @@ import Divider from '@material-ui/core/Divider';
 import Grow from '@material-ui/core/Grow';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
-
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-
 import Popper from '@material-ui/core/Popper';
 import MenuIcon from '@material-ui/icons/Menu';
 import WifiIcon from '@material-ui/icons/Wifi';
-import SystemUpdateIcon from '@material-ui/icons/SystemUpdate';
+import SettingsIcon from '@material-ui/icons/Settings';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import SettingsInputAntennaIcon from '@material-ui/icons/SettingsInputAntenna';
 import LockIcon from '@material-ui/icons/Lock';
-
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-
 import Paper from '@material-ui/core/Paper';
 
 import { APP_NAME } from '../constants/App';
@@ -102,7 +98,7 @@ class MenuAppBar extends React.Component {
   render() {
     const { classes, theme, children, sectionTitle, authenticationContext } = this.props;
     const { mobileOpen, authMenuOpen } = this.state;
-
+    const path = this.props.match.url;
     const drawer = (
       <div>
         <Toolbar>
@@ -113,31 +109,31 @@ class MenuAppBar extends React.Component {
         </Toolbar>
         <Divider />
         <List>
-          <ListItem button component={Link} to='/wifi/'>
+          <ListItem button component={Link} to='/wifi/' selected={path.startsWith('/wifi/')}>
             <ListItemIcon>
               <WifiIcon />
             </ListItemIcon>
             <ListItemText primary="WiFi Connection" />
           </ListItem>
-          <ListItem button component={Link} to='/ap/'>
+          <ListItem button component={Link} to='/ap/' selected={path.startsWith('/ap/')}>
             <ListItemIcon>
               <SettingsInputAntennaIcon />
             </ListItemIcon>
             <ListItemText primary="Access Point" />
           </ListItem>
-          <ListItem button component={Link} to='/ntp/'>
+          <ListItem button component={Link} to='/ntp/' selected={path.startsWith('/ntp/')}>
             <ListItemIcon>
               <AccessTimeIcon />
             </ListItemIcon>
             <ListItemText primary="Network Time" />
           </ListItem>
-          <ListItem button component={Link} to='/ota-configuration'>
+          <ListItem button component={Link} to='/system/' selected={path.startsWith('/system/')}>
             <ListItemIcon>
-              <SystemUpdateIcon />
+              <SettingsIcon />
             </ListItemIcon>
-            <ListItemText primary="OTA Updates" />
+            <ListItemText primary="System" />
           </ListItem>
-          <ListItem button component={Link} to='/security/'>
+          <ListItem button component={Link} to='/security/' selected={path.startsWith('/security/')}>
             <ListItemIcon>
               <LockIcon />
             </ListItemIcon>
@@ -241,4 +237,8 @@ MenuAppBar.propTypes = {
   sectionTitle: PropTypes.string.isRequired,
 };
 
-export default withAuthenticationContext(withStyles(styles, { withTheme: true })(MenuAppBar));
+export default withAuthenticationContext(
+  withRouter(
+    withStyles(styles, { withTheme: true })(MenuAppBar)
+  )
+);

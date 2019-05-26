@@ -7,13 +7,13 @@ import AuthenticationWrapper from './authentication/AuthenticationWrapper';
 import AuthenticatedRoute from './authentication/AuthenticatedRoute';
 import UnauthenticatedRoute from './authentication/UnauthenticatedRoute';
 
-import OTAConfiguration from './containers/OTAConfiguration';
 import SignInPage from './containers/SignInPage';
 
 import WiFiConnection from './sections/WiFiConnection';
 import AccessPoint from './sections/AccessPoint';
 import NetworkTime from './sections/NetworkTime';
 import Security from './sections/Security';
+import System from './sections/System';
 
 class AppRouting extends Component {
 
@@ -29,7 +29,7 @@ class AppRouting extends Component {
           <AuthenticatedRoute exact path="/wifi/*" component={WiFiConnection} />
           <AuthenticatedRoute exact path="/ap/*" component={AccessPoint} />
           <AuthenticatedRoute exact path="/ntp/*" component={NetworkTime} />
-          <AuthenticatedRoute exact path="/ota-configuration" component={OTAConfiguration} />
+          <AuthenticatedRoute exact path="/system/*" component={System} />
           <AuthenticatedRoute exact path="/security/*" component={Security} />
           <Redirect to="/" />
         </Switch>

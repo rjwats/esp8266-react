@@ -79,7 +79,8 @@ class NTPStatus extends Component {
               <ListItemAvatar>
                 <Avatar>
                   <SwapVerticalCircleIcon />
-                </Avatar></ListItemAvatar>
+                </Avatar>
+              </ListItemAvatar>
               <ListItemText primary="Last Sync" secondary={data.last_sync > 0 ? unixTimeToTimeAndDate(data.last_sync) : "never"} />
             </ListItem>
             <Divider variant="inset" component="li" />
@@ -98,7 +99,8 @@ class NTPStatus extends Component {
           <ListItemAvatar>
             <Avatar>
               <TimerIcon />
-            </Avatar></ListItemAvatar>
+            </Avatar>
+          </ListItemAvatar>
           <ListItemText primary="Sync Interval" secondary={moment.duration(data.interval, 'seconds').humanize()} />
         </ListItem>
         <Divider variant="inset" component="li" />
@@ -106,7 +108,8 @@ class NTPStatus extends Component {
           <ListItemAvatar>
             <Avatar>
               <AvTimerIcon />
-            </Avatar></ListItemAvatar>
+            </Avatar>
+          </ListItemAvatar>
           <ListItemText primary="Uptime" secondary={moment.duration(data.uptime, 'seconds').humanize()} />
         </ListItem>
         <Divider variant="inset" component="li" />
@@ -138,7 +141,7 @@ class NTPStatus extends Component {
               <LinearProgress className={classes.fetching} />
               <Typography variant="h4" className={classes.fetching}>
                 Loading...
-           </Typography>
+              </Typography>
             </div>
             :
             data ? this.renderNTPStatus(data, classes)
@@ -149,7 +152,7 @@ class NTPStatus extends Component {
                 </Typography>
                 <Button variant="contained" color="secondary" className={classes.button} onClick={this.props.loadData}>
                   Refresh
-          </Button>
+                </Button>
               </div>
         }
       </SectionContent>
