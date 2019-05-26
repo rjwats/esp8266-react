@@ -119,13 +119,13 @@ class MenuAppBar extends React.Component {
             </ListItemIcon>
             <ListItemText primary="WiFi Connection" />
           </ListItem>
-          <ListItem button component={Link} to='/ap-configuration'>
+          <ListItem button component={Link} to='/ap/'>
             <ListItemIcon>
               <SettingsInputAntennaIcon />
             </ListItemIcon>
             <ListItemText primary="Access Point" />
           </ListItem>
-          <ListItem button component={Link} to='/ntp-configuration'>
+          <ListItem button component={Link} to='/ntp/'>
             <ListItemIcon>
               <AccessTimeIcon />
             </ListItemIcon>

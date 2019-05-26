@@ -43,12 +43,12 @@ class UserForm extends React.Component {
     const { classes, user, creating, handleValueChange, handleCheckboxChange, onDoneEditing, onCancelEditing } = this.props;
     return (
       <ValidatorForm onSubmit={onDoneEditing} ref={this.formRef}>
-        <Dialog onClose={onCancelEditing} aria-labelledby="user-form-dialog-title" open={true} scroll="paper">
+        <Dialog onClose={onCancelEditing} aria-labelledby="user-form-dialog-title" open={true}>
           <DialogTitle id="user-form-dialog-title">{creating ? 'Add' : 'Modify'} User</DialogTitle>
           <DialogContent dividers={true}>
             <TextValidator
               validators={creating ? ['required', 'uniqueUsername', 'matchRegexp:^[a-zA-Z0-9_\\.]{1,24}$'] : []}
-              errorMessages={creating ? ['Username is required', "That username already exists", "Must be 1-24 characters: alpha numberic, '_' or '.'"] : []}
+              errorMessages={creating ? ['Username is required', "Username already exists", "Must be 1-24 characters: alpha numberic, '_' or '.'"] : []}
               name="username"
               label="Username"
               className={classes.textField}

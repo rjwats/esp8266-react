@@ -2,19 +2,18 @@ import React, { Component } from 'react';
 
 import { Redirect, Switch } from 'react-router';
 
-// authentication
 import * as Authentication from './authentication/Authentication';
 import AuthenticationWrapper from './authentication/AuthenticationWrapper';
 import AuthenticatedRoute from './authentication/AuthenticatedRoute';
 import UnauthenticatedRoute from './authentication/UnauthenticatedRoute';
 
-import NTPConfiguration from './containers/NTPConfiguration';
 import OTAConfiguration from './containers/OTAConfiguration';
-import APConfiguration from './containers/APConfiguration';
 import SignInPage from './containers/SignInPage';
 
-import Security from './sections/Security';
 import WiFiConnection from './sections/WiFiConnection';
+import AccessPoint from './sections/AccessPoint';
+import NetworkTime from './sections/NetworkTime';
+import Security from './sections/Security';
 
 class AppRouting extends Component {
 
@@ -28,8 +27,8 @@ class AppRouting extends Component {
         <Switch>
           <UnauthenticatedRoute exact path="/" component={SignInPage} />
           <AuthenticatedRoute exact path="/wifi/*" component={WiFiConnection} />
-          <AuthenticatedRoute exact path="/ap-configuration" component={APConfiguration} />
-          <AuthenticatedRoute exact path="/ntp-configuration" component={NTPConfiguration} />
+          <AuthenticatedRoute exact path="/ap/*" component={AccessPoint} />
+          <AuthenticatedRoute exact path="/ntp/*" component={NetworkTime} />
           <AuthenticatedRoute exact path="/ota-configuration" component={OTAConfiguration} />
           <AuthenticatedRoute exact path="/security/*" component={Security} />
           <Redirect to="/" />
