@@ -137,7 +137,7 @@ class MenuAppBar extends React.Component {
             </ListItemIcon>
             <ListItemText primary="OTA Updates" />
           </ListItem>
-          <ListItem button component={Link} to='/security'>
+          <ListItem button component={Link} to='/security/'>
             <ListItemIcon>
               <LockIcon />
             </ListItemIcon>

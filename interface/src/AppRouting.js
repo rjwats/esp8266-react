@@ -31,7 +31,7 @@ class AppRouting extends Component {
           <AuthenticatedRoute exact path="/ap-configuration" component={APConfiguration} />
           <AuthenticatedRoute exact path="/ntp-configuration" component={NTPConfiguration} />
           <AuthenticatedRoute exact path="/ota-configuration" component={OTAConfiguration} />
-          <AuthenticatedRoute exact path="/security" component={Security} />
+          <AuthenticatedRoute exact path="/security/*" component={Security} />
           <Redirect to="/" />
         </Switch>
       </AuthenticationWrapper>

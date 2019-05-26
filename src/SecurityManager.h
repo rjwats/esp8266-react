@@ -93,7 +93,7 @@ class SecurityManager : public SettingsService {
 
   private:
     // jwt handler
-    ArduinoJsonJWT jwtHandler = ArduinoJsonJWT(DEFAULT_JWT_SECRET);
+    ArduinoJsonJWT _jwtHandler = ArduinoJsonJWT(DEFAULT_JWT_SECRET);
 
     // access point settings
     String _jwtSecret;

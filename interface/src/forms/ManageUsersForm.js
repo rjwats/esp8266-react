@@ -21,7 +21,6 @@ import CloseIcon from '@material-ui/icons/Close';
 import CheckIcon from '@material-ui/icons/Check';
 import IconButton from '@material-ui/core/IconButton';
 
-import SectionContent from '../components/SectionContent';
 import UserForm from './UserForm';
 import { withAuthenticationContext } from '../authentication/Context';
 
@@ -138,108 +137,101 @@ class ManageUsersForm extends React.Component {
     const { classes, userData, userDataFetched, errorMessage, onReset } = this.props;
     const { user, creating } = this.state;
     return (
-      <SectionContent title="Manage Users">
-        {
-          !userDataFetched ?
-            <div className={classes.loadingSettings}>
-              <LinearProgress className={classes.loadingSettingsDetails} />
-              <Typography variant="h4" className={classes.loadingSettingsDetails}>
-                Loading...
-              </Typography>
-            </div>
-            :
-            userData ?
-              <Fragment>
-                <ValidatorForm onSubmit={this.onSubmit}>
-                  <Table className={classes.table}>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Username</TableCell>
-                        <TableCell align="center">Admin?</TableCell>
-                        <TableCell />
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {userData.users.sort(compareUsers).map(user => (
-                        <TableRow key={user.username}>
-                          <TableCell component="th" scope="row">
-                            {user.username}
-                          </TableCell>
-                          <TableCell align="center">
-                            {
-                              user.admin ? <CheckIcon /> : <CloseIcon />
-                            }
-                          </TableCell>
-                          <TableCell align="center">
-                            <IconButton aria-label="Delete" onClick={() => this.removeUser(user)}>
-                              <DeleteIcon />
-                            </IconButton>
-                            <IconButton aria-label="Edit" onClick={() => this.startEditingUser(user)}>
-                              <EditIcon />
-                            </IconButton>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                    <TableFooter>
-                      <TableRow>
-                        <TableCell colSpan={2} />
-                        <TableCell align="center">
-                          <Button variant="contained" color="secondary" className={classes.button} onClick={this.createUser}>
-                            Add User
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    </TableFooter>
-                  </Table>
-                  {
-                    this.noAdminConfigured() &&
-                    <Typography component="div" variant="body1">
-                      <Box bgcolor="error.main" color="error.contrastText" p={2} m={1}>
-                        You must have at least one admin user configured.
-                      </Box>
-                    </Typography>
-                  }
-                  <Button variant="contained" color="primary" className={classes.button} type="submit" disabled={this.noAdminConfigured()}>
-                    Save
-                  </Button>
-                  <Button variant="contained" color="secondary" className={classes.button} onClick={onReset}>
-                    Reset
-      		        </Button>
-                </ValidatorForm>
-                {
-                  user &&
-
-                  <UserForm
-                    user={user}
-                    creating={creating}
-                    onDoneEditing={this.doneEditingUser}
-                    onCancelEditing={this.cancelEditingUser}
-                    handleValueChange={this.handleUserValueChange}
-                    handleCheckboxChange={this.handleUserCheckboxChange}
-                    uniqueUsername={this.uniqueUsername}
-                  />
-
-                }
-              </Fragment>
-              :
-              <SectionContent title="Manage Users">
-                <Typography variant="h4" className={classes.loadingSettingsDetails}>
-                  {errorMessage}
+      !userDataFetched ?
+        <div className={classes.loadingSettings}>
+          <LinearProgress className={classes.loadingSettingsDetails} />
+          <Typography variant="h4" className={classes.loadingSettingsDetails}>
+            Loading...
+          </Typography>
+        </div>
+        :
+        userData ?
+          <Fragment>
+            <ValidatorForm onSubmit={this.onSubmit}>
+              <Table className={classes.table}>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Username</TableCell>
+                    <TableCell align="center">Admin?</TableCell>
+                    <TableCell />
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {userData.users.sort(compareUsers).map(user => (
+                    <TableRow key={user.username}>
+                      <TableCell component="th" scope="row">
+                        {user.username}
+                      </TableCell>
+                      <TableCell align="center">
+                        {
+                          user.admin ? <CheckIcon /> : <CloseIcon />
+                        }
+                      </TableCell>
+                      <TableCell align="center">
+                        <IconButton aria-label="Delete" onClick={() => this.removeUser(user)}>
+                          <DeleteIcon />
+                        </IconButton>
+                        <IconButton aria-label="Edit" onClick={() => this.startEditingUser(user)}>
+                          <EditIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+                <TableFooter>
+                  <TableRow>
+                    <TableCell colSpan={2} />
+                    <TableCell align="center">
+                      <Button variant="contained" color="secondary" onClick={this.createUser}>
+                        Add User
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                </TableFooter>
+              </Table>
+              {
+                this.noAdminConfigured() &&
+                <Typography component="div" variant="body1">
+                  <Box bgcolor="error.main" color="error.contrastText" p={2} m={2}>
+                    You must have at least one admin user configured.
+                  </Box>
                 </Typography>
-                <Button variant="contained" color="secondary" className={classes.button} onClick={onReset}>
-                  Reset
-      		      </Button>
-              </SectionContent>
-        }
-      </SectionContent>
+              }
+              <Button variant="contained" color="primary" className={classes.button} type="submit" disabled={this.noAdminConfigured()}>
+                Save
+              </Button>
+              <Button variant="contained" color="secondary" className={classes.button} onClick={onReset}>
+                Reset
+      		    </Button>
+            </ValidatorForm>
+            {
+              user &&
+              <UserForm
+                user={user}
+                creating={creating}
+                onDoneEditing={this.doneEditingUser}
+                onCancelEditing={this.cancelEditingUser}
+                handleValueChange={this.handleUserValueChange}
+                handleCheckboxChange={this.handleUserCheckboxChange}
+                uniqueUsername={this.uniqueUsername}
+              />
+            }
+          </Fragment>
+          :
+          <div className={classes.loadingSettings}>
+            <Typography variant="h4" className={classes.loadingSettingsDetails}>
+              {errorMessage}
+            </Typography>
+            <Button variant="contained" color="secondary" className={classes.button} onClick={onReset}>
+              Reset
+      		  </Button>
+          </div>
     );
   }
 
 }
 
 ManageUsersForm.propTypes = {
-  authenticationContext: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
   userData: PropTypes.object,
   userDataFetched: PropTypes.bool.isRequired,
@@ -247,7 +239,8 @@ ManageUsersForm.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   onReset: PropTypes.func.isRequired,
   setData: PropTypes.func.isRequired,
-  handleValueChange: PropTypes.func.isRequired
+  handleValueChange: PropTypes.func.isRequired,
+  authenticationContext: PropTypes.object.isRequired,
 };
 
 export default withAuthenticationContext(withStyles(styles)(ManageUsersForm));

@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 
 import { USERS_ENDPOINT } from '../constants/Endpoints';
 import { restComponent } from '../components/RestComponent';
-import ManageUsersForm from '../forms/ManageUsersForm';
+import SecuritySettingsForm from '../forms/SecuritySettingsForm';
 import SectionContent from '../components/SectionContent';
 
-class ManageUsers extends Component {
+class SecuritySettings extends Component {
 
   componentDidMount() {
     this.props.loadData();
@@ -14,14 +14,13 @@ class ManageUsers extends Component {
   render() {
     const { data, fetched, errorMessage } = this.props;
     return (
-      <SectionContent title="Manage Users">
-        <ManageUsersForm
-          userData={data}
-          userDataFetched={fetched}
+      <SectionContent title="Security Settings">
+        <SecuritySettingsForm
+          securitySettings={data}
+          securitySettingsFetched={fetched}
           errorMessage={errorMessage}
           onSubmit={this.props.saveData}
           onReset={this.props.loadData}
-          setData={this.props.setData}
           handleValueChange={this.props.handleValueChange}
         />
       </SectionContent>
@@ -30,4 +29,4 @@ class ManageUsers extends Component {
 
 }
 
-export default restComponent(USERS_ENDPOINT, ManageUsers);
+export default restComponent(USERS_ENDPOINT, SecuritySettings);

@@ -44,7 +44,7 @@ class UserForm extends React.Component {
     return (
       <ValidatorForm onSubmit={onDoneEditing} ref={this.formRef}>
         <Dialog onClose={onCancelEditing} aria-labelledby="user-form-dialog-title" open={true} scroll="paper">
-          <DialogTitle id="user-form-dialog-title">{creating ? 'Create' : 'Modify'} User</DialogTitle>
+          <DialogTitle id="user-form-dialog-title">{creating ? 'Add' : 'Modify'} User</DialogTitle>
           <DialogContent dividers={true}>
             <TextValidator
               validators={creating ? ['required', 'uniqueUsername', 'matchRegexp:^[a-zA-Z0-9_\\.]{1,24}$'] : []}

@@ -6,6 +6,7 @@ SecurityManager::~SecurityManager() {}
 void SecurityManager::readFromJsonObject(JsonObject& root) {
   // secret  
   _jwtSecret = root["jwt_secret"] | DEFAULT_JWT_SECRET;
+  _jwtHandler.setSecret(_jwtSecret);
 
   // users
   _users.clear();
@@ -34,9 +35,6 @@ void SecurityManager::writeToJsonObject(JsonObject& root) {
 void SecurityManager::begin() {
   // read config
   readFromFS();
-
-  // configure secret
-  jwtHandler.setSecret(_jwtSecret);
 }
 
 Authentication SecurityManager::authenticateRequest(AsyncWebServerRequest *request) {
@@ -53,7 +51,7 @@ Authentication SecurityManager::authenticateRequest(AsyncWebServerRequest *reque
 
 Authentication SecurityManager::authenticateJWT(String jwt) {
   DynamicJsonDocument payloadDocument(MAX_JWT_SIZE);
-  jwtHandler.parseJWT(jwt, payloadDocument);
+  _jwtHandler.parseJWT(jwt, payloadDocument);
   if (payloadDocument.is<JsonObject>()) {
     JsonObject parsedPayload = payloadDocument.as<JsonObject>();
     String username = parsedPayload["username"];
@@ -91,5 +89,5 @@ String SecurityManager::generateJWT(User *user) {
   DynamicJsonDocument _jsonDocument(MAX_JWT_SIZE);      
   JsonObject payload = _jsonDocument.to<JsonObject>();
   populateJWTPayload(payload, user);
-  return jwtHandler.buildJWT(payload);
+  return _jwtHandler.buildJWT(payload);
 }
