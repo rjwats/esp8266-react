@@ -19,7 +19,7 @@ class System extends Component {
       <MenuAppBar sectionTitle="System">
         <Tabs value={this.props.match.url} onChange={this.handleTabChange} indicatorColor="primary" textColor="primary" variant="fullWidth">
           <Tab value="/system/status" label="System Status" />
-          <Tab value="/system/ota" label="OTA Updates" />
+          <Tab value="/system/ota" label="OTA Settings" />
         </Tabs>
         <Switch>
           <AuthenticatedRoute exact={true} path="/system/status" component={OTASettings} />
