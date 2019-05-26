@@ -127,17 +127,17 @@ class MenuAppBar extends React.Component {
             </ListItemIcon>
             <ListItemText primary="Network Time" />
           </ListItem>
-          <ListItem button component={Link} to='/system/' selected={path.startsWith('/system/')}>
-            <ListItemIcon>
-              <SettingsIcon />
-            </ListItemIcon>
-            <ListItemText primary="System" />
-          </ListItem>
           <ListItem button component={Link} to='/security/' selected={path.startsWith('/security/')}>
             <ListItemIcon>
               <LockIcon />
             </ListItemIcon>
             <ListItemText primary="Security" />
+          </ListItem>
+          <ListItem button component={Link} to='/system/' selected={path.startsWith('/system/')}>
+            <ListItemIcon>
+              <SettingsIcon />
+            </ListItemIcon>
+            <ListItemText primary="System" />
           </ListItem>
         </List>
       </div>

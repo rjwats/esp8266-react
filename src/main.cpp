@@ -21,7 +21,7 @@
 #include <WiFiStatus.h>
 #include <NTPStatus.h>
 #include <APStatus.h>
-
+#include <SystemStatus.h>
 
 #define SERIAL_BAUD_RATE 115200
 
@@ -39,6 +39,7 @@ WiFiScanner wifiScanner = WiFiScanner(&server);
 WiFiStatus wifiStatus = WiFiStatus(&server);
 NTPStatus ntpStatus = NTPStatus(&server);
 APStatus apStatus = APStatus(&server);
+SystemStatus systemStatus = SystemStatus(&server);
 
 void setup() {
     // Disable wifi config persistance

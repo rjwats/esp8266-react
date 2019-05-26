@@ -7,6 +7,7 @@ import Tab from '@material-ui/core/Tab';
 import AuthenticatedRoute from '../authentication/AuthenticatedRoute';
 import MenuAppBar from '../components/MenuAppBar';
 import OTASettings from '../containers/OTASettings';
+import SystemStatus from '../containers/SystemStatus';
 
 class System extends Component {
 
@@ -22,7 +23,7 @@ class System extends Component {
           <Tab value="/system/ota" label="OTA Settings" />
         </Tabs>
         <Switch>
-          <AuthenticatedRoute exact={true} path="/system/status" component={OTASettings} />
+          <AuthenticatedRoute exact={true} path="/system/status" component={SystemStatus} />
           <AuthenticatedRoute exact={true} path="/system/ota" component={OTASettings} />
           <Redirect to="/system/status" />
         </Switch>
