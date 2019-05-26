@@ -37,13 +37,7 @@ class SystemStatus extends Component {
   componentDidMount() {
     this.props.loadData();
   }
-  /*
-  {
-    "sdk_version": "v3.2-18-g977854975",
-    "flash_chip_size": 4194304,
-    "flash_chip_speed": 40000000
- }
-*/
+
   createListItems(data, classes) {
     return (
       <Fragment>
