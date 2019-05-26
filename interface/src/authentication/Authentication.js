@@ -21,7 +21,7 @@ export function fetchLoginRedirect() {
   const loginSearch = localStorage.getItem(LOGIN_SEARCH);
   clearLoginRedirect();
   return {
-    pathname: loginPathname || "/wifi-configuration",
+    pathname: loginPathname || "/wifi/",
     search: (loginPathname && loginSearch) || undefined
   };
 }

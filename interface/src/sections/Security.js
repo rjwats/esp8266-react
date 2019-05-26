@@ -6,8 +6,8 @@ import Tab from '@material-ui/core/Tab';
 
 import AuthenticatedRoute from '../authentication/AuthenticatedRoute';
 import MenuAppBar from '../components/MenuAppBar';
-import ManageUsers from './ManageUsers';
-import SecuritySettings from './SecuritySettings';
+import ManageUsers from '../containers/ManageUsers';
+import SecuritySettings from '../containers/SecuritySettings';
 
 class Security extends Component {
 

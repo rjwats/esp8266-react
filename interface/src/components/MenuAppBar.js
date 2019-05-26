@@ -113,7 +113,7 @@ class MenuAppBar extends React.Component {
         </Toolbar>
         <Divider />
         <List>
-          <ListItem button component={Link} to='/wifi-configuration'>
+          <ListItem button component={Link} to='/wifi/'>
             <ListItemIcon>
               <WifiIcon />
             </ListItemIcon>
