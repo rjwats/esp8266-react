@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { USERS_ENDPOINT } from '../constants/Endpoints';
+import { SECURITY_SETTINGS_ENDPOINT } from '../constants/Endpoints';
 import { restComponent } from '../components/RestComponent';
 import SecuritySettingsForm from '../forms/SecuritySettingsForm';
 import SectionContent from '../components/SectionContent';
@@ -29,4 +29,4 @@ class SecuritySettings extends Component {
 
 }
 
-export default restComponent(USERS_ENDPOINT, SecuritySettings);
+export default restComponent(SECURITY_SETTINGS_ENDPOINT, SecuritySettings);

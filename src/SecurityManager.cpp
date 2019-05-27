@@ -1,6 +1,6 @@
 #include <SecurityManager.h>
 
-SecurityManager::SecurityManager(AsyncWebServer* server, FS* fs) :  SettingsService(server, fs, USERS_PATH, SECURITY_SETTINGS_FILE) {}
+SecurityManager::SecurityManager(AsyncWebServer* server, FS* fs) :  SettingsService(server, fs, SECURITY_SETTINGS_PATH, SECURITY_SETTINGS_FILE) {}
 SecurityManager::~SecurityManager() {}
 
 void SecurityManager::readFromJsonObject(JsonObject& root) {
@@ -33,7 +33,6 @@ void SecurityManager::writeToJsonObject(JsonObject& root) {
 }
 
 void SecurityManager::begin() {
-  // read config
   readFromFS();
 }
 

@@ -12,7 +12,7 @@
 
 #define SECURITY_SETTINGS_FILE "/config/securitySettings.json"
 
-#define USERS_PATH "/rest/users"
+#define SECURITY_SETTINGS_PATH "/rest/securitySettings"
 
 #define AUTHORIZATION_HEADER "Authorization"
 #define AUTHORIZATION_HEADER_PREFIX "Bearer "

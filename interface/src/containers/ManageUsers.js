@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { USERS_ENDPOINT } from '../constants/Endpoints';
+import { SECURITY_SETTINGS_ENDPOINT } from '../constants/Endpoints';
 import { restComponent } from '../components/RestComponent';
 import ManageUsersForm from '../forms/ManageUsersForm';
 import SectionContent from '../components/SectionContent';
@@ -30,4 +30,4 @@ class ManageUsers extends Component {
 
 }
 
-export default restComponent(USERS_ENDPOINT, ManageUsers);
+export default restComponent(SECURITY_SETTINGS_ENDPOINT, ManageUsers);
