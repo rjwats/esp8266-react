@@ -10,13 +10,12 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import Hidden from '@material-ui/core/Hidden';
 import Divider from '@material-ui/core/Divider';
-import Grow from '@material-ui/core/Grow';
-import MenuItem from '@material-ui/core/MenuItem';
-import MenuList from '@material-ui/core/MenuList';
+import Button from '@material-ui/core/Button';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Popper from '@material-ui/core/Popper';
 import MenuIcon from '@material-ui/icons/Menu';
 import WifiIcon from '@material-ui/icons/Wifi';
@@ -26,7 +25,10 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import SettingsInputAntennaIcon from '@material-ui/icons/SettingsInputAntenna';
 import LockIcon from '@material-ui/icons/Lock';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-import Paper from '@material-ui/core/Paper';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import CardActions from '@material-ui/core/CardActions';
+import Avatar from '@material-ui/core/Avatar';
 
 import { APP_NAME } from '../constants/App';
 import { withAuthenticationContext } from '../authentication/Context.js';
@@ -66,9 +68,16 @@ const styles = theme => ({
     flexGrow: 1,
     padding: theme.spacing(),
   },
-  popper: {
-    zIndex: 3300
-  }
+  authMenu: {
+    zIndex: theme.zIndex.tooltip,
+    maxWidth: 400,
+  },
+  authMenuActions: {
+    padding: theme.spacing(2),
+    "& > * + *" :{
+      marginLeft: theme.spacing(2),
+    }
+  },
 });
 
 class MenuAppBar extends React.Component {
@@ -169,26 +178,27 @@ class MenuAppBar extends React.Component {
               >
                 <AccountCircleIcon />
               </IconButton>
-              <Popper open={authMenuOpen} anchorEl={this.anchorRef.current} transition disablePortal>
-                {({ TransitionProps, placement }) => (
-                  <Grow
-                    {...TransitionProps}
-                    style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
-                  >
-                    <Paper id="menu-list-grow">
-                      <ClickAwayListener onClickAway={this.handleClose}>
-                        <MenuList>
-                          <MenuItem button onClick={authenticationContext.signOut}>
-                            <ListItemIcon>
+              <Popper open={authMenuOpen} anchorEl={this.anchorRef.current} transition className={classes.authMenu}>
+                <ClickAwayListener onClickAway={this.handleClose}>
+                  <Card id="menu-list-grow">
+                    <CardContent>
+                      <List disablePadding>
+                        <ListItem disableGutters>
+                          <ListItemAvatar>
+                            <Avatar>
                               <AccountCircleIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Sign Out" secondary={"Signed in as: " + authenticationContext.jwt.username} />
-                          </MenuItem>
-                        </MenuList>
-                      </ClickAwayListener>
-                    </Paper>
-                  </Grow>
-                )}
+                            </Avatar>
+                          </ListItemAvatar>
+                          <ListItemText primary={"Signed in as: " + authenticationContext.jwt.username} secondary={ authenticationContext.jwt.admin ? "Admin User" : "Standard User"} />
+                        </ListItem>
+                      </List>
+                    </CardContent>
+                    <Divider />
+                    <CardActions className={classes.authMenuActions}>
+                      <Button className={classes.authMenuButtons} variant="contained" color="primary" onClick={authenticationContext.signOut}>Sign Out</Button>
+                    </CardActions>
+                  </Card>
+                </ClickAwayListener>
               </Popper>
             </div>
           </Toolbar>

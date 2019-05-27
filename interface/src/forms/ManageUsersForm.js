@@ -192,7 +192,7 @@ class ManageUsersForm extends React.Component {
               {
                 this.noAdminConfigured() &&
                 <Typography component="div" variant="body1">
-                  <Box bgcolor="error.main" color="error.contrastText" p={2} m={2}>
+                  <Box bgcolor="error.main" color="error.contrastText" p={2} mt={2} mb={2}>
                     You must have at least one admin user configured.
                   </Box>
                 </Typography>

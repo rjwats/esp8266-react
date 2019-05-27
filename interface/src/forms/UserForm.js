@@ -74,7 +74,7 @@ class UserForm extends React.Component {
               />
             </FormGroup>
           </DialogContent>
-          <DialogActions >
+          <DialogActions>
             <Button variant="contained" color="primary" className={classes.button} type="submit" onClick={this.submit}>
               Done
             </Button>

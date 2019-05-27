@@ -59,7 +59,7 @@ class SecuritySettingsForm extends React.Component {
               margin="normal"
             />
             <Typography component="div" variant="body1">
-              <Box bgcolor="primary.main" color="primary.contrastText" p={2} m={2}>
+              <Box bgcolor="primary.main" color="primary.contrastText" p={2} mt={2} mb={2}>
                 If you modify the JWT Secret, all users will be logged out.
               </Box>
             </Typography>
