@@ -2,27 +2,16 @@
 #define SecurityManager_h
 
 #include <list>
-
-#include <SettingsService.h>
-#include <DNSServer.h>
-#include <IPAddress.h>
 #include <ArduinoJsonJWT.h>
+#include <ESPAsyncWebServer.h>
 
 #define DEFAULT_JWT_SECRET "esp8266-react"
-
-#define SECURITY_SETTINGS_FILE "/config/securitySettings.json"
-
-#define SECURITY_SETTINGS_PATH "/rest/securitySettings"
 
 #define AUTHORIZATION_HEADER "Authorization"
 #define AUTHORIZATION_HEADER_PREFIX "Bearer "
 #define AUTHORIZATION_HEADER_PREFIX_LEN 7
 
 #define MAX_JWT_SIZE 128
-#define MAX_SECURITY_MANAGER_SETTINGS_SIZE 512
-#define SECURITY_MANAGER_MAX_USERS 5
-
-#define MAX_USERS_SIZE 1024
 
 class User {
   private:
@@ -62,14 +51,24 @@ class Authentication {
     }
 };
 
-class SecurityManager : public SettingsService {
+typedef std::function<boolean(Authentication &authentication)> AuthenticationPredicate;
+
+class AuthenticationPredicates {
+  public:
+    static bool NONE_REQUIRED(Authentication &authentication) {
+      return true;
+    };
+    static bool IS_AUTHENTICATED(Authentication &authentication) {
+      return authentication.isAuthenticated();
+    };    
+    static bool IS_ADMIN(Authentication &authentication) {
+      return authentication.isAuthenticated() && authentication.getUser()->isAdmin();
+    };
+};
+
+class SecurityManager {
 
   public:
-
-    SecurityManager(AsyncWebServer* server, FS* fs);
-    ~SecurityManager();
-
-    void begin();
 
     /*
     * Authenticate, returning the user if found
@@ -86,21 +85,17 @@ class SecurityManager : public SettingsService {
     */
     String generateJWT(User *user);
 
+    /**
+     * Wrap the provided request to provide validation against an AuthenticationPredicate.
+     */
+    ArRequestHandlerFunction wrapRequest(ArRequestHandlerFunction onRequest, AuthenticationPredicate predicate); 
+
   protected:
 
-    void readFromJsonObject(JsonObject& root);
-    void writeToJsonObject(JsonObject& root);
-
-  private:
-    // jwt handler
     ArduinoJsonJWT _jwtHandler = ArduinoJsonJWT(DEFAULT_JWT_SECRET);
-
-    // access point settings
-    String _jwtSecret;
     std::list<User> _users;
 
-    // endpoint functions
-    void fetchUsers(AsyncWebServerRequest *request);
+  private:
 
     /*
     * Lookup the user by JWT

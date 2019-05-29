@@ -1,41 +1,5 @@
 #include <SecurityManager.h>
 
-SecurityManager::SecurityManager(AsyncWebServer* server, FS* fs) :  SettingsService(server, fs, SECURITY_SETTINGS_PATH, SECURITY_SETTINGS_FILE) {}
-SecurityManager::~SecurityManager() {}
-
-void SecurityManager::readFromJsonObject(JsonObject& root) {
-  // secret  
-  _jwtSecret = root["jwt_secret"] | DEFAULT_JWT_SECRET;
-  _jwtHandler.setSecret(_jwtSecret);
-
-  // users
-  _users.clear();
-  if (root["users"].is<JsonArray>()) {
-    for (JsonVariant user :  root["users"].as<JsonArray>()) {
-      _users.push_back(User(user["username"], user["password"], user["admin"]));
-    }
-  }
-}
-
-
-void SecurityManager::writeToJsonObject(JsonObject& root) {
-  // secret
-  root["jwt_secret"] = _jwtSecret;
-
-  // users
-  JsonArray users = root.createNestedArray("users");
-  for (User _user : _users) {
-    JsonObject user = users.createNestedObject();
-    user["username"] = _user.getUsername();
-    user["password"] = _user.getPassword();
-    user["admin"] = _user.isAdmin();
-  }
-}
-
-void SecurityManager::begin() {
-  readFromFS();
-}
-
 Authentication SecurityManager::authenticateRequest(AsyncWebServerRequest *request) {
   AsyncWebHeader* authorizationHeader = request->getHeader(AUTHORIZATION_HEADER);
   if (authorizationHeader) {
@@ -90,3 +54,15 @@ String SecurityManager::generateJWT(User *user) {
   populateJWTPayload(payload, user);
   return _jwtHandler.buildJWT(payload);
 }
+
+ArRequestHandlerFunction SecurityManager::wrapRequest(ArRequestHandlerFunction onRequest, AuthenticationPredicate predicate) {
+  return [this, onRequest, predicate](AsyncWebServerRequest *request){
+    Authentication authentication = authenticateRequest(request);
+    if (!predicate(authentication)) {
+      request->send(401);
+      return;
+    }
+    onRequest(request);
+  };
+}    
+    

@@ -7,11 +7,11 @@
 #define WIFI_SETTINGS_FILE "/config/wifiSettings.json"
 #define WIFI_SETTINGS_SERVICE_PATH "/rest/wifiSettings"
 
-class WiFiSettingsService : public SettingsService {
+class WiFiSettingsService : public AdminSettingsService {
 
   public:
 
-    WiFiSettingsService(AsyncWebServer* server, FS* fs);
+    WiFiSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
     ~WiFiSettingsService();
 
     void begin();

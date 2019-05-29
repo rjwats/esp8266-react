@@ -6,7 +6,7 @@ AuthenticationService::AuthenticationService(AsyncWebServer* server, SecurityMan
 
   _signInHandler.setUri(SIGN_IN_PATH);
   _signInHandler.setMethod(HTTP_POST);
-  _signInHandler.setMaxContentLength(MAX_SECURITY_MANAGER_SETTINGS_SIZE);
+  _signInHandler.setMaxContentLength(MAX_AUTHENTICATION_SIZE);
   _signInHandler.onRequest(std::bind(&AuthenticationService::signIn, this, std::placeholders::_1, std::placeholders::_2));
   server->addHandler(&_signInHandler);
 }
@@ -31,7 +31,7 @@ void AuthenticationService::signIn(AsyncWebServerRequest *request, JsonDocument 
     Authentication authentication = _securityManager->authenticate(username, password);
     if (authentication.isAuthenticated()) {
       User* user = authentication.getUser();      
-      AsyncJsonResponse * response = new AsyncJsonResponse(MAX_USERS_SIZE);
+      AsyncJsonResponse * response = new AsyncJsonResponse(MAX_AUTHENTICATION_SIZE);
       JsonObject jsonObject = response->getRoot();
       jsonObject["access_token"] = _securityManager->generateJWT(user);
       response->setLength();

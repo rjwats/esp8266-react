@@ -17,11 +17,11 @@
 #define NTP_SETTINGS_FILE "/config/ntpSettings.json"
 #define NTP_SETTINGS_SERVICE_PATH "/rest/ntpSettings"
 
-class NTPSettingsService : public SettingsService {
+class NTPSettingsService : public AdminSettingsService {
 
   public:
 
-    NTPSettingsService(AsyncWebServer* server, FS* fs);
+    NTPSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
     ~NTPSettingsService();
 
     void loop();

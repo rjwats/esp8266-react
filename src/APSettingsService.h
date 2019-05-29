@@ -19,11 +19,11 @@
 #define AP_SETTINGS_FILE "/config/apSettings.json"
 #define AP_SETTINGS_SERVICE_PATH "/rest/apSettings"
 
-class APSettingsService : public SettingsService {
+class APSettingsService : public AdminSettingsService {
 
   public:
 
-    APSettingsService(AsyncWebServer* server, FS* fs);
+    APSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
     ~APSettingsService();
 
     void loop();

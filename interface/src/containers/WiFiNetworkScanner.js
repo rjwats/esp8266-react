@@ -5,6 +5,7 @@ import { SCAN_NETWORKS_ENDPOINT, LIST_NETWORKS_ENDPOINT }  from  '../constants/E
 import SectionContent from '../components/SectionContent';
 import WiFiNetworkSelector from '../forms/WiFiNetworkSelector';
 import {withNotifier} from '../components/SnackbarNotification';
+import { redirectingAuthorizedFetch } from '../authentication/Authentication';
 
 const NUM_POLLS = 10
 const POLLING_FREQUENCY = 500
@@ -38,7 +39,7 @@ class WiFiNetworkScanner extends Component {
   scanNetworks() {
     this.pollCount = 0;
     this.setState({scanningForNetworks:true, networkList: null, errorMessage:null});
-    fetch(SCAN_NETWORKS_ENDPOINT).then(response => {
+    redirectingAuthorizedFetch(SCAN_NETWORKS_ENDPOINT).then(response => {
       if (response.status === 202) {
         this.schedulePollTimeout();
         return;
@@ -70,7 +71,7 @@ class WiFiNetworkScanner extends Component {
   }
 
   pollNetworkList() {
-    fetch(LIST_NETWORKS_ENDPOINT)
+    redirectingAuthorizedFetch(LIST_NETWORKS_ENDPOINT)
     .then(response => {
       if (response.status === 200) {
         return response.json();

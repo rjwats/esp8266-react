@@ -11,7 +11,7 @@
 
 #include <FS.h>
 
-#include <SecurityManager.h>
+#include <SecuritySettingsService.h>
 #include <WiFiSettingsService.h>
 #include <APSettingsService.h>
 #include <NTPSettingsService.h>
@@ -27,15 +27,14 @@
 
 AsyncWebServer server(80);
 
-SecurityManager securityManager = SecurityManager(&server, &SPIFFS);
+SecuritySettingsService securitySettingsService = SecuritySettingsService(&server, &SPIFFS);
+WiFiSettingsService wifiSettingsService = WiFiSettingsService(&server, &SPIFFS, &securitySettingsService);
+APSettingsService apSettingsService = APSettingsService(&server, &SPIFFS, &securitySettingsService);
+NTPSettingsService ntpSettingsService = NTPSettingsService(&server, &SPIFFS, &securitySettingsService);
+OTASettingsService otaSettingsService = OTASettingsService(&server, &SPIFFS, &securitySettingsService);
+AuthenticationService authenticationService = AuthenticationService(&server, &securitySettingsService);
 
-WiFiSettingsService wifiSettingsService = WiFiSettingsService(&server, &SPIFFS);
-APSettingsService apSettingsService = APSettingsService(&server, &SPIFFS);
-NTPSettingsService ntpSettingsService = NTPSettingsService(&server, &SPIFFS);
-OTASettingsService otaSettingsService = OTASettingsService(&server, &SPIFFS);
-AuthenticationService authenticationService = AuthenticationService(&server, &securityManager);
-
-WiFiScanner wifiScanner = WiFiScanner(&server);
+WiFiScanner wifiScanner = WiFiScanner(&server, &securitySettingsService);
 WiFiStatus wifiStatus = WiFiStatus(&server);
 NTPStatus ntpStatus = NTPStatus(&server);
 APStatus apStatus = APStatus(&server);
@@ -48,8 +47,8 @@ void setup() {
     Serial.begin(SERIAL_BAUD_RATE);
     SPIFFS.begin();
 
-    // start security manager
-    securityManager.begin();
+    // start security settings service first
+    securitySettingsService.begin();
 
     // start services
     ntpSettingsService.begin();

@@ -3,7 +3,11 @@
 ArduinoJsonJWT::ArduinoJsonJWT(String secret) : _secret(secret) { }
 
 void ArduinoJsonJWT::setSecret(String secret){
-    _secret = secret;
+  _secret = secret;
+}
+
+String ArduinoJsonJWT::getSecret(){
+  return _secret;
 }
 
 /*
