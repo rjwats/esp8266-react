@@ -61,9 +61,9 @@ export const restComponent = (endpointUrl, FormComponent) => {
         redirectingAuthorizedFetch(endpointUrl, {
           method: 'POST',
           body: JSON.stringify(this.state.data),
-          headers: new Headers({
+          headers: {
             'Content-Type': 'application/json'
-          })
+          }
         })
           .then(response => {
             if (response.status === 200) {

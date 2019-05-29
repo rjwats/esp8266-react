@@ -91,7 +91,6 @@ class WiFiNetworkScanner extends Component {
         this.setState({scanningForNetworks:false, networkList: json, errorMessage:null})
     })
     .catch(error => {
-      console.log(error.message);
       if (error.name !== RETRY_EXCEPTION_TYPE) {
         this.props.raiseNotification("Problem scanning: " + error.message);
         this.setState({scanningForNetworks:false, networkList: null, errorMessage:error.message});
