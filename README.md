@@ -34,7 +34,7 @@ You will need the following before you can get started.
 
 Pull the project and open it in PlatformIO. PlatformIO should download the ESP8266 platform and the project library dependencies automatically.
 
-The projects directory structure is as follows:
+The project directory structure is as follows:
 
 Directory | Description
 ---- | -----------
