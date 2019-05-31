@@ -74,7 +74,7 @@ const styles = theme => ({
   },
   authMenuActions: {
     padding: theme.spacing(2),
-    "& > * + *" :{
+    "& > * + *": {
       marginLeft: theme.spacing(2),
     }
   },
@@ -118,31 +118,31 @@ class MenuAppBar extends React.Component {
         </Toolbar>
         <Divider />
         <List>
-          <ListItem button component={Link} to='/wifi/' selected={path.startsWith('/wifi/')}>
+          <ListItem to='/wifi/' selected={path.startsWith('/wifi/')} button component={Link}>
             <ListItemIcon>
               <WifiIcon />
             </ListItemIcon>
             <ListItemText primary="WiFi Connection" />
           </ListItem>
-          <ListItem button component={Link} to='/ap/' selected={path.startsWith('/ap/')}>
+          <ListItem to='/ap/' selected={path.startsWith('/ap/')} button component={Link}>
             <ListItemIcon>
               <SettingsInputAntennaIcon />
             </ListItemIcon>
             <ListItemText primary="Access Point" />
           </ListItem>
-          <ListItem button component={Link} to='/ntp/' selected={path.startsWith('/ntp/')}>
+          <ListItem to='/ntp/' selected={path.startsWith('/ntp/')} button component={Link}>
             <ListItemIcon>
               <AccessTimeIcon />
             </ListItemIcon>
             <ListItemText primary="Network Time" />
           </ListItem>
-          <ListItem button component={Link} to='/security/' selected={path.startsWith('/security/')}>
+          <ListItem to='/security/' selected={path.startsWith('/security/')} button component={Link} disabled={!authenticationContext.isAdmin()}>
             <ListItemIcon>
               <LockIcon />
             </ListItemIcon>
             <ListItemText primary="Security" />
           </ListItem>
-          <ListItem button component={Link} to='/system/' selected={path.startsWith('/system/')}>
+          <ListItem to='/system/' selected={path.startsWith('/system/')} button component={Link} >
             <ListItemIcon>
               <SettingsIcon />
             </ListItemIcon>
@@ -189,7 +189,7 @@ class MenuAppBar extends React.Component {
                               <AccountCircleIcon />
                             </Avatar>
                           </ListItemAvatar>
-                          <ListItemText primary={"Signed in as: " + authenticationContext.user.username} secondary={ authenticationContext.isAdmin() ? "Admin User" : undefined} />
+                          <ListItemText primary={"Signed in as: " + authenticationContext.user.username} secondary={authenticationContext.isAdmin() ? "Admin User" : undefined} />
                         </ListItem>
                       </List>
                     </CardContent>

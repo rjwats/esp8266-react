@@ -8,6 +8,7 @@ import AuthenticatedRoute from '../authentication/AuthenticatedRoute';
 import MenuAppBar from '../components/MenuAppBar';
 import NTPSettings from '../containers/NTPSettings';
 import NTPStatus from '../containers/NTPStatus';
+import { withAuthenticationContext } from '../authentication/Context.js';
 
 class NetworkTime extends Component {
 
@@ -16,11 +17,12 @@ class NetworkTime extends Component {
   };
 
   render() {
+    const { authenticationContext } = this.props;
     return (
       <MenuAppBar sectionTitle="Network Time">
         <Tabs value={this.props.match.url} onChange={this.handleTabChange} indicatorColor="primary" textColor="primary" variant="fullWidth">
           <Tab value="/ntp/status" label="NTP Status" />
-          <Tab value="/ntp/settings" label="NTP Settings" />
+          <Tab value="/ntp/settings" label="NTP Settings" disabled={!authenticationContext.isAdmin()} />
         </Tabs>
         <Switch>
           <AuthenticatedRoute exact={true} path="/ntp/status" component={NTPStatus} />
@@ -32,4 +34,4 @@ class NetworkTime extends Component {
   }
 }
 
-export default NetworkTime
+export default withAuthenticationContext(NetworkTime)

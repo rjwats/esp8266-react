@@ -9,6 +9,7 @@ import MenuAppBar from '../components/MenuAppBar';
 import WiFiNetworkScanner from '../containers/WiFiNetworkScanner';
 import WiFiSettings from '../containers/WiFiSettings';
 import WiFiStatus from '../containers/WiFiStatus';
+import { withAuthenticationContext } from '../authentication/Context.js';
 
 class WiFiConnection extends Component {
 
@@ -35,6 +36,7 @@ class WiFiConnection extends Component {
   };
 
   render() {
+    const { authenticationContext } = this.props;
     const ConfiguredWiFiNetworkScanner = (props) => {
       return (
         <WiFiNetworkScanner
@@ -55,8 +57,8 @@ class WiFiConnection extends Component {
       <MenuAppBar sectionTitle="WiFi Connection">
         <Tabs value={this.props.match.url} onChange={this.handleTabChange} indicatorColor="primary" textColor="primary" variant="fullWidth">
           <Tab value="/wifi/status" label="WiFi Status" />
-          <Tab value="/wifi/scan" label="Scan Networks" />
-          <Tab value="/wifi/settings" label="WiFi Settings" />
+          <Tab value="/wifi/scan" label="Scan Networks" disabled={!authenticationContext.isAdmin()} />
+          <Tab value="/wifi/settings" label="WiFi Settings" disabled={!authenticationContext.isAdmin()} />
         </Tabs>
         <Switch>
           <AuthenticatedRoute exact={true} path="/wifi/status" component={WiFiStatus} />
@@ -69,4 +71,4 @@ class WiFiConnection extends Component {
   }
 }
 
-export default WiFiConnection;
+export default withAuthenticationContext(WiFiConnection);
