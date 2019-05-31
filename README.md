@@ -30,11 +30,20 @@ You will need the following before you can get started.
 * [Node.js](https://nodejs.org) - For building the interface with npm
 * Bash shell, or Git Bash if you are under windows
 
-### Installing in PlatformIO
+### Building in PlatformIO
 
 Pull the project and open it in PlatformIO. PlatformIO should download the ESP8266 platform and the project library dependencies automatically.
 
-> **WINDOWS USERS**: If building under Windows you need to delete .piolibdeps/Time/Time.h - due to a [filesystem case insensitivity issue](https://github.com/me-no-dev/ESPAsyncWebServer/issues/96)*
+The projects directory structure is as follows:
+
+Directory | Description
+---- | -----------
+/data/ | The file system image directory
+/interface/ | React based front end
+/src/ | C++ back end for the ESP8266 device
+/platformio.ini | PlatformIO project configuration file
+
+> **WINDOWS BUILDS**: If building under Windows you need to delete .piolibdeps/Time/Time.h - due to a [file system case insensitivity issue](https://github.com/me-no-dev/ESPAsyncWebServer/issues/96)
 
 Once the platform and libraries are downloaded the back end should be compiling.
 
@@ -42,7 +51,13 @@ Once the platform and libraries are downloaded the back end should be compiling.
 
 The interface has been configured with create-react-app and react-app-rewired so the build can customized for the target device. The large artefacts are gzipped and source maps and service worker are excluded from the production build.
 
-You will find the interface code in the ./interface directory. Change to this directory with your bash shell (or Git Bash) and use the standard commands you would with any react app built with create-react-app:
+Change to this directory with your bash shell (or Git Bash) and use the standard commands you would with any react app built with create-react-app:
+
+#### Change to interface directory
+
+```bash
+cd interface
+```
 
 #### Download and install the node modules
 
@@ -56,15 +71,17 @@ npm install
 npm run build
 ```
 
-**NB: The build command will also delete the previously built interface (the ./data/www directory) and replace it with the freshly built one, ready for upload to the device.**
+> **Note**: The build command will also delete the previously built interface (the ./data/www directory) and replace it with the freshly built one, ready for upload to the device.
 
 #### Running the interface locally
+
+You can run a local development server during development to preview changes to the front end them without uploading a file system image to the device.
 
 ```bash
 npm start
 ```
 
-**NB: To run the interface locally you will need to modify the endpoint root path and enable CORS.**
+> **Note**: To run the interface locally you will need to modify the endpoint root path and enable CORS.
 
 The endpoint root path can be found in .env.development, defined as the environment variable 'REACT_APP_ENDPOINT_ROOT'. This needs to be the root URL of the device running the back end, for example:
 
