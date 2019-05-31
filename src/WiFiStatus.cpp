@@ -1,7 +1,9 @@
 #include <WiFiStatus.h>
 
-WiFiStatus::WiFiStatus(AsyncWebServer *server) : _server(server) {
-  _server->on(WIFI_STATUS_SERVICE_PATH, HTTP_GET, std::bind(&WiFiStatus::wifiStatus, this, std::placeholders::_1));
+WiFiStatus::WiFiStatus(AsyncWebServer *server, SecurityManager* securityManager) : _server(server), _securityManager(securityManager) {
+  _server->on(WIFI_STATUS_SERVICE_PATH, HTTP_GET, 
+    _securityManager->wrapRequest(std::bind(&WiFiStatus::wifiStatus, this, std::placeholders::_1), AuthenticationPredicates::IS_AUTHENTICATED)
+  );
 #if defined(ESP8266)
   _onStationModeConnectedHandler = WiFi.onStationModeConnected(onStationModeConnected);
   _onStationModeDisconnectedHandler = WiFi.onStationModeDisconnected(onStationModeDisconnected);

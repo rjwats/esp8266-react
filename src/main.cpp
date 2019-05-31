@@ -35,10 +35,10 @@ OTASettingsService otaSettingsService = OTASettingsService(&server, &SPIFFS, &se
 AuthenticationService authenticationService = AuthenticationService(&server, &securitySettingsService);
 
 WiFiScanner wifiScanner = WiFiScanner(&server, &securitySettingsService);
-WiFiStatus wifiStatus = WiFiStatus(&server);
-NTPStatus ntpStatus = NTPStatus(&server);
-APStatus apStatus = APStatus(&server);
-SystemStatus systemStatus = SystemStatus(&server);
+WiFiStatus wifiStatus = WiFiStatus(&server, &securitySettingsService);
+NTPStatus ntpStatus = NTPStatus(&server, &securitySettingsService);
+APStatus apStatus = APStatus(&server, &securitySettingsService);
+SystemStatus systemStatus = SystemStatus(&server, &securitySettingsService);;
 
 void setup() {
     // Disable wifi config persistance

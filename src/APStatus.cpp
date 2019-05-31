@@ -1,7 +1,9 @@
 #include <APStatus.h>
 
-APStatus::APStatus(AsyncWebServer *server) : _server(server) {
-  _server->on(AP_STATUS_SERVICE_PATH, HTTP_GET, std::bind(&APStatus::apStatus, this, std::placeholders::_1));
+APStatus::APStatus(AsyncWebServer *server, SecurityManager* securityManager) : _server(server), _securityManager(securityManager) {
+  _server->on(AP_STATUS_SERVICE_PATH, HTTP_GET, 
+    _securityManager->wrapRequest(std::bind(&APStatus::apStatus, this, std::placeholders::_1), AuthenticationPredicates::IS_AUTHENTICATED)
+  );
 }
 
 void APStatus::apStatus(AsyncWebServerRequest *request) {

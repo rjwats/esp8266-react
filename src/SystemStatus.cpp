@@ -1,7 +1,9 @@
 #include <SystemStatus.h>
 
- SystemStatus::SystemStatus(AsyncWebServer *server) : _server(server) {
-  _server->on(SYSTEM_STATUS_SERVICE_PATH, HTTP_GET, std::bind(&SystemStatus::systemStatus, this, std::placeholders::_1));
+ SystemStatus::SystemStatus(AsyncWebServer *server, SecurityManager* securityManager) : _server(server), _securityManager(securityManager) {
+  _server->on(SYSTEM_STATUS_SERVICE_PATH, HTTP_GET,
+    _securityManager->wrapRequest(std::bind(&SystemStatus::systemStatus, this, std::placeholders::_1), AuthenticationPredicates::IS_AUTHENTICATED)
+  );
 }
 
  void SystemStatus::systemStatus(AsyncWebServerRequest *request) {

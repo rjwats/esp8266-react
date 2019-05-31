@@ -14,6 +14,7 @@
 #include <AsyncArduinoJson6.h>
 #include <TimeLib.h>
 #include <NtpClientLib.h>
+#include <SecurityManager.h>
 
 #define MAX_NTP_STATUS_SIZE 1024
 #define NTP_STATUS_SERVICE_PATH "/rest/ntpStatus"
@@ -22,11 +23,12 @@ class NTPStatus {
 
   public:
 
-    NTPStatus(AsyncWebServer *server);
+    NTPStatus(AsyncWebServer *server, SecurityManager* securityManager);
 
   private:
 
     AsyncWebServer* _server;
+    SecurityManager* _securityManager;
 
     void ntpStatus(AsyncWebServerRequest *request);
 

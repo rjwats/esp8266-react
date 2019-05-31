@@ -12,6 +12,7 @@
 #include <ESPAsyncWebServer.h>
 #include <ArduinoJson.h>
 #include <AsyncArduinoJson6.h>
+#include <SecurityManager.h>
 
 #define MAX_ESP_STATUS_SIZE 1024
 #define SYSTEM_STATUS_SERVICE_PATH "/rest/systemStatus"
@@ -20,11 +21,12 @@ class SystemStatus {
 
   public:
 
-    SystemStatus(AsyncWebServer *server);
+    SystemStatus(AsyncWebServer *server, SecurityManager* securityManager);
 
   private:
 
     AsyncWebServer* _server;
+    SecurityManager* _securityManager;
 
     void systemStatus(AsyncWebServerRequest *request);
 
