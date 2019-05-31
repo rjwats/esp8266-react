@@ -16,9 +16,9 @@ Provides many of the features required for IoT projects:
 * Remote Firmware Updates - Enable secured OTA updates
 * Security - Protected RESTful endpoints and a secured user interface
 
-The back-end is provided by a set of RESTful endpoints and the React based front-end is responsive and scales well to various screen sizes.
+The back end is provided by a set of RESTful endpoints and the React based front end is responsive and scales well to various screen sizes.
 
-The file system artefact has the prerequisite manifest/icon file, so it can be added to the home screen of a mobile device if required.
+The front end has the prerequisite manifest/icon file, so it can be added to the home screen of a mobile device if required.
 
 ## Getting Started
 
