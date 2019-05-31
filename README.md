@@ -34,7 +34,7 @@ You will need the following before you can get started.
 
 Pull the project and open it in PlatformIO. PlatformIO should download the ESP8266 platform and the project library dependencies automatically.
 
-**NB: If building under Windows you need to delete .piolibdeps/Time/Time.h - due [filesystem case insensitivity](https://github.com/me-no-dev/ESPAsyncWebServer/issues/96)*
+> **WINDOWS USERS**: If building under Windows you need to delete .piolibdeps/Time/Time.h - due to a [filesystem case insensitivity issue](https://github.com/me-no-dev/ESPAsyncWebServer/issues/96)*
 
 Once the platform and libraries are downloaded the back end should be compiling.
 
