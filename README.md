@@ -1,29 +1,24 @@
 # ESP8266 React
 
-A simple, extensible framework for getting up and running with the ESP8266/ESP32 microchip and a react front end.
+A simple, extensible framework for IoT projects built on ESP8266/ESP32 platforms with responsive React front-end.
 
-Designed to work with the PlatformIO IDE with limited setup. 
-
-This project supports ESP8266 and ESP32 devices, see build instruction below for more details.
-
-## Why I made this project
-
-I found I was repeating a lot of work when starting new IoT projects with the ESP8266 chip.
-
-Most of my IoT projects have required:
-
-* Configurable WiFi
-* Configurable access point
-* Synchronization with NTP
-* The ability to perform OTA updates
-
-I also wanted to adopt a decent client side framework so the back end could be simplified to a set of REST endpoints.
-
-All of the above features are included in this framework, which I plan to use as a basis for my IoT projects.
-
-The interface is responsive and should work well on mobile devices. It also has the prerequisite manifest/icon file, so it can be added to the home screen if desired.
+Designed to work with the PlatformIO IDE with limited setup, please read below for build and flash instructions.
 
 ![Screenshots](/screenshots/screenshots.png?raw=true "Screenshots")
+
+## Features
+
+Provides many of the features required for IoT projects:
+
+* Configurable WiFi - Network scanner and WiFi connection screen
+* Configurable Access Point - Can be continuous or automatically enabled when WiFi connection fails
+* Network Time - Synchronization with NTP
+* Remote Firmware Updates - Enable secured OTA updates
+* Security - Protected RESTful endpoints and a secured user interface
+
+The back-end is provided by a set of RESTful endpoints and the React based front-end is responsive and scales well to various screen sizes.
+
+The file system artefact has the prerequisite manifest/icon file, so it can be added to the home screen of a mobile device if required.
 
 ## Getting Started
 
@@ -32,14 +27,14 @@ The interface is responsive and should work well on mobile devices. It also has 
 You will need the following before you can get started.
 
 * [PlatformIO](https://platformio.org/) - IDE for development
-* [NPM](https://www.npmjs.com/) - For building the interface
+* [Node.js](https://nodejs.org) - For building the interface with npm
 * Bash shell, or Git Bash if you are under windows
 
 ### Installing in PlatformIO
 
-Pull the project and add it to PlatformIO as a project folder (File > Add Project Folder).
+Pull the project and open it in PlatformIO. PlatformIO should download the ESP8266 platform and the project library dependencies automatically.
 
-PlatformIO should download the ESP8266 platform and the project library dependencies automatically.
+**NB: If building under Windows you need to delete .piolibdeps/Time/Time.h - due [filesystem case insensitivity](https://github.com/me-no-dev/ESPAsyncWebServer/issues/96)*
 
 Once the platform and libraries are downloaded the back end should be compiling.
 
@@ -98,12 +93,6 @@ If you want to build for an ESP32 device, all you need to do is re-configure pla
 platform = espressif32
 board = node32s
 ```
-
-Microcontroller	ESP8266
-Frequency	80MHz
-Flash	4MBl
-
-**NB: If building under Windows you need to delete .piolibdeps/Time/Time.h - due [filesystem case insensitivity](https://github.com/me-no-dev/ESPAsyncWebServer/issues/96)*
 
 ## Configuration & Deployment
 
