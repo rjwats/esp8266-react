@@ -8,9 +8,9 @@ import * as Authentication from './Authentication';
 
 class UnauthenticatedRoute extends React.Component {
   render() {
-    const { component:Component, ...rest } = this.props;
+    const { authenticationContext, component:Component, ...rest } = this.props;
     const renderComponent = (props) => {
-      if (this.props.authenticationContext.jwt) {
+      if (authenticationContext.isAuthenticated()) {
         return (<Redirect to={Authentication.fetchLoginRedirect()} />);
       }
       return (<Component {...props} />);

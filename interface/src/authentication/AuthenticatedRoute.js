@@ -13,7 +13,7 @@ export class AuthenticatedRoute extends React.Component {
     const { raiseNotification, authenticationContext, component: Component, ...rest } = this.props;
     const { location } = this.props;
     const renderComponent = (props) => {
-      if (authenticationContext.jwt) {
+      if (authenticationContext.isAuthenticated()) {
         return (
           <Component {...props} />
         );

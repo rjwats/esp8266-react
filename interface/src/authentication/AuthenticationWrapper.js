@@ -27,14 +27,13 @@ class AuthenticationWrapper extends React.Component {
 
   constructor(props) {
     super(props);
-    this.refresh = this.refresh.bind(this);
-    this.signIn = this.signIn.bind(this);
-    this.signOut = this.signOut.bind(this);
     this.state = {
       context: {
         refresh: this.refresh,
         signIn: this.signIn,
-        signOut: this.signOut
+        signOut: this.signOut,
+        isAuthenticated: this.isAuthenticated,
+        isAdmin: this.isAdmin        
       },
       initialized: false
     };
@@ -72,42 +71,51 @@ class AuthenticationWrapper extends React.Component {
     );
   }
 
-  refresh() {
+  refresh = () => {
     var accessToken = localStorage.getItem(ACCESS_TOKEN);
     if (accessToken) {
       authorizedFetch(VERIFY_AUTHORIZATION_ENDPOINT)
         .then(response => {
-          const jwt = response.status === 200 ? jwtDecode(accessToken) : undefined;
-          this.setState({ initialized: true, context: { ...this.state.context, jwt } });
+          const user = response.status === 200 ? jwtDecode(accessToken) : undefined;
+          this.setState({ initialized: true, context: { ...this.state.context, user } });
         }).catch(error => {
-          this.setState({ initialized: true, context: { ...this.state.context, jwt: undefined } });
+          this.setState({ initialized: true, context: { ...this.state.context, user: undefined } });
           this.props.raiseNotification("Error verifying authorization: " + error.message);
         });
     } else {
-      this.setState({ initialized: true, context: { ...this.state.context, jwt: undefined } });
+      this.setState({ initialized: true, context: { ...this.state.context, user: undefined } });
     }
   }
 
-  signIn(accessToken) {
+  signIn = (accessToken) => {
     try {
-      this.setState({ context: { ...this.state.context, jwt: jwtDecode(accessToken) } });
+      this.setState({ context: { ...this.state.context, user: jwtDecode(accessToken) } });
       localStorage.setItem(ACCESS_TOKEN, accessToken);
     } catch (err) {
-      this.setState({ initialized: true, context: { ...this.state.context, jwt: undefined } });
+      this.setState({ initialized: true, context: { ...this.state.context, user: undefined } });
       this.props.raiseNotification("Failed to parse JWT " + err.message);
     }
   }
 
-  signOut() {
+  signOut = () => {
     localStorage.removeItem(ACCESS_TOKEN);
     this.setState({
       context: {
         ...this.state.context,
-        jwt: undefined
+        user: undefined
       }
     });
     this.props.raiseNotification("You have signed out.");
     history.push('/');
+  }
+
+  isAuthenticated = () => {
+    return this.state.context.user;
+  }
+
+  isAdmin = () => {
+    const { context } = this.state;    
+    return context.user && context.user.admin;
   }
 
 }
