@@ -189,7 +189,7 @@ class MenuAppBar extends React.Component {
                               <AccountCircleIcon />
                             </Avatar>
                           </ListItemAvatar>
-                          <ListItemText primary={"Signed in as: " + authenticationContext.jwt.username} secondary={ authenticationContext.jwt.admin ? "Admin User" : "Standard User"} />
+                          <ListItemText primary={"Signed in as: " + authenticationContext.jwt.username} secondary={ authenticationContext.jwt.admin ? "Admin User" : undefined} />
                         </ListItem>
                       </List>
                     </CardContent>
