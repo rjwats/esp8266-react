@@ -30,28 +30,44 @@ You will need the following before you can get started.
 * [Node.js](https://nodejs.org) - For building the interface with npm
 * Bash shell, or [Git Bash](https://gitforwindows.org/) if you are under windows
 
-### Building in PlatformIO
+### Building and uploading the firmware
 
 Pull the project and open it in PlatformIO. PlatformIO should download the ESP8266 platform and the project library dependencies automatically.
 
-The project directory structure is as follows:
+The project structure is as follows:
 
-Directory | Description
+Resource | Description
 ---- | -----------
 [data/](data) | The file system image directory
 [interface/](interface) | React based front end
 [src/](src) | C++ back end for the ESP8266 device
 [platformio.ini](platformio.ini) | PlatformIO project configuration file
 
+#### Building the firmware
+
 Once the platform and libraries are downloaded the back end should be compiling.
 
 > **WINDOWS BUILDS**: If building under Windows you need to delete .piolibdeps/Time/Time.h - due to a [file system case insensitivity issue](https://github.com/me-no-dev/ESPAsyncWebServer/issues/96)
 
+#### Uploading the firmware
+
+Standard configuration settings, such as build flags, libraries and device configuration can be found in ['platformio.ini'](platformio.ini). The project is configured to upload via serial by default, you can change the upload mechanism to OTA by uncommenting the relevant lines. 
+
+See the [PlatformIO docs](http://docs.platformio.org/en/latest/projectconf.html) for full details on what you can do with this.
+
+Click the upload button in PlatformIO, or type the upload command if prefer the command line approach:
+
+```bash
+platformio run -t upload
+```
+
+![upload](/media/upload.png?raw=true "upload")
+
 ### Building the interface
 
-The interface has been configured with create-react-app and react-app-rewired so the build can customized for the target device. The large artefacts are gzipped and source maps and service worker are excluded from the production build.
+The interface has been configured with create-react-app and react-app-rewired so the build can customized for the target device. The large artefacts are gzipped and source maps and service worker are excluded from the production build. This reduces the production build to around ~200k, which easily fits on the device.
 
-Change to this directory with your bash shell (or Git Bash) and use the standard commands you would with any react app built with create-react-app:
+Change to the ['interface'](interface) directory with your bash shell (or Git Bash) and use the standard commands you would with any react app built with create-react-app:
 
 #### Change to interface directory
 
@@ -73,9 +89,9 @@ npm run build
 
 > **Note**: The build command will also delete the previously built interface, in the ['data/www'](data/www) directory, replacing it with the freshly built one ready to upload to the device.
 
-#### Running the interface locally
+### Running the interface locally
 
-You can run a local development server during development to preview changes to the front end them without uploading a file system image to the device.
+You can run a local development server during development to preview changes to the front end them without the need to upload a file system image to the device after each change.
 
 ```bash
 npm start
@@ -83,13 +99,67 @@ npm start
 
 > **Note**: To run the interface locally you will need to modify the endpoint root path and enable CORS.
 
-The endpoint root path can be found in .env.development, defined as the environment variable 'REACT_APP_ENDPOINT_ROOT'. This needs to be the root URL of the device running the back end, for example:
+#### Changing the endpoint root
+
+The endpoint root path can be found in ['interface/.env.development'](interface/.env.development), defined as the environment variable 'REACT_APP_ENDPOINT_ROOT'. This needs to be the root URL of the device running the back end, for example:
 
 ```js
 REACT_APP_ENDPOINT_ROOT=http://192.168.0.6/rest/
 ```
 
-CORS can be enabled on the back end by uncommenting the -D ENABLE_CORS build flag in platformio.ini and re-deploying.
+#### Enabling CORS
+
+You can enable CORS on the back end by uncommenting the -D ENABLE_CORS build flag in ['platformio.ini'](platformio.ini) then re-building and uploading the firmware to the device. The default settings assume you will be accessing the development server on the default port on [http://localhost:3000](http://localhost:3000) this can also be changed if required:
+
+```
+-D ENABLE_CORS
+-D CORS_ORIGIN=\"http://localhost:3000\"
+```
+
+## Device Configuration
+
+As well as containing the interface, the SPIFFS image (in the ['data'](data) folder) contains a JSON settings file for each of the configurable features. The config files can be found in the ['data/config'](data/config) directory:
+
+File | Description
+---- | -----------
+[apSettings.json](data/config/apSettings.json) | Access point settings
+[ntpSettings.json](data/config/ntpSettings.json) | NTP synchronization settings
+[otaSettings.json](data/config/otaSettings.json) | OTA update configuration
+[securitySettings.json](data/config/securitySettings.json) | Security settings and user credentials
+[wifiSettings.json](data/config/wifiSettings.json) | WiFi connection settings
+
+The default settings configure the device to bring up an access point on start up which can be used to configure the device:
+
+* SSID: ESP8266-React
+* Password: esp-react
+
+### Building for different devices
+
+This project supports ESP8266 and ESP32 platforms. To support OTA programming, enough free space to upload the new sketch and file system image will be required. It is recommended that a board with at least 2mb of flash is used.
+
+By default, the target device is "esp12e". This is a common ESP8266 variant with 4mb of flash:
+
+![ESP12E](/media/esp12e.jpg?raw=true "ESP12E")
+
+The settings file ['platformio.ini'](platformio.ini) configures the platform and board:
+
+```
+[env:esp12e]
+platform = espressif8266
+board = esp12e
+```
+
+If you want to build for an ESP32 device, all you need to do is re-configure ['platformio.ini'](platformio.ini) with your devices settings. 
+
+![ESP32](/media/esp32.jpg?raw=true "ESP32")
+
+Building for the common esp32 "node32s" board for example requires the following configuration:
+
+```
+[env:node32s]
+platform = espressif32
+board = node32s
+```
 
 ## Customizing and theming
 
@@ -97,7 +167,7 @@ The framework, and MaterialUI allows for a good degree of custoimzation with lit
 
 ### Theming the app
 
-The app can be easily themed by editing the [MaterialUI theme](https://material-ui.com/customization/themes/). Edit the theme in ./interface/src/App.js as you desire:
+The app can be easily themed by editing the [MaterialUI theme](https://material-ui.com/customization/themes/). Edit the theme in ['interface/src/App.js'](interface/src/App.js) as you desire:
 
 ```js
 const theme = createMuiTheme({
@@ -114,18 +184,18 @@ const theme = createMuiTheme({
 
 ### Changing the app icon
 
-You can replace the app icon is located at [./interface/public/app/icon.png](interface/public/app/icon.png) with one of your preference. A 256 x 256 PNG is recommended for best compatibility.
+You can replace the app icon is located at ['interface/public/app/icon.png'](interface/public/app/icon.png) with one of your preference. A 256 x 256 PNG is recommended for best compatibility.
 
 
 ### Changing the app name
 
-The app name displayed on the login page and on the menu bar can be modified by editing the REACT_APP_NAME property in [./interface/.env](interface/.env)
+The app name displayed on the login page and on the menu bar can be modified by editing the REACT_APP_NAME property in ['interface/.env'](interface/.env)
 
 ```js
 REACT_APP_NAME=Funky IoT Project
 ```
 
-There is also a manifest file which contains the app name to use when adding the app to a mobile device, so you may wish to also edit [./interface/public/app/manifest.json](interface/public/app/manifest.json):
+There is also a manifest file which contains the app name to use when adding the app to a mobile device, so you may wish to also edit ['interface/public/app/manifest.json'](interface/public/app/manifest.json):
 
 ```json
 {
@@ -142,55 +212,9 @@ There is also a manifest file which contains the app name to use when adding the
 }
 ```
 
-## Building for different devices
 
-This project supports ESP8266 and ESP32 platforms. To support OTA programming, enough free space to upload the new sketch and file system image will be required. It is recommended that a board with at least 2mb of flash is used.
 
-By default, the target device is "esp12e". This is a common ESP8266 variant with 4mb of flash:
-
-![ESP12E](/media/esp12e.jpg?raw=true "ESP12E")
-
-The settings file platformio.ini configures the platform and board:
-
-```
-[env:esp12e]
-platform = espressif8266
-board = esp12e
-```
-
-If you want to build for an ESP32 device, all you need to do is re-configure playformio.ini with your devices settings. 
-
-![ESP32](/media/esp32.jpg?raw=true "ESP32")
-
-Building for the common esp32 "node32s" board for example requires the following configuration:
-
-```
-[env:node32s]
-platform = espressif32
-board = node32s
-```
-
-## Configuration & Deployment
-
-Standard configuration settings, such as build flags, libraries and device configuration can be found in platformio.ini. See the [PlatformIO docs](http://docs.platformio.org/en/latest/projectconf.html) for full details on what you can do with this.
-
-***** TODO ******
-The project is configured to upload via serial by default, you can change the upload mechanism to OTA by uncommenting the relevant lines.
-
-As well as containing the interface, the SPIFFS image (in the ./data folder) contains a JSON settings file for each of the configurable features. The config files can be found in the ./data/config directory:
-
-File | Description
----- | -----------
-apSettings.json | Access point settings
-ntpSettings.json | NTP synchronization settings
-otaSettings.json | OTA update configuration
-securitySettings.json | Security settings and user credentials
-wifiSettings.json | WiFi connection settings
-
-The default settings configure the device to bring up an access point on start up which can be used to configure the device:
-
-* SSID: ESP8266-React
-* Password: esp-react
+*******
 
 ## Software Overview
 
