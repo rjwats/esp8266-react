@@ -2,7 +2,7 @@
 
 A simple, extensible framework for IoT projects built on ESP8266/ESP32 platforms with responsive React front-end.
 
-Designed to work with the PlatformIO IDE with limited setup, please read below for build and flash instructions.
+Designed to work with the PlatformIO IDE with limited setup, please read below for build and upload instructions.
 
 ![Screenshots](/media/screenshots.png?raw=true "Screenshots")
 
@@ -38,10 +38,10 @@ The project directory structure is as follows:
 
 Directory | Description
 ---- | -----------
-/data/ | The file system image directory
-/interface/ | React based front end
-/src/ | C++ back end for the ESP8266 device
-/platformio.ini | PlatformIO project configuration file
+[data/](data) | The file system image directory
+[interface/](interface) | React based front end
+[src/](src) | C++ back end for the ESP8266 device
+[platformio.ini](platformio.ini) | PlatformIO project configuration file
 
 Once the platform and libraries are downloaded the back end should be compiling.
 
@@ -71,7 +71,7 @@ npm install
 npm run build
 ```
 
-> **Note**: The build command will also delete the previously built interface (the ['data/www'](data/www) directory) and replace it with the freshly built one, ready for upload to the device.
+> **Note**: The build command will also delete the previously built interface, in the ['data/www'](data/www) directory, replacing it with the freshly built one ready to upload to the device.
 
 #### Running the interface locally
 
