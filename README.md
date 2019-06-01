@@ -85,18 +85,61 @@ npm start
 
 The endpoint root path can be found in .env.development, defined as the environment variable 'REACT_APP_ENDPOINT_ROOT'. This needs to be the root URL of the device running the back end, for example:
 
-```
+```js
 REACT_APP_ENDPOINT_ROOT=http://192.168.0.6/rest/
 ```
 
 CORS can be enabled on the back end by uncommenting the -D ENABLE_CORS build flag in platformio.ini and re-deploying.
 
-## Renaming the application
+## Customizing and theming
 
-The app name displayed on the login page and on the menu bar can be modified by editing the REACT_APP_NAME property in './interface/.env
+The framework, and MaterialUI allows for a good degree of custoimzation with little effort.
 
+### Theming the app
+
+The app can be easily themed by editing the [MaterialUI theme](https://material-ui.com/customization/themes/). Edit the theme in ./interface/src/App.js as you desire:
+
+```js
+const theme = createMuiTheme({
+  palette: {
+    primary: red,
+    secondary: deepOrange,
+    highlight_idle: blueGrey[900],
+    highlight_warn: orange[500],
+    highlight_error: red[500],
+    highlight_success: green[500],
+  },
+});
 ```
-REACT_APP_NAME=ESP8266 React
+
+### Changing the app icon
+
+You can replace the app icon is located at [./interface/public/app/icon.png](interface/public/app/icon.png) with one of your preference. A 256 x 256 PNG is recommended for best compatibility.
+
+
+### Changing the app name
+
+The app name displayed on the login page and on the menu bar can be modified by editing the REACT_APP_NAME property in [./interface/.env](interface/.env)
+
+```js
+REACT_APP_NAME=Funky IoT Project
+```
+
+There is also a manifest file which contains the app name to use when adding the app to a mobile device, so you may wish to also edit [./interface/public/app/manifest.json](interface/public/app/manifest.json):
+
+```json
+{
+  "name":"Funky IoT Project",
+  "icons":[
+    {
+      "src":"/app/icon.png",
+      "sizes":"48x48 72x72 96x96 128x128 256x256"
+    }
+  ],
+  "start_url":"/",
+  "display":"fullscreen",
+  "orientation":"any"
+}
 ```
 
 ## Building for different devices
@@ -115,7 +158,11 @@ platform = espressif8266
 board = esp12e
 ```
 
-If you want to build for an ESP32 device, all you need to do is re-configure playformio.ini with your devices settings. Building for the common esp32 "node32s" board for example requires the following configuration:
+If you want to build for an ESP32 device, all you need to do is re-configure playformio.ini with your devices settings. 
+
+![ESP32](/media/esp32.jpg?raw=true "ESP32")
+
+Building for the common esp32 "node32s" board for example requires the following configuration:
 
 ```
 [env:node32s]
@@ -228,7 +275,7 @@ I've tried to keep the use of libraries to a minimum to reduce the artefact size
 - [x] Access point should provide captive portal
 - [ ] Perhaps have more configuration options for Access point: IP address, Subnet, etc
 - [ ] Enable configurable mDNS
-- [ ] Introduce authentication to secure the device
+- [x] Introduce authentication to secure the device
 
 ## Libraries Used
 
