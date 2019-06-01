@@ -18,7 +18,7 @@ Provides many of the features required for IoT projects:
 
 The back end is provided by a set of RESTful endpoints and the React based front end is responsive and scales well to various screen sizes.
 
-The front end has the prerequisite manifest/icon file, so it can be added to the home screen of a mobile device if required.
+The front end has the prerequisite manifest file and icon, so it can be added to the home screen of a mobile device if required.
 
 ## Getting Started
 
@@ -28,7 +28,7 @@ You will need the following before you can get started.
 
 * [PlatformIO](https://platformio.org/) - IDE for development
 * [Node.js](https://nodejs.org) - For building the interface with npm
-* Bash shell, or Git Bash if you are under windows
+* Bash shell, or [Git Bash](https://gitforwindows.org/) if you are under windows
 
 ### Building in PlatformIO
 
@@ -71,7 +71,7 @@ npm install
 npm run build
 ```
 
-> **Note**: The build command will also delete the previously built interface (the ./data/www directory) and replace it with the freshly built one, ready for upload to the device.
+> **Note**: The build command will also delete the previously built interface (the ['data/www'](data/www) directory) and replace it with the freshly built one, ready for upload to the device.
 
 #### Running the interface locally
 
