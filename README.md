@@ -4,7 +4,7 @@ A simple, extensible framework for IoT projects built on ESP8266/ESP32 platforms
 
 Designed to work with the PlatformIO IDE with limited setup, please read below for build and flash instructions.
 
-![Screenshots](/screenshots/screenshots.png?raw=true "Screenshots")
+![Screenshots](/media/screenshots.png?raw=true "Screenshots")
 
 ## Features
 
@@ -43,9 +43,9 @@ Directory | Description
 /src/ | C++ back end for the ESP8266 device
 /platformio.ini | PlatformIO project configuration file
 
-> **WINDOWS BUILDS**: If building under Windows you need to delete .piolibdeps/Time/Time.h - due to a [file system case insensitivity issue](https://github.com/me-no-dev/ESPAsyncWebServer/issues/96)
-
 Once the platform and libraries are downloaded the back end should be compiling.
+
+> **WINDOWS BUILDS**: If building under Windows you need to delete .piolibdeps/Time/Time.h - due to a [file system case insensitivity issue](https://github.com/me-no-dev/ESPAsyncWebServer/issues/96)
 
 ### Building the interface
 
@@ -91,11 +91,23 @@ REACT_APP_ENDPOINT_ROOT=http://192.168.0.6/rest/
 
 CORS can be enabled on the back end by uncommenting the -D ENABLE_CORS build flag in platformio.ini and re-deploying.
 
+## Renaming the application
+
+The app name displayed on the login page and on the menu bar can be modified by editing the REACT_APP_NAME property in './interface/.env
+
+```
+REACT_APP_NAME=ESP8266 React
+```
+
 ## Building for different devices
 
-This project supports ESP8266 and ESP32 platforms however your target device will need at least a 1MB flash chip to support OTA programming.
+This project supports ESP8266 and ESP32 platforms. To support OTA programming, enough free space to upload the new sketch and file system image will be required. It is recommended that a board with at least 2mb of flash is used.
 
-By default this project is configured to build for the esp12e device. This is an esp8266 device with 4MB of flash. The following config in platformio.ini configures the build:
+By default, the target device is "esp12e". This is a common ESP8266 variant with 4mb of flash:
+
+![ESP12E](/media/esp12e.jpg?raw=true "ESP12E")
+
+The settings file platformio.ini configures the platform and board:
 
 ```
 [env:esp12e]
@@ -103,7 +115,7 @@ platform = espressif8266
 board = esp12e
 ```
 
-If you want to build for an ESP32 device, all you need to do is re-configure playformio.ini with your devices settings:
+If you want to build for an ESP32 device, all you need to do is re-configure playformio.ini with your devices settings. Building for the common esp32 "node32s" board for example requires the following configuration:
 
 ```
 [env:node32s]
@@ -115,7 +127,8 @@ board = node32s
 
 Standard configuration settings, such as build flags, libraries and device configuration can be found in platformio.ini. See the [PlatformIO docs](http://docs.platformio.org/en/latest/projectconf.html) for full details on what you can do with this.
 
-By default, the target device is "esp12e". This is a common ESP8266 variant with 4mb of flash though any device with at least 2mb of flash should be fine. The settings configure the interface to upload via serial by default, you can change the upload mechanism to OTA by uncommenting the relevant lines.
+***** TODO ******
+The project is configured to upload via serial by default, you can change the upload mechanism to OTA by uncommenting the relevant lines.
 
 As well as containing the interface, the SPIFFS image (in the ./data folder) contains a JSON settings file for each of the configurable features. The config files can be found in the ./data/config directory:
 
@@ -123,7 +136,8 @@ File | Description
 ---- | -----------
 apSettings.json | Access point settings
 ntpSettings.json | NTP synchronization settings
-otaSettings.json | OTA Update configuration
+otaSettings.json | OTA update configuration
+securitySettings.json | Security settings and user credentials
 wifiSettings.json | WiFi connection settings
 
 The default settings configure the device to bring up an access point on start up which can be used to configure the device:
