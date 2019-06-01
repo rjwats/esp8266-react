@@ -212,17 +212,13 @@ There is also a manifest file which contains the app name to use when adding the
 }
 ```
 
-
-
-*******
-
-## Software Overview
-
-### Back End
+## Back End Overview
 
 The back end is a set of REST endpoints hosted by a [ESPAsyncWebServer](https://github.com/me-no-dev/ESPAsyncWebServer) instance. The source is split up by feature, for example [WiFiScanner.h](src/WiFiScanner.h) implements the end points for scanning for available networks.
 
-There is an abstract class [SettingsService.h](src/SettingsService.h) that provides an easy means of adding configurable services/features to the device. It takes care of writing the settings as JSON to SPIFFS. All you need to do is extend the class with your required configuration and implement the functions which serialize the settings to/from JSON. JSON serialization utilizes the excellent [ArduinoJson](https://github.com/bblanchon/ArduinoJson) library. Here is a example of a service with username and password settings:
+There is an abstract class [SettingsService.h](src/SettingsService.h) that provides an easy means of adding configurable services/features to the device. It takes care of writing the settings as JSON to SPIFFS. All you need to do is extend the class with your required configuration and implement the functions which serialize the settings to/from JSON. JSON serialization utilizes the excellent [ArduinoJson](https://github.com/bblanchon/ArduinoJson) library. 
+
+Here is a example of a service with username and password settings:
 
 ```cpp
 #include <SettingsService.h>
@@ -285,21 +281,6 @@ void reconfigureTheService() {
 }
 
 ```
-
-### Front End
-
-The front end is a bit of a work in progress (as are my react skills), but it has been designed to be a "mobile first" interface and as such should feel very much like an App.
-
-I've tried to keep the use of libraries to a minimum to reduce the artefact size (it's about 150k gzipped ATM).
-
-## Future Improvements
-
-- [x] Reduce boilerplate in interface
-- [ ] Provide an emergency config reset feature, via a pin held low for a few seconds
-- [x] Access point should provide captive portal
-- [ ] Perhaps have more configuration options for Access point: IP address, Subnet, etc
-- [ ] Enable configurable mDNS
-- [x] Introduce authentication to secure the device
 
 ## Libraries Used
 
