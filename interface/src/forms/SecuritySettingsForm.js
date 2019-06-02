@@ -49,7 +49,7 @@ class SecuritySettingsForm extends React.Component {
         securitySettings ?
           <ValidatorForm onSubmit={this.onSubmit} ref="SecuritySettingsForm">
             <PasswordValidator
-              validators={['required', 'matchRegexp:^.{0,64}$']}
+              validators={['required', 'matchRegexp:^.{1,64}$']}
               errorMessages={['JWT Secret Required', 'JWT Secret must be 64 characters or less']}
               name="jwt_secret"
               label="JWT Secret"

@@ -85,7 +85,7 @@ class OTASettingsForm extends React.Component {
              />
 
              <PasswordValidator
-                   validators={['required', 'matchRegexp:^.{0,64}$']}
+                   validators={['required', 'matchRegexp:^.{1,64}$']}
                    errorMessages={['OTA Password is required', 'OTA Point Password must be 64 characters or less']}
                    name="password"
                    label="Password"

@@ -48,7 +48,7 @@ class UserForm extends React.Component {
           <DialogContent dividers={true}>
             <TextValidator
               validators={creating ? ['required', 'uniqueUsername', 'matchRegexp:^[a-zA-Z0-9_\\.]{1,24}$'] : []}
-              errorMessages={creating ? ['Username is required', "Username already exists", "Must be 1-24 characters: alpha numberic, '_' or '.'"] : []}
+              errorMessages={creating ? ['Username is required', "Username already exists", "Must be 1-24 characters: alpha numeric, '_' or '.'"] : []}
               name="username"
               label="Username"
               className={classes.textField}
@@ -58,7 +58,7 @@ class UserForm extends React.Component {
               margin="normal"
             />
             <PasswordValidator
-              validators={['required', 'matchRegexp:^.{0,64}$']}
+              validators={['required', 'matchRegexp:^.{1,64}$']}
               errorMessages={['Password is required', 'Password must be 64 characters or less']}
               name="password"
               label="Password"

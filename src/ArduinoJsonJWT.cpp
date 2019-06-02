@@ -69,14 +69,14 @@ void ArduinoJsonJWT::parseJWT(String jwt, JsonDocument &jsonDocument) {
     return;
   }
   // must have signature of correct length
-  int signatureDelimieterIndex = jwt.length() - JWT_SIG_SIZE - 1;
-  if (jwt.lastIndexOf('.') != signatureDelimieterIndex) {
+  int signatureDelimiterIndex = jwt.length() - JWT_SIG_SIZE - 1;
+  if (jwt.lastIndexOf('.') != signatureDelimiterIndex) {
     return;
   }
 
   // signature must be correct
-  String signature = jwt.substring(signatureDelimieterIndex + 1);
-  jwt = jwt.substring(0, signatureDelimieterIndex);
+  String signature = jwt.substring(signatureDelimiterIndex + 1);
+  jwt = jwt.substring(0, signatureDelimiterIndex);
   if (sign(jwt) != signature){
     return;
   }
@@ -115,7 +115,7 @@ String ArduinoJsonJWT::encode(const char *cstr, int inputLen) {
   String value = String(buffer);
 
   // remove padding and convert to URL safe form
-  while (value.charAt(value.length() - 1) == '='){
+  while (value.length() > 0 && value.charAt(value.length() - 1) == '='){
     value.remove(value.length() - 1);
   }
   value.replace('+', '-');

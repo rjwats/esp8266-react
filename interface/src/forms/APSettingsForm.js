@@ -65,7 +65,7 @@ class APSettingsForm extends React.Component {
             isAPEnabled(apSettings.provision_mode) &&
             <Fragment>
               <TextValidator
-                validators={['required', 'matchRegexp:^.{0,32}$']}
+                validators={['required', 'matchRegexp:^.{1,32}$']}
                 errorMessages={['Access Point SSID is required', 'Access Point SSID must be 32 characeters or less']}
                 name="ssid"
                 label="Access Point SSID"
@@ -75,7 +75,7 @@ class APSettingsForm extends React.Component {
                 margin="normal"
               />
               <PasswordValidator
-                    validators={['required', 'matchRegexp:^.{0,64}$']}
+                    validators={['required', 'matchRegexp:^.{1,64}$']}
                     errorMessages={['Access Point Password is required', 'Access Point Password must be 64 characters or less']}
                     name="password"
                     label="Access Point Password"

@@ -40,7 +40,7 @@ void OTASettingsService::writeToJsonObject(JsonObject& root) {
 void OTASettingsService::configureArduinoOTA() {
   if (_arduinoOTA){
     delete _arduinoOTA;
-    _arduinoOTA = NULL;
+    _arduinoOTA = nullptr;
   }
   if (_enabled) {
     Serial.println("Starting OTA Update Service");

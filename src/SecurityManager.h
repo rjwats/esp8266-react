@@ -37,11 +37,9 @@ class Authentication {
     boolean _authenticated;
   public:
     Authentication(User& user): _user(new User(user)), _authenticated(true) {}
-    Authentication() : _user(NULL), _authenticated(false) {}  
+    Authentication() : _user(nullptr), _authenticated(false) {}  
     ~Authentication() {
-      if (_user != NULL){
-        delete(_user);
-      }      
+      delete(_user);   
     }
     User* getUser() {
       return _user;

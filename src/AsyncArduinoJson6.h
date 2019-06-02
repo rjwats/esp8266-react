@@ -109,7 +109,7 @@ public:
   }
   virtual void handleRequest(AsyncWebServerRequest *request) override final {
     if(_onRequest) {
-      if (request->_tempObject != NULL) {
+      if (request->_tempObject != nullptr) {
         DynamicJsonDocument _jsonDocument(_maxContentLength);
         DeserializationError err = deserializeJson(_jsonDocument, (uint8_t*)(request->_tempObject));
         if (err == DeserializationError::Ok) {
@@ -127,10 +127,10 @@ public:
   virtual void handleBody(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total) override final {
     if (_onRequest) {
       _contentLength = total;
-      if (total > 0 && request->_tempObject == NULL && total < _maxContentLength) {
+      if (total > 0 && request->_tempObject == nullptr && total < _maxContentLength) {
         request->_tempObject = malloc(total);
       }
-      if (request->_tempObject != NULL) {
+      if (request->_tempObject != nullptr) {
         memcpy((uint8_t*)(request->_tempObject) + index, data, len);
       }
     }

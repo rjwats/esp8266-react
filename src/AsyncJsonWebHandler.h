@@ -31,7 +31,7 @@ class AsyncJsonWebHandler: public AsyncWebHandler {
 
     AsyncJsonWebHandler() :      
       _method(HTTP_POST|HTTP_PUT|HTTP_PATCH),
-      _onRequest(NULL),
+      _onRequest(nullptr),
       _maxContentLength(ASYNC_JSON_REQUEST_DEFAULT_MAX_SIZE),
       _uri() {}
 
