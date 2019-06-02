@@ -17,30 +17,30 @@ const styles = theme => {
       display: "flex",
       height: "100vh",
       margin: "auto",
-      padding: theme.spacing.unit * 2,
+      padding: theme.spacing(2),
       justifyContent: "center",
       flexDirection: "column",
       maxWidth: theme.breakpoints.values.sm
     },
     loginPanel: {
       textAlign: "center",
-      padding: theme.spacing.unit * 2,
+      padding: theme.spacing(2),
       paddingTop: "200px",
       backgroundImage: 'url("/app/icon.png")',
       backgroundRepeat: "no-repeat",
-      backgroundPosition: "50% " + theme.spacing.unit * 2 + "px",
+      backgroundPosition: "50% " + theme.spacing(2) + "px",
       backgroundSize: "auto 150px",
       width: "100%"
     },
     extendedIcon: {
-      marginRight: theme.spacing.unit,
+      marginRight: theme.spacing(0.5),
     },
     textField: {
       width: "100%"
     },
     button: {
-      marginRight: theme.spacing.unit * 2,
-      marginTop: theme.spacing.unit * 2,
+      marginRight: theme.spacing(2),
+      marginTop: theme.spacing(2),
     }
   }
 }

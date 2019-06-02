@@ -23,12 +23,12 @@ import SectionContent from '../components/SectionContent';
 
 const styles = theme => ({
   fetching: {
-    margin: theme.spacing.unit * 4,
+    margin: theme.spacing(4),
     textAlign: "center"
   },
   button: {
-    marginRight: theme.spacing.unit * 2,
-    marginTop: theme.spacing.unit * 2,
+    marginRight: theme.spacing(2),
+    marginTop: theme.spacing(2),
   }
 });
 

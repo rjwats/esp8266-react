@@ -14,10 +14,10 @@ import PasswordValidator from '../components/PasswordValidator';
 
 const styles = theme => ({
   loadingSettings: {
-    margin: theme.spacing.unit,
+    margin: theme.spacing(0.5),
   },
   loadingSettingsDetails: {
-    margin: theme.spacing.unit * 4,
+    margin: theme.spacing(4),
     textAlign: "center"
   },
   textField: {
@@ -25,12 +25,12 @@ const styles = theme => ({
   },
   selectField:{
     width: "100%",
-    marginTop: theme.spacing.unit * 2,
-    marginBottom: theme.spacing.unit
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(0.5)
   },
   button: {
-    marginRight: theme.spacing.unit * 2,
-    marginTop: theme.spacing.unit * 2,
+    marginRight: theme.spacing(2),
+    marginTop: theme.spacing(2),
   }
 });
 
