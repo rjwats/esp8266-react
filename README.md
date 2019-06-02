@@ -1,8 +1,8 @@
 # ESP8266 React
 
-A simple, extensible framework for IoT projects built on ESP8266/ESP32 platforms with responsive React front-end.
+A simple, secure and extensible framework for IoT projects built on ESP8266/ESP32 platforms with responsive React front-end.
 
-Designed to work with the PlatformIO IDE with limited setup, please read below for build and upload instructions.
+Designed to work with the PlatformIO IDE with [limited setup](#getting-started). Please read below for setup, build and upload instructions.
 
 ![Screenshots](/media/screenshots.png?raw=true "Screenshots")
 
@@ -10,7 +10,7 @@ Designed to work with the PlatformIO IDE with limited setup, please read below f
 
 Provides many of the features required for IoT projects:
 
-* Configurable WiFi - Network scanner and WiFi connection screen
+* Configurable WiFi - Network scanner and WiFi configuration screen
 * Configurable Access Point - Can be continuous or automatically enabled when WiFi connection fails
 * Network Time - Synchronization with NTP
 * Remote Firmware Updates - Enable secured OTA updates
@@ -43,7 +43,7 @@ Resource | Description
 [src/](src) | C++ back end for the ESP8266 device
 [platformio.ini](platformio.ini) | PlatformIO project configuration file
 
-#### Building the firmware
+### Building the firmware
 
 Once the platform and libraries are downloaded the back end should be compiling.
 
@@ -51,17 +51,17 @@ Once the platform and libraries are downloaded the back end should be compiling.
 
 #### Uploading the firmware
 
-Standard configuration settings, such as build flags, libraries and device configuration can be found in ['platformio.ini'](platformio.ini). The project is configured to upload via serial by default, you can change the upload mechanism to OTA by uncommenting the relevant lines. 
+The project is configured to upload over a serial connection by default. You can change this to use OTA updates by uncommenting the relevant lines in ['platformio.ini'](platformio.ini). 
 
-See the [PlatformIO docs](http://docs.platformio.org/en/latest/projectconf.html) for full details on what you can do with this.
+The firmware may be uploaded to the device by pressing the "Upload" button:
 
-Click the upload button in PlatformIO, or type the upload command if prefer the command line approach:
+![uploadfw](/media/uploadfw.png?raw=true "uploadfw")
+
+Alternatively run the 'upload' target:
 
 ```bash
 platformio run -t upload
 ```
-
-![upload](/media/upload.png?raw=true "upload")
 
 ### Building the interface
 
@@ -89,9 +89,21 @@ npm run build
 
 > **Note**: The build command will also delete the previously built interface, in the ['data/www'](data/www) directory, replacing it with the freshly built one ready to upload to the device.
 
+#### Uploading the file system image
+
+The compiled user interface may be uploaded to the device by pressing the "Upload File System image" button:
+
+![uploadfs](/media/uploadfs.png?raw=true "uploadfs")
+
+Alternatively run the 'uploadfs' target:
+
+```bash
+platformio run -t uploadfs
+```
+
 ### Running the interface locally
 
-You can run a local development server during development to preview changes to the front end them without the need to upload a file system image to the device after each change.
+You can run a local development server to allow you preview changes to the front end without the need to upload a file system image to the device after each change. Run the standard npm start command to start the development server:
 
 ```bash
 npm start
