@@ -45,9 +45,17 @@ Resource | Description
 
 ### Building the firmware
 
-Once the platform and libraries are downloaded the back end should be compiling.
+Once the platform and libraries are downloaded the back end should successfuly build within PlatformIO. 
 
-> **WINDOWS BUILDS**: If building under Windows you need to delete .piolibdeps/Time/Time.h - due to a [file system case insensitivity issue](https://github.com/me-no-dev/ESPAsyncWebServer/issues/96)
+The firmware may be built by pressing the "Build" button:
+
+![build](/media/build.png?raw=true "build")
+
+Alternatively type the run command:
+
+```bash
+platformio run
+```
 
 #### Uploading the firmware
 
@@ -103,7 +111,7 @@ platformio run -t uploadfs
 
 ### Running the interface locally
 
-You can run a local development server to allow you preview changes to the front end without the need to upload a file system image to the device after each change. Run the standard npm start command to start the development server:
+You can run a local development server to allow you preview changes to the front end without the need to upload a file system image to the device after each change. Change to the interface directory and run the following command:
 
 ```bash
 npm start
