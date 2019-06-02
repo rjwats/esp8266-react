@@ -102,17 +102,21 @@ String ArduinoJsonJWT::encode(const char *cstr, int inputLen) {
   base64_init_encodestate(&_state);
   size_t encodedLength = base64_encode_expected_len(inputLen) + 1;    
 #endif
-
-  // prepare buffer of correct length
-  char buffer[encodedLength];
+  // prepare buffer of correct length, returning an empty string on failure
+  char* buffer = (char*) malloc(encodedLength * sizeof(char));  
+  if (buffer == nullptr) {
+    return "";
+  }
 
   // encode to buffer
   int len = base64_encode_block(cstr, inputLen, &buffer[0], &_state);
   len += base64_encode_blockend(&buffer[len], &_state);
   buffer[len] = 0;
 
-  // convert to arduino string
+  // convert to arduino string, freeing buffer
   String value = String(buffer);
+  free(buffer);
+  buffer=nullptr;
 
   // remove padding and convert to URL safe form
   while (value.length() > 0 && value.charAt(value.length() - 1) == '='){
