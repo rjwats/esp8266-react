@@ -148,12 +148,25 @@ File | Description
 [securitySettings.json](data/config/securitySettings.json) | Security settings and user credentials
 [wifiSettings.json](data/config/wifiSettings.json) | WiFi connection settings
 
+### Access point settings
+
 The default settings configure the device to bring up an access point on start up which can be used to configure the device:
 
 * SSID: ESP8266-React
 * Password: esp-react
 
-### Building for different devices
+### Security settings and user credentials
+
+The security settings and user credentials provide the following users by default:
+
+Username | Password
+-------- | --------
+admin    | admin
+guest    | guest
+
+It is recomended that you change the JWT secret and user credentials from their defaults protect your device. You can do this in the user interface, or by modifying [securitySettings.json](data/config/securitySettings.json) before uploading the file system image. 
+
+## Building for different devices
 
 This project supports ESP8266 and ESP32 platforms. To support OTA programming, enough free space to upload the new sketch and file system image will be required. It is recommended that a board with at least 2mb of flash is used.
 
