@@ -44,9 +44,9 @@ const styles = theme => {
     }
   }
 }
- 
 
-class LoginPage extends Component {
+
+class SignInPage extends Component {
 
   constructor(props) {
     super(props);
@@ -82,7 +82,6 @@ class LoginPage extends Component {
         }
       }).then(json => {
         authenticationContext.signIn(json.access_token);
-        this.setState({ processing: false });
       })
       .catch(error => {
         this.props.raiseNotification(error.message);
@@ -132,4 +131,6 @@ class LoginPage extends Component {
 
 }
 
-export default withAuthenticationContext(withNotifier(withStyles(styles)(LoginPage)));
+export default withAuthenticationContext(
+  withNotifier(withStyles(styles)(SignInPage))
+);

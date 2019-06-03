@@ -89,11 +89,11 @@ class AuthenticationWrapper extends React.Component {
 
   signIn = (accessToken) => {
     try {
-      this.setState({ context: { ...this.state.context, user: jwtDecode(accessToken) } });
       localStorage.setItem(ACCESS_TOKEN, accessToken);
+      this.setState({ context: { ...this.state.context, user: jwtDecode(accessToken) } });
     } catch (err) {
       this.setState({ initialized: true, context: { ...this.state.context, user: undefined } });
-      this.props.raiseNotification("Failed to parse JWT " + err.message);
+      throw new Error("Failed to parse JWT " + err.message);
     }
   }
 

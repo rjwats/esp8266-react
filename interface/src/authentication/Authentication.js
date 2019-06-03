@@ -47,7 +47,7 @@ export function redirectingAuthorizedFetch(url, params) {
   return new Promise(function (resolve, reject) {
     authorizedFetch(url, params).then(response => {
       if (response.status === 401) {
-        history.push("/");        
+        history.push("/unauthorized");        
       } else {
         resolve(response);
       }

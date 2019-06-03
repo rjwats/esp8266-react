@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Redirect, Route, Switch } from 'react-router';
 
 import AppRouting from './AppRouting';
 import SnackbarNotification from './components/SnackbarNotification';
@@ -33,19 +34,25 @@ const theme = createMuiTheme({
 // JSS instance
 const jss = create(jssPreset());
 
-class App extends Component {
-	render() {
-	   return (
-		 <StylesProvider jss={jss}>
-			<MuiThemeProvider theme={theme}>
-        <SnackbarNotification>
-				  <CssBaseline />
-          <AppRouting />
-        </SnackbarNotification>
-			</MuiThemeProvider>
-		 </StylesProvider>
-		)
-	}
+// this redirect forces a call to authenticationContext.refresh() which invalidates the JWT if it is invalid.
+const unauthorizedRedirect = () =>  <Redirect to="/" />;
+
+class App extends Component {  
+  render() {
+    return (
+      <StylesProvider jss={jss}>
+        <MuiThemeProvider theme={theme}>
+          <SnackbarNotification>
+            <CssBaseline />
+            <Switch>
+              <Route exact path="/unauthorized" component={unauthorizedRedirect} />
+              <Route component={AppRouting} />
+            </Switch>
+          </SnackbarNotification>
+        </MuiThemeProvider>
+      </StylesProvider>
+    );
+  }
 }
 
 export default App
