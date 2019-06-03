@@ -45,7 +45,7 @@ Resource | Description
 
 ### Building the firmware
 
-Once the platform and libraries are downloaded the back end should successfuly build within PlatformIO. 
+Once the platform and libraries are downloaded the back end should successfully build within PlatformIO. 
 
 The firmware may be built by pressing the "Build" button:
 
@@ -164,7 +164,7 @@ Username | Password
 admin    | admin
 guest    | guest
 
-It is recomended that you change the JWT secret and user credentials from their defaults protect your device. You can do this in the user interface, or by modifying [securitySettings.json](data/config/securitySettings.json) before uploading the file system image. 
+It is recommended that you change the JWT secret and user credentials from their defaults protect your device. You can do this in the user interface, or by modifying [securitySettings.json](data/config/securitySettings.json) before uploading the file system image. 
 
 ## Building for different devices
 
