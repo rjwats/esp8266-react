@@ -4,13 +4,13 @@
 #include <ESPAsyncWebServer.h>
 #include <FS.h>
 #include <ArduinoJson.h>
-#include <AsyncJsonRequestWebHandler.h>
+#include <AsyncJsonWebHandler.h>
 #include <AsyncArduinoJson6.h>
 
 /**
 * At the moment, not expecting settings service to have to deal with large JSON
 * files this could be made configurable fairly simply, it's exposed on
-* AsyncJsonRequestWebHandler with a setter.
+* AsyncJsonWebHandler with a setter.
 */
 #define MAX_SETTINGS_SIZE 1024
 

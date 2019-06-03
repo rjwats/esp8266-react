@@ -13,6 +13,7 @@
 #include <ArduinoJson.h>
 #include <AsyncArduinoJson6.h>
 #include <TimeLib.h>
+#include <SecurityManager.h>
 
 #define SCAN_NETWORKS_SERVICE_PATH "/rest/scanNetworks"
 #define LIST_NETWORKS_SERVICE_PATH "/rest/listNetworks"
@@ -23,7 +24,7 @@ class WiFiScanner {
 
   public:
 
-    WiFiScanner(AsyncWebServer *server);
+    WiFiScanner(AsyncWebServer *server, SecurityManager* securityManager);
 
   private:
 

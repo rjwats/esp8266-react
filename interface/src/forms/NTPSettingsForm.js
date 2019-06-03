@@ -13,18 +13,18 @@ import or from '../validators/or';
 
 const styles = theme => ({
   loadingSettings: {
-    margin: theme.spacing.unit,
+    margin: theme.spacing(0.5),
   },
   loadingSettingsDetails: {
-    margin: theme.spacing.unit * 4,
+    margin: theme.spacing(4),
     textAlign: "center"
   },
   textField: {
     width: "100%"
   },
   button: {
-    marginRight: theme.spacing.unit * 2,
-    marginTop: theme.spacing.unit * 2,
+    marginRight: theme.spacing(2),
+    marginTop: theme.spacing(2),
   }
 });
 
@@ -43,7 +43,7 @@ class NTPSettingsForm extends React.Component {
 
          <div className={classes.loadingSettings}>
            <LinearProgress className={classes.loadingSettingsDetails}/>
-           <Typography variant="display1" className={classes.loadingSettingsDetails}>
+           <Typography variant="h4" className={classes.loadingSettingsDetails}>
              Loading...
            </Typography>
          </div>
@@ -87,7 +87,7 @@ class NTPSettingsForm extends React.Component {
         :
 
         <div className={classes.loadingSettings}>
-          <Typography variant="display1" className={classes.loadingSettingsDetails}>
+          <Typography variant="h4" className={classes.loadingSettingsDetails}>
             {errorMessage}
           </Typography>
           <Button variant="contained" color="secondary" className={classes.button} onClick={onReset}>

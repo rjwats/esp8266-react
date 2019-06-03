@@ -19,11 +19,11 @@
 #define OTA_SETTINGS_FILE "/config/otaSettings.json"
 #define OTA_SETTINGS_SERVICE_PATH "/rest/otaSettings"
 
-class OTASettingsService : public SettingsService {
+class OTASettingsService : public AdminSettingsService {
 
   public:
 
-    OTASettingsService(AsyncWebServer* server, FS* fs);
+    OTASettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
     ~OTASettingsService();
 
     void loop();

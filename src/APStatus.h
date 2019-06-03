@@ -13,6 +13,7 @@
 #include <ArduinoJson.h>
 #include <AsyncArduinoJson6.h>
 #include <IPAddress.h>
+#include <SecurityManager.h>
 
 #define MAX_AP_STATUS_SIZE 1024
 #define AP_STATUS_SERVICE_PATH "/rest/apStatus"
@@ -21,11 +22,12 @@ class APStatus {
 
   public:
 
-    APStatus(AsyncWebServer *server);
+    APStatus(AsyncWebServer *server, SecurityManager* securityManager);
 
   private:
 
     AsyncWebServer* _server;
+    SecurityManager* _securityManager;
 
     void apStatus(AsyncWebServerRequest *request);
 

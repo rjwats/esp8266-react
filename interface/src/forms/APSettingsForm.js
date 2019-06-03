@@ -14,10 +14,10 @@ import PasswordValidator from '../components/PasswordValidator';
 
 const styles = theme => ({
   loadingSettings: {
-    margin: theme.spacing.unit,
+    margin: theme.spacing(0.5),
   },
   loadingSettingsDetails: {
-    margin: theme.spacing.unit * 4,
+    margin: theme.spacing(4),
     textAlign: "center"
   },
   textField: {
@@ -25,12 +25,12 @@ const styles = theme => ({
   },
   selectField:{
     width: "100%",
-    marginTop: theme.spacing.unit * 2,
-    marginBottom: theme.spacing.unit
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(0.5)
   },
   button: {
-    marginRight: theme.spacing.unit * 2,
-    marginTop: theme.spacing.unit * 2,
+    marginRight: theme.spacing(2),
+    marginTop: theme.spacing(2),
   }
 });
 
@@ -45,7 +45,7 @@ class APSettingsForm extends React.Component {
 
          <div className={classes.loadingSettings}>
            <LinearProgress className={classes.loadingSettingsDetails}/>
-           <Typography variant="display1" className={classes.loadingSettingsDetails}>
+           <Typography variant="h4" className={classes.loadingSettingsDetails}>
              Loading...
            </Typography>
          </div>
@@ -65,7 +65,7 @@ class APSettingsForm extends React.Component {
             isAPEnabled(apSettings.provision_mode) &&
             <Fragment>
               <TextValidator
-                validators={['required', 'matchRegexp:^.{0,32}$']}
+                validators={['required', 'matchRegexp:^.{1,32}$']}
                 errorMessages={['Access Point SSID is required', 'Access Point SSID must be 32 characeters or less']}
                 name="ssid"
                 label="Access Point SSID"
@@ -75,7 +75,7 @@ class APSettingsForm extends React.Component {
                 margin="normal"
               />
               <PasswordValidator
-                    validators={['required', 'matchRegexp:^.{0,64}$']}
+                    validators={['required', 'matchRegexp:^.{1,64}$']}
                     errorMessages={['Access Point Password is required', 'Access Point Password must be 64 characters or less']}
                     name="password"
                     label="Access Point Password"
@@ -99,7 +99,7 @@ class APSettingsForm extends React.Component {
         :
 
         <div className={classes.loadingSettings}>
-          <Typography variant="display1" className={classes.loadingSettingsDetails}>
+          <Typography variant="h4" className={classes.loadingSettingsDetails}>
             {errorMessage}
           </Typography>
           <Button variant="contained" color="secondary" className={classes.button} onClick={onReset}>

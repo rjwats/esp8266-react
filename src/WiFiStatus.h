@@ -13,6 +13,7 @@
 #include <ArduinoJson.h>
 #include <AsyncArduinoJson6.h>
 #include <IPAddress.h>
+#include <SecurityManager.h>
 
 #define MAX_WIFI_STATUS_SIZE 1024
 #define WIFI_STATUS_SERVICE_PATH "/rest/wifiStatus"
@@ -21,11 +22,12 @@ class WiFiStatus {
 
   public:
 
-    WiFiStatus(AsyncWebServer *server);
+    WiFiStatus(AsyncWebServer *server, SecurityManager* securityManager);
 
   private:
 
     AsyncWebServer* _server;
+    SecurityManager* _securityManager;
 
 #if defined(ESP8266)
     // handler refrences for logging important WiFi events over serial

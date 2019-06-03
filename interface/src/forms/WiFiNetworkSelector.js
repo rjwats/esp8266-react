@@ -23,12 +23,12 @@ import { isNetworkOpen, networkSecurityMode } from '../constants/WiFiSecurityMod
 
 const styles = theme => ({
   scanningProgress: {
-    margin: theme.spacing.unit * 4,
+    margin: theme.spacing(4),
     textAlign: "center"
   },
   button: {
-    marginRight: theme.spacing.unit * 2,
-    marginTop: theme.spacing.unit * 2,
+    marginRight: theme.spacing(2),
+    marginTop: theme.spacing(2),
   }
 });
 
@@ -69,7 +69,7 @@ class WiFiNetworkSelector extends Component {
           scanningForNetworks ?
           <div>
             <LinearProgress className={classes.scanningProgress}/>
-            <Typography variant="display1" className={classes.scanningProgress}>
+            <Typography variant="h4" className={classes.scanningProgress}>
               Scanning...
             </Typography>
           </div>
@@ -80,7 +80,7 @@ class WiFiNetworkSelector extends Component {
           </List>
           :
           <div>
-            <Typography variant="display1" className={classes.scanningProgress}>
+            <Typography variant="h4" className={classes.scanningProgress}>
               {errorMessage}
             </Typography>
           </div>

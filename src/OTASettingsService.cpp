@@ -1,6 +1,6 @@
 #include <OTASettingsService.h>
 
-OTASettingsService::OTASettingsService(AsyncWebServer* server, FS* fs) : SettingsService(server, fs, OTA_SETTINGS_SERVICE_PATH, OTA_SETTINGS_FILE) {
+OTASettingsService::OTASettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) : AdminSettingsService(server, fs, securityManager, OTA_SETTINGS_SERVICE_PATH, OTA_SETTINGS_FILE) {
 #if defined(ESP8266)
   _onStationModeGotIPHandler = WiFi.onStationModeGotIP(std::bind(&OTASettingsService::onStationModeGotIP, this, std::placeholders::_1));
 #elif defined(ESP_PLATFORM)
@@ -40,7 +40,7 @@ void OTASettingsService::writeToJsonObject(JsonObject& root) {
 void OTASettingsService::configureArduinoOTA() {
   if (_arduinoOTA){
     delete _arduinoOTA;
-    _arduinoOTA = NULL;
+    _arduinoOTA = nullptr;
   }
   if (_enabled) {
     Serial.println("Starting OTA Update Service");

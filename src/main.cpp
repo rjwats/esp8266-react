@@ -10,28 +10,35 @@
 #endif
 
 #include <FS.h>
+
+#include <SecuritySettingsService.h>
 #include <WiFiSettingsService.h>
-#include <WiFiStatus.h>
-#include <WiFiScanner.h>
 #include <APSettingsService.h>
 #include <NTPSettingsService.h>
-#include <NTPStatus.h>
 #include <OTASettingsService.h>
+#include <AuthenticationService.h>
+#include <WiFiScanner.h>
+#include <WiFiStatus.h>
+#include <NTPStatus.h>
 #include <APStatus.h>
+#include <SystemStatus.h>
 
 #define SERIAL_BAUD_RATE 115200
 
 AsyncWebServer server(80);
 
-WiFiSettingsService wifiSettingsService = WiFiSettingsService(&server, &SPIFFS);
-APSettingsService apSettingsService = APSettingsService(&server, &SPIFFS);
-NTPSettingsService ntpSettingsService = NTPSettingsService(&server, &SPIFFS);
-OTASettingsService otaSettingsService = OTASettingsService(&server, &SPIFFS);
+SecuritySettingsService securitySettingsService = SecuritySettingsService(&server, &SPIFFS);
+WiFiSettingsService wifiSettingsService = WiFiSettingsService(&server, &SPIFFS, &securitySettingsService);
+APSettingsService apSettingsService = APSettingsService(&server, &SPIFFS, &securitySettingsService);
+NTPSettingsService ntpSettingsService = NTPSettingsService(&server, &SPIFFS, &securitySettingsService);
+OTASettingsService otaSettingsService = OTASettingsService(&server, &SPIFFS, &securitySettingsService);
+AuthenticationService authenticationService = AuthenticationService(&server, &securitySettingsService);
 
-WiFiScanner wifiScanner = WiFiScanner(&server);
-WiFiStatus wifiStatus = WiFiStatus(&server);
-NTPStatus ntpStatus = NTPStatus(&server);
-APStatus apStatus = APStatus(&server);
+WiFiScanner wifiScanner = WiFiScanner(&server, &securitySettingsService);
+WiFiStatus wifiStatus = WiFiStatus(&server, &securitySettingsService);
+NTPStatus ntpStatus = NTPStatus(&server, &securitySettingsService);
+APStatus apStatus = APStatus(&server, &securitySettingsService);
+SystemStatus systemStatus = SystemStatus(&server, &securitySettingsService);;
 
 void setup() {
     // Disable wifi config persistance
@@ -39,6 +46,9 @@ void setup() {
 
     Serial.begin(SERIAL_BAUD_RATE);
     SPIFFS.begin();
+
+    // start security settings service first
+    securitySettingsService.begin();
 
     // start services
     ntpSettingsService.begin();
@@ -67,8 +77,9 @@ void setup() {
 
     // Disable CORS if required
     #if defined(ENABLE_CORS)
-    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
-    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Headers", "*");
+    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", CORS_ORIGIN);
+    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Headers", "Accept, Content-Type, Authorization");
+    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Credentials", "true");
     #endif
 
     server.begin();

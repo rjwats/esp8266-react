@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Redirect, Route, Switch } from 'react-router';
 
 import AppRouting from './AppRouting';
 import SnackbarNotification from './components/SnackbarNotification';
@@ -10,14 +11,12 @@ import orange from '@material-ui/core/colors/orange';
 import red from '@material-ui/core/colors/red';
 import green from '@material-ui/core/colors/green';
 
-import JssProvider from 'react-jss/lib/JssProvider';
 import { create } from 'jss';
+import { StylesProvider, jssPreset } from '@material-ui/styles';
 
 import {
   MuiThemeProvider,
-  createMuiTheme,
-  createGenerateClassName,
-  jssPreset,
+  createMuiTheme
 } from '@material-ui/core/styles';
 
 // Our theme
@@ -35,22 +34,25 @@ const theme = createMuiTheme({
 // JSS instance
 const jss = create(jssPreset());
 
-// Class name generator.
-const generateClassName = createGenerateClassName();
+// this redirect forces a call to authenticationContext.refresh() which invalidates the JWT if it is invalid.
+const unauthorizedRedirect = () =>  <Redirect to="/" />;
 
-class App extends Component {
-	render() {
-	   return (
-		 <JssProvider jss={jss} generateClassName={generateClassName}>
-			<MuiThemeProvider theme={theme}>
-        <SnackbarNotification>
-				  <CssBaseline />
-          <AppRouting />
-        </SnackbarNotification>
-			</MuiThemeProvider>
-		 </JssProvider>
-		)
-	}
+class App extends Component {  
+  render() {
+    return (
+      <StylesProvider jss={jss}>
+        <MuiThemeProvider theme={theme}>
+          <SnackbarNotification>
+            <CssBaseline />
+            <Switch>
+              <Route exact path="/unauthorized" component={unauthorizedRedirect} />
+              <Route component={AppRouting} />
+            </Switch>
+          </SnackbarNotification>
+        </MuiThemeProvider>
+      </StylesProvider>
+    );
+  }
 }
 
 export default App

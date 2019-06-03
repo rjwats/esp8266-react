@@ -1,6 +1,6 @@
 #include <APSettingsService.h>
 
-APSettingsService::APSettingsService(AsyncWebServer* server, FS* fs) : SettingsService(server, fs, AP_SETTINGS_SERVICE_PATH, AP_SETTINGS_FILE) {
+APSettingsService::APSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) : AdminSettingsService(server, fs, securityManager, AP_SETTINGS_SERVICE_PATH, AP_SETTINGS_FILE) {
   onConfigUpdated();
 }
 
@@ -46,7 +46,7 @@ void APSettingsService::stopAP() {
     Serial.println("Stopping captive portal");
     _dnsServer->stop();
     delete _dnsServer;
-    _dnsServer = NULL;
+    _dnsServer = nullptr;
   }
   Serial.println("Stopping software access point");
   WiFi.softAPdisconnect(true);

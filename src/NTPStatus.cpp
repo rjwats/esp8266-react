@@ -1,7 +1,9 @@
 #include <NTPStatus.h>
 
-NTPStatus::NTPStatus(AsyncWebServer *server) : _server(server) {
-  _server->on(NTP_STATUS_SERVICE_PATH, HTTP_GET, std::bind(&NTPStatus::ntpStatus, this, std::placeholders::_1));
+NTPStatus::NTPStatus(AsyncWebServer *server, SecurityManager* securityManager) : _server(server), _securityManager(securityManager) {
+  _server->on(NTP_STATUS_SERVICE_PATH, HTTP_GET, 
+    _securityManager->wrapRequest(std::bind(&NTPStatus::ntpStatus, this, std::placeholders::_1), AuthenticationPredicates::IS_AUTHENTICATED)
+  );
 }
 
 void NTPStatus::ntpStatus(AsyncWebServerRequest *request) {

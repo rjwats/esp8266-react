@@ -12,12 +12,12 @@
 #include <ESPAsyncWebServer.h>
 #include <ArduinoJson.h>
 #include <AsyncArduinoJson6.h>
-#include <AsyncJsonRequestWebHandler.h>
+#include <AsyncJsonWebHandler.h>
 
 /**
 * At the moment, not expecting services to have to deal with large JSON
 * files this could be made configurable fairly simply, it's exposed on
-* AsyncJsonRequestWebHandler with a setter.
+* AsyncJsonWebHandler with a setter.
 */
 #define MAX_SETTINGS_SIZE 1024
 
@@ -31,7 +31,7 @@ class SimpleService {
 
 private:
 
-  AsyncJsonRequestWebHandler _updateHandler;
+  AsyncJsonWebHandler _updateHandler;
 
   void fetchConfig(AsyncWebServerRequest *request){
     AsyncJsonResponse * response = new AsyncJsonResponse(MAX_SETTINGS_SIZE);

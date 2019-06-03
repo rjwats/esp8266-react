@@ -1,0 +1,15 @@
+{
+    "jwt_secret":"esp8266-react",
+    "users": [
+        {
+            "username": "admin",
+            "password": "admin",
+            "admin": true
+        },
+        {
+            "username": "guest",
+            "password": "guest",
+            "admin": false
+        }
+    ]
+}

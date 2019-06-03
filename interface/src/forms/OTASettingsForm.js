@@ -16,23 +16,23 @@ import PasswordValidator from '../components/PasswordValidator';
 
 const styles = theme => ({
   loadingSettings: {
-    margin: theme.spacing.unit,
+    margin: theme.spacing(0.5),
   },
   loadingSettingsDetails: {
-    margin: theme.spacing.unit * 4,
+    margin: theme.spacing(4),
     textAlign: "center"
   },
   switchControl: {
     width: "100%",
-    marginTop: theme.spacing.unit * 2,
-    marginBottom: theme.spacing.unit
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(0.5)
   },
   textField: {
     width: "100%"
   },
   button: {
-    marginRight: theme.spacing.unit * 2,
-    marginTop: theme.spacing.unit * 2,
+    marginRight: theme.spacing(2),
+    marginTop: theme.spacing(2),
   }
 });
 
@@ -51,7 +51,7 @@ class OTASettingsForm extends React.Component {
 
          <div className={classes.loadingSettings}>
            <LinearProgress className={classes.loadingSettingsDetails}/>
-           <Typography variant="display1" className={classes.loadingSettingsDetails}>
+           <Typography variant="h4" className={classes.loadingSettingsDetails}>
              Loading...
            </Typography>
          </div>
@@ -85,7 +85,7 @@ class OTASettingsForm extends React.Component {
              />
 
              <PasswordValidator
-                   validators={['required', 'matchRegexp:^.{0,64}$']}
+                   validators={['required', 'matchRegexp:^.{1,64}$']}
                    errorMessages={['OTA Password is required', 'OTA Point Password must be 64 characters or less']}
                    name="password"
                    label="Password"
@@ -107,7 +107,7 @@ class OTASettingsForm extends React.Component {
         :
 
         <div className={classes.loadingSettings}>
-          <Typography variant="display1" className={classes.loadingSettingsDetails}>
+          <Typography variant="h4" className={classes.loadingSettingsDetails}>
             {errorMessage}
           </Typography>
           <Button variant="contained" color="secondary" className={classes.button} onClick={onReset}>
