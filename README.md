@@ -196,7 +196,7 @@ board = node32s
 
 ## Customizing and theming
 
-The framework, and MaterialUI allows for a good degree of custoimzation with little effort.
+The framework, and MaterialUI allows for a reasonable degree of customization with little effort.
 
 ### Theming the app
 
