@@ -60,21 +60,18 @@ void ArduinoJsonJWT::parseJWT(String jwt, JsonDocument &jsonDocument) {
   // clear json document before we begin, jsonDocument wil be null on failure
   jsonDocument.clear();
 
-  // must be of minimum length or greater
-  if (jwt.length() <= JWT_SIG_SIZE + JWT_HEADER_SIZE + 2) {
-    return;
-  }
   // must have the correct header and delimiter
   if (!jwt.startsWith(JWT_HEADER) || jwt.indexOf('.') != JWT_HEADER_SIZE) {
     return;
   }
-  // must have signature of correct length
-  int signatureDelimiterIndex = jwt.length() - JWT_SIG_SIZE - 1;
-  if (jwt.lastIndexOf('.') != signatureDelimiterIndex) {
+
+  // check there is a signature delimieter
+  int signatureDelimiterIndex = jwt.lastIndexOf('.');
+  if (signatureDelimiterIndex == JWT_HEADER_SIZE) {
     return;
   }
 
-  // signature must be correct
+  // check the signature is valid
   String signature = jwt.substring(signatureDelimiterIndex + 1);
   jwt = jwt.substring(0, signatureDelimiterIndex);
   if (sign(jwt) != signature){
