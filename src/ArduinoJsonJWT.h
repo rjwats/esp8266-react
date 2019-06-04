@@ -17,7 +17,7 @@ private:
   String _secret;
 
   const String JWT_HEADER = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9";
-  const size_t JWT_HEADER_SIZE = JWT_HEADER.length();
+  const int JWT_HEADER_SIZE = JWT_HEADER.length();
 
   String sign(String &value);
 
