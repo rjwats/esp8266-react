@@ -1,6 +1,12 @@
 #include <WiFiSettingsService.h>
 
-WiFiSettingsService::WiFiSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) : AdminSettingsService(server, fs, securityManager, WIFI_SETTINGS_SERVICE_PATH, WIFI_SETTINGS_FILE) {}
+WiFiSettingsService::WiFiSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) : AdminSettingsService(server, fs, securityManager, WIFI_SETTINGS_SERVICE_PATH, WIFI_SETTINGS_FILE) {
+#if defined(ESP8266)
+  _onStationModeDisconnectedHandler = WiFi.onStationModeDisconnected(std::bind(&WiFiSettingsService::onStationModeDisconnected, this, std::placeholders::_1));
+#elif defined(ESP_PLATFORM)
+  WiFi.onEvent(std::bind(&WiFiSettingsService::onStationModeDisconnected, this, std::placeholders::_1, std::placeholders::_2), WiFiEvent_t::SYSTEM_EVENT_AP_STADISCONNECTED); 
+#endif
+}
 
 WiFiSettingsService::~WiFiSettingsService() {}
 
@@ -56,7 +62,7 @@ void WiFiSettingsService::onConfigUpdated() {
 }
 
 void WiFiSettingsService::reconfigureWiFiConnection() {
-    // disconnect and de-configure wifi and software access point
+    // disconnect and de-configure wifi
     WiFi.disconnect(true);
 
     // reset last connection attempt to force loop to reconnect immediately
@@ -106,8 +112,16 @@ void WiFiSettingsService::manageSTA() {
     }
     // attempt to connect to the network
     WiFi.begin(_ssid.c_str(), _password.c_str());
-  } else {
-    Serial.println("Retrying WiFi connection.");
-    WiFi.reconnect();
-  }  
+  }
 }
+
+#if defined(ESP8266)
+void WiFiSettingsService::onStationModeDisconnected(const WiFiEventStationModeDisconnected& event) {
+  WiFi.disconnect(true);
+}
+#elif defined(ESP_PLATFORM)
+void WiFiSettingsService::onStationModeDisconnected(WiFiEvent_t event, WiFiEventInfo_t info) {
+  WiFi.disconnect(true);
+}
+#endif
+
