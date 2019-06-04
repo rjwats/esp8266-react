@@ -66,7 +66,7 @@ class APSettingsForm extends React.Component {
             <Fragment>
               <TextValidator
                 validators={['required', 'matchRegexp:^.{1,32}$']}
-                errorMessages={['Access Point SSID is required', 'Access Point SSID must be 32 characeters or less']}
+                errorMessages={['Access Point SSID is required', 'Access Point SSID must be 32 characters or less']}
                 name="ssid"
                 label="Access Point SSID"
                 className={classes.textField}

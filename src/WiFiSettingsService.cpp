@@ -56,27 +56,11 @@ void WiFiSettingsService::onConfigUpdated() {
 }
 
 void WiFiSettingsService::reconfigureWiFiConnection() {
-    Serial.println("Reconfiguring WiFi...");
-
     // disconnect and de-configure wifi and software access point
     WiFi.disconnect(true);
 
-    // configure for static IP
-    if (_staticIPConfig) {
-      WiFi.config(_localIP, _gatewayIP,  _subnetMask, _dnsIP1, _dnsIP2);
-    } else { 
-     // configure for DHCP
-#if defined(ESP8266) 
-      WiFi.config(INADDR_ANY, INADDR_ANY, INADDR_ANY);
-      WiFi.hostname(_hostname);
-#elif defined(ESP_PLATFORM)
-      WiFi.config(INADDR_NONE, INADDR_NONE, INADDR_NONE);
-      WiFi.setHostname(_hostname.c_str());
-#endif
-    }
-
-    // connect to the network
-    WiFi.begin(_ssid.c_str(), _password.c_str());
+    // reset last connection attempt to force loop to reconnect immediately
+    _lastConnectionAttempt = 0;
 }
 
 void WiFiSettingsService::readIP(JsonObject& root, String key, IPAddress& _ip){
@@ -89,4 +73,41 @@ void WiFiSettingsService::writeIP(JsonObject& root, String key, IPAddress& _ip){
   if (_ip != INADDR_NONE){
     root[key] = _ip.toString();
   }
+}
+
+void WiFiSettingsService::loop() {
+  unsigned long currentMillis = millis();
+  if (!_lastConnectionAttempt || (unsigned long)(currentMillis - _lastConnectionAttempt) >= WIFI_RECONNECTION_DELAY) {
+    _lastConnectionAttempt = currentMillis;
+     manageSTA();
+  }
+}
+
+void WiFiSettingsService::manageSTA() {
+  // Abort if already connected, or if we have no SSID
+  if (WiFi.isConnected() || _ssid.length() == 0) {
+    return;
+  }
+  // Connect or reconnect as required
+  if ((WiFi.getMode() & WIFI_STA) == 0) {
+    Serial.println("Connecting to WiFi.");    
+    if (_staticIPConfig) {
+      // configure for static IP
+      WiFi.config(_localIP, _gatewayIP,  _subnetMask, _dnsIP1, _dnsIP2);
+    } else {
+      // configure for DHCP
+#if defined(ESP8266) 
+      WiFi.config(INADDR_ANY, INADDR_ANY, INADDR_ANY);
+      WiFi.hostname(_hostname);
+#elif defined(ESP_PLATFORM)
+      WiFi.config(INADDR_NONE, INADDR_NONE, INADDR_NONE);
+      WiFi.setHostname(_hostname.c_str());
+#endif
+    }
+    // attempt to connect to the network
+    WiFi.begin(_ssid.c_str(), _password.c_str());
+  } else {
+    Serial.println("Retrying WiFi connection.");
+    WiFi.reconnect();
+  }  
 }

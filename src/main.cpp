@@ -41,8 +41,9 @@ APStatus apStatus = APStatus(&server, &securitySettingsService);
 SystemStatus systemStatus = SystemStatus(&server, &securitySettingsService);;
 
 void setup() {
-    // Disable wifi config persistance
+    // Disable wifi config persistance and auto reconnect
     WiFi.persistent(false);
+    WiFi.setAutoReconnect(false);
 
     Serial.begin(SERIAL_BAUD_RATE);
     SPIFFS.begin();
@@ -86,6 +87,7 @@ void setup() {
 }
 
 void loop() {
+  wifiSettingsService.loop();
   apSettingsService.loop();
   ntpSettingsService.loop();
   otaSettingsService.loop();

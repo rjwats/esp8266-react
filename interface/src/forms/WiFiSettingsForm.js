@@ -99,8 +99,8 @@ class WiFiSettingsForm extends React.Component {
                 {
                   selectedNetwork ? this.renderSelectedNetwork() :
                     <TextValidator
-                      validators={['required', 'matchRegexp:^.{1,32}$']}
-                      errorMessages={['SSID is required', 'SSID must be 32 characeters or less']}
+                      validators={['matchRegexp:^.{0,32}$']}
+                      errorMessages={['SSID must be 32 characters or less']}
                       name="ssid"
                       label="SSID"
                       className={classes.textField}
