@@ -44,14 +44,15 @@ void setup() {
   // Disable wifi config persistance and auto reconnect
   WiFi.persistent(false);
   WiFi.setAutoReconnect(false);
-  
+
 #if defined(ESP_PLATFORM)
   // Init the wifi driver on ESP32
-  wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
-  esp_err_t err = esp_wifi_init(&cfg);
-  if(err){
-    log_e("esp_wifi_init %d", err);
-  }
+    wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
+   esp_err_t err = esp_wifi_init(&cfg);
+   if(err){
+      log_e("esp_wifi_init %d", err);
+ }
+
 #endif
 
   Serial.begin(SERIAL_BAUD_RATE);
