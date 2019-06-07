@@ -39,6 +39,7 @@ void OTASettingsService::writeToJsonObject(JsonObject& root) {
 
 void OTASettingsService::configureArduinoOTA() {
   if (_arduinoOTA){
+    _arduinoOTA->end();
     delete _arduinoOTA;
     _arduinoOTA = nullptr;
   }
