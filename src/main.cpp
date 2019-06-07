@@ -10,7 +10,7 @@
 #endif
 
 #include <FS.h>
-
+#include <esp_wifi.h>
 #include <SecuritySettingsService.h>
 #include <WiFiSettingsService.h>
 #include <APSettingsService.h>
@@ -41,51 +41,59 @@ APStatus apStatus = APStatus(&server, &securitySettingsService);
 SystemStatus systemStatus = SystemStatus(&server, &securitySettingsService);;
 
 void setup() {
-    // Disable wifi config persistance
-    WiFi.persistent(false);
+  // Disable wifi config persistance and auto reconnect
+  WiFi.persistent(false);
+  WiFi.setAutoReconnect(false);
 
-    Serial.begin(SERIAL_BAUD_RATE);
-    SPIFFS.begin();
+#if defined(ESP_PLATFORM)
+  // Init the wifi driver on ESP32
+  WiFi.mode(WIFI_MODE_MAX);
+  WiFi.mode(WIFI_MODE_NULL);
+#endif
 
-    // start security settings service first
-    securitySettingsService.begin();
+  Serial.begin(SERIAL_BAUD_RATE);
+  SPIFFS.begin();
+  
+  // Start security settings service first
+  securitySettingsService.begin();
 
-    // start services
-    ntpSettingsService.begin();
-    otaSettingsService.begin();
-    apSettingsService.begin();
-    wifiSettingsService.begin();
+  // Start services
+  ntpSettingsService.begin();
+  otaSettingsService.begin();
+  apSettingsService.begin();
+  wifiSettingsService.begin();
 
-    // Serving static resources from /www/
-    server.serveStatic("/js/", SPIFFS, "/www/js/");
-    server.serveStatic("/css/", SPIFFS, "/www/css/");
-    server.serveStatic("/fonts/", SPIFFS, "/www/fonts/");
-    server.serveStatic("/app/", SPIFFS, "/www/app/");
-    server.serveStatic("/favicon.ico", SPIFFS, "/www/favicon.ico");
+  // Serving static resources from /www/
+  server.serveStatic("/js/", SPIFFS, "/www/js/");
+  server.serveStatic("/css/", SPIFFS, "/www/css/");
+  server.serveStatic("/fonts/", SPIFFS, "/www/fonts/");
+  server.serveStatic("/app/", SPIFFS, "/www/app/");
+  server.serveStatic("/favicon.ico", SPIFFS, "/www/favicon.ico");
 
-    // Serving all other get requests with "/www/index.htm"
-    // OPTIONS get a straight up 200 response
-    server.onNotFound([](AsyncWebServerRequest *request) {
-    	if (request->method() == HTTP_GET) {
-        request->send(SPIFFS, "/www/index.html");
-      } else if (request->method() == HTTP_OPTIONS) {
-		    request->send(200);
-      } else {
-    		request->send(404);
-    	}
-    });
+  // Serving all other get requests with "/www/index.htm"
+  // OPTIONS get a straight up 200 response
+  server.onNotFound([](AsyncWebServerRequest *request) {
+    if (request->method() == HTTP_GET) {
+      request->send(SPIFFS, "/www/index.html");
+    } else if (request->method() == HTTP_OPTIONS) {
+      request->send(200);
+    } else {
+      request->send(404);
+    }
+  });
 
-    // Disable CORS if required
-    #if defined(ENABLE_CORS)
-    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", CORS_ORIGIN);
-    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Headers", "Accept, Content-Type, Authorization");
-    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Credentials", "true");
-    #endif
+  // Disable CORS if required
+  #if defined(ENABLE_CORS)
+  DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", CORS_ORIGIN);
+  DefaultHeaders::Instance().addHeader("Access-Control-Allow-Headers", "Accept, Content-Type, Authorization");
+  DefaultHeaders::Instance().addHeader("Access-Control-Allow-Credentials", "true");
+  #endif
 
-    server.begin();
+  server.begin();
 }
 
 void loop() {
+  wifiSettingsService.loop();
   apSettingsService.loop();
   ntpSettingsService.loop();
   otaSettingsService.loop();
