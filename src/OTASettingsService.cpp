@@ -39,7 +39,9 @@ void OTASettingsService::writeToJsonObject(JsonObject& root) {
 
 void OTASettingsService::configureArduinoOTA() {
   if (_arduinoOTA){
+#if defined(ESP_PLATFORM)
     _arduinoOTA->end();
+#endif
     delete _arduinoOTA;
     _arduinoOTA = nullptr;
   }

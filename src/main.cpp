@@ -10,7 +10,6 @@
 #endif
 
 #include <FS.h>
-#include <esp_wifi.h>
 #include <SecuritySettingsService.h>
 #include <WiFiSettingsService.h>
 #include <APSettingsService.h>
