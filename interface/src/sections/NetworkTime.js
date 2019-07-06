@@ -32,6 +32,7 @@ class NetworkTime extends Component {
       </MenuAppBar>
     )
   }
+
 }
 
 export default withAuthenticationContext(NetworkTime)

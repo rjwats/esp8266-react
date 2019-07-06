@@ -14,7 +14,7 @@ class ManageUsers extends Component {
   render() {
     const { data, fetched, errorMessage } = this.props;
     return (
-      <SectionContent title="Manage Users">
+      <SectionContent title="Manage Users" titleGutter>
         <ManageUsersForm
           userData={data}
           userDataFetched={fetched}

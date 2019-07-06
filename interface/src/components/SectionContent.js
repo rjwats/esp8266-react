@@ -8,15 +8,15 @@ import Typography from '@material-ui/core/Typography';
 const styles = theme => ({
   content: {
     padding: theme.spacing(2),
-    margin: theme.spacing(2),
+    margin: theme.spacing(3),
   }
 });
 
 function SectionContent(props) {
-  const { children, classes, title } = props;
+  const { children, classes, title, titleGutter } = props;
   return (
       <Paper className={classes.content}>
-        <Typography variant="h6">
+        <Typography variant="h6" gutterBottom={titleGutter}>
           {title}
         </Typography>
         {children}
@@ -30,7 +30,8 @@ SectionContent.propTypes = {
         PropTypes.arrayOf(PropTypes.node),
         PropTypes.node
     ]).isRequired,
-  title: PropTypes.string.isRequired
+  title: PropTypes.string.isRequired,
+  titleGutter: PropTypes.bool
 };
 
 export default withStyles(styles)(SectionContent);

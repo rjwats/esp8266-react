@@ -96,9 +96,7 @@ class APStatus extends Component {
     return (
       <div>
         <List>
-          <Fragment>
-            {this.createListItems(data, classes)}
-          </Fragment>
+          {this.createListItems(data, classes)}
         </List>
         <Button variant="contained" color="secondary" className={classes.button} onClick={this.props.loadData}>
           Refresh

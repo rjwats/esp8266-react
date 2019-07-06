@@ -4,7 +4,7 @@ import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Fab from '@material-ui/core/Fab';
-import { APP_NAME } from '../constants/App';
+import { PROJECT_NAME } from '../constants/Env';
 import ForwardIcon from '@material-ui/icons/Forward';
 import { withNotifier } from '../components/SnackbarNotification';
 import { SIGN_IN_ENDPOINT } from '../constants/Endpoints';
@@ -95,7 +95,7 @@ class SignInPage extends Component {
     return (
       <div className={classes.loginPage}>
         <Paper className={classes.loginPanel}>
-          <Typography variant="h4">{APP_NAME}</Typography>
+          <Typography variant="h4">{PROJECT_NAME}</Typography>
           <ValidatorForm onSubmit={this.onSubmit}>
             <TextValidator
               disabled={processing}
