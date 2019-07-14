@@ -33,7 +33,7 @@ private:
 
   AsyncJsonWebHandler _updateHandler;
 
-  void fetchConfig(AsyncWebServerRequest *request){
+  void fetchConfig(AsyncWebServerRequest *request) {
     AsyncJsonResponse * response = new AsyncJsonResponse(MAX_SETTINGS_SIZE);
     JsonObject jsonObject = response->getRoot();    
     writeToJsonObject(jsonObject);
@@ -41,8 +41,8 @@ private:
     request->send(response);
   }
 
-  void updateConfig(AsyncWebServerRequest *request, JsonDocument &jsonDocument){
-    if (jsonDocument.is<JsonObject>()){
+  void updateConfig(AsyncWebServerRequest *request, JsonDocument &jsonDocument) {
+    if (jsonDocument.is<JsonObject>()) {
       JsonObject newConfig = jsonDocument.as<JsonObject>();
       readFromJsonObject(newConfig);
  
@@ -60,32 +60,30 @@ private:
   protected:
 
     // will serve setting endpoints from here
-    AsyncWebServer* _server;
+    char const* _servicePath;
 
     // reads the local config from the
-    virtual void readFromJsonObject(JsonObject& root){}
-    virtual void writeToJsonObject(JsonObject& root){}
+    virtual void readFromJsonObject(JsonObject& root) {}
+    virtual void writeToJsonObject(JsonObject& root) {}
 
     // implement to perform action when config has been updated
-    virtual void onConfigUpdated(){}
+    virtual void onConfigUpdated() {}
 
   public:
 
-    SimpleService(AsyncWebServer* server, char const* servicePath):
-    _server(server) {
-
-      // configure fetch config handler
-      _server->on(servicePath, HTTP_GET, std::bind(&SimpleService::fetchConfig, this, std::placeholders::_1));
-
-      // configure update settings handler
+    SimpleService(char const* servicePath): _servicePath(servicePath) {
       _updateHandler.setUri(servicePath);
       _updateHandler.setMethod(HTTP_POST);
       _updateHandler.setMaxContentLength(MAX_SETTINGS_SIZE);
       _updateHandler.onRequest(std::bind(&SimpleService::updateConfig, this, std::placeholders::_1, std::placeholders::_2));
-      _server->addHandler(&_updateHandler);
     }
-
+    
     virtual ~SimpleService() {}
+
+    void init(AsyncWebServer* server) {
+      server->on(_servicePath, HTTP_GET, std::bind(&SimpleService::fetchConfig, this, std::placeholders::_1));
+      server->addHandler(&_updateHandler);
+    }
 
 };
 

@@ -22,11 +22,12 @@ class WiFiStatus {
 
   public:
 
-    WiFiStatus(AsyncWebServer *server, SecurityManager* securityManager);
+    WiFiStatus(SecurityManager* securityManager);
+    
+    void init(AsyncWebServer* server);
 
   private:
 
-    AsyncWebServer* _server;
     SecurityManager* _securityManager;
 
 #if defined(ESP8266)

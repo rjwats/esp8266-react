@@ -1,11 +1,13 @@
 #include <WiFiScanner.h>
 
-WiFiScanner::WiFiScanner(AsyncWebServer *server, SecurityManager* securityManager) : _server(server) {
-  _server->on(SCAN_NETWORKS_SERVICE_PATH, HTTP_GET, 
-    securityManager->wrapRequest(std::bind(&WiFiScanner::scanNetworks, this, std::placeholders::_1), AuthenticationPredicates::IS_ADMIN)
+WiFiScanner::WiFiScanner(SecurityManager* securityManager) : _securityManager(securityManager) {};
+
+void WiFiScanner::init(AsyncWebServer* server) {
+  server->on(SCAN_NETWORKS_SERVICE_PATH, HTTP_GET, 
+    _securityManager->wrapRequest(std::bind(&WiFiScanner::scanNetworks, this, std::placeholders::_1), AuthenticationPredicates::IS_ADMIN)
   );
-  _server->on(LIST_NETWORKS_SERVICE_PATH, HTTP_GET, 
-    securityManager->wrapRequest(std::bind(&WiFiScanner::listNetworks, this, std::placeholders::_1), AuthenticationPredicates::IS_ADMIN)
+  server->on(LIST_NETWORKS_SERVICE_PATH, HTTP_GET, 
+    _securityManager->wrapRequest(std::bind(&WiFiScanner::listNetworks, this, std::placeholders::_1), AuthenticationPredicates::IS_ADMIN)
   );
 }
 

@@ -24,11 +24,12 @@ class WiFiScanner {
 
   public:
 
-    WiFiScanner(AsyncWebServer *server, SecurityManager* securityManager);
+    WiFiScanner(SecurityManager* securityManager);
+    void init(AsyncWebServer *server);
 
   private:
 
-    AsyncWebServer* _server;
+    SecurityManager* _securityManager;
 
     void scanNetworks(AsyncWebServerRequest *request);
     void listNetworks(AsyncWebServerRequest *request);

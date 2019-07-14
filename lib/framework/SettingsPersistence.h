@@ -47,7 +47,7 @@ protected:
     return true;
   }
 
-  void readFromFS(){
+  void readFromFS() {
     File configFile = _fs->open(_filePath, "r");
 
     // use defaults if no config found

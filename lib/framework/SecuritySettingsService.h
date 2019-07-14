@@ -11,10 +11,8 @@ class SecuritySettingsService : public AdminSettingsService, public SecurityMana
 
   public:
 
-    SecuritySettingsService(AsyncWebServer* server, FS* fs);
+    SecuritySettingsService(FS* fs);
     ~SecuritySettingsService();
-
-    void begin();
 
   protected:
 

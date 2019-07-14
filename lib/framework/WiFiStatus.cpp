@@ -1,9 +1,6 @@
 #include <WiFiStatus.h>
 
-WiFiStatus::WiFiStatus(AsyncWebServer *server, SecurityManager* securityManager) : _server(server), _securityManager(securityManager) {
-  _server->on(WIFI_STATUS_SERVICE_PATH, HTTP_GET, 
-    _securityManager->wrapRequest(std::bind(&WiFiStatus::wifiStatus, this, std::placeholders::_1), AuthenticationPredicates::IS_AUTHENTICATED)
-  );
+WiFiStatus::WiFiStatus(SecurityManager* securityManager) : _securityManager(securityManager) {
 #if defined(ESP8266)
   _onStationModeConnectedHandler = WiFi.onStationModeConnected(onStationModeConnected);
   _onStationModeDisconnectedHandler = WiFi.onStationModeDisconnected(onStationModeDisconnected);
@@ -49,6 +46,12 @@ void WiFiStatus::onStationModeGotIP(WiFiEvent_t event, WiFiEventInfo_t info) {
   Serial.println(WiFi.getHostname());
 }
 #endif
+
+void WiFiStatus::init(AsyncWebServer* server) {
+  server->on(WIFI_STATUS_SERVICE_PATH, HTTP_GET, 
+    _securityManager->wrapRequest(std::bind(&WiFiStatus::wifiStatus, this, std::placeholders::_1), AuthenticationPredicates::IS_AUTHENTICATED)
+  );
+}
 
 void WiFiStatus::wifiStatus(AsyncWebServerRequest *request) {
   AsyncJsonResponse * response = new AsyncJsonResponse(MAX_WIFI_STATUS_SIZE);

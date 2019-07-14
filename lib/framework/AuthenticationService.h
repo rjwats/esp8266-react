@@ -15,8 +15,10 @@ class AuthenticationService  {
 
   public:
 
-    AuthenticationService(AsyncWebServer* server, SecurityManager* securityManager) ;
+    AuthenticationService(SecurityManager* securityManager);
     ~AuthenticationService();
+
+    void init(AsyncWebServer* server);
 
   private:
     // server instance 

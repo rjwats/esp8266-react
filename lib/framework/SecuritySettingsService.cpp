@@ -1,6 +1,6 @@
 #include <SecuritySettingsService.h>
 
-SecuritySettingsService::SecuritySettingsService(AsyncWebServer* server, FS* fs) : AdminSettingsService(server, fs, this, SECURITY_SETTINGS_PATH, SECURITY_SETTINGS_FILE), SecurityManager() {}
+SecuritySettingsService::SecuritySettingsService(FS* fs) : AdminSettingsService(fs, this, SECURITY_SETTINGS_PATH, SECURITY_SETTINGS_FILE), SecurityManager() {}
 SecuritySettingsService::~SecuritySettingsService() {}
 
 void SecuritySettingsService::readFromJsonObject(JsonObject& root) {
@@ -28,8 +28,4 @@ void SecuritySettingsService::writeToJsonObject(JsonObject& root) {
     user["password"] = _user.getPassword();
     user["admin"] = _user.isAdmin();
   }
-}
-
-void SecuritySettingsService::begin() {
-  readFromFS();
 }
