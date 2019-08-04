@@ -1,6 +1,6 @@
 import * as React from 'react';
 import history from '../history'
-import { withNotifier } from '../components/SnackbarNotification';
+import { withSnackbar } from 'notistack';
 import { VERIFY_AUTHORIZATION_ENDPOINT } from '../constants/Endpoints';
 import { ACCESS_TOKEN, authorizedFetch } from './Authentication';
 import { AuthenticationContext } from './Context';
@@ -33,7 +33,7 @@ class AuthenticationWrapper extends React.Component {
         signIn: this.signIn,
         signOut: this.signOut,
         isAuthenticated: this.isAuthenticated,
-        isAdmin: this.isAdmin        
+        isAdmin: this.isAdmin
       },
       initialized: false
     };
@@ -80,7 +80,9 @@ class AuthenticationWrapper extends React.Component {
           this.setState({ initialized: true, context: { ...this.state.context, user } });
         }).catch(error => {
           this.setState({ initialized: true, context: { ...this.state.context, user: undefined } });
-          this.props.raiseNotification("Error verifying authorization: " + error.message);
+          this.props.enqueueSnackbar("Error verifying authorization: " + error.message, {
+            variant: 'error',
+          });
         });
     } else {
       this.setState({ initialized: true, context: { ...this.state.context, user: undefined } });
@@ -90,7 +92,11 @@ class AuthenticationWrapper extends React.Component {
   signIn = (accessToken) => {
     try {
       localStorage.setItem(ACCESS_TOKEN, accessToken);
-      this.setState({ context: { ...this.state.context, user: jwtDecode(accessToken) } });
+      const user = jwtDecode(accessToken);
+      this.setState({ context: { ...this.state.context, user } });
+      this.props.enqueueSnackbar(`Logged in as ${user.username}`, {
+        variant: 'success',
+      });
     } catch (err) {
       this.setState({ initialized: true, context: { ...this.state.context, user: undefined } });
       throw new Error("Failed to parse JWT " + err.message);
@@ -105,7 +111,7 @@ class AuthenticationWrapper extends React.Component {
         user: undefined
       }
     });
-    this.props.raiseNotification("You have signed out.");
+    this.props.enqueueSnackbar("You have signed out.");
     history.push('/');
   }
 
@@ -114,10 +120,10 @@ class AuthenticationWrapper extends React.Component {
   }
 
   isAdmin = () => {
-    const { context } = this.state;    
+    const { context } = this.state;
     return context.user && context.user.admin;
   }
 
 }
 
-export default withStyles(styles)(withNotifier(AuthenticationWrapper))
+export default withStyles(styles)(withSnackbar(AuthenticationWrapper))

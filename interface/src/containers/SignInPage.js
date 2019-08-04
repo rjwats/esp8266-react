@@ -6,7 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import Fab from '@material-ui/core/Fab';
 import { APP_NAME } from '../constants/App';
 import ForwardIcon from '@material-ui/icons/Forward';
-import { withNotifier } from '../components/SnackbarNotification';
+import { withSnackbar } from 'notistack';
 import { SIGN_IN_ENDPOINT } from '../constants/Endpoints';
 import { withAuthenticationContext } from '../authentication/Context';
 import PasswordValidator from '../components/PasswordValidator';
@@ -84,7 +84,9 @@ class SignInPage extends Component {
         authenticationContext.signIn(json.access_token);
       })
       .catch(error => {
-        this.props.raiseNotification(error.message);
+        this.props.enqueueSnackbar(error.message, {
+          variant: 'warning',
+        });
         this.setState({ processing: false });
       });
   };
@@ -132,5 +134,5 @@ class SignInPage extends Component {
 }
 
 export default withAuthenticationContext(
-  withNotifier(withStyles(styles)(SignInPage))
+  withSnackbar(withStyles(styles)(SignInPage))
 );

@@ -1,5 +1,5 @@
 import React from 'react';
-import { withNotifier } from '../components/SnackbarNotification';
+import { withSnackbar } from 'notistack';
 import { redirectingAuthorizedFetch } from '../authentication/Authentication';
 /*
 * It is unlikely this application will grow complex enough to require redux.
@@ -10,7 +10,7 @@ import { redirectingAuthorizedFetch } from '../authentication/Authentication';
 */
 export const restComponent = (endpointUrl, FormComponent) => {
 
-  return withNotifier(
+  return withSnackbar(
     class extends React.Component {
 
       constructor(props) {
@@ -51,7 +51,9 @@ export const restComponent = (endpointUrl, FormComponent) => {
           })
           .then(json => { this.setState({ data: json, fetched: true }) })
           .catch(error => {
-            this.props.raiseNotification("Problem fetching: " + error.message);
+            this.props.enqueueSnackbar("Problem fetching: " + error.message, {
+              variant: 'error',
+            });
             this.setState({ data: null, fetched: true, errorMessage: error.message });
           });
       }
@@ -72,10 +74,14 @@ export const restComponent = (endpointUrl, FormComponent) => {
             throw Error("Invalid status code: " + response.status);
           })
           .then(json => {
-            this.props.raiseNotification("Changes successfully applied.");
+            this.props.enqueueSnackbar("Changes successfully applied.", {
+              variant: 'success',
+            });
             this.setState({ data: json, fetched: true });
           }).catch(error => {
-            this.props.raiseNotification("Problem saving: " + error.message);
+            this.props.enqueueSnackbar("Problem saving: " + error.message, {
+              variant: 'error',
+            });
             this.setState({ data: null, fetched: true, errorMessage: error.message });
           });
       }
