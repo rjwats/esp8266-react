@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Redirect, Route, Switch } from 'react-router';
 
 import AppRouting from './AppRouting';
-import SnackbarNotification from './components/SnackbarNotification';
+import { SnackbarProvider } from 'notistack';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
 import blueGrey from '@material-ui/core/colors/blueGrey';
@@ -35,20 +35,20 @@ const theme = createMuiTheme({
 const jss = create(jssPreset());
 
 // this redirect forces a call to authenticationContext.refresh() which invalidates the JWT if it is invalid.
-const unauthorizedRedirect = () =>  <Redirect to="/" />;
+const unauthorizedRedirect = () => <Redirect to="/" />;
 
-class App extends Component {  
+class App extends Component {
   render() {
     return (
       <StylesProvider jss={jss}>
         <MuiThemeProvider theme={theme}>
-          <SnackbarNotification>
+          <SnackbarProvider maxSnack={3}>
             <CssBaseline />
             <Switch>
               <Route exact path="/unauthorized" component={unauthorizedRedirect} />
               <Route component={AppRouting} />
             </Switch>
-          </SnackbarNotification>
+          </SnackbarProvider>
         </MuiThemeProvider>
       </StylesProvider>
     );

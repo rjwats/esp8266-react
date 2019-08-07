@@ -5,12 +5,12 @@ import {
 
 import { withAuthenticationContext } from './Context.js';
 import * as Authentication from './Authentication';
-import { withNotifier } from '../components/SnackbarNotification';
+import { withSnackbar } from 'notistack';
 
 export class AuthenticatedRoute extends React.Component {
 
   render() {
-    const { raiseNotification, authenticationContext, component: Component, ...rest } = this.props;
+    const { enqueueSnackbar, authenticationContext, component: Component, ...rest } = this.props;
     const { location } = this.props;
     const renderComponent = (props) => {
       if (authenticationContext.isAuthenticated()) {
@@ -19,7 +19,9 @@ export class AuthenticatedRoute extends React.Component {
         );
       }
       Authentication.storeLoginRedirect(location);
-      raiseNotification("Please log in to continue.");
+      enqueueSnackbar("Please log in to continue.", {
+        variant: 'info',
+      });
       return (
         <Redirect to='/' />
       );
@@ -31,4 +33,4 @@ export class AuthenticatedRoute extends React.Component {
 
 }
 
-export default withNotifier(withAuthenticationContext(AuthenticatedRoute));
+export default withSnackbar(withAuthenticationContext(AuthenticatedRoute));
