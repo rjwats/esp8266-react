@@ -5,7 +5,6 @@ import { ValidatorForm } from 'react-material-ui-form-validator';
 
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import LinearProgress from '@material-ui/core/LinearProgress';
 import Typography from '@material-ui/core/Typography';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -14,7 +13,6 @@ import TableFooter from '@material-ui/core/TableFooter';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Box from '@material-ui/core/Box';
-
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CloseIcon from '@material-ui/icons/Close';
@@ -25,22 +23,12 @@ import UserForm from './UserForm';
 import { withAuthenticationContext } from '../authentication/Context';
 
 const styles = theme => ({
-  loadingSettings: {
-    margin: theme.spacing(0.5),
-  },
-  loadingSettingsDetails: {
-    margin: theme.spacing(4),
-    textAlign: "center"
-  },
   button: {
     marginRight: theme.spacing(2),
     marginTop: theme.spacing(2),
   },
   table: {
     '& td, & th': { padding: theme.spacing(0.5) }
-  },
-  actions: {
-    whiteSpace: "nowrap"
   }
 });
 
@@ -134,98 +122,80 @@ class ManageUsersForm extends React.Component {
   }
 
   render() {
-    const { classes, userData, userDataFetched, errorMessage, onReset } = this.props;
+    const { classes, userData, onReset } = this.props;
     const { user, creating } = this.state;
     return (
-      !userDataFetched ?
-        <div className={classes.loadingSettings}>
-          <LinearProgress className={classes.loadingSettingsDetails} />
-          <Typography variant="h4" className={classes.loadingSettingsDetails}>
-            Loading...
-          </Typography>
-        </div>
-        :
-        userData ?
-          <Fragment>
-            <ValidatorForm onSubmit={this.onSubmit}>
-              <Table className={classes.table}>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Username</TableCell>
-                    <TableCell align="center">Admin?</TableCell>
-                    <TableCell />
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {userData.users.sort(compareUsers).map(user => (
-                    <TableRow key={user.username}>
-                      <TableCell component="th" scope="row">
-                        {user.username}
-                      </TableCell>
-                      <TableCell align="center">
-                        {
-                          user.admin ? <CheckIcon /> : <CloseIcon />
-                        }
-                      </TableCell>
-                      <TableCell align="center">
-                        <IconButton aria-label="Delete" onClick={() => this.removeUser(user)}>
-                          <DeleteIcon />
-                        </IconButton>
-                        <IconButton aria-label="Edit" onClick={() => this.startEditingUser(user)}>
-                          <EditIcon />
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-                <TableFooter>
-                  <TableRow>
-                    <TableCell colSpan={2} />
-                    <TableCell align="center">
-                      <Button variant="contained" color="secondary" onClick={this.createUser}>
-                        Add User
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                </TableFooter>
-              </Table>
-              {
-                this.noAdminConfigured() &&
-                <Typography component="div" variant="body1">
-                  <Box bgcolor="error.main" color="error.contrastText" p={2} mt={2} mb={2}>
-                    You must have at least one admin user configured.
-                  </Box>
-                </Typography>
-              }
-              <Button variant="contained" color="primary" className={classes.button} type="submit" disabled={this.noAdminConfigured()}>
-                Save
-              </Button>
-              <Button variant="contained" color="secondary" className={classes.button} onClick={onReset}>
-                Reset
-      		    </Button>
-            </ValidatorForm>
-            {
-              user &&
-              <UserForm
-                user={user}
-                creating={creating}
-                onDoneEditing={this.doneEditingUser}
-                onCancelEditing={this.cancelEditingUser}
-                handleValueChange={this.handleUserValueChange}
-                handleCheckboxChange={this.handleUserCheckboxChange}
-                uniqueUsername={this.uniqueUsername}
-              />
-            }
-          </Fragment>
-          :
-          <div className={classes.loadingSettings}>
-            <Typography variant="h4" className={classes.loadingSettingsDetails}>
-              {errorMessage}
+      <Fragment>
+        <ValidatorForm onSubmit={this.onSubmit}>
+          <Table className={classes.table}>
+            <TableHead>
+              <TableRow>
+                <TableCell>Username</TableCell>
+                <TableCell align="center">Admin?</TableCell>
+                <TableCell />
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {userData.users.sort(compareUsers).map(user => (
+                <TableRow key={user.username}>
+                  <TableCell component="th" scope="row">
+                    {user.username}
+                  </TableCell>
+                  <TableCell align="center">
+                    {
+                      user.admin ? <CheckIcon /> : <CloseIcon />
+                    }
+                  </TableCell>
+                  <TableCell align="center">
+                    <IconButton aria-label="Delete" onClick={() => this.removeUser(user)}>
+                      <DeleteIcon />
+                    </IconButton>
+                    <IconButton aria-label="Edit" onClick={() => this.startEditingUser(user)}>
+                      <EditIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+            <TableFooter>
+              <TableRow>
+                <TableCell colSpan={2} />
+                <TableCell align="center">
+                  <Button variant="contained" color="secondary" onClick={this.createUser}>
+                    Add User
+                  </Button>
+                </TableCell>
+              </TableRow>
+            </TableFooter>
+          </Table>
+          {
+            this.noAdminConfigured() &&
+            <Typography component="div" variant="body1">
+              <Box bgcolor="error.main" color="error.contrastText" p={2} mt={2} mb={2}>
+                You must have at least one admin user configured.
+              </Box>
             </Typography>
-            <Button variant="contained" color="secondary" className={classes.button} onClick={onReset}>
-              Reset
-      		  </Button>
-          </div>
+          }
+          <Button variant="contained" color="primary" className={classes.button} type="submit" disabled={this.noAdminConfigured()}>
+            Save
+          </Button>
+          <Button variant="contained" color="secondary" className={classes.button} onClick={onReset}>
+            Reset
+      		</Button>
+        </ValidatorForm>
+        {
+          user &&
+          <UserForm
+            user={user}
+            creating={creating}
+            onDoneEditing={this.doneEditingUser}
+            onCancelEditing={this.cancelEditingUser}
+            handleValueChange={this.handleUserValueChange}
+            handleCheckboxChange={this.handleUserCheckboxChange}
+            uniqueUsername={this.uniqueUsername}
+          />
+        }
+      </Fragment>
     );
   }
 
@@ -234,8 +204,6 @@ class ManageUsersForm extends React.Component {
 ManageUsersForm.propTypes = {
   classes: PropTypes.object.isRequired,
   userData: PropTypes.object,
-  userDataFetched: PropTypes.bool.isRequired,
-  errorMessage: PropTypes.string,
   onSubmit: PropTypes.func.isRequired,
   onReset: PropTypes.func.isRequired,
   setData: PropTypes.func.isRequired,

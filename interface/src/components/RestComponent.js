@@ -52,10 +52,11 @@ export const restComponent = (endpointUrl, FormComponent) => {
           })
           .then(json => { this.setState({ data: json, fetched: true }) })
           .catch(error => {
-            this.props.enqueueSnackbar("Problem fetching: " + error.message, {
+            const errorMessage = error.message || "Unknown error";
+            this.props.enqueueSnackbar("Problem fetching: " + errorMessage, {
               variant: 'error',
             });
-            this.setState({ data: null, fetched: true, errorMessage: error.message });
+            this.setState({ data: null, fetched: true, errorMessage  });
           });
       }
 
@@ -80,10 +81,11 @@ export const restComponent = (endpointUrl, FormComponent) => {
             });
             this.setState({ data: json, fetched: true });
           }).catch(error => {
-            this.props.enqueueSnackbar("Problem saving: " + error.message, {
+            const errorMessage = error.message || "Unknown error";
+            this.props.enqueueSnackbar("Problem saving: " + errorMessage, {
               variant: 'error',
             });
-            this.setState({ data: null, fetched: true, errorMessage: error.message });
+            this.setState({ data: null, fetched: true, errorMessage  });
           });
       }
 

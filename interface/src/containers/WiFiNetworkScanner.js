@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { withSnackbar } from 'notistack';
 
 import { SCAN_NETWORKS_ENDPOINT, LIST_NETWORKS_ENDPOINT } from '../constants/Endpoints';
 import SectionContent from '../components/SectionContent';
 import WiFiNetworkSelector from '../forms/WiFiNetworkSelector';
-import { withSnackbar } from 'notistack';
 import { redirectingAuthorizedFetch } from '../authentication/Authentication';
 
 const NUM_POLLS = 10

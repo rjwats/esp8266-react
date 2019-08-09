@@ -2,14 +2,10 @@ import React, { Component, Fragment } from 'react';
 
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import LinearProgress from '@material-ui/core/LinearProgress';
-import Typography from '@material-ui/core/Typography';
-
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-
 import Avatar from '@material-ui/core/Avatar';
 import Divider from '@material-ui/core/Divider';
 import WifiIcon from '@material-ui/icons/Wifi';
@@ -23,6 +19,7 @@ import { WIFI_STATUS_ENDPOINT } from '../constants/Endpoints';
 import { isConnected, connectionStatus, connectionStatusHighlight } from '../constants/WiFiConnectionStatus';
 import * as Highlight from '../constants/Highlight';
 import { restComponent } from '../components/RestComponent';
+import LoadingNotification from '../components/LoadingNotification';
 
 const styles = theme => ({
   ["wifiStatus_" + Highlight.IDLE]: {
@@ -36,10 +33,6 @@ const styles = theme => ({
   },
   ["wifiStatus_" + Highlight.WARN]: {
     backgroundColor: theme.palette.highlight_warn
-  },
-  fetching: {
-    margin: theme.spacing(4),
-    textAlign: "center"
   },
   button: {
     marginRight: theme.spacing(2),
@@ -145,32 +138,19 @@ class WiFiStatus extends Component {
   }
 
   render() {
-    const { data, fetched, errorMessage, classes } = this.props;
+    const { data, fetched, errorMessage, loadData, classes } = this.props;
     return (
       <SectionContent title="WiFi Status">
-        {
-          !fetched ?
-            <div>
-              <LinearProgress className={classes.fetching} />
-              <Typography variant="h4" className={classes.fetching}>
-                Loading...
-           </Typography>
-            </div>
-            :
-            data ? this.renderWiFiStatus(data, classes)
-              :
-              <div>
-                <Typography variant="h4" className={classes.fetching}>
-                  {errorMessage}
-                </Typography>
-                <Button variant="contained" color="secondary" className={classes.button} onClick={this.props.loadData}>
-                  Refresh
-          </Button>
-              </div>
-        }
+        <LoadingNotification
+          onReset={loadData}
+          fetched={fetched}
+          errorMessage={errorMessage}>
+          {this.renderWiFiStatus(data, classes)}
+        </LoadingNotification>
       </SectionContent>
-    )
+    );
   }
+
 }
 
 export default restComponent(WIFI_STATUS_ENDPOINT, withStyles(styles)(WiFiStatus));

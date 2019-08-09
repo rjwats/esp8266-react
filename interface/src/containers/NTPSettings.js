@@ -1,28 +1,32 @@
 import React, { Component } from 'react';
 
-import { NTP_SETTINGS_ENDPOINT }  from  '../constants/Endpoints';
-import {restComponent} from '../components/RestComponent';
+import { NTP_SETTINGS_ENDPOINT } from '../constants/Endpoints';
+import { restComponent } from '../components/RestComponent';
+import LoadingNotification from '../components/LoadingNotification';
 import SectionContent from '../components/SectionContent';
 import NTPSettingsForm from '../forms/NTPSettingsForm';
 
 class NTPSettings extends Component {
 
   componentDidMount() {
-      this.props.loadData();
+    this.props.loadData();
   }
 
   render() {
-    const { data, fetched, errorMessage } = this.props;
+    const { fetched, errorMessage, data, saveData, loadData, handleValueChange } = this.props;
     return (
       <SectionContent title="NTP Settings">
-      	<NTPSettingsForm
-          ntpSettings={data}
-          ntpSettingsFetched={fetched}
-          errorMessage={errorMessage}
-          onSubmit={this.props.saveData}
-          onReset={this.props.loadData}
-          handleValueChange={this.props.handleValueChange}
-        />
+        <LoadingNotification
+          onReset={loadData}
+          fetched={fetched}
+          errorMessage={errorMessage}>
+          <NTPSettingsForm
+            ntpSettings={data}
+            onSubmit={saveData}
+            onReset={loadData}
+            handleValueChange={handleValueChange}
+          />
+        </LoadingNotification>
       </SectionContent>
     )
   }

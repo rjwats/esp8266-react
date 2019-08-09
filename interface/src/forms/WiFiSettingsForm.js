@@ -3,10 +3,8 @@ import PropTypes from 'prop-types';
 
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import LinearProgress from '@material-ui/core/LinearProgress';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -80,157 +78,124 @@ class WiFiSettingsForm extends React.Component {
   }
 
   render() {
-    const { classes, wifiSettingsFetched, wifiSettings, errorMessage, selectedNetwork, handleValueChange, handleCheckboxChange, onSubmit, onReset } = this.props;
+    const { classes, wifiSettings, selectedNetwork, handleValueChange, handleCheckboxChange, onSubmit, onReset } = this.props;
     return (
-      <div>
+      <ValidatorForm onSubmit={onSubmit} ref="WiFiSettingsForm">
         {
-          !wifiSettingsFetched ?
-
-            <div className={classes.loadingSettings}>
-              <LinearProgress className={classes.loadingSettingsDetails} />
-              <Typography variant="h4" className={classes.loadingSettingsDetails}>
-                Loading...
-              </Typography>
-            </div>
-
-            : wifiSettings ?
-
-              <ValidatorForm onSubmit={onSubmit} ref="WiFiSettingsForm">
-                {
-                  selectedNetwork ? this.renderSelectedNetwork() :
-                    <TextValidator
-                      validators={['matchRegexp:^.{0,32}$']}
-                      errorMessages={['SSID must be 32 characters or less']}
-                      name="ssid"
-                      label="SSID"
-                      className={classes.textField}
-                      value={wifiSettings.ssid}
-                      onChange={handleValueChange('ssid')}
-                      margin="normal"
-                    />
-                }
-                {
-                  !isNetworkOpen(selectedNetwork) &&
-                  <PasswordValidator
-                    validators={['matchRegexp:^.{0,64}$']}
-                    errorMessages={['Password must be 64 characters or less']}
-                    name="password"
-                    label="Password"
-                    className={classes.textField}
-                    value={wifiSettings.password}
-                    onChange={handleValueChange('password')}
-                    margin="normal"
-                  />
-                }
-
-                <TextValidator
-                  validators={['required', 'isHostname']}
-                  errorMessages={['Hostname is required', "Not a valid hostname"]}
-                  name="hostname"
-                  label="Hostname"
-                  className={classes.textField}
-                  value={wifiSettings.hostname}
-                  onChange={handleValueChange('hostname')}
-                  margin="normal"
-                />
-
-                <FormControlLabel className={classes.checkboxControl}
-                  control={
-                    <Checkbox
-                      value="static_ip_config"
-                      checked={wifiSettings.static_ip_config}
-                      onChange={handleCheckboxChange("static_ip_config")}
-                    />
-                  }
-                  label="Static IP Config?"
-                />
-
-                {
-                  wifiSettings.static_ip_config &&
-                  <Fragment>
-                    <TextValidator
-                      validators={['required', 'isIP']}
-                      errorMessages={['Local IP is required', 'Must be an IP address']}
-                      name="local_ip"
-                      label="Local IP"
-                      className={classes.textField}
-                      value={wifiSettings.local_ip}
-                      onChange={handleValueChange('local_ip')}
-                      margin="normal"
-                    />
-                    <TextValidator
-                      validators={['required', 'isIP']}
-                      errorMessages={['Gateway IP is required', 'Must be an IP address']}
-                      name="gateway_ip"
-                      label="Gateway"
-                      className={classes.textField}
-                      value={wifiSettings.gateway_ip}
-                      onChange={handleValueChange('gateway_ip')}
-                      margin="normal"
-                    />
-                    <TextValidator
-                      validators={['required', 'isIP']}
-                      errorMessages={['Subnet mask is required', 'Must be an IP address']}
-                      name="subnet_mask"
-                      label="Subnet"
-                      className={classes.textField}
-                      value={wifiSettings.subnet_mask}
-                      onChange={handleValueChange('subnet_mask')}
-                      margin="normal"
-                    />
-                    <TextValidator
-                      validators={['isOptionalIP']}
-                      errorMessages={['Must be an IP address']}
-                      name="dns_ip_1"
-                      label="DNS IP #1"
-                      className={classes.textField}
-                      value={wifiSettings.dns_ip_1}
-                      onChange={handleValueChange('dns_ip_1')}
-                      margin="normal"
-                    />
-                    <TextValidator
-                      validators={['isOptionalIP']}
-                      errorMessages={['Must be an IP address']}
-                      name="dns_ip_2"
-                      label="DNS IP #2"
-                      className={classes.textField}
-                      value={wifiSettings.dns_ip_2}
-                      onChange={handleValueChange('dns_ip_2')}
-                      margin="normal"
-                    />
-                  </Fragment>
-                }
-
-                <Button variant="contained" color="primary" className={classes.button} type="submit">
-                  Save
-          </Button>
-                <Button variant="contained" color="secondary" className={classes.button} onClick={onReset}>
-                  Reset
-      		</Button>
-
-              </ValidatorForm>
-
-              :
-
-              <div className={classes.loadingSettings}>
-                <Typography variant="h4" className={classes.loadingSettingsDetails}>
-                  {errorMessage}
-                </Typography>
-                <Button variant="contained" color="secondary" className={classes.button} onClick={onReset}>
-                  Reset
-      		</Button>
-              </div>
+          selectedNetwork ? this.renderSelectedNetwork() :
+            <TextValidator
+              validators={['matchRegexp:^.{0,32}$']}
+              errorMessages={['SSID must be 32 characters or less']}
+              name="ssid"
+              label="SSID"
+              className={classes.textField}
+              value={wifiSettings.ssid}
+              onChange={handleValueChange('ssid')}
+              margin="normal"
+            />
         }
-      </div>
+        {
+          !isNetworkOpen(selectedNetwork) &&
+          <PasswordValidator
+            validators={['matchRegexp:^.{0,64}$']}
+            errorMessages={['Password must be 64 characters or less']}
+            name="password"
+            label="Password"
+            className={classes.textField}
+            value={wifiSettings.password}
+            onChange={handleValueChange('password')}
+            margin="normal"
+          />
+        }
+        <TextValidator
+          validators={['required', 'isHostname']}
+          errorMessages={['Hostname is required', "Not a valid hostname"]}
+          name="hostname"
+          label="Hostname"
+          className={classes.textField}
+          value={wifiSettings.hostname}
+          onChange={handleValueChange('hostname')}
+          margin="normal"
+        />
+        <FormControlLabel className={classes.checkboxControl}
+          control={
+            <Checkbox
+              value="static_ip_config"
+              checked={wifiSettings.static_ip_config}
+              onChange={handleCheckboxChange("static_ip_config")}
+            />
+          }
+          label="Static IP Config?"
+        />
+        {
+          wifiSettings.static_ip_config &&
+          <Fragment>
+            <TextValidator
+              validators={['required', 'isIP']}
+              errorMessages={['Local IP is required', 'Must be an IP address']}
+              name="local_ip"
+              label="Local IP"
+              className={classes.textField}
+              value={wifiSettings.local_ip}
+              onChange={handleValueChange('local_ip')}
+              margin="normal"
+            />
+            <TextValidator
+              validators={['required', 'isIP']}
+              errorMessages={['Gateway IP is required', 'Must be an IP address']}
+              name="gateway_ip"
+              label="Gateway"
+              className={classes.textField}
+              value={wifiSettings.gateway_ip}
+              onChange={handleValueChange('gateway_ip')}
+              margin="normal"
+            />
+            <TextValidator
+              validators={['required', 'isIP']}
+              errorMessages={['Subnet mask is required', 'Must be an IP address']}
+              name="subnet_mask"
+              label="Subnet"
+              className={classes.textField}
+              value={wifiSettings.subnet_mask}
+              onChange={handleValueChange('subnet_mask')}
+              margin="normal"
+            />
+            <TextValidator
+              validators={['isOptionalIP']}
+              errorMessages={['Must be an IP address']}
+              name="dns_ip_1"
+              label="DNS IP #1"
+              className={classes.textField}
+              value={wifiSettings.dns_ip_1}
+              onChange={handleValueChange('dns_ip_1')}
+              margin="normal"
+            />
+            <TextValidator
+              validators={['isOptionalIP']}
+              errorMessages={['Must be an IP address']}
+              name="dns_ip_2"
+              label="DNS IP #2"
+              className={classes.textField}
+              value={wifiSettings.dns_ip_2}
+              onChange={handleValueChange('dns_ip_2')}
+              margin="normal"
+            />
+          </Fragment>
+        }
+        <Button variant="contained" color="primary" className={classes.button} type="submit">
+          Save
+        </Button>
+        <Button variant="contained" color="secondary" className={classes.button} onClick={onReset}>
+          Reset
+        </Button>
+      </ValidatorForm>
     );
   }
 }
 
 WiFiSettingsForm.propTypes = {
   classes: PropTypes.object.isRequired,
-  wifiSettingsFetched: PropTypes.bool.isRequired,
   wifiSettings: PropTypes.object,
-  errorMessage: PropTypes.string,
   deselectNetwork: PropTypes.func,
   selectedNetwork: PropTypes.object,
   onSubmit: PropTypes.func.isRequired,

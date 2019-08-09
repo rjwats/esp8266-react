@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import { SECURITY_SETTINGS_ENDPOINT } from '../constants/Endpoints';
 import { restComponent } from '../components/RestComponent';
+import LoadingNotification from '../components/LoadingNotification';
 import SecuritySettingsForm from '../forms/SecuritySettingsForm';
 import SectionContent from '../components/SectionContent';
 
@@ -15,14 +16,17 @@ class SecuritySettings extends Component {
     const { data, fetched, errorMessage, saveData, loadData, handleValueChange } = this.props;
     return (
       <SectionContent title="Security Settings">
-        <SecuritySettingsForm
-          securitySettings={data}
-          securitySettingsFetched={fetched}
-          errorMessage={errorMessage}
-          onSubmit={saveData}
+        <LoadingNotification
           onReset={loadData}
-          handleValueChange={handleValueChange}
-        />
+          fetched={fetched}
+          errorMessage={errorMessage}>
+          <SecuritySettingsForm
+            securitySettings={data}
+            onSubmit={saveData}
+            onReset={loadData}
+            handleValueChange={handleValueChange}
+          />
+        </LoadingNotification>
       </SectionContent>
     )
   }
