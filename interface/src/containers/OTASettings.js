@@ -19,15 +19,17 @@ class OTASettings extends Component {
         <LoadingNotification
           onReset={loadData}
           fetched={fetched}
-          errorMessage={errorMessage}>
-          <OTASettingsForm
-            otaSettings={data}
-            onSubmit={saveData}
-            onReset={loadData}
-            handleValueChange={handleValueChange}
-            handleCheckboxChange={handleCheckboxChange}
-          />
-        </LoadingNotification>
+          errorMessage={errorMessage}
+          render={() =>
+            <OTASettingsForm
+              otaSettings={data}
+              onSubmit={saveData}
+              onReset={loadData}
+              handleValueChange={handleValueChange}
+              handleCheckboxChange={handleCheckboxChange}
+            />
+          }
+        />
       </SectionContent>
     )
   }

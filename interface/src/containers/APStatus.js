@@ -107,9 +107,11 @@ class APStatus extends Component {
         <LoadingNotification
           onReset={loadData}
           fetched={fetched}
-          errorMessage={errorMessage}>
-          {this.renderAPStatus(data, classes)}
-        </LoadingNotification>
+          errorMessage={errorMessage}
+          render={
+            () => this.renderAPStatus(data, classes)
+          }
+        />
       </SectionContent>
     )
   }

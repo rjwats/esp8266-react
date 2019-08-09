@@ -144,9 +144,11 @@ class WiFiStatus extends Component {
         <LoadingNotification
           onReset={loadData}
           fetched={fetched}
-          errorMessage={errorMessage}>
-          {this.renderWiFiStatus(data, classes)}
-        </LoadingNotification>
+          errorMessage={errorMessage}
+          render={
+            () => this.renderWiFiStatus(data, classes)
+          }
+        />
       </SectionContent>
     );
   }

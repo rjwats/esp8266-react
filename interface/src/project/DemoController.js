@@ -17,7 +17,7 @@ class DemoController extends Component {
   componentDidMount() {
     this.props.loadData();
   }
-  
+
   render() {
     const { data, fetched, errorMessage, saveData, loadData, handleValueChange } = this.props;
     return (
@@ -25,14 +25,16 @@ class DemoController extends Component {
         <LoadingNotification
           onReset={loadData}
           fetched={fetched}
-          errorMessage={errorMessage}>
-          <DemoControllerForm
-            demoSettings={data}
-            onReset={loadData}
-            onSubmit={saveData}
-            handleValueChange={handleValueChange}
-          />
-        </LoadingNotification>
+          errorMessage={errorMessage}
+          render={() =>
+            <DemoControllerForm
+              demoSettings={data}
+              onReset={loadData}
+              onSubmit={saveData}
+              handleValueChange={handleValueChange}
+            />
+          }
+        />
       </SectionContent>
     )
   }
@@ -43,11 +45,11 @@ const useStyles = makeStyles(theme => ({
     marginRight: theme.spacing(2),
     marginTop: theme.spacing(2),
   },
-  blinkSpeedLabel:{
+  blinkSpeedLabel: {
     marginBottom: theme.spacing(5),
   }
 }));
-  
+
 function DemoControllerForm(props) {
   const { demoSettings, onSubmit, onReset, handleValueChange } = props;
   const classes = useStyles();

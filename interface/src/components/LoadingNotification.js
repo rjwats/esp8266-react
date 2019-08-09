@@ -22,7 +22,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function LoadingNotification(props) {
   const classes = useStyles();
-  const { fetched, errorMessage, onReset, children } = props;
+  const { fetched, errorMessage, onReset, render } = props;
   return (
     <div>
       {
@@ -37,7 +37,7 @@ export default function LoadingNotification(props) {
               </Button>
             </div>
             :
-            children
+            render()
           :
           <div className={classes.loadingSettings}>
             <LinearProgress className={classes.loadingSettingsDetails} />
@@ -53,5 +53,6 @@ export default function LoadingNotification(props) {
 LoadingNotification.propTypes = {
   fetched: PropTypes.bool.isRequired,
   onReset: PropTypes.func.isRequired,
-  errorMessage: PropTypes.string
+  errorMessage: PropTypes.string,
+  render: PropTypes.func.isRequired
 };

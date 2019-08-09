@@ -19,14 +19,16 @@ class APSettings extends Component {
         <LoadingNotification
           onReset={loadData}
           fetched={fetched}
-          errorMessage={errorMessage}>
-          <APSettingsForm
-            apSettings={data}
-            onSubmit={saveData}
-            onReset={loadData}
-            handleValueChange={handleValueChange}
-          />
-        </LoadingNotification>
+          errorMessage={errorMessage}
+          render={() =>
+            <APSettingsForm
+              apSettings={data}
+              onSubmit={saveData}
+              onReset={loadData}
+              handleValueChange={handleValueChange}
+            />
+          }
+        />
       </SectionContent>
     )
   }

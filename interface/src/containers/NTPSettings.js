@@ -19,14 +19,16 @@ class NTPSettings extends Component {
         <LoadingNotification
           onReset={loadData}
           fetched={fetched}
-          errorMessage={errorMessage}>
-          <NTPSettingsForm
-            ntpSettings={data}
-            onSubmit={saveData}
-            onReset={loadData}
-            handleValueChange={handleValueChange}
-          />
-        </LoadingNotification>
+          errorMessage={errorMessage}
+          render={() =>
+            <NTPSettingsForm
+              ntpSettings={data}
+              onSubmit={saveData}
+              onReset={loadData}
+              handleValueChange={handleValueChange}
+            />
+          }
+        />
       </SectionContent>
     )
   }

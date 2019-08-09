@@ -42,17 +42,19 @@ class WiFiSettings extends Component {
         <LoadingNotification
           onReset={loadData}
           fetched={fetched}
-          errorMessage={errorMessage}>
-          <WiFiSettingsForm
-            wifiSettings={data}
-            selectedNetwork={selectedNetwork}
-            deselectNetwork={deselectNetwork}
-            onSubmit={saveData}
-            onReset={this.deselectNetworkAndLoadData}
-            handleValueChange={handleValueChange}
-            handleCheckboxChange={handleCheckboxChange}
-          />
-        </LoadingNotification>
+          errorMessage={errorMessage}
+          render={() =>
+            <WiFiSettingsForm
+              wifiSettings={data}
+              selectedNetwork={selectedNetwork}
+              deselectNetwork={deselectNetwork}
+              onSubmit={saveData}
+              onReset={this.deselectNetworkAndLoadData}
+              handleValueChange={handleValueChange}
+              handleCheckboxChange={handleCheckboxChange}
+            />
+          }
+        />
       </SectionContent>
     )
   }

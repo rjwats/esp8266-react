@@ -19,14 +19,16 @@ class SecuritySettings extends Component {
         <LoadingNotification
           onReset={loadData}
           fetched={fetched}
-          errorMessage={errorMessage}>
-          <SecuritySettingsForm
-            securitySettings={data}
-            onSubmit={saveData}
-            onReset={loadData}
-            handleValueChange={handleValueChange}
-          />
-        </LoadingNotification>
+          errorMessage={errorMessage}
+          render={() =>
+            <SecuritySettingsForm
+              securitySettings={data}
+              onSubmit={saveData}
+              onReset={loadData}
+              handleValueChange={handleValueChange}
+            />
+          }
+        />
       </SectionContent>
     )
   }

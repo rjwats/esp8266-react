@@ -132,9 +132,11 @@ class NTPStatus extends Component {
         <LoadingNotification
           onReset={loadData}
           fetched={fetched}
-          errorMessage={errorMessage}>
-          {this.renderNTPStatus(data, classes)}
-        </LoadingNotification>
+          errorMessage={errorMessage}
+          render={
+            () => this.renderNTPStatus(data, classes)
+          }
+        />
       </SectionContent>
     );
   }

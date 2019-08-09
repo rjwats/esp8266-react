@@ -19,15 +19,17 @@ class ManageUsers extends Component {
         <LoadingNotification
           onReset={loadData}
           fetched={fetched}
-          errorMessage={errorMessage}>
-          <ManageUsersForm
-            userData={data}
-            onSubmit={saveData}
-            onReset={loadData}
-            setData={setData}
-            handleValueChange={handleValueChange}
-          />
-        </LoadingNotification>
+          errorMessage={errorMessage}
+          render={() =>
+            <ManageUsersForm
+              userData={data}
+              onSubmit={saveData}
+              onReset={loadData}
+              setData={setData}
+              handleValueChange={handleValueChange}
+            />
+          }
+        />
       </SectionContent>
     )
   }
