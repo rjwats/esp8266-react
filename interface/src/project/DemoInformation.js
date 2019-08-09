@@ -32,7 +32,7 @@ class DemoInformation extends Component {
           simplify merges should you wish to update your project with future framework changes.
         </Typography>
         <Typography variant="body1" paragraph>
-          The demo project interface code is structured as follows:
+          The demo project interface code stored in the interface/project directory:
         </Typography>
         <Table className={classes.fileTable}>
           <TableHead>
@@ -48,7 +48,7 @@ class DemoInformation extends Component {
           <TableBody>
             <TableRow>
               <TableCell>
-                project/ProjectMenu.js
+                ProjectMenu.js
               </TableCell>
               <TableCell>
                 You can add your project's screens to the side bar here.
@@ -56,7 +56,7 @@ class DemoInformation extends Component {
             </TableRow>
             <TableRow>
               <TableCell>
-                project/ProjectRouting.js
+                ProjectRouting.js
               </TableCell>
               <TableCell>
                 The routing which controls the screens of your project.
@@ -64,7 +64,7 @@ class DemoInformation extends Component {
             </TableRow>
             <TableRow>
               <TableCell>
-                project/DemoProject.js
+                DemoProject.js
               </TableCell>
               <TableCell>
                 This screen, with tabs and tab routing.
@@ -72,7 +72,7 @@ class DemoInformation extends Component {
             </TableRow>
             <TableRow>
               <TableCell>
-                project/DemoInformation.js
+                DemoInformation.js
               </TableCell>
               <TableCell>
                 The demo information tab.
@@ -80,7 +80,7 @@ class DemoInformation extends Component {
             </TableRow>
             <TableRow>
               <TableCell>
-                project/DemoController.js
+                DemoController.js
               </TableCell>
               <TableCell>
                 The demo controller tab, to control the built-in LED.
