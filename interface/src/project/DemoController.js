@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import { ValidatorForm } from 'react-material-ui-form-validator';
+
+import { ENDPOINT_ROOT } from '../constants/Env';
 import SectionContent from '../components/SectionContent';
 import { restComponent } from '../components/RestComponent';
 import LoadingNotification from '../components/LoadingNotification';
@@ -7,9 +10,8 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/core/Slider';
 import { makeStyles } from '@material-ui/core/styles';
-import { ValidatorForm } from 'react-material-ui-form-validator';
 
-export const DEMO_SETTINGS_ENDPOINT = process.env.REACT_APP_ENDPOINT_ROOT + "demoSettings";
+export const DEMO_SETTINGS_ENDPOINT = ENDPOINT_ROOT + "demoSettings";
 
 const valueToPercentage = (value) => `${Math.round(value / 255 * 100)}%`;
 
