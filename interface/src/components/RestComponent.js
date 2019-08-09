@@ -1,6 +1,7 @@
 import React from 'react';
 import { withSnackbar } from 'notistack';
 import { redirectingAuthorizedFetch } from '../authentication/Authentication';
+
 /*
 * It is unlikely this application will grow complex enough to require redux.
 *
@@ -86,9 +87,9 @@ export const restComponent = (endpointUrl, FormComponent) => {
           });
       }
 
-      handleValueChange = name => event => {
+      handleValueChange = name => (event, newValue) => {
         const { data } = this.state;
-        data[name] = event.target.value;
+        data[name] = newValue;
         this.setState({ data });
       };
 

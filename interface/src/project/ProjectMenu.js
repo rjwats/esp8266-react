@@ -8,7 +8,6 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import SettingsRemoteIcon from '@material-ui/icons/SettingsRemote';
-import Divider from '@material-ui/core/Divider';
 
 class ProjectMenu extends Component {
 

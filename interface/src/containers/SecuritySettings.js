@@ -12,16 +12,16 @@ class SecuritySettings extends Component {
   }
 
   render() {
-    const { data, fetched, errorMessage } = this.props;
+    const { data, fetched, errorMessage, saveData, loadData, handleValueChange } = this.props;
     return (
       <SectionContent title="Security Settings">
         <SecuritySettingsForm
           securitySettings={data}
           securitySettingsFetched={fetched}
           errorMessage={errorMessage}
-          onSubmit={this.props.saveData}
-          onReset={this.props.loadData}
-          handleValueChange={this.props.handleValueChange}
+          onSubmit={saveData}
+          onReset={loadData}
+          handleValueChange={handleValueChange}
         />
       </SectionContent>
     )

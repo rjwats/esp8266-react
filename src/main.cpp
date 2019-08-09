@@ -7,9 +7,10 @@
 AsyncWebServer server(80);
 ESP8266React espServer(&SPIFFS);
 
-DemoProject demoProject = DemoProject(&server, espServer.getSecurityManager());
+DemoProject demoProject = DemoProject(&SPIFFS, espServer.getSecurityManager());
 
 void setup() {
+  // start serial and filesystem
   Serial.begin(SERIAL_BAUD_RATE);
   SPIFFS.begin();
 
@@ -17,15 +18,16 @@ void setup() {
   espServer.init(&server);
 
   // begin the demo project
-  demoProject.begin();
+  demoProject.init(&server);
   
+  // start the server
   server.begin();
 }
 
 void loop() {
-  // run the framework loop
+  // run the framework's loop function
   espServer.loop();
 
-  // run the demo project loop
+  // run the demo project's loop function
   demoProject.loop();
 }

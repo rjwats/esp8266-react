@@ -7,6 +7,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableBody from '@material-ui/core/TableBody';
 import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
+
 import SectionContent from '../components/SectionContent';
 
 const styles = theme => ({
