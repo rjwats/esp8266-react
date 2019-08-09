@@ -26,13 +26,6 @@ import optional from '../validators/optional';
 import PasswordValidator from '../components/PasswordValidator';
 
 const styles = theme => ({
-  loadingSettings: {
-    margin: theme.spacing(0.5),
-  },
-  loadingSettingsDetails: {
-    margin: theme.spacing(4),
-    textAlign: "center"
-  },
   textField: {
     width: "100%"
   },
