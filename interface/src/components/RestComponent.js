@@ -89,7 +89,13 @@ export const restComponent = (endpointUrl, FormComponent) => {
           });
       }
 
-      handleValueChange = name => (event, newValue) => {
+      handleValueChange = name => (event) => {
+        const { data } = this.state;
+        data[name] = event.target.value;
+        this.setState({ data });
+      };
+
+      handleSliderChange = name => (event, newValue) => {
         const { data } = this.state;
         data[name] = newValue;
         this.setState({ data });
@@ -105,6 +111,7 @@ export const restComponent = (endpointUrl, FormComponent) => {
         return <FormComponent
           handleValueChange={this.handleValueChange}
           handleCheckboxChange={this.handleCheckboxChange}
+          handleSliderChange={this.handleSliderChange}
           setData={this.setData}
           saveData={this.saveData}
           loadData={this.loadData}

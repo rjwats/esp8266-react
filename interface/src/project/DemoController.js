@@ -21,7 +21,7 @@ class DemoController extends Component {
   }
 
   render() {
-    const { data, fetched, errorMessage, saveData, loadData, handleValueChange } = this.props;
+    const { data, fetched, errorMessage, saveData, loadData, handleSliderChange } = this.props;
     return (
       <SectionContent title="Controller" titleGutter>
         <LoadingNotification
@@ -33,7 +33,7 @@ class DemoController extends Component {
               demoSettings={data}
               onReset={loadData}
               onSubmit={saveData}
-              handleValueChange={handleValueChange}
+              handleSliderChange={handleSliderChange}
             />
           }
         />
@@ -53,7 +53,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function DemoControllerForm(props) {
-  const { demoSettings, onSubmit, onReset, handleValueChange } = props;
+  const { demoSettings, onSubmit, onReset, handleSliderChange } = props;
   const classes = useStyles();
   return (
     <ValidatorForm onSubmit={onSubmit}>
@@ -67,7 +67,7 @@ function DemoControllerForm(props) {
         valueLabelDisplay="on"
         min={0}
         max={255}
-        onChange={handleValueChange('blink_speed')}
+        onChange={handleSliderChange('blink_speed')}
       />
       <Button variant="contained" color="primary" className={classes.button} type="submit">
         Save
