@@ -197,7 +197,7 @@ class MenuAppBar extends React.Component {
                     </CardContent>
                     <Divider />
                     <CardActions className={classes.authMenuActions}>
-                      <Button className={classes.authMenuButtons} variant="contained" color="primary" onClick={authenticationContext.signOut}>Sign Out</Button>
+                      <Button variant="contained" color="primary" onClick={authenticationContext.signOut}>Sign Out</Button>
                     </CardActions>
                   </Card>
                 </ClickAwayListener>
