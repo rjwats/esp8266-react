@@ -1,7 +1,7 @@
 #ifndef DemoProject_h
 #define DemoProject_h
 
-#include <SettingsService.h>
+#include <AdminSettingsService.h>
 
 #define BLINK_LED 2
 #define MAX_DELAY 1000

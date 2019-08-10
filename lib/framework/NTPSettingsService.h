@@ -1,7 +1,7 @@
 #ifndef NTPSettingsService_h
 #define NTPSettingsService_h
 
-#include <SettingsService.h>
+#include <AdminSettingsService.h>
 
 #include <TimeLib.h>
 #include <NtpClientLib.h>

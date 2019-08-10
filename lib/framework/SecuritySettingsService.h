@@ -1,7 +1,7 @@
 #ifndef SecuritySettingsService_h
 #define SecuritySettingsService_h
 
-#include <SettingsService.h>
+#include <AdminSettingsService.h>
 #include <SecurityManager.h>
 
 #define SECURITY_SETTINGS_FILE "/config/securitySettings.json"

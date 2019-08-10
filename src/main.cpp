@@ -5,9 +5,8 @@
 #define SERIAL_BAUD_RATE 115200
 
 AsyncWebServer server(80);
-ESP8266React espServer(&SPIFFS);
-
-DemoProject demoProject = DemoProject(&SPIFFS, espServer.getSecurityManager());
+ESP8266React framework(&SPIFFS);
+DemoProject demoProject = DemoProject(&SPIFFS, framework.getSecurityManager());
 
 void setup() {
   // start serial and filesystem
@@ -15,7 +14,7 @@ void setup() {
   SPIFFS.begin();
 
   // set up the framework
-  espServer.init(&server);
+  framework.init(&server);
 
   // begin the demo project
   demoProject.init(&server);
@@ -26,7 +25,7 @@ void setup() {
 
 void loop() {
   // run the framework's loop function
-  espServer.loop();
+  framework.loop();
 
   // run the demo project's loop function
   demoProject.loop();

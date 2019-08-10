@@ -1,7 +1,7 @@
 #ifndef WiFiSettingsService_h
 #define WiFiSettingsService_h
 
-#include <SettingsService.h>
+#include <AdminSettingsService.h>
 #include <IPAddress.h>
 
 #define WIFI_SETTINGS_FILE "/config/wifiSettings.json"
