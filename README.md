@@ -318,8 +318,8 @@ On successful authentication, the /rest/signIn endpoint issues a JWT which is th
 Predicate            | Description
 -------------------- | -----------
 NONE_REQUIRED        | No authentication is required.
-IS_AUTHENTICATED     | Any authentication is permitted.
-IS_AUTHENTICATED     | Any authentication is permitted.
+IS_AUTHENTICATED     | Any authenticated principal is permitted.
+IS_ADMIN             | The authenticated principal must be an admin.
 
 You can use the security manager to wrap any web handler with an authentication predicate:
 
