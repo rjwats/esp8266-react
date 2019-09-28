@@ -23,12 +23,10 @@ class NTPStatus {
 
   public:
 
-    NTPStatus(SecurityManager* securityManager);
-    void init(AsyncWebServer *server);
+    NTPStatus(AsyncWebServer* server, SecurityManager* securityManager);
 
   private:
 
-    SecurityManager* _securityManager;
     void ntpStatus(AsyncWebServerRequest *request);
 
 };

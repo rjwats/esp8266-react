@@ -1,6 +1,6 @@
 #include <SecuritySettingsService.h>
 
-SecuritySettingsService::SecuritySettingsService(FS* fs) : AdminSettingsService(fs, this, SECURITY_SETTINGS_PATH, SECURITY_SETTINGS_FILE), SecurityManager() {}
+SecuritySettingsService::SecuritySettingsService(AsyncWebServer* server, FS* fs) : AdminSettingsService(server, fs, this, SECURITY_SETTINGS_PATH, SECURITY_SETTINGS_FILE), SecurityManager() {}
 SecuritySettingsService::~SecuritySettingsService() {}
 
 void SecuritySettingsService::readFromJsonObject(JsonObject& root) {

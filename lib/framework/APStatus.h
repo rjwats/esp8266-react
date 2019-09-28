@@ -22,13 +22,10 @@ class APStatus {
 
   public:
 
-    APStatus(SecurityManager* securityManager);
-    void init(AsyncWebServer *server);
+    APStatus(AsyncWebServer* server, SecurityManager* securityManager);
 
   private:
   
-    SecurityManager* _securityManager;
-
     void apStatus(AsyncWebServerRequest *request);
 
 };

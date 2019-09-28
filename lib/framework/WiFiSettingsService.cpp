@@ -1,9 +1,12 @@
 #include <WiFiSettingsService.h>
 
-WiFiSettingsService::WiFiSettingsService(FS* fs, SecurityManager* securityManager) : AdminSettingsService(fs, securityManager, WIFI_SETTINGS_SERVICE_PATH, WIFI_SETTINGS_FILE) {
-  // Disable wifi config persistance and auto reconnect
+WiFiSettingsService::WiFiSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) : AdminSettingsService(server, fs, securityManager, WIFI_SETTINGS_SERVICE_PATH, WIFI_SETTINGS_FILE) {
+  // Disable WiFi config persistance and auto reconnect
   WiFi.persistent(false);
   WiFi.setAutoReconnect(false);
+
+  // Force WiFi config to be applied when loop() called
+  reconfigureWiFiConnection();
 
 #if defined(ESP8266)
   _onStationModeDisconnectedHandler = WiFi.onStationModeDisconnected(std::bind(&WiFiSettingsService::onStationModeDisconnected, this, std::placeholders::_1));
@@ -16,11 +19,6 @@ WiFiSettingsService::WiFiSettingsService(FS* fs, SecurityManager* securityManage
 }
 
 WiFiSettingsService::~WiFiSettingsService() {}
-
-void WiFiSettingsService::init(AsyncWebServer* server) {
-  SettingsService::init(server);
-  reconfigureWiFiConnection();
-}
 
 void WiFiSettingsService::readFromJsonObject(JsonObject& root){
     _ssid = root["ssid"] | "";

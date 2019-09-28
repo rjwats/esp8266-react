@@ -22,13 +22,9 @@ class WiFiStatus {
 
   public:
 
-    WiFiStatus(SecurityManager* securityManager);
-    
-    void init(AsyncWebServer* server);
+    WiFiStatus(AsyncWebServer* server, SecurityManager* securityManager);
 
   private:
-
-    SecurityManager* _securityManager;
 
 #if defined(ESP8266)
     // handler refrences for logging important WiFi events over serial

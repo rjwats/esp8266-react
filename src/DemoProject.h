@@ -14,10 +14,9 @@ class DemoProject : public AdminSettingsService {
 
   public:
 
-    DemoProject(FS* fs, SecurityManager* securityManager) : AdminSettingsService(fs, securityManager, DEMO_SETTINGS_PATH, DEMO_SETTINGS_FILE) {}
-    ~DemoProject() {}
+    DemoProject(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
+    ~DemoProject();
     
-    void init(AsyncWebServer* server);
     void loop();
 
   private:

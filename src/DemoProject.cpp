@@ -1,9 +1,10 @@
 #include <DemoProject.h>
 
-void DemoProject::init(AsyncWebServer* server) {
-  AdminSettingsService::init(server);
+DemoProject::DemoProject(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) : AdminSettingsService(server, fs, securityManager, DEMO_SETTINGS_PATH, DEMO_SETTINGS_FILE) {
   pinMode(BLINK_LED, OUTPUT);  
 }
+
+DemoProject::~DemoProject() {}
 
 void DemoProject::loop() {
   unsigned delay = MAX_DELAY / 255 * (255 - _blinkSpeed);

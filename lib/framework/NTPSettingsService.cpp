@@ -1,6 +1,6 @@
 #include <NTPSettingsService.h>
 
-NTPSettingsService::NTPSettingsService(FS* fs, SecurityManager* securityManager) : AdminSettingsService(fs, securityManager, NTP_SETTINGS_SERVICE_PATH, NTP_SETTINGS_FILE) {
+NTPSettingsService::NTPSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) : AdminSettingsService(server, fs, securityManager, NTP_SETTINGS_SERVICE_PATH, NTP_SETTINGS_FILE) {
 
 #if defined(ESP8266)
   _onStationModeDisconnectedHandler = WiFi.onStationModeDisconnected(std::bind(&NTPSettingsService::onStationModeDisconnected, this, std::placeholders::_1));

@@ -1,40 +1,18 @@
 #include <ESP8266React.h>
 
-ESP8266React::ESP8266React(FS* fs): 
-  _fs(fs),
-  _securitySettingsService(_fs),
-  _wifiSettingsService(_fs, &_securitySettingsService),
-  _apSettingsService(_fs, &_securitySettingsService),
-  _ntpSettingsService(_fs, &_securitySettingsService),
-  _otaSettingsService(_fs, &_securitySettingsService),
-  _authenticationService(&_securitySettingsService),
-  _wifiScanner(&_securitySettingsService),
-  _wifiStatus(&_securitySettingsService),
-  _ntpStatus(&_securitySettingsService),
-  _apStatus(&_securitySettingsService),
-  _systemStatus(&_securitySettingsService) {
-}
-
-void ESP8266React::init(AsyncWebServer* server) {
-    // Start security settings service first
-  _securitySettingsService.init(server);
-
-  // Core services
-  _wifiSettingsService.init(server);
-  _apSettingsService.init(server);
-  _ntpSettingsService.init(server);
-  _otaSettingsService.init(server);
-  _authenticationService.init(server);
-
-  // Utility services
-  _wifiScanner.init(server);
-  _wifiStatus.init(server);
-  _ntpStatus.init(server);
-  _apStatus.init(server);
-  _systemStatus.init(server);
-
-
-  // Serving static resources from /www/
+ESP8266React::ESP8266React(AsyncWebServer* server, FS* fs): 
+  _securitySettingsService(server, fs),
+  _wifiSettingsService(server, fs, &_securitySettingsService),
+  _apSettingsService(server, fs, &_securitySettingsService),
+  _ntpSettingsService(server, fs, &_securitySettingsService),
+  _otaSettingsService(server, fs, &_securitySettingsService),
+  _authenticationService(server, &_securitySettingsService),
+  _wifiScanner(server, &_securitySettingsService),
+  _wifiStatus(server, &_securitySettingsService),
+  _ntpStatus(server, &_securitySettingsService),
+  _apStatus(server, &_securitySettingsService),
+  _systemStatus(server, &_securitySettingsService) {    
+  // Serve static resources from /www/
   server->serveStatic("/js/", SPIFFS, "/www/js/");
   server->serveStatic("/css/", SPIFFS, "/www/css/");
   server->serveStatic("/fonts/", SPIFFS, "/www/fonts/");

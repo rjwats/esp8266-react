@@ -1,18 +1,16 @@
 #include <AuthenticationService.h>
 
-AuthenticationService::AuthenticationService(SecurityManager* securityManager) : _securityManager(securityManager) {
+AuthenticationService::AuthenticationService(AsyncWebServer* server, SecurityManager* securityManager) {
+  server->on(VERIFY_AUTHORIZATION_PATH, HTTP_GET, std::bind(&AuthenticationService::verifyAuthorization, this, std::placeholders::_1));
+
   _signInHandler.setUri(SIGN_IN_PATH);
   _signInHandler.setMethod(HTTP_POST);
   _signInHandler.setMaxContentLength(MAX_AUTHENTICATION_SIZE);
   _signInHandler.onRequest(std::bind(&AuthenticationService::signIn, this, std::placeholders::_1, std::placeholders::_2));
+  server->addHandler(&_signInHandler);
 }
 
 AuthenticationService::~AuthenticationService() {}
-
-void AuthenticationService::init(AsyncWebServer* server) {
-  server->on(VERIFY_AUTHORIZATION_PATH, HTTP_GET, std::bind(&AuthenticationService::verifyAuthorization, this, std::placeholders::_1));
-  server->addHandler(&_signInHandler);
-}
 
 /**
  * Verifys that the request supplied a valid JWT.
