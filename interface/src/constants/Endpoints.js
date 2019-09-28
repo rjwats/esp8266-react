@@ -1,4 +1,4 @@
-import { ENDPOINT_ROOT } from '../constants/Env';
+import { ENDPOINT_ROOT, WEB_SOCKET_ROOT } from '../constants/Env';
 
 export const NTP_STATUS_ENDPOINT = ENDPOINT_ROOT + "ntpStatus";
 export const NTP_SETTINGS_ENDPOINT = ENDPOINT_ROOT + "ntpSettings";
@@ -13,3 +13,22 @@ export const SYSTEM_STATUS_ENDPOINT = ENDPOINT_ROOT + "systemStatus";
 export const SIGN_IN_ENDPOINT = ENDPOINT_ROOT + "signIn";
 export const VERIFY_AUTHORIZATION_ENDPOINT = ENDPOINT_ROOT + "verifyAuthorization";
 export const SECURITY_SETTINGS_ENDPOINT = ENDPOINT_ROOT + "securitySettings";
+
+const WEB_SOCKET_PATH = "/ws";
+const WEB_SOCKET_PREFIX = calculateWebSocketPrefix(WEB_SOCKET_PATH);
+
+function calculateWebSocketPrefix(webSocketPath) {
+  if (!WEB_SOCKET_ROOT || WEB_SOCKET_ROOT.length === 0){
+    var loc = window.location, webSocketURI;
+    if (loc.protocol === "https:") {
+        webSocketURI = "wss:";
+    } else {
+        webSocketURI = "ws:";
+    }
+    return webSocketURI + "//" + loc.host + webSocketPath;
+  }
+  return WEB_SOCKET_ROOT + webSocketPath;
+}
+
+export const FREQUENCY_STREAM_WEBSOCKET_URI = WEB_SOCKET_PREFIX + "/frequencyStream";
+export const AUDIO_LIGHT_WEBSOCKET_URI = WEB_SOCKET_PREFIX + "/audioLight";

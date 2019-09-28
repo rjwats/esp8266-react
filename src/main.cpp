@@ -1,12 +1,12 @@
 #include <ESP8266React.h>
-#include <DemoProject.h>
+#include <AudioLightSettingsService.h>
 #include <FS.h>
 
 #define SERIAL_BAUD_RATE 115200
 
 AsyncWebServer server(80);
 ESP8266React framework(&SPIFFS);
-DemoProject demoProject = DemoProject(&SPIFFS, framework.getSecurityManager());
+AudioLightSettingsService demoProject = AudioLightSettingsService(&server, &SPIFFS);
 
 void setup() {
   // start serial and filesystem

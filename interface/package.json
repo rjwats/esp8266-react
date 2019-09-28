@@ -11,13 +11,16 @@
     "notistack": "^0.8.9",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
+    "react-color": "^2.17.3",
     "react-dom": "^16.8.6",
     "react-form-validator-core": "^0.6.3",
     "react-jss": "^10.0.0-alpha.23",
     "react-material-ui-form-validator": "^2.0.9",
+    "react-rangeslider": "^2.2.0",
     "react-router": "^5.0.1",
     "react-router-dom": "^5.0.1",
-    "react-scripts": "3.0.1"
+    "react-scripts": "3.0.1",
+    "sockette": "^2.0.6"
   },
   "scripts": {
     "start": "react-app-rewired start",
