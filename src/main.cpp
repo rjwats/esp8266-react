@@ -6,7 +6,7 @@
 
 AsyncWebServer server(80);
 ESP8266React framework(&SPIFFS);
-AudioLightSettingsService demoProject = AudioLightSettingsService(&server, &SPIFFS);
+AudioLightSettingsService audioLightService = AudioLightSettingsService(&server, &SPIFFS);
 
 void setup() {
   // start serial and filesystem
@@ -17,7 +17,8 @@ void setup() {
   framework.init(&server);
 
   // begin the demo project
-  demoProject.init(&server);
+  audioLightService.init(&server);
+  audioLightService.begin();
   
   // start the server
   server.begin();
@@ -28,5 +29,5 @@ void loop() {
   framework.loop();
 
   // run the demo project's loop function
-  demoProject.loop();
+  audioLightService.loop();
 }
