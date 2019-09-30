@@ -29,7 +29,7 @@ export default function LoadingNotification(props) {
         fetched ?
           errorMessage ?
             <div className={classes.loadingSettings}>
-              <Typography variant="h4" className={classes.loadingSettingsDetails}>
+              <Typography variant="h6" className={classes.loadingSettingsDetails}>
                 {errorMessage}
               </Typography>
               <Button variant="contained" color="secondary" className={classes.button} onClick={onReset}>
@@ -41,7 +41,7 @@ export default function LoadingNotification(props) {
           :
           <div className={classes.loadingSettings}>
             <LinearProgress className={classes.loadingSettingsDetails} />
-            <Typography variant="h4" className={classes.loadingSettingsDetails}>
+            <Typography variant="h6" className={classes.loadingSettingsDetails}>
               Loading...
             </Typography>
           </div>
