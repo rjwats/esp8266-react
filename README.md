@@ -262,8 +262,8 @@ The following code creates the web server, esp8266React framework and the demo p
 
 ```cpp
 AsyncWebServer server(80);
-ESP8266React framework(&SPIFFS);
-DemoProject demoProject = DemoProject(&SPIFFS, framework.getSecurityManager());
+ESP8266React esp8266React(&server, &SPIFFS);
+DemoProject demoProject = DemoProject(&server, &SPIFFS, esp8266React.getSecurityManager());
 ```
 
 Now in the `setup()` function the initialization is performed:
@@ -272,14 +272,16 @@ Now in the `setup()` function the initialization is performed:
 void setup() {
   // start serial and filesystem
   Serial.begin(SERIAL_BAUD_RATE);
+
+  // start the file system (must be done before starting the framework)
   SPIFFS.begin();
 
-  // set up the framework
-  framework.init(&server);
+  // start the framework and demo project
+  esp8266React.begin();
 
-  // begin the demo project
-  demoProject.init(&server);
-  
+  // start the demo project
+  demoProject.begin();
+
   // start the server
   server.begin();
 }
@@ -290,7 +292,7 @@ Finally the loop calls the framework's loop function to service the frameworks f
 ```cpp
 void loop() {
   // run the framework's loop function
-  framework.loop();
+  esp8266React.loop();
 
   // run the demo project's loop function
   demoProject.loop();

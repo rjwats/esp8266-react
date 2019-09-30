@@ -1,7 +1,7 @@
 #include <WiFiSettingsService.h>
 
-WiFiSettingsService::WiFiSettingsService(FS* fs, SecurityManager* securityManager) : AdminSettingsService(fs, securityManager, WIFI_SETTINGS_SERVICE_PATH, WIFI_SETTINGS_FILE) {
-  // Disable wifi config persistance and auto reconnect
+WiFiSettingsService::WiFiSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) : AdminSettingsService(server, fs, securityManager, WIFI_SETTINGS_SERVICE_PATH, WIFI_SETTINGS_FILE) {
+  // Disable WiFi config persistance and auto reconnect
   WiFi.persistent(false);
   WiFi.setAutoReconnect(false);
 
@@ -17,8 +17,8 @@ WiFiSettingsService::WiFiSettingsService(FS* fs, SecurityManager* securityManage
 
 WiFiSettingsService::~WiFiSettingsService() {}
 
-void WiFiSettingsService::init(AsyncWebServer* server) {
-  SettingsService::init(server);
+void WiFiSettingsService::begin() {
+  SettingsService::begin();
   reconfigureWiFiConnection();
 }
 

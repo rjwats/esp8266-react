@@ -23,21 +23,19 @@ class SettingsService : public SettingsPersistence {
 
   public:
 
-    SettingsService(FS* fs, char const* servicePath, char const* filePath):
-      SettingsPersistence(fs, filePath), _servicePath(servicePath) {
+    SettingsService(AsyncWebServer* server, FS* fs, char const* servicePath, char const* filePath): SettingsPersistence(fs, filePath), _servicePath(servicePath) {
+      server->on(_servicePath, HTTP_GET, std::bind(&SettingsService::fetchConfig, this, std::placeholders::_1));    
+
       _updateHandler.setUri(servicePath);
       _updateHandler.setMethod(HTTP_POST);
       _updateHandler.setMaxContentLength(MAX_SETTINGS_SIZE);
       _updateHandler.onRequest(std::bind(&SettingsService::updateConfig, this, std::placeholders::_1, std::placeholders::_2));
+      server->addHandler(&_updateHandler);     
     }
 
     virtual ~SettingsService() {}
 
-    void init(AsyncWebServer* server) {
-      // configure fetch config handler
-      server->on(_servicePath, HTTP_GET, std::bind(&SettingsService::fetchConfig, this, std::placeholders::_1));
-      server->addHandler(&_updateHandler);
-
+    void begin() {
       // read the initial data from the file system
       readFromFS();
     }

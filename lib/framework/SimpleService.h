@@ -59,9 +59,6 @@ private:
 
   protected:
 
-    // will serve setting endpoints from here
-    char const* _servicePath;
-
     // reads the local config from the
     virtual void readFromJsonObject(JsonObject& root) {}
     virtual void writeToJsonObject(JsonObject& root) {}
@@ -71,19 +68,17 @@ private:
 
   public:
 
-    SimpleService(char const* servicePath): _servicePath(servicePath) {
+    SimpleService(AsyncWebServer* server, char const* servicePath) {
+      server->on(servicePath, HTTP_GET, std::bind(&SimpleService::fetchConfig, this, std::placeholders::_1));    
+
       _updateHandler.setUri(servicePath);
       _updateHandler.setMethod(HTTP_POST);
       _updateHandler.setMaxContentLength(MAX_SETTINGS_SIZE);
       _updateHandler.onRequest(std::bind(&SimpleService::updateConfig, this, std::placeholders::_1, std::placeholders::_2));
+      server->addHandler(&_updateHandler);  
     }
     
     virtual ~SimpleService() {}
-
-    void init(AsyncWebServer* server) {
-      server->on(_servicePath, HTTP_GET, std::bind(&SimpleService::fetchConfig, this, std::placeholders::_1));
-      server->addHandler(&_updateHandler);
-    }
 
 };
 

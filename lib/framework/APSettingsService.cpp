@@ -1,10 +1,13 @@
 #include <APSettingsService.h>
 
-APSettingsService::APSettingsService(FS* fs, SecurityManager* securityManager) : AdminSettingsService(fs, securityManager, AP_SETTINGS_SERVICE_PATH, AP_SETTINGS_FILE) {
-  onConfigUpdated();
-}
+APSettingsService::APSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) : AdminSettingsService(server, fs, securityManager, AP_SETTINGS_SERVICE_PATH, AP_SETTINGS_FILE) {}
 
 APSettingsService::~APSettingsService() {}
+
+void APSettingsService::begin() {
+  SettingsService::begin();
+  onConfigUpdated();
+}
 
 void APSettingsService::loop() {
   unsigned long currentMillis = millis();
@@ -80,7 +83,4 @@ void APSettingsService::writeToJsonObject(JsonObject& root) {
 
 void APSettingsService::onConfigUpdated() {
   _lastManaged = millis() - MANAGE_NETWORK_DELAY;
-
-  // stop softAP - forces reconfiguration in loop()
-  stopAP();
 }

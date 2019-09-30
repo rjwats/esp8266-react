@@ -29,9 +29,9 @@ class ESP8266React {
 
   public:
 
-    ESP8266React(FS* fs);
+    ESP8266React(AsyncWebServer* server, FS* fs);
     
-    void init(AsyncWebServer* server);
+    void begin();
     void loop();
     
     SecurityManager* getSecurityManager(){
@@ -39,8 +39,6 @@ class ESP8266React {
     }
 
   private:
-
-    FS* _fs;
 
     SecuritySettingsService _securitySettingsService;
 

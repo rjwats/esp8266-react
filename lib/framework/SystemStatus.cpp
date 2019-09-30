@@ -1,14 +1,12 @@
 #include <SystemStatus.h>
 
-SystemStatus::SystemStatus(SecurityManager* securityManager) : _securityManager(securityManager) {}
-
-void SystemStatus::init(AsyncWebServer *server) {
+SystemStatus::SystemStatus(AsyncWebServer* server, SecurityManager* securityManager) {
   server->on(SYSTEM_STATUS_SERVICE_PATH, HTTP_GET,
-    _securityManager->wrapRequest(std::bind(&SystemStatus::systemStatus, this, std::placeholders::_1), AuthenticationPredicates::IS_AUTHENTICATED)
+    securityManager->wrapRequest(std::bind(&SystemStatus::systemStatus, this, std::placeholders::_1), AuthenticationPredicates::IS_AUTHENTICATED)
   );
 }
 
- void SystemStatus::systemStatus(AsyncWebServerRequest *request) {
+void SystemStatus::systemStatus(AsyncWebServerRequest *request) {
   AsyncJsonResponse * response = new AsyncJsonResponse(MAX_ESP_STATUS_SIZE);
   JsonObject root = response->getRoot();
 #if defined(ESP8266)

@@ -6,9 +6,8 @@
 class AdminSettingsService : public SettingsService {
   
   public:  
-    AdminSettingsService(FS* fs, SecurityManager* securityManager, char const* servicePath, char const* filePath):
-      SettingsService(fs, servicePath, filePath), _securityManager(securityManager) {
-    }
+    AdminSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager, char const* servicePath, char const* filePath):
+      SettingsService(server, fs, servicePath, filePath), _securityManager(securityManager) {}
 
   protected:
     // will validate the requests with the security manager

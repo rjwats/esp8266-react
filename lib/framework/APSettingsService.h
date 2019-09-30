@@ -23,9 +23,10 @@ class APSettingsService : public AdminSettingsService {
 
   public:
 
-    APSettingsService(FS* fs, SecurityManager* securityManager);
+    APSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
     ~APSettingsService();
 
+    void begin();
     void loop();
 
   protected:
@@ -49,7 +50,7 @@ class APSettingsService : public AdminSettingsService {
 
     void manageAP();
     void startAP();
-    void stopAP();
+    void stopAP() ;
     void handleDNS();
 
 };

@@ -23,7 +23,7 @@ class OTASettingsService : public AdminSettingsService {
 
   public:
 
-    OTASettingsService(FS* fs, SecurityManager* securityManager);
+    OTASettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
     ~OTASettingsService();
 
     void loop();
@@ -52,4 +52,4 @@ class OTASettingsService : public AdminSettingsService {
 
 };
 
-#endif // end NTPSettingsService_h
+#endif // end OTASettingsService_h

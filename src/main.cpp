@@ -5,7 +5,7 @@
 #define SERIAL_BAUD_RATE 115200
 
 AsyncWebServer server(80);
-ESP8266React framework(&SPIFFS);
+ESP8266React esp8266React(&server, &SPIFFS);
 AudioLightSettingsService audioLightService = AudioLightSettingsService(&server, &SPIFFS);
 
 void setup() {
@@ -14,10 +14,9 @@ void setup() {
   SPIFFS.begin();
 
   // set up the framework
-  framework.init(&server);
+  esp8266React.begin();
 
   // begin the demo project
-  audioLightService.init(&server);
   audioLightService.begin();
   
   // start the server
@@ -26,7 +25,7 @@ void setup() {
 
 void loop() {
   // run the framework's loop function
-  framework.loop();
+  esp8266React.loop();
 
   // run the demo project's loop function
   audioLightService.loop();
