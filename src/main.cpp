@@ -17,6 +17,8 @@ void setup() {
 
   // start the framework and demo project
   esp8266React.begin();
+
+  // start the demo project
   demoProject.begin();
 
   // start the server
