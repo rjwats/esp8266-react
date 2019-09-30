@@ -1,6 +1,6 @@
 #include <AuthenticationService.h>
 
-AuthenticationService::AuthenticationService(AsyncWebServer* server, SecurityManager* securityManager) {
+AuthenticationService::AuthenticationService(AsyncWebServer* server, SecurityManager* securityManager) : _securityManager(securityManager) {
   server->on(VERIFY_AUTHORIZATION_PATH, HTTP_GET, std::bind(&AuthenticationService::verifyAuthorization, this, std::placeholders::_1));
 
   _signInHandler.setUri(SIGN_IN_PATH);

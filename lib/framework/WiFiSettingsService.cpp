@@ -5,9 +5,6 @@ WiFiSettingsService::WiFiSettingsService(AsyncWebServer* server, FS* fs, Securit
   WiFi.persistent(false);
   WiFi.setAutoReconnect(false);
 
-  // Force WiFi config to be applied when loop() called
-  reconfigureWiFiConnection();
-
 #if defined(ESP8266)
   _onStationModeDisconnectedHandler = WiFi.onStationModeDisconnected(std::bind(&WiFiSettingsService::onStationModeDisconnected, this, std::placeholders::_1));
 #elif defined(ESP_PLATFORM)
@@ -19,6 +16,11 @@ WiFiSettingsService::WiFiSettingsService(AsyncWebServer* server, FS* fs, Securit
 }
 
 WiFiSettingsService::~WiFiSettingsService() {}
+
+void WiFiSettingsService::begin() {
+  SettingsService::begin();
+  reconfigureWiFiConnection();
+}
 
 void WiFiSettingsService::readFromJsonObject(JsonObject& root){
     _ssid = root["ssid"] | "";

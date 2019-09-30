@@ -15,6 +15,7 @@ class WiFiSettingsService : public AdminSettingsService {
     WiFiSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
     ~WiFiSettingsService();
 
+    void begin();
     void loop();
 
   protected:

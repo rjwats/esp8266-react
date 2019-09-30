@@ -39,6 +39,14 @@ ESP8266React::ESP8266React(AsyncWebServer* server, FS* fs):
   #endif  
 }
 
+void ESP8266React::begin() {
+  _securitySettingsService.begin();
+  _wifiSettingsService.begin();
+  _apSettingsService.begin();
+  _ntpSettingsService.begin();
+  _otaSettingsService.begin();
+}
+
 void ESP8266React::loop() {  
   _wifiSettingsService.loop();
   _apSettingsService.loop();

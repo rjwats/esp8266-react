@@ -31,12 +31,14 @@ class SettingsService : public SettingsPersistence {
       _updateHandler.setMaxContentLength(MAX_SETTINGS_SIZE);
       _updateHandler.onRequest(std::bind(&SettingsService::updateConfig, this, std::placeholders::_1, std::placeholders::_2));
       server->addHandler(&_updateHandler);     
-
-      // read the initial data from the file system
-      readFromFS();
     }
 
     virtual ~SettingsService() {}
+
+    void begin() {
+      // read the initial data from the file system
+      readFromFS();
+    }
 
 protected:
   char const* _servicePath;
