@@ -3,8 +3,7 @@
 void junkBodyHandler(AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final){}
 
 AudioLightSettingsService::AudioLightSettingsService(AsyncWebServer *server, FS *fs) :
-SimpleService(AUDIO_LIGHT_SERVICE_PATH),SimpleSocket(server, AUDIO_LIGHT_WS_PATH), 
-_server(server), _webSocket(AUDIO_LIGHT_FREQUENCY_STREAM) {
+  SimpleService(server, AUDIO_LIGHT_SERVICE_PATH), SimpleSocket(server, AUDIO_LIGHT_WS_PATH), _server(server), _webSocket(AUDIO_LIGHT_FREQUENCY_STREAM) {
   server->addHandler(&_webSocket);
   server->on(AUDIO_LIGHT_SAVE_MODE_CONFIG_PATH, HTTP_POST, std::bind(&AudioLightSettingsService::saveModeConfig, this, std::placeholders::_1), junkBodyHandler);
   server->on(AUDIO_LIGHT_LOAD_MODE_CONFIG_PATH, HTTP_POST, std::bind(&AudioLightSettingsService::loadModeConfig, this, std::placeholders::_1), junkBodyHandler);
