@@ -50,7 +50,7 @@ void SpectrumMode::tick() {
 }
 
 void SpectrumMode::readFromJsonObject(JsonObject &root) {
-  updateColorFromJson(root, &_barColor, SPECTRUM_DEFAULT_BAR_COLOR), "bar_color"; 
+  updateColorFromJson(root, &_barColor, SPECTRUM_DEFAULT_BAR_COLOR, "bar_color"); 
   updateColorFromJson(root, &_peakColor, SPECTRUM_DEFAULT_PEAK_COLOR, "peak_color"); 
   updateByteFromJson(root, &_brightness, SPECTRUM_DEFAULT_BRIGHTNESS, "brightness");  
   updateByteFromJson(root, &_decaySpeed, SPECTRUM_DEFAULT_DECAY_SPEED, "decay_speed");
