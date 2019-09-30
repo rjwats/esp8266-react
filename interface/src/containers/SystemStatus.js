@@ -2,8 +2,6 @@ import React, { Component, Fragment } from 'react';
 
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import LinearProgress from '@material-ui/core/LinearProgress';
-import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
@@ -16,16 +14,12 @@ import ShowChartIcon from '@material-ui/icons/ShowChart';
 import SdStorageIcon from '@material-ui/icons/SdStorage';
 import DataUsageIcon from '@material-ui/icons/DataUsage';
 
-
 import { SYSTEM_STATUS_ENDPOINT } from '../constants/Endpoints';
 import { restComponent } from '../components/RestComponent';
+import LoadingNotification from '../components/LoadingNotification';
 import SectionContent from '../components/SectionContent';
 
 const styles = theme => ({
-  fetching: {
-    margin: theme.spacing(4),
-    textAlign: "center"
-  },
   button: {
     marginRight: theme.spacing(2),
     marginTop: theme.spacing(2),
@@ -85,12 +79,12 @@ class SystemStatus extends Component {
           </ListItemAvatar>
           <ListItemText primary="Flash Chip Size" secondary={data.flash_chip_size + ' bytes'} />
         </ListItem>
-        <Divider variant="inset" component="li" />        
+        <Divider variant="inset" component="li" />
       </Fragment>
     );
   }
 
-  renderNTPStatus(data, classes) {
+  renderSystemStatus(data, classes) {
     return (
       <div>
         <List>
@@ -104,29 +98,17 @@ class SystemStatus extends Component {
   }
 
   render() {
-    const { data, fetched, errorMessage, classes } = this.props;
+    const { data, fetched, errorMessage, loadData, classes } = this.props;
     return (
       <SectionContent title="System Status">
-        {
-          !fetched ?
-            <div>
-              <LinearProgress className={classes.fetching} />
-              <Typography variant="h4" className={classes.fetching}>
-                Loading...
-              </Typography>
-            </div>
-            :
-            data ? this.renderNTPStatus(data, classes)
-              :
-              <div>
-                <Typography variant="h4" className={classes.fetching}>
-                  {errorMessage}
-                </Typography>
-                <Button variant="contained" color="secondary" className={classes.button} onClick={this.props.loadData}>
-                  Refresh
-                </Button>
-              </div>
-        }
+        <LoadingNotification
+          onReset={loadData}
+          fetched={fetched}
+          errorMessage={errorMessage}
+          render={
+            () => this.renderSystemStatus(data, classes)
+          }
+        />
       </SectionContent>
     )
   }

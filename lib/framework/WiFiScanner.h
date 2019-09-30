@@ -28,8 +28,6 @@ class WiFiScanner {
 
   private:
 
-    AsyncWebServer* _server;
-
     void scanNetworks(AsyncWebServerRequest *request);
     void listNetworks(AsyncWebServerRequest *request);
 

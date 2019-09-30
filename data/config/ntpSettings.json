@@ -1,4 +1,4 @@
 {
-  "server":"pool.ntp.org",
-  "interval":3600
+  "server": "pool.ntp.org",
+  "interval": 3600
 }

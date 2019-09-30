@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { WIFI_SETTINGS_ENDPOINT }  from  '../constants/Endpoints';
+import { WIFI_SETTINGS_ENDPOINT } from '../constants/Endpoints';
 import { restComponent } from '../components/RestComponent';
+import LoadingNotification from '../components/LoadingNotification';
 import SectionContent from '../components/SectionContent';
 import WiFiSettingsForm from '../forms/WiFiSettingsForm';
 
@@ -18,10 +19,10 @@ class WiFiSettings extends Component {
     const { selectedNetwork } = this.props;
     if (selectedNetwork) {
       var wifiSettings = {
-        ssid:selectedNetwork.ssid,
-        password:"",
-        hostname:"esp8266-react",
-        static_ip_config:false,
+        ssid: selectedNetwork.ssid,
+        password: "",
+        hostname: "esp8266-react",
+        static_ip_config: false,
       }
       this.props.setData(wifiSettings);
     } else {
@@ -35,19 +36,24 @@ class WiFiSettings extends Component {
   }
 
   render() {
-    const { data, fetched, errorMessage, selectedNetwork } = this.props;
+    const { data, fetched, errorMessage, saveData, loadData, handleValueChange, handleCheckboxChange, selectedNetwork, deselectNetwork } = this.props;
     return (
       <SectionContent title="WiFi Settings">
-      	<WiFiSettingsForm
-          wifiSettings={data}
-          wifiSettingsFetched={fetched}
+        <LoadingNotification
+          onReset={loadData}
+          fetched={fetched}
           errorMessage={errorMessage}
-          selectedNetwork={selectedNetwork}
-          deselectNetwork={this.props.deselectNetwork}
-          onSubmit={this.props.saveData}
-          onReset={this.deselectNetworkAndLoadData}
-          handleValueChange={this.props.handleValueChange}
-          handleCheckboxChange={this.props.handleCheckboxChange}
+          render={() =>
+            <WiFiSettingsForm
+              wifiSettings={data}
+              selectedNetwork={selectedNetwork}
+              deselectNetwork={deselectNetwork}
+              onSubmit={saveData}
+              onReset={this.deselectNetworkAndLoadData}
+              handleValueChange={handleValueChange}
+              handleCheckboxChange={handleCheckboxChange}
+            />
+          }
         />
       </SectionContent>
     )

@@ -29,7 +29,3 @@ void SecuritySettingsService::writeToJsonObject(JsonObject& root) {
     user["admin"] = _user.isAdmin();
   }
 }
-
-void SecuritySettingsService::begin() {
-  readFromFS();
-}

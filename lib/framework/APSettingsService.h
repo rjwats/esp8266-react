@@ -1,7 +1,7 @@
 #ifndef APSettingsConfig_h
 #define APSettingsConfig_h
 
-#include <SettingsService.h>
+#include <AdminSettingsService.h>
 #include <DNSServer.h>
 #include <IPAddress.h>
 
@@ -26,6 +26,7 @@ class APSettingsService : public AdminSettingsService {
     APSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
     ~APSettingsService();
 
+    void begin();
     void loop();
 
   protected:
@@ -49,7 +50,7 @@ class APSettingsService : public AdminSettingsService {
 
     void manageAP();
     void startAP();
-    void stopAP();
+    void stopAP() ;
     void handleDNS();
 
 };

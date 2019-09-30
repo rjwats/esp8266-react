@@ -42,8 +42,9 @@ Resource | Description
 ---- | -----------
 [data/](data) | The file system image directory
 [interface/](interface) | React based front end
-[src/](src) | C++ back end for the ESP8266 device
+[src/](src) | The main.cpp and demo project to get you started
 [platformio.ini](platformio.ini) | PlatformIO project configuration file
+[lib/framework/](lib/framework) | C++ back end for the ESP8266 device
 
 ### Building the firmware
 
@@ -247,13 +248,92 @@ There is also a manifest file which contains the app name to use when adding the
 }
 ```
 
-## Back End Overview
+## Back end overview
 
-The back end is a set of REST endpoints hosted by a [ESPAsyncWebServer](https://github.com/me-no-dev/ESPAsyncWebServer) instance. The source is split up by feature, for example [WiFiScanner.h](src/WiFiScanner.h) implements the end points for scanning for available networks.
+The back end is a set of REST endpoints hosted by a [ESPAsyncWebServer](https://github.com/me-no-dev/ESPAsyncWebServer) instance. The ['lib/framework'](lib/framework) directory contains the majority of the back end code. The framework contains of a number of useful utility classes which you can use when extending it. The project also comes with a demo project to give you some help getting started. 
 
-There is an abstract class [SettingsService.h](src/SettingsService.h) that provides an easy means of adding configurable services/features to the device. It takes care of writing the settings as JSON to SPIFFS. All you need to do is extend the class with your required configuration and implement the functions which serialize the settings to/from JSON. JSON serialization utilizes the excellent [ArduinoJson](https://github.com/bblanchon/ArduinoJson) library. 
+The framework's source is split up by feature, for example [WiFiScanner.h](lib/framework/WiFiScanner.h) implements the end points for scanning for available networks where as [WiFiSettingsService.h](lib/framework/WiFiSettingsService.h) handles configuring the WiFi settings and managing the WiFi connection.
 
-Here is a example of a service with username and password settings:
+### Initializing the framework
+
+The ['src/main.cpp'](src/main.cpp) file constructs the webserver and initializes the framework. You can add endpoints to the server here to support your IoT project. The main loop is also accessable so you can run your own code easily. 
+
+The following code creates the web server, esp8266React framework and the demo project instance:
+
+```cpp
+AsyncWebServer server(80);
+ESP8266React esp8266React(&server, &SPIFFS);
+DemoProject demoProject = DemoProject(&server, &SPIFFS, esp8266React.getSecurityManager());
+```
+
+Now in the `setup()` function the initialization is performed:
+
+```cpp
+void setup() {
+  // start serial and filesystem
+  Serial.begin(SERIAL_BAUD_RATE);
+
+  // start the file system (must be done before starting the framework)
+  SPIFFS.begin();
+
+  // start the framework and demo project
+  esp8266React.begin();
+
+  // start the demo project
+  demoProject.begin();
+
+  // start the server
+  server.begin();
+}
+```
+
+Finally the loop calls the framework's loop function to service the frameworks features. You can add your own code in here, as shown with the demo project:
+
+```cpp
+void loop() {
+  // run the framework's loop function
+  esp8266React.loop();
+
+  // run the demo project's loop function
+  demoProject.loop();
+}
+```
+
+### Adding endpoints
+
+There are some simple classes that support adding configurable services/features to the device:
+
+Class | Description
+----- | -----------
+[SimpleService.h](lib/framework/SimpleService.h) | Exposes an endpoint to read and write settings as JSON. Extend this class and implement the functions which serialize the settings to/from JSON.
+[SettingsService.h](lib/framework/SettingsService.h) | As above, however this class also handles persisting the settings as JSON to the file system.
+[AdminSettingsService.h](lib/framework/AdminSettingsService.h) | Extends SettingsService to secure the endpoint to administrators only, the authentication predicate can be overridden if required.
+
+The demo project shows how these can be used, explore the framework classes for more examples.
+
+### Security features
+
+The framework has security features to prevent unauthorized use of the device. This is driven by [SecurityManager.h](lib/framework/SecurityManager.h).
+
+On successful authentication, the /rest/signIn endpoint issues a JWT which is then sent using Bearer Authentication. The framework come with built in predicates for verifying a users access level. The built in AuthenticationPredicates can be found in [SecurityManager.h](lib/framework/SecurityManager.h):
+
+Predicate            | Description
+-------------------- | -----------
+NONE_REQUIRED        | No authentication is required.
+IS_AUTHENTICATED     | Any authenticated principal is permitted.
+IS_ADMIN             | The authenticated principal must be an admin.
+
+You can use the security manager to wrap any web handler with an authentication predicate:
+
+```cpp
+server->on("/rest/someService", HTTP_GET, 
+  _securityManager->wrapRequest(std::bind(&SomeService::someService, this, std::placeholders::_1), AuthenticationPredicates::IS_AUTHENTICATED)
+);
+```
+
+Alternatively you can extend [AdminSettingsService.h](lib/framework/AdminSettingsService.h) and optionally override `getAuthenticationPredicate()` to secure an endpoint.
+
+## Extending the framework
 
 ```cpp
 #include <SettingsService.h>
@@ -321,6 +401,7 @@ void reconfigureTheService() {
 
 * [React](https://reactjs.org/)
 * [Material-UI](https://material-ui-next.com/)
+* [notistack](https://github.com/iamhosseindhv/notistack)
 * [Time](https://github.com/PaulStoffregen/Time)
 * [NtpClient](https://github.com/gmag11/NtpClient)
 * [ArduinoJson](https://github.com/bblanchon/ArduinoJson)

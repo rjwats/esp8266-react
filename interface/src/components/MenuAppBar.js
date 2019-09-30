@@ -30,7 +30,8 @@ import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Avatar from '@material-ui/core/Avatar';
 
-import { APP_NAME } from '../constants/App';
+import ProjectMenu from '../project/ProjectMenu';
+import { PROJECT_NAME } from '../constants/Env';
 import { withAuthenticationContext } from '../authentication/Context.js';
 
 const drawerWidth = 290;
@@ -65,8 +66,7 @@ const styles = theme => ({
     width: drawerWidth,
   },
   content: {
-    flexGrow: 1,
-    padding: theme.spacing(),
+    flexGrow: 1
   },
   authMenu: {
     zIndex: theme.zIndex.tooltip,
@@ -112,10 +112,12 @@ class MenuAppBar extends React.Component {
       <div>
         <Toolbar>
           <Typography variant="h6" color="primary">
-            {APP_NAME}
+            {PROJECT_NAME}
           </Typography>
           <Divider absolute />
         </Toolbar>
+        <Divider />
+        <ProjectMenu />
         <Divider />
         <List>
           <ListItem to='/wifi/' selected={path.startsWith('/wifi/')} button component={Link}>
@@ -195,7 +197,7 @@ class MenuAppBar extends React.Component {
                     </CardContent>
                     <Divider />
                     <CardActions className={classes.authMenuActions}>
-                      <Button className={classes.authMenuButtons} variant="contained" color="primary" onClick={authenticationContext.signOut}>Sign Out</Button>
+                      <Button variant="contained" color="primary" onClick={authenticationContext.signOut}>Sign Out</Button>
                     </CardActions>
                   </Card>
                 </ClickAwayListener>

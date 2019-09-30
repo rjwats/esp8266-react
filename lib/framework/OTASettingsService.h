@@ -1,7 +1,7 @@
 #ifndef OTASettingsService_h
 #define OTASettingsService_h
 
-#include <SettingsService.h>
+#include <AdminSettingsService.h>
 
 #if defined(ESP8266)
   #include <ESP8266mDNS.h>
@@ -52,4 +52,4 @@ class OTASettingsService : public AdminSettingsService {
 
 };
 
-#endif // end NTPSettingsService_h
+#endif // end OTASettingsService_h

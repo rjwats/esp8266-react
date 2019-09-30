@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 
-import { AP_SETTINGS_ENDPOINT }  from  '../constants/Endpoints';
+import { AP_SETTINGS_ENDPOINT } from '../constants/Endpoints';
 import { restComponent } from '../components/RestComponent';
+import LoadingNotification from '../components/LoadingNotification';
 import SectionContent from '../components/SectionContent';
 import APSettingsForm from '../forms/APSettingsForm';
 
@@ -12,16 +13,21 @@ class APSettings extends Component {
   }
 
   render() {
-    const { data, fetched, errorMessage } = this.props;
+    const { fetched, errorMessage, data, saveData, loadData, handleValueChange } = this.props;
     return (
       <SectionContent title="AP Settings">
-      	<APSettingsForm          
-          apSettings={data}
-          apSettingsFetched={fetched}
+        <LoadingNotification
+          onReset={loadData}
+          fetched={fetched}
           errorMessage={errorMessage}
-          onSubmit={this.props.saveData}
-          onReset={this.props.loadData}
-          handleValueChange={this.props.handleValueChange}
+          render={() =>
+            <APSettingsForm
+              apSettings={data}
+              onSubmit={saveData}
+              onReset={loadData}
+              handleValueChange={handleValueChange}
+            />
+          }
         />
       </SectionContent>
     )

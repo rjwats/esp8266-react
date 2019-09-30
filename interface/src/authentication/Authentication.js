@@ -1,4 +1,5 @@
 import history from '../history';
+import { PROJECT_PATH } from '../constants/Env';
 
 export const ACCESS_TOKEN = 'access_token';
 export const LOGIN_PATHNAME = 'loginPathname';
@@ -21,7 +22,7 @@ export function fetchLoginRedirect() {
   const loginSearch = localStorage.getItem(LOGIN_SEARCH);
   clearLoginRedirect();
   return {
-    pathname: loginPathname || "/wifi/",
+    pathname: loginPathname || `/${PROJECT_PATH}/`,
     search: (loginPathname && loginSearch) || undefined
   };
 }

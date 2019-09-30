@@ -69,7 +69,7 @@ class WiFiNetworkSelector extends Component {
           scanningForNetworks ?
           <div>
             <LinearProgress className={classes.scanningProgress}/>
-            <Typography variant="h4" className={classes.scanningProgress}>
+            <Typography variant="h6" className={classes.scanningProgress}>
               Scanning...
             </Typography>
           </div>
@@ -80,7 +80,7 @@ class WiFiNetworkSelector extends Component {
           </List>
           :
           <div>
-            <Typography variant="h4" className={classes.scanningProgress}>
+            <Typography variant="h6" className={classes.scanningProgress}>
               {errorMessage}
             </Typography>
           </div>

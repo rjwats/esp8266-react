@@ -20,13 +20,10 @@
 class SystemStatus {
 
   public:
-
-    SystemStatus(AsyncWebServer *server, SecurityManager* securityManager);
+   
+    SystemStatus(AsyncWebServer* server, SecurityManager* securityManager);
 
   private:
-
-    AsyncWebServer* _server;
-    SecurityManager* _securityManager;
 
     void systemStatus(AsyncWebServerRequest *request);
 

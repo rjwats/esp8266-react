@@ -1,28 +1,34 @@
 import React, { Component } from 'react';
 
-import { OTA_SETTINGS_ENDPOINT }  from  '../constants/Endpoints';
-import {restComponent} from '../components/RestComponent';
+import { OTA_SETTINGS_ENDPOINT } from '../constants/Endpoints';
+import { restComponent } from '../components/RestComponent';
+import LoadingNotification from '../components/LoadingNotification';
 import SectionContent from '../components/SectionContent';
 import OTASettingsForm from '../forms/OTASettingsForm';
 
 class OTASettings extends Component {
 
   componentDidMount() {
-      this.props.loadData();
+    this.props.loadData();
   }
 
   render() {
-    const { data, fetched, errorMessage } = this.props;
+    const { fetched, errorMessage, data, saveData, loadData, handleValueChange, handleCheckboxChange } = this.props;
     return (
       <SectionContent title="OTA Settings">
-      	<OTASettingsForm
-          otaSettings={data}
-          otaSettingsFetched={fetched}
+        <LoadingNotification
+          onReset={loadData}
+          fetched={fetched}
           errorMessage={errorMessage}
-          onSubmit={this.props.saveData}
-          onReset={this.props.loadData}
-          handleValueChange={this.props.handleValueChange}
-          handleCheckboxChange={this.props.handleCheckboxChange}
+          render={() =>
+            <OTASettingsForm
+              otaSettings={data}
+              onSubmit={saveData}
+              onReset={loadData}
+              handleValueChange={handleValueChange}
+              handleCheckboxChange={handleCheckboxChange}
+            />
+          }
         />
       </SectionContent>
     )

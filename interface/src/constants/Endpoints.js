@@ -1,4 +1,4 @@
-const ENDPOINT_ROOT = process.env.REACT_APP_ENDPOINT_ROOT;
+import { ENDPOINT_ROOT } from '../constants/Env';
 
 export const NTP_STATUS_ENDPOINT = ENDPOINT_ROOT + "ntpStatus";
 export const NTP_SETTINGS_ENDPOINT = ENDPOINT_ROOT + "ntpSettings";

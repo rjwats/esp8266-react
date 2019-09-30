@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 
 import { SECURITY_SETTINGS_ENDPOINT } from '../constants/Endpoints';
 import { restComponent } from '../components/RestComponent';
-import ManageUsersForm from '../forms/ManageUsersForm';
+import LoadingNotification from '../components/LoadingNotification';
 import SectionContent from '../components/SectionContent';
+import ManageUsersForm from '../forms/ManageUsersForm';
 
 class ManageUsers extends Component {
 
@@ -12,17 +13,22 @@ class ManageUsers extends Component {
   }
 
   render() {
-    const { data, fetched, errorMessage } = this.props;
+    const { fetched, errorMessage, data, saveData, loadData, setData, handleValueChange } = this.props;
     return (
-      <SectionContent title="Manage Users">
-        <ManageUsersForm
-          userData={data}
-          userDataFetched={fetched}
+      <SectionContent title="Manage Users" titleGutter>
+        <LoadingNotification
+          onReset={loadData}
+          fetched={fetched}
           errorMessage={errorMessage}
-          onSubmit={this.props.saveData}
-          onReset={this.props.loadData}
-          setData={this.props.setData}
-          handleValueChange={this.props.handleValueChange}
+          render={() =>
+            <ManageUsersForm
+              userData={data}
+              onSubmit={saveData}
+              onReset={loadData}
+              setData={setData}
+              handleValueChange={handleValueChange}
+            />
+          }
         />
       </SectionContent>
     )

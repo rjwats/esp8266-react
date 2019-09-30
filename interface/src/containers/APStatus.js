@@ -2,8 +2,6 @@ import React, { Component, Fragment } from 'react';
 
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import LinearProgress from '@material-ui/core/LinearProgress';
-import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -15,6 +13,7 @@ import DeviceHubIcon from '@material-ui/icons/DeviceHub';
 import ComputerIcon from '@material-ui/icons/Computer';
 
 import { restComponent } from '../components/RestComponent';
+import LoadingNotification from '../components/LoadingNotification';
 import SectionContent from '../components/SectionContent'
 
 import * as Highlight from '../constants/Highlight';
@@ -26,10 +25,6 @@ const styles = theme => ({
   },
   ["apStatus_" + Highlight.IDLE]: {
     backgroundColor: theme.palette.highlight_idle
-  },
-  fetching: {
-    margin: theme.spacing(4),
-    textAlign: "center"
   },
   button: {
     marginRight: theme.spacing(2),
@@ -96,9 +91,7 @@ class APStatus extends Component {
     return (
       <div>
         <List>
-          <Fragment>
-            {this.createListItems(data, classes)}
-          </Fragment>
+          {this.createListItems(data, classes)}
         </List>
         <Button variant="contained" color="secondary" className={classes.button} onClick={this.props.loadData}>
           Refresh
@@ -108,30 +101,17 @@ class APStatus extends Component {
   }
 
   render() {
-    const { data, fetched, errorMessage, classes } = this.props;
-
+    const { fetched, errorMessage, data, loadData, classes } = this.props;
     return (
       <SectionContent title="AP Status">
-        {
-          !fetched ?
-            <div>
-              <LinearProgress className={classes.fetching} />
-              <Typography variant="h4" className={classes.fetching}>
-                Loading...
-              </Typography>
-            </div>
-            :
-            data ? this.renderAPStatus(data, classes)
-              :
-              <div>
-                <Typography variant="h4" className={classes.fetching}>
-                  {errorMessage}
-                </Typography>
-                <Button variant="contained" color="secondary" className={classes.button} onClick={this.props.loadData}>
-                  Refresh
-                </Button>
-              </div>
-        }
+        <LoadingNotification
+          onReset={loadData}
+          fetched={fetched}
+          errorMessage={errorMessage}
+          render={
+            () => this.renderAPStatus(data, classes)
+          }
+        />
       </SectionContent>
     )
   }

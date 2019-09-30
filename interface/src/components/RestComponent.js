@@ -1,6 +1,7 @@
 import React from 'react';
 import { withSnackbar } from 'notistack';
 import { redirectingAuthorizedFetch } from '../authentication/Authentication';
+
 /*
 * It is unlikely this application will grow complex enough to require redux.
 *
@@ -51,10 +52,11 @@ export const restComponent = (endpointUrl, FormComponent) => {
           })
           .then(json => { this.setState({ data: json, fetched: true }) })
           .catch(error => {
-            this.props.enqueueSnackbar("Problem fetching: " + error.message, {
+            const errorMessage = error.message || "Unknown error";
+            this.props.enqueueSnackbar("Problem fetching: " + errorMessage, {
               variant: 'error',
             });
-            this.setState({ data: null, fetched: true, errorMessage: error.message });
+            this.setState({ data: null, fetched: true, errorMessage  });
           });
       }
 
@@ -79,16 +81,23 @@ export const restComponent = (endpointUrl, FormComponent) => {
             });
             this.setState({ data: json, fetched: true });
           }).catch(error => {
-            this.props.enqueueSnackbar("Problem saving: " + error.message, {
+            const errorMessage = error.message || "Unknown error";
+            this.props.enqueueSnackbar("Problem saving: " + errorMessage, {
               variant: 'error',
             });
-            this.setState({ data: null, fetched: true, errorMessage: error.message });
+            this.setState({ data: null, fetched: true, errorMessage  });
           });
       }
 
-      handleValueChange = name => event => {
+      handleValueChange = name => (event) => {
         const { data } = this.state;
         data[name] = event.target.value;
+        this.setState({ data });
+      };
+
+      handleSliderChange = name => (event, newValue) => {
+        const { data } = this.state;
+        data[name] = newValue;
         this.setState({ data });
       };
 
@@ -102,6 +111,7 @@ export const restComponent = (endpointUrl, FormComponent) => {
         return <FormComponent
           handleValueChange={this.handleValueChange}
           handleCheckboxChange={this.handleCheckboxChange}
+          handleSliderChange={this.handleSliderChange}
           setData={this.setData}
           saveData={this.saveData}
           loadData={this.loadData}

@@ -15,12 +15,11 @@ class AuthenticationService  {
 
   public:
 
-    AuthenticationService(AsyncWebServer* server, SecurityManager* securityManager) ;
+    AuthenticationService(AsyncWebServer* server, SecurityManager* securityManager);
     ~AuthenticationService();
 
   private:
-    // server instance 
-    AsyncWebServer* _server;
+
     SecurityManager* _securityManager;
     AsyncJsonWebHandler _signInHandler;
 
