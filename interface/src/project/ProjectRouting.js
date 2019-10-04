@@ -16,6 +16,7 @@ class ProjectRouting extends Component {
           */
         }
         <AuthenticatedRoute exact path={`/${PROJECT_PATH}/demo/*`} component={DemoProject} />
+        {/* <AuthenticatedRoute exact path={`/${PROJECT_PATH}/bme280/*`} component={Bme280Project} /> */}
         {
           /*
           * The redirect below caters for the default project route and redirecting invalid paths.
