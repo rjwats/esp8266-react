@@ -6,7 +6,7 @@
 #include <AudioLightMode.h>
 #include <JsonUtil.h>
 
-#define RAINBOW_DEFAULT_HUE_DELTA 64
+#define RAINBOW_DEFAULT_HUE_DELTA 250
 #define RAINBOW_DEFAULT_BRIGHTNESS 128
 
 // rotate speed default and min
