@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 export class AudioLightFireMode extends React.Component {
 
@@ -12,7 +11,3 @@ export class AudioLightFireMode extends React.Component {
   }
 }
 
-AudioLightFireMode.propTypes = {
-  audioLightSettings: PropTypes.object,
-  handleChange: PropTypes.func.isRequired
-};

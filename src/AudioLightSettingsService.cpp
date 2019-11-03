@@ -62,6 +62,9 @@ void AudioLightSettingsService::loop() {
 
       // strobe pin high again for next loop
       digitalWrite(AUDIO_LIGHT_STROBE_PIN, HIGH);
+
+      // wait 72 microseconds 
+      delayMicroseconds(36);
     }
     
     // transmit over the wire - going to remove this.
@@ -107,7 +110,7 @@ void AudioLightSettingsService::readFromJsonObject(JsonObject& root, String orig
       mode->readFromJsonObject(jsonObject);
     }else{
       // load defaults from file system
-      mode->readFromFS();   
+      mode->readFromFS();
     }
     // switch mode if required
     if (mode != _currentMode){

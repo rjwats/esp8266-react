@@ -25,24 +25,18 @@ class AudioLightSettings extends Component {
       fetched,
       errorMessage,
       saveData,
-      handleValueChange,
-      handleColorChange,
       handleChange,
-      handleCheckboxChange
     } = this.props;
-
+    
     return (
       <SectionContent title="Settings">
         <AudioLightSettingsForm
-          audioLightSettings={data}
           audioLightSettingsFetched={fetched}
+          audioLightSettings={data}
           errorMessage={errorMessage}
-          onSubmit={saveData}
-          handleValueChange={handleValueChange}
-          handleColorChange={handleColorChange}
-          handleChange={handleChange}
-          handleCheckboxChange={handleCheckboxChange}
           handleChangeMode={this.handleChangeMode}
+          handleChange={handleChange}
+          onSubmit={saveData}
         />
       </SectionContent>
     );

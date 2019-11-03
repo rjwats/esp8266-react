@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 export class AudioLightConfettiMode extends React.Component {
 
@@ -11,8 +10,3 @@ export class AudioLightConfettiMode extends React.Component {
     );
   }
 }
-
-AudioLightConfettiMode.propTypes = {
-  audioLightSettings: PropTypes.object,
-  handleChange: PropTypes.func.isRequired
-};

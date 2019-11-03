@@ -1,7 +1,7 @@
 #ifndef FIRE_MODE_H
 #define FIRE_MODE_H
 
-#define FIRE_DEFAULT_COOLING 8-0
+#define FIRE_DEFAULT_COOLING 80
 #define FIRE_DEFAULT_SPARKING 120
 #define FIRE_FILE_PATH "/modes/fire.json"
 

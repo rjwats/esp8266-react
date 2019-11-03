@@ -1,13 +1,14 @@
 import React from 'react';
 
 import ColorPicker  from '../../components/ColorPicker.js'
-import Slider from 'react-rangeslider';
+
 import FormLabel from '@material-ui/core/FormLabel';
+import Slider from '@material-ui/core/Slider';
 
 export class AudioLightSpectrumMode extends React.Component {
 
   render() {
-    const { audioLightSettings, handleChange, handleColorChange } = this.props;
+    const { audioLightSettings, handleValueChange, handleColorChange } = this.props;
     return (
       <div>
         <FormLabel>Bar Color</FormLabel>        
@@ -28,7 +29,7 @@ export class AudioLightSpectrumMode extends React.Component {
           max={255}
           step={1}
           value={audioLightSettings.brightness}
-          onChange={handleChange('brightness')}
+          onChange={handleValueChange('brightness')}
         />
 
         <FormLabel>Decay Speed</FormLabel>
@@ -37,7 +38,7 @@ export class AudioLightSpectrumMode extends React.Component {
           max={255}
           step={1}
           value={audioLightSettings.decay_speed}
-          onChange={handleChange('decay_speed')}
+          onChange={handleValueChange('decay_speed')}
         />
       </div>
     );

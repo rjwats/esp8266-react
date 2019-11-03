@@ -1,17 +1,16 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import FormLabel from '@material-ui/core/FormLabel';
+import Slider from '@material-ui/core/Slider';
 
 import ColorPicker  from '../../components/ColorPicker.js'
 import IncludedBands  from '../../components/IncludedBands'
-import Slider from 'react-rangeslider';
 
 export class AudioLightLightningMode extends React.Component {
 
   render() {
     
-    const { audioLightSettings, handleChange, handleColorChange } = this.props;
+    const { audioLightSettings, handleChange, handleValueChange, handleColorChange } = this.props;
 
     return (
       <div>
@@ -27,7 +26,7 @@ export class AudioLightLightningMode extends React.Component {
           max={255}
           step={1}
           value={audioLightSettings.brightness}
-          onChange={handleChange('brightness')}
+          onChange={handleValueChange('brightness')}
         />
 
         <FormLabel>Flashes</FormLabel>
@@ -36,7 +35,7 @@ export class AudioLightLightningMode extends React.Component {
           max={20}
           step={1}
           value={audioLightSettings.flashes}
-          onChange={handleChange('flashes')}
+          onChange={handleValueChange('flashes')}
         />
 
         <FormLabel>Threshold</FormLabel>
@@ -45,7 +44,7 @@ export class AudioLightLightningMode extends React.Component {
           max={255}
           step={1}
           value={audioLightSettings.threshold}
-          onChange={handleChange('threshold')}
+          onChange={handleValueChange('threshold')}
         />
 
         <FormLabel>Included Bands</FormLabel>
@@ -57,8 +56,3 @@ export class AudioLightLightningMode extends React.Component {
     );
   }
 }
-
-AudioLightLightningMode.propTypes = {
-  audioLightSettings: PropTypes.object,
-  handleChange: PropTypes.func.isRequired
-};

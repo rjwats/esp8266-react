@@ -24,7 +24,7 @@ const styles = theme => ({
   },
   formControl: {
     "margin-top": theme.spacing.unit,
-    "margin-bottom": theme.spacing.unit*2
+    "margin-bottom": theme.spacing.unit * 2
   },
   loadingSettings: {
     margin: theme.spacing.unit,
@@ -42,17 +42,22 @@ class AudioLightSettingsForm extends React.Component {
 
   handleChange = (objectName, fieldName, callback) => value => {
     var data = this.props.audioLightSettings[objectName];
-    this.props.handleChange(objectName,callback)({...data, [fieldName]:value}, callback);    
+    this.props.handleChange(objectName, callback)({ ...data, [fieldName]: value }, callback);
   }
-  changeFunction = accessor => (objectName, fieldName, callback) => value => {
-    this.handleChange(objectName, fieldName, callback)(accessor(value));
+  changeFunction = accessor => (objectName, fieldName, callback) => (...value) => {
+    this.handleChange(objectName, fieldName, callback)(accessor(...value));
   }
-  handleColorChange = this.changeFunction(color => color.hex);  
-  handleValueChange = this.changeFunction(event => event.target.value);
+
+  handleColorChange = this.changeFunction(color => color.hex);
+  handleValueChange = this.changeFunction((event, value) => value);
   handleCheckboxChange = this.changeFunction(event => event.target.checked);
 
-  modeChangeFunction = changeFunction => fieldId => value => 
-    changeFunction("mode_config", fieldId, () => this.props.onSubmit(true, true))(value);
+  modeChangeFunction = changeFunction => fieldId => (...value) => {
+    console.log("doing " + value)
+    changeFunction("mode_config", fieldId, () => this.props.onSubmit(true, true))(...value);
+  }
+
+
   handleModeConfigChange = this.modeChangeFunction(this.handleChange);
   handleModeConfigColorChange = this.modeChangeFunction(this.handleColorChange);
   handleModeConfigValueChange = this.modeChangeFunction(this.handleValueChange);
@@ -70,14 +75,14 @@ class AudioLightSettingsForm extends React.Component {
           return AudioLightRainbowMode;
         case AudioLightModes.LIGHTNING:
           return AudioLightLightningMode;
-          case AudioLightModes.CONFETTI:
+        case AudioLightModes.CONFETTI:
           return AudioLightConfettiMode;
-          case AudioLightModes.FIRE:
-          return AudioLightFireMode;                    
+        case AudioLightModes.FIRE:
+          return AudioLightFireMode;
         default:
       }
     }
-    return props => { return null };
+    return () => { return null };
   }
 
   render() {
@@ -110,7 +115,7 @@ class AudioLightSettingsForm extends React.Component {
                 <div className={classes.formControl}>
                   <SelectValidator
                     name="mode_id"
-                    value={audioLightSettings.mode_id}                   
+                    value={audioLightSettings.mode_id}
                     onChange={this.props.handleChangeMode}>
                     <MenuItem value={AudioLightModes.OFF}>Off</MenuItem>
                     <MenuItem value={AudioLightModes.COLOR}>Single Color</MenuItem>
@@ -148,16 +153,13 @@ class AudioLightSettingsForm extends React.Component {
 }
 
 AudioLightSettingsForm.propTypes = {
-  classes: PropTypes.object.isRequired,
   audioLightSettingsFetched: PropTypes.bool,
   audioLightSettings: PropTypes.object,
   errorMessage: PropTypes.string,
-  onSubmit: PropTypes.func.isRequired,
-  handleValueChange: PropTypes.func.isRequired,
-  handleColorChange: PropTypes.func.isRequired,
-  handleChange: PropTypes.func.isRequired,
   handleChangeMode: PropTypes.func.isRequired,
-  handleCheckboxChange: PropTypes.func.isRequired
+  handleChange: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  classes: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(AudioLightSettingsForm);

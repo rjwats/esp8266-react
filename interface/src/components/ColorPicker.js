@@ -7,7 +7,10 @@ import { HuePicker, TwitterPicker } from 'react-color'
 const styles = theme => ({
   picker: {
     "margin-top": theme.spacing.unit,
-    "margin-bottom": theme.spacing.unit*2
+    "margin-bottom": theme.spacing.unit*2,
+    "& .hue-picker ":{
+      marginBottom: theme.spacing.unit*2
+    }
   }
 });
 
