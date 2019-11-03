@@ -50,4 +50,4 @@ class AudioLightSettings extends Component {
 
 }
 
-export default wsComponent(AUDIO_LIGHT_WEBSOCKET_URI, AudioLightSettings);
+export default wsComponent(AUDIO_LIGHT_WEBSOCKET_URI, 100, AudioLightSettings);

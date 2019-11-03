@@ -1,8 +1,9 @@
 import React from 'react';
 import Sockette from 'sockette';
 
+import _ from 'lodash';
 
-export const wsComponent = (wsUrl, FormComponent) => class WSComponent extends React.Component {
+export const wsComponent = (wsUrl, throttle, FormComponent) => class WSComponent extends React.Component {
 
   componentDidMount() {
     this.onOpen = this.onOpen.bind(this);
@@ -65,13 +66,12 @@ export const wsComponent = (wsUrl, FormComponent) => class WSComponent extends R
       errorMessage: null
     }, this.saveData);
   }
-
-  saveData() {
+  saveData = _.throttle(() => {
     const { ws, connected, data } = this.state;
     if (connected) {
       ws.json(data);
     }
-  }
+  }, throttle);
 
   handleChange = (name, callback) => value => {
     const { data } = this.state;
