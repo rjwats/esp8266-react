@@ -19,8 +19,6 @@ void FireMode::tick() {
     fill_solid(_leds,_numLeds,CHSV(255,0,0));
     _ledController->showLeds();
 
-    Serial.println("clear");
-
     // clear heat map
     memset(_heatMap, 0, sizeof(uint8_t) * _numLeds);
 
@@ -65,11 +63,15 @@ void FireMode::tick() {
 
 }
 
-void FireMode::readFromJsonObject(JsonObject &root) {
-  // reset the mode
+void FireMode::readFromJsonObject(JsonObject& root) {
+  updateByteFromJson(root, &_sparking, FIRE_DEFAULT_SPARKING, "sparking");  
+  updateByteFromJson(root, &_cooling, FIRE_DEFAULT_COOLING, "cooling");  
+  updateBoolFromJson(root, &_reverse, FIRE_DEFAULT_REVERSE, "reverse");
   _refresh = true;
 }
 
-void FireMode::writeToJsonObject(JsonObject &root) {
-
+void FireMode::writeToJsonObject(JsonObject& root) {
+  writeByteToJson(root, &_cooling, "cooling");  
+  writeByteToJson(root, &_sparking, "sparking");  
+  writeBoolToJson(root, &_reverse, "reverse");
 }

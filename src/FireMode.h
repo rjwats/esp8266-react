@@ -1,6 +1,7 @@
 #ifndef FIRE_MODE_H
 #define FIRE_MODE_H
 
+#define FIRE_DEFAULT_REVERSE false
 #define FIRE_DEFAULT_COOLING 80
 #define FIRE_DEFAULT_SPARKING 120
 #define FIRE_FILE_PATH "/modes/fire.json"
@@ -15,11 +16,11 @@ class FireMode : public AudioLightMode {
 
 private:
     bool _refresh = true;
-    bool _reverse = false;
 
     CRGBPalette16 _heat = CRGBPalette16(HeatColors_p);
     CRGBPalette16 *_firePalette = &_heat;
 
+    bool _reverse = FIRE_DEFAULT_REVERSE;
     uint8_t _cooling =  FIRE_DEFAULT_COOLING;
     uint8_t _sparking =  FIRE_DEFAULT_SPARKING;
 
