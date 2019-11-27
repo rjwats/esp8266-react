@@ -32,5 +32,8 @@ def deleteTimeHeader(libDepsDir):
 # old lib deps directory
 deleteTimeHeader(os.path.join(env.subst('$PROJECT_DIR'), '.piolibdeps'))
 
-# new lib deps directory
+# pre 4.x lib deps directory
 deleteTimeHeader(os.path.join(env.subst('$PROJECTLIBDEPS_DIR'), env.subst('$PIOENV')))
+
+# >4.x lib deps directory
+deleteTimeHeader(os.path.join(env.subst('$PROJECT_LIBDEPS_DIR'), env.subst('$PIOENV')))
