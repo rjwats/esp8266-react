@@ -30,7 +30,7 @@ void AuthenticationService::signIn(AsyncWebServerRequest *request, JsonDocument 
     Authentication authentication = _securityManager->authenticate(username, password);
     if (authentication.isAuthenticated()) {
       User* user = authentication.getUser();      
-      AsyncJsonResponse * response = new AsyncJsonResponse(MAX_AUTHENTICATION_SIZE);
+      AsyncJsonResponse * response = new AsyncJsonResponse(false, MAX_AUTHENTICATION_SIZE);
       JsonObject jsonObject = response->getRoot();
       jsonObject["access_token"] = _securityManager->generateJWT(user);
       response->setLength();
