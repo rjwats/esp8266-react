@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react';
+import { withSnackbar } from 'notistack';
 
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -8,16 +9,24 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import Divider from '@material-ui/core/Divider';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+
 import DevicesIcon from '@material-ui/icons/Devices';
 import MemoryIcon from '@material-ui/icons/Memory';
 import ShowChartIcon from '@material-ui/icons/ShowChart';
 import SdStorageIcon from '@material-ui/icons/SdStorage';
 import DataUsageIcon from '@material-ui/icons/DataUsage';
+import AutorenewIcon from '@material-ui/icons/Autorenew';
+import RefreshIcon from '@material-ui/icons/Refresh';
 
-import { SYSTEM_STATUS_ENDPOINT } from '../constants/Endpoints';
+import { SYSTEM_STATUS_ENDPOINT, RESET_ENDPOINT } from '../constants/Endpoints';
 import { restComponent } from '../components/RestComponent';
 import LoadingNotification from '../components/LoadingNotification';
 import SectionContent from '../components/SectionContent';
+import { redirectingAuthorizedFetch } from '../authentication/Authentication';
 
 const styles = theme => ({
   button: {
@@ -27,6 +36,16 @@ const styles = theme => ({
 });
 
 class SystemStatus extends Component {
+
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      confirmReset: false,
+      processing: false
+    }
+  }
 
   componentDidMount() {
     this.props.loadData();
@@ -90,11 +109,61 @@ class SystemStatus extends Component {
         <List>
           {this.createListItems(data, classes)}
         </List>
-        <Button variant="contained" color="secondary" className={classes.button} onClick={this.props.loadData}>
+        <Button startIcon={<RefreshIcon />} variant="contained" color="secondary" className={classes.button} onClick={this.props.loadData}>
           Refresh
+        </Button>
+        <Button startIcon={<AutorenewIcon />} variant="contained" color="secondary" className={classes.button} onClick={this.onReset}>
+          Reset
         </Button>
       </div>
     );
+  }
+
+  onReset = () => {
+    this.setState({ confirmReset: true });
+  }
+
+  onResetRejected = () => {
+    this.setState({ confirmReset: false });
+  }
+
+  onResetConfirmed = () => {
+    this.setState({ processing: true });
+    redirectingAuthorizedFetch(RESET_ENDPOINT, { method: 'POST' })
+      .then(response => {
+        if (response.status === 200) {
+          this.props.enqueueSnackbar("Device is reseting", { variant: 'info' });
+          this.setState({ processing: false, confirmReset: false });
+        } else {
+          throw Error("Invalid status code: " + response.status);
+        }
+      })
+      .catch(error => {
+        this.props.enqueueSnackbar(error.message || "Problem resetting device", { variant: 'error' });
+        this.setState({ processing: false, confirmReset: false });
+      });
+  }
+
+  renderResetDialog() {
+    return (
+      <Dialog
+        open={this.state.confirmReset}
+        onClose={this.onResetRejected}
+      >
+        <DialogTitle>Confirm Reset</DialogTitle>
+        <DialogContent dividers={true}>
+          Are you sure you want to reset the device?
+        </DialogContent>
+        <DialogActions>
+          <Button startIcon={<AutorenewIcon />} variant="contained" onClick={this.onResetConfirmed} disabled={this.state.processing} color="primary" autoFocus>
+            Reset
+          </Button>
+          <Button variant="contained" onClick={this.onResetRejected} color="secondary">
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
+    )
   }
 
   render() {
@@ -109,9 +178,11 @@ class SystemStatus extends Component {
             () => this.renderSystemStatus(data, classes)
           }
         />
+        {this.renderResetDialog()}
       </SectionContent>
     )
   }
+
 }
 
-export default restComponent(SYSTEM_STATUS_ENDPOINT, withStyles(styles)(SystemStatus));
+export default withSnackbar(restComponent(SYSTEM_STATUS_ENDPOINT, withStyles(styles)(SystemStatus)));
