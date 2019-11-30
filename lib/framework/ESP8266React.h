@@ -24,7 +24,7 @@
 #include <NTPStatus.h>
 #include <APStatus.h>
 #include <SystemStatus.h>
-#include <RestartService.h>
+#include <ResetService.h>
 
 class ESP8266React {
 
@@ -47,7 +47,7 @@ class ESP8266React {
     APSettingsService _apSettingsService;
     NTPSettingsService _ntpSettingsService;
     OTASettingsService _otaSettingsService;
-    RestartService _restartService;    
+    ResetService _ResetService;    
     AuthenticationService _authenticationService;
 
     
