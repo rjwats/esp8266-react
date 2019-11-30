@@ -7,7 +7,7 @@ SystemStatus::SystemStatus(AsyncWebServer* server, SecurityManager* securityMana
 }
 
 void SystemStatus::systemStatus(AsyncWebServerRequest *request) {
-  AsyncJsonResponse * response = new AsyncJsonResponse(MAX_ESP_STATUS_SIZE);
+  AsyncJsonResponse * response = new AsyncJsonResponse(false, MAX_ESP_STATUS_SIZE);
   JsonObject root = response->getRoot();
 #if defined(ESP8266)
   root["esp_platform"] = "esp8266";

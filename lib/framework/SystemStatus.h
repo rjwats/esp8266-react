@@ -11,7 +11,7 @@
 
 #include <ESPAsyncWebServer.h>
 #include <ArduinoJson.h>
-#include <AsyncArduinoJson6.h>
+#include <AsyncJson.h>
 #include <SecurityManager.h>
 
 #define MAX_ESP_STATUS_SIZE 1024

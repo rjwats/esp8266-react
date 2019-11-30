@@ -7,7 +7,7 @@ APStatus::APStatus(AsyncWebServer* server, SecurityManager* securityManager) {
 }
 
 void APStatus::apStatus(AsyncWebServerRequest *request) {
-  AsyncJsonResponse * response = new AsyncJsonResponse(MAX_AP_STATUS_SIZE);
+  AsyncJsonResponse * response = new AsyncJsonResponse(false, MAX_AP_STATUS_SIZE);
   JsonObject root = response->getRoot();
 
   WiFiMode_t currentWiFiMode = WiFi.getMode();
