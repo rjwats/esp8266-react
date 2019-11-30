@@ -132,7 +132,7 @@ class SystemStatus extends Component {
     redirectingAuthorizedFetch(RESET_ENDPOINT, { method: 'POST' })
       .then(response => {
         if (response.status === 200) {
-          this.props.enqueueSnackbar("Device is reseting", { variant: 'info' });
+          this.props.enqueueSnackbar("Device is resetting", { variant: 'info' });
           this.setState({ processing: false, confirmReset: false });
         } else {
           throw Error("Invalid status code: " + response.status);
