@@ -18,6 +18,8 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import CloseIcon from '@material-ui/icons/Close';
 import CheckIcon from '@material-ui/icons/Check';
 import IconButton from '@material-ui/core/IconButton';
+import SaveIcon from '@material-ui/icons/Save';
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
 
 import UserForm from './UserForm';
 import { withAuthenticationContext } from '../authentication/Context';
@@ -161,7 +163,7 @@ class ManageUsersForm extends React.Component {
               <TableRow>
                 <TableCell colSpan={2} />
                 <TableCell align="center">
-                  <Button variant="contained" color="secondary" onClick={this.createUser}>
+                  <Button startIcon={<PersonAddIcon />} variant="contained" color="secondary" onClick={this.createUser}>
                     Add User
                   </Button>
                 </TableCell>
@@ -176,7 +178,7 @@ class ManageUsersForm extends React.Component {
               </Box>
             </Typography>
           }
-          <Button variant="contained" color="primary" className={classes.button} type="submit" disabled={this.noAdminConfigured()}>
+          <Button startIcon={<SaveIcon />} variant="contained" color="primary" className={classes.button} type="submit" disabled={this.noAdminConfigured()}>
             Save
           </Button>
           <Button variant="contained" color="secondary" className={classes.button} onClick={onReset}>

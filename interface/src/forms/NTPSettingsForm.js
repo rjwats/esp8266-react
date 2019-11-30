@@ -4,6 +4,7 @@ import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
+import SaveIcon from '@material-ui/icons/Save';
 
 import isIP from '../validators/isIP';
 import isHostname from '../validators/isHostname';
@@ -50,7 +51,7 @@ class NTPSettingsForm extends React.Component {
           onChange={handleValueChange('interval')}
           margin="normal"
         />
-        <Button variant="contained" color="primary" className={classes.button} type="submit">
+        <Button startIcon={<SaveIcon />} variant="contained" color="primary" className={classes.button} type="submit">
           Save
         </Button>
         <Button variant="contained" color="secondary" className={classes.button} onClick={onReset}>

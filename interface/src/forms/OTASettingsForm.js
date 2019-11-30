@@ -6,6 +6,7 @@ import Button from '@material-ui/core/Button';
 import Switch from '@material-ui/core/Switch';
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import SaveIcon from '@material-ui/icons/Save';
 
 import isIP from '../validators/isIP';
 import isHostname from '../validators/isHostname';
@@ -69,7 +70,7 @@ class OTASettingsForm extends React.Component {
           onChange={handleValueChange('password')}
           margin="normal"
         />
-        <Button variant="contained" color="primary" className={classes.button} type="submit">
+        <Button startIcon={<SaveIcon />} variant="contained" color="primary" className={classes.button} type="submit">
           Save
         </Button>
         <Button variant="contained" color="secondary" className={classes.button} onClick={onReset}>

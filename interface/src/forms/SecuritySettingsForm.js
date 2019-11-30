@@ -6,6 +6,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
+import SaveIcon from '@material-ui/icons/Save';
 
 import PasswordValidator from '../components/PasswordValidator';
 import { withAuthenticationContext } from '../authentication/Context';
@@ -46,7 +47,7 @@ class SecuritySettingsForm extends React.Component {
             If you modify the JWT Secret, all users will be logged out.
           </Box>
         </Typography>
-        <Button variant="contained" color="primary" className={classes.button} type="submit">
+        <Button startIcon={<SaveIcon />} variant="contained" color="primary" className={classes.button} type="submit">
           Save
         </Button>
         <Button variant="contained" color="secondary" className={classes.button} onClick={onReset}>
