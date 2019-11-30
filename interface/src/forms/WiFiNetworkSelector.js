@@ -18,6 +18,7 @@ import Badge from '@material-ui/core/Badge';
 import WifiIcon from '@material-ui/icons/Wifi';
 import LockIcon from '@material-ui/icons/Lock';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
+import PermScanWifiIcon from '@material-ui/icons/PermScanWifi';
 
 import { isNetworkOpen, networkSecurityMode } from '../constants/WiFiSecurityModes';
 
@@ -86,7 +87,7 @@ class WiFiNetworkSelector extends Component {
           </div>
         }
 
-        <Button variant="contained" color="secondary" className={classes.button} onClick={requestNetworkScan} disabled={scanningForNetworks}>
+        <Button startIcon={<PermScanWifiIcon />} variant="contained" color="secondary" className={classes.button} onClick={requestNetworkScan} disabled={scanningForNetworks}>
           Scan again...
         </Button>
       </div>

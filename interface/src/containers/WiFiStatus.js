@@ -13,6 +13,7 @@ import DNSIcon from '@material-ui/icons/Dns';
 import SettingsInputComponentIcon from '@material-ui/icons/SettingsInputComponent';
 import SettingsInputAntennaIcon from '@material-ui/icons/SettingsInputAntenna';
 import DeviceHubIcon from '@material-ui/icons/DeviceHub';
+import RefreshIcon from '@material-ui/icons/Refresh';
 
 import SectionContent from '../components/SectionContent';
 import { WIFI_STATUS_ENDPOINT } from '../constants/Endpoints';
@@ -130,7 +131,7 @@ class WiFiStatus extends Component {
         <List>
           {this.createListItems(data, classes)}
         </List>
-        <Button variant="contained" color="secondary" className={classes.button} onClick={this.props.loadData}>
+        <Button startIcon={<RefreshIcon />} variant="contained" color="secondary" className={classes.button} onClick={this.props.loadData}>
           Refresh
         </Button>
       </div>

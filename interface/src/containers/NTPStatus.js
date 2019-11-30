@@ -14,6 +14,7 @@ import DNSIcon from '@material-ui/icons/Dns';
 import TimerIcon from '@material-ui/icons/Timer';
 import UpdateIcon from '@material-ui/icons/Update';
 import AvTimerIcon from '@material-ui/icons/AvTimer';
+import RefreshIcon from '@material-ui/icons/Refresh';
 
 import { isSynchronized, ntpStatusHighlight, ntpStatus } from '../constants/NTPStatus';
 import * as Highlight from '../constants/Highlight';
@@ -118,7 +119,7 @@ class NTPStatus extends Component {
         <List>
           {this.createListItems(data, classes)}
         </List>
-        <Button variant="contained" color="secondary" className={classes.button} onClick={this.props.loadData}>
+        <Button startIcon={<RefreshIcon />} variant="contained" color="secondary" className={classes.button} onClick={this.props.loadData}>
           Refresh
         </Button>
       </div>

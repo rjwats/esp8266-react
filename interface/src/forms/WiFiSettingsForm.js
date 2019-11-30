@@ -16,6 +16,7 @@ import IconButton from '@material-ui/core/IconButton';
 import LockIcon from '@material-ui/icons/Lock';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 import DeleteIcon from '@material-ui/icons/Delete';
+import SaveIcon from '@material-ui/icons/Save';
 
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 import { isNetworkOpen, networkSecurityMode } from '../constants/WiFiSecurityModes';
@@ -175,7 +176,7 @@ class WiFiSettingsForm extends React.Component {
             />
           </Fragment>
         }
-        <Button variant="contained" color="primary" className={classes.button} type="submit">
+        <Button startIcon={<SaveIcon />} variant="contained" color="primary" className={classes.button} type="submit">
           Save
         </Button>
         <Button variant="contained" color="secondary" className={classes.button} onClick={onReset}>

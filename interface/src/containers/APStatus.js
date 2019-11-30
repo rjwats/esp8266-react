@@ -11,6 +11,7 @@ import Divider from '@material-ui/core/Divider';
 import SettingsInputAntennaIcon from '@material-ui/icons/SettingsInputAntenna';
 import DeviceHubIcon from '@material-ui/icons/DeviceHub';
 import ComputerIcon from '@material-ui/icons/Computer';
+import RefreshIcon from '@material-ui/icons/Refresh';
 
 import { restComponent } from '../components/RestComponent';
 import LoadingNotification from '../components/LoadingNotification';
@@ -93,7 +94,7 @@ class APStatus extends Component {
         <List>
           {this.createListItems(data, classes)}
         </List>
-        <Button variant="contained" color="secondary" className={classes.button} onClick={this.props.loadData}>
+        <Button startIcon={<RefreshIcon />} variant="contained" color="secondary" className={classes.button} onClick={this.props.loadData}>
           Refresh
         </Button>
       </div>

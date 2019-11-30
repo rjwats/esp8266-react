@@ -10,6 +10,7 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/core/Slider';
 import { makeStyles } from '@material-ui/core/styles';
+import SaveIcon from '@material-ui/icons/Save';
 
 export const DEMO_SETTINGS_ENDPOINT = ENDPOINT_ROOT + "demoSettings";
 
@@ -69,7 +70,7 @@ function DemoControllerForm(props) {
         max={255}
         onChange={handleSliderChange('blink_speed')}
       />
-      <Button variant="contained" color="primary" className={classes.button} type="submit">
+      <Button startIcon={<SaveIcon />} variant="contained" color="primary" className={classes.button} type="submit">
         Save
       </Button>
       <Button variant="contained" color="secondary" className={classes.button} onClick={onReset}>
