@@ -22,7 +22,7 @@ import DataUsageIcon from '@material-ui/icons/DataUsage';
 import AutorenewIcon from '@material-ui/icons/Autorenew';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
-import { SYSTEM_STATUS_ENDPOINT, RESET_ENDPOINT } from '../constants/Endpoints';
+import { SYSTEM_STATUS_ENDPOINT, RESTART_ENDPOINT } from '../constants/Endpoints';
 import { restComponent } from '../components/RestComponent';
 import LoadingNotification from '../components/LoadingNotification';
 import SectionContent from '../components/SectionContent';
@@ -42,7 +42,7 @@ class SystemStatus extends Component {
     super(props);
 
     this.state = {
-      confirmReset: false,
+      confirmRestart: false,
       processing: false
     }
   }
@@ -112,53 +112,53 @@ class SystemStatus extends Component {
         <Button startIcon={<RefreshIcon />} variant="contained" color="secondary" className={classes.button} onClick={this.props.loadData}>
           Refresh
         </Button>
-        <Button startIcon={<AutorenewIcon />} variant="contained" color="secondary" className={classes.button} onClick={this.onReset}>
-          Reset
+        <Button startIcon={<AutorenewIcon />} variant="contained" color="secondary" className={classes.button} onClick={this.onRestart}>
+          Restart
         </Button>
       </div>
     );
   }
 
-  onReset = () => {
-    this.setState({ confirmReset: true });
+  onRestart = () => {
+    this.setState({ confirmRestart: true });
   }
 
-  onResetRejected = () => {
-    this.setState({ confirmReset: false });
+  onRestartRejected = () => {
+    this.setState({ confirmRestart: false });
   }
 
-  onResetConfirmed = () => {
+  onRestartConfirmed = () => {
     this.setState({ processing: true });
-    redirectingAuthorizedFetch(RESET_ENDPOINT, { method: 'POST' })
+    redirectingAuthorizedFetch(RESTART_ENDPOINT, { method: 'POST' })
       .then(response => {
         if (response.status === 200) {
-          this.props.enqueueSnackbar("Device is resetting", { variant: 'info' });
-          this.setState({ processing: false, confirmReset: false });
+          this.props.enqueueSnackbar("Device is restarting", { variant: 'info' });
+          this.setState({ processing: false, confirmRestart: false });
         } else {
           throw Error("Invalid status code: " + response.status);
         }
       })
       .catch(error => {
-        this.props.enqueueSnackbar(error.message || "Problem resetting device", { variant: 'error' });
-        this.setState({ processing: false, confirmReset: false });
+        this.props.enqueueSnackbar(error.message || "Problem restarting device", { variant: 'error' });
+        this.setState({ processing: false, confirmRestart: false });
       });
   }
 
-  renderResetDialog() {
+  renderRestartDialog() {
     return (
       <Dialog
-        open={this.state.confirmReset}
-        onClose={this.onResetRejected}
+        open={this.state.confirmRestart}
+        onClose={this.onRestartRejected}
       >
-        <DialogTitle>Confirm Reset</DialogTitle>
+        <DialogTitle>Confirm Restart</DialogTitle>
         <DialogContent dividers={true}>
-          Are you sure you want to reset the device?
+          Are you sure you want to restart the device?
         </DialogContent>
         <DialogActions>
-          <Button startIcon={<AutorenewIcon />} variant="contained" onClick={this.onResetConfirmed} disabled={this.state.processing} color="primary" autoFocus>
-            Reset
+          <Button startIcon={<AutorenewIcon />} variant="contained" onClick={this.onRestartConfirmed} disabled={this.state.processing} color="primary" autoFocus>
+            Restart
           </Button>
-          <Button variant="contained" onClick={this.onResetRejected} color="secondary">
+          <Button variant="contained" onClick={this.onRestartRejected} color="secondary">
             Cancel
           </Button>
         </DialogActions>
@@ -171,14 +171,14 @@ class SystemStatus extends Component {
     return (
       <SectionContent title="System Status">
         <LoadingNotification
-          onReset={loadData}
+          onRestart={loadData}
           fetched={fetched}
           errorMessage={errorMessage}
           render={
             () => this.renderSystemStatus(data, classes)
           }
         />
-        {this.renderResetDialog()}
+        {this.renderRestartDialog()}
       </SectionContent>
     )
   }
