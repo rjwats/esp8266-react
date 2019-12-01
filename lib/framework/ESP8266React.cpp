@@ -6,6 +6,7 @@ ESP8266React::ESP8266React(AsyncWebServer* server, FS* fs):
   _apSettingsService(server, fs, &_securitySettingsService),
   _ntpSettingsService(server, fs, &_securitySettingsService),
   _otaSettingsService(server, fs, &_securitySettingsService),
+  _restartService(server, &_securitySettingsService),
   _authenticationService(server, &_securitySettingsService),
   _wifiScanner(server, &_securitySettingsService),
   _wifiStatus(server, &_securitySettingsService),

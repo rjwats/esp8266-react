@@ -11,7 +11,7 @@
 
 #include <ESPAsyncWebServer.h>
 #include <ArduinoJson.h>
-#include <AsyncArduinoJson6.h>
+#include <AsyncJson.h>
 #include <TimeLib.h>
 #include <SecurityManager.h>
 

@@ -2,22 +2,16 @@ import React, { Component } from 'react';
 import { Redirect, Route, Switch } from 'react-router';
 
 import AppRouting from './AppRouting';
+import { PROJECT_NAME } from './constants/Env';
+
 import { SnackbarProvider } from 'notistack';
-
-import CssBaseline from '@material-ui/core/CssBaseline';
-import blueGrey from '@material-ui/core/colors/blueGrey';
-import indigo from '@material-ui/core/colors/indigo';
-import orange from '@material-ui/core/colors/orange';
-import red from '@material-ui/core/colors/red';
-import green from '@material-ui/core/colors/green';
-
 import { create } from 'jss';
-import { StylesProvider, jssPreset } from '@material-ui/styles';
 
-import {
-  MuiThemeProvider,
-  createMuiTheme
-} from '@material-ui/core/styles';
+import { CssBaseline, IconButton, MuiThemeProvider, createMuiTheme } from '@material-ui/core';
+import { StylesProvider, jssPreset } from '@material-ui/styles';
+import { blueGrey, indigo, orange, red, green } from '@material-ui/core/colors';
+import CloseIcon from '@material-ui/icons/Close';
+
 
 // Our theme
 const theme = createMuiTheme({
@@ -38,11 +32,28 @@ const jss = create(jssPreset());
 const unauthorizedRedirect = () => <Redirect to="/" />;
 
 class App extends Component {
+
+  notistackRef = React.createRef();
+
+  componentDidMount() {
+    document.title = PROJECT_NAME;
+  }
+
+  onClickDismiss = (key) => () => {
+    this.notistackRef.current.closeSnackbar(key);
+  }
+
   render() {
     return (
       <StylesProvider jss={jss}>
         <MuiThemeProvider theme={theme}>
-          <SnackbarProvider maxSnack={3}>
+          <SnackbarProvider maxSnack={3} anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+            ref={this.notistackRef}
+            action={(key) => (
+              <IconButton onClick={this.onClickDismiss(key)} size="small">
+                <CloseIcon />
+              </IconButton>
+            )}>
             <CssBaseline />
             <Switch>
               <Route exact path="/unauthorized" component={unauthorizedRedirect} />

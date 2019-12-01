@@ -2,11 +2,11 @@
 #define SettingsService_h
 
 #if defined(ESP8266)
-  #include <ESP8266WiFi.h>
-  #include <ESPAsyncTCP.h>
+#include <ESP8266WiFi.h>
+#include <ESPAsyncTCP.h>
 #elif defined(ESP_PLATFORM)
-  #include <WiFi.h>
-  #include <AsyncTCP.h>
+#include <WiFi.h>
+#include <AsyncTCP.h>
 #endif
 
 #include <SecurityManager.h>
@@ -14,7 +14,8 @@
 #include <ESPAsyncWebServer.h>
 #include <ArduinoJson.h>
 #include <AsyncJsonWebHandler.h>
-#include <AsyncArduinoJson6.h>
+#include <AsyncJson.h>
+#include <AsyncJsonCallbackResponse.h>
 
 /*
 * Abstraction of a service which stores it's settings as JSON in a file system.
@@ -46,7 +47,7 @@ protected:
 
   virtual void fetchConfig(AsyncWebServerRequest *request) {
     // handle the request
-    AsyncJsonResponse * response = new AsyncJsonResponse(MAX_SETTINGS_SIZE);
+    AsyncJsonResponse * response = new AsyncJsonResponse(false, MAX_SETTINGS_SIZE);
     JsonObject jsonObject = response->getRoot();  
     writeToJsonObject(jsonObject);
     response->setLength();
@@ -61,7 +62,7 @@ protected:
       writeToFS();
 
       // write settings back with a callback to reconfigure the wifi
-      AsyncJsonCallbackResponse * response = new AsyncJsonCallbackResponse([this] () {onConfigUpdated();}, MAX_SETTINGS_SIZE);
+      AsyncJsonCallbackResponse * response = new AsyncJsonCallbackResponse([this] () {onConfigUpdated();}, false, MAX_SETTINGS_SIZE);
       JsonObject jsonObject = response->getRoot();   
       writeToJsonObject(jsonObject);
       response->setLength();

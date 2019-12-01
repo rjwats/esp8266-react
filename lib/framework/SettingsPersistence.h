@@ -5,7 +5,7 @@
 #include <FS.h>
 #include <ArduinoJson.h>
 #include <AsyncJsonWebHandler.h>
-#include <AsyncArduinoJson6.h>
+#include <AsyncJson.h>
 
 /**
 * At the moment, not expecting settings service to have to deal with large JSON
