@@ -1,10 +1,16 @@
 #include <WiFiSettingsService.h>
 
 WiFiSettingsService::WiFiSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) : AdminSettingsService(server, fs, securityManager, WIFI_SETTINGS_SERVICE_PATH, WIFI_SETTINGS_FILE) {
+  // We want the device to come up in opmode=0 (WIFI_OFF), when erasing the flash this is not the default.
+  // If needed, we save opmode=0 before disabling persistence so the device boots with WiFi disabled in the future.
+  if (WiFi.getMode() != WIFI_OFF) {
+    WiFi.mode(WIFI_OFF);  
+  }
+  
   // Disable WiFi config persistance and auto reconnect
   WiFi.persistent(false);
   WiFi.setAutoReconnect(false);
-
+ 
 #if defined(ESP8266)
   _onStationModeDisconnectedHandler = WiFi.onStationModeDisconnected(std::bind(&WiFiSettingsService::onStationModeDisconnected, this, std::placeholders::_1));
 #elif defined(ESP_PLATFORM)
