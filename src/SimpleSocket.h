@@ -12,7 +12,7 @@
 #include <ESPAsyncWebServer.h>
 #include <ArduinoJson.h>
 #include <AsyncJsonWebHandler.h>
-#include <AsyncArduinoJson6.h>
+#include <AsyncJson.h>
 
 #define MAX_SIMPLE_MSG_SIZE 1024
 
