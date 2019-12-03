@@ -1,26 +1,24 @@
 #ifndef SettingsPersistence_h
 #define SettingsPersistence_h
 
+#include <ArduinoJson.h>
+#include <AsyncJson.h>
+#include <AsyncJsonWebHandler.h>
 #include <ESPAsyncWebServer.h>
 #include <FS.h>
-#include <ArduinoJson.h>
-#include <AsyncJsonWebHandler.h>
-#include <AsyncJson.h>
 
 /**
-* At the moment, not expecting settings service to have to deal with large JSON
-* files this could be made configurable fairly simply, it's exposed on
-* AsyncJsonWebHandler with a setter.
-*/
+ * At the moment, not expecting settings service to have to deal with large JSON
+ * files this could be made configurable fairly simply, it's exposed on
+ * AsyncJsonWebHandler with a setter.
+ */
 #define MAX_SETTINGS_SIZE 1024
 
 /*
-* Mixin for classes which need to save settings to/from a file on the the file system as JSON.
-*/
+ * Mixin for classes which need to save settings to/from a file on the the file system as JSON.
+ */
 class SettingsPersistence {
-
-protected:
-
+ protected:
   // will store and retrieve config from the file system
   FS* _fs;
 
@@ -58,11 +56,11 @@ protected:
       if (size <= MAX_SETTINGS_SIZE) {
         DynamicJsonDocument jsonDocument = DynamicJsonDocument(MAX_SETTINGS_SIZE);
         DeserializationError error = deserializeJson(jsonDocument, configFile);
-        if (error == DeserializationError::Ok && jsonDocument.is<JsonObject>()){
+        if (error == DeserializationError::Ok && jsonDocument.is<JsonObject>()) {
           JsonObject root = jsonDocument.as<JsonObject>();
           readFromJsonObject(root);
           configFile.close();
-          return;     
+          return;
         }
       }
       configFile.close();
@@ -73,26 +71,26 @@ protected:
     applyDefaultConfig();
   }
 
+  // serialization routene, from local config to JsonObject
+  virtual void readFromJsonObject(JsonObject& root) {
+  }
+  virtual void writeToJsonObject(JsonObject& root) {
+  }
 
-    // serialization routene, from local config to JsonObject
-    virtual void readFromJsonObject(JsonObject& root){}
-    virtual void writeToJsonObject(JsonObject& root){}
+  // We assume the readFromJsonObject supplies sensible defaults if an empty object
+  // is supplied, this virtual function allows that to be changed.
+  virtual void applyDefaultConfig() {
+    DynamicJsonDocument jsonDocument = DynamicJsonDocument(MAX_SETTINGS_SIZE);
+    JsonObject root = jsonDocument.to<JsonObject>();
+    readFromJsonObject(root);
+  }
 
-    // We assume the readFromJsonObject supplies sensible defaults if an empty object
-    // is supplied, this virtual function allows that to be changed.
-    virtual void applyDefaultConfig(){
-      DynamicJsonDocument jsonDocument = DynamicJsonDocument(MAX_SETTINGS_SIZE);
-      JsonObject root = jsonDocument.to<JsonObject>();
-      readFromJsonObject(root);
-    }
+ public:
+  SettingsPersistence(FS* fs, char const* filePath) : _fs(fs), _filePath(filePath) {
+  }
 
-  public:
-
-    SettingsPersistence(FS* fs, char const* filePath):
-      _fs(fs), _filePath(filePath) {}
-
-    virtual ~SettingsPersistence() {}
-
+  virtual ~SettingsPersistence() {
+  }
 };
 
-#endif // end SettingsPersistence
+#endif  // end SettingsPersistence

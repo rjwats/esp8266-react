@@ -1,8 +1,11 @@
 #include <APSettingsService.h>
 
-APSettingsService::APSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) : AdminSettingsService(server, fs, securityManager, AP_SETTINGS_SERVICE_PATH, AP_SETTINGS_FILE) {}
+APSettingsService::APSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) :
+    AdminSettingsService(server, fs, securityManager, AP_SETTINGS_SERVICE_PATH, AP_SETTINGS_FILE) {
+}
 
-APSettingsService::~APSettingsService() {}
+APSettingsService::~APSettingsService() {
+}
 
 void APSettingsService::begin() {
   SettingsService::begin();
@@ -12,10 +15,10 @@ void APSettingsService::begin() {
 void APSettingsService::loop() {
   unsigned long currentMillis = millis();
   unsigned long manageElapsed = (unsigned long)(currentMillis - _lastManaged);
-  if (manageElapsed >= MANAGE_NETWORK_DELAY){
+  if (manageElapsed >= MANAGE_NETWORK_DELAY) {
     _lastManaged = currentMillis;
-     manageAP();
-  }  
+    manageAP();
+  }
   handleDNS();
 }
 

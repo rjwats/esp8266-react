@@ -1,18 +1,18 @@
 #include <ESP8266React.h>
 
-ESP8266React::ESP8266React(AsyncWebServer* server, FS* fs): 
-  _securitySettingsService(server, fs),
-  _wifiSettingsService(server, fs, &_securitySettingsService),
-  _apSettingsService(server, fs, &_securitySettingsService),
-  _ntpSettingsService(server, fs, &_securitySettingsService),
-  _otaSettingsService(server, fs, &_securitySettingsService),
-  _restartService(server, &_securitySettingsService),
-  _authenticationService(server, &_securitySettingsService),
-  _wifiScanner(server, &_securitySettingsService),
-  _wifiStatus(server, &_securitySettingsService),
-  _ntpStatus(server, &_securitySettingsService),
-  _apStatus(server, &_securitySettingsService),
-  _systemStatus(server, &_securitySettingsService) {    
+ESP8266React::ESP8266React(AsyncWebServer* server, FS* fs) :
+    _securitySettingsService(server, fs),
+    _wifiSettingsService(server, fs, &_securitySettingsService),
+    _apSettingsService(server, fs, &_securitySettingsService),
+    _ntpSettingsService(server, fs, &_securitySettingsService),
+    _otaSettingsService(server, fs, &_securitySettingsService),
+    _restartService(server, &_securitySettingsService),
+    _authenticationService(server, &_securitySettingsService),
+    _wifiScanner(server, &_securitySettingsService),
+    _wifiStatus(server, &_securitySettingsService),
+    _ntpStatus(server, &_securitySettingsService),
+    _apStatus(server, &_securitySettingsService),
+    _systemStatus(server, &_securitySettingsService) {
   // Serve static resources from /www/
   server->serveStatic("/js/", SPIFFS, "/www/js/");
   server->serveStatic("/css/", SPIFFS, "/www/css/");
@@ -22,7 +22,7 @@ ESP8266React::ESP8266React(AsyncWebServer* server, FS* fs):
 
   // Serving all other get requests with "/www/index.htm"
   // OPTIONS get a straight up 200 response
-  server->onNotFound([](AsyncWebServerRequest *request) {
+  server->onNotFound([](AsyncWebServerRequest* request) {
     if (request->method() == HTTP_GET) {
       request->send(SPIFFS, "/www/index.html");
     } else if (request->method() == HTTP_OPTIONS) {
@@ -32,12 +32,12 @@ ESP8266React::ESP8266React(AsyncWebServer* server, FS* fs):
     }
   });
 
-  // Disable CORS if required
-  #if defined(ENABLE_CORS)
+// Disable CORS if required
+#if defined(ENABLE_CORS)
   DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", CORS_ORIGIN);
   DefaultHeaders::Instance().addHeader("Access-Control-Allow-Headers", "Accept, Content-Type, Authorization");
   DefaultHeaders::Instance().addHeader("Access-Control-Allow-Credentials", "true");
-  #endif  
+#endif
 }
 
 void ESP8266React::begin() {
@@ -48,7 +48,7 @@ void ESP8266React::begin() {
   _otaSettingsService.begin();
 }
 
-void ESP8266React::loop() {  
+void ESP8266React::loop() {
   _wifiSettingsService.loop();
   _apSettingsService.loop();
   _ntpSettingsService.loop();

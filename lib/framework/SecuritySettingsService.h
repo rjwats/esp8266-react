@@ -8,17 +8,13 @@
 #define SECURITY_SETTINGS_PATH "/rest/securitySettings"
 
 class SecuritySettingsService : public AdminSettingsService, public SecurityManager {
+ public:
+  SecuritySettingsService(AsyncWebServer* server, FS* fs);
+  ~SecuritySettingsService();
 
-  public:
-
-    SecuritySettingsService(AsyncWebServer* server, FS* fs);
-    ~SecuritySettingsService();
-
-  protected:
-
-    void readFromJsonObject(JsonObject& root);
-    void writeToJsonObject(JsonObject& root);
-
+ protected:
+  void readFromJsonObject(JsonObject& root);
+  void writeToJsonObject(JsonObject& root);
 };
 
-#endif // end SecuritySettingsService_h
+#endif  // end SecuritySettingsService_h

@@ -2,31 +2,27 @@
 #define SystemStatus_h
 
 #if defined(ESP8266)
-  #include <ESP8266WiFi.h>
-  #include <ESPAsyncTCP.h>
+#include <ESP8266WiFi.h>
+#include <ESPAsyncTCP.h>
 #elif defined(ESP_PLATFORM)
-  #include <WiFi.h>
-  #include <AsyncTCP.h>
+#include <AsyncTCP.h>
+#include <WiFi.h>
 #endif
 
-#include <ESPAsyncWebServer.h>
 #include <ArduinoJson.h>
 #include <AsyncJson.h>
+#include <ESPAsyncWebServer.h>
 #include <SecurityManager.h>
 
 #define MAX_ESP_STATUS_SIZE 1024
 #define SYSTEM_STATUS_SERVICE_PATH "/rest/systemStatus"
 
 class SystemStatus {
+ public:
+  SystemStatus(AsyncWebServer* server, SecurityManager* securityManager);
 
-  public:
-   
-    SystemStatus(AsyncWebServer* server, SecurityManager* securityManager);
-
-  private:
-
-    void systemStatus(AsyncWebServerRequest *request);
-
+ private:
+  void systemStatus(AsyncWebServerRequest* request);
 };
 
-#endif // end SystemStatus_h
+#endif  // end SystemStatus_h

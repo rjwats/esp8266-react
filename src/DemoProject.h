@@ -11,24 +11,19 @@
 #define DEMO_SETTINGS_PATH "/rest/demoSettings"
 
 class DemoProject : public AdminSettingsService {
+ public:
+  DemoProject(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
+  ~DemoProject();
 
-  public:
+  void loop();
 
-    DemoProject(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
-    ~DemoProject();
-    
-    void loop();
+ private:
+  unsigned long _lastBlink = 0;
+  uint8_t _blinkSpeed = 255;
 
-  private:
-
-    unsigned long _lastBlink = 0;
-    uint8_t _blinkSpeed = 255;
-
-  protected:
-
-    void readFromJsonObject(JsonObject& root);
-    void writeToJsonObject(JsonObject& root);
-  
+ protected:
+  void readFromJsonObject(JsonObject& root);
+  void writeToJsonObject(JsonObject& root);
 };
 
 #endif

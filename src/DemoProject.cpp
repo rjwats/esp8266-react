@@ -1,10 +1,12 @@
 #include <DemoProject.h>
 
-DemoProject::DemoProject(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) : AdminSettingsService(server, fs, securityManager, DEMO_SETTINGS_PATH, DEMO_SETTINGS_FILE) {
-  pinMode(BLINK_LED, OUTPUT);  
+DemoProject::DemoProject(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) :
+    AdminSettingsService(server, fs, securityManager, DEMO_SETTINGS_PATH, DEMO_SETTINGS_FILE) {
+  pinMode(BLINK_LED, OUTPUT);
 }
 
-DemoProject::~DemoProject() {}
+DemoProject::~DemoProject() {
+}
 
 void DemoProject::loop() {
   unsigned delay = MAX_DELAY / 255 * (255 - _blinkSpeed);
@@ -23,4 +25,3 @@ void DemoProject::writeToJsonObject(JsonObject& root) {
   // connection settings
   root["blink_speed"] = _blinkSpeed;
 }
-
