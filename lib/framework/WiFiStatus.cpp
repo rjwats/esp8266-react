@@ -1,17 +1,18 @@
 #include <WiFiStatus.h>
 
-WiFiStatus::WiFiStatus(AsyncWebServer* server, SecurityManager* securityManager)  {
-  server->on(WIFI_STATUS_SERVICE_PATH, HTTP_GET, 
-    securityManager->wrapRequest(std::bind(&WiFiStatus::wifiStatus, this, std::placeholders::_1), AuthenticationPredicates::IS_AUTHENTICATED)
-  );  
+WiFiStatus::WiFiStatus(AsyncWebServer* server, SecurityManager* securityManager) {
+  server->on(WIFI_STATUS_SERVICE_PATH,
+             HTTP_GET,
+             securityManager->wrapRequest(std::bind(&WiFiStatus::wifiStatus, this, std::placeholders::_1),
+                                          AuthenticationPredicates::IS_AUTHENTICATED));
 #if defined(ESP8266)
   _onStationModeConnectedHandler = WiFi.onStationModeConnected(onStationModeConnected);
   _onStationModeDisconnectedHandler = WiFi.onStationModeDisconnected(onStationModeDisconnected);
   _onStationModeGotIPHandler = WiFi.onStationModeGotIP(onStationModeGotIP);
 #elif defined(ESP_PLATFORM)
-  WiFi.onEvent(onStationModeConnected, WiFiEvent_t::SYSTEM_EVENT_STA_CONNECTED); 
-  WiFi.onEvent(onStationModeDisconnected, WiFiEvent_t::SYSTEM_EVENT_STA_DISCONNECTED); 
-  WiFi.onEvent(onStationModeGotIP, WiFiEvent_t::SYSTEM_EVENT_STA_GOT_IP); 
+  WiFi.onEvent(onStationModeConnected, WiFiEvent_t::SYSTEM_EVENT_STA_CONNECTED);
+  WiFi.onEvent(onStationModeDisconnected, WiFiEvent_t::SYSTEM_EVENT_STA_DISCONNECTED);
+  WiFi.onEvent(onStationModeGotIP, WiFiEvent_t::SYSTEM_EVENT_STA_GOT_IP);
 #endif
 }
 
@@ -50,12 +51,12 @@ void WiFiStatus::onStationModeGotIP(WiFiEvent_t event, WiFiEventInfo_t info) {
 }
 #endif
 
-void WiFiStatus::wifiStatus(AsyncWebServerRequest *request) {
-  AsyncJsonResponse * response = new AsyncJsonResponse(false, MAX_WIFI_STATUS_SIZE);
+void WiFiStatus::wifiStatus(AsyncWebServerRequest* request) {
+  AsyncJsonResponse* response = new AsyncJsonResponse(false, MAX_WIFI_STATUS_SIZE);
   JsonObject root = response->getRoot();
   wl_status_t status = WiFi.status();
-  root["status"] = (uint8_t) status;
-  if (status == WL_CONNECTED){
+  root["status"] = (uint8_t)status;
+  if (status == WL_CONNECTED) {
     root["local_ip"] = WiFi.localIP().toString();
     root["mac_address"] = WiFi.macAddress();
     root["rssi"] = WiFi.RSSI();
@@ -66,10 +67,10 @@ void WiFiStatus::wifiStatus(AsyncWebServerRequest *request) {
     root["gateway_ip"] = WiFi.gatewayIP().toString();
     IPAddress dnsIP1 = WiFi.dnsIP(0);
     IPAddress dnsIP2 = WiFi.dnsIP(1);
-    if (dnsIP1 != INADDR_NONE){
+    if (dnsIP1 != INADDR_NONE) {
       root["dns_ip_1"] = dnsIP1.toString();
     }
-    if (dnsIP2 != INADDR_NONE){
+    if (dnsIP2 != INADDR_NONE) {
       root["dns_ip_2"] = dnsIP2.toString();
     }
   }

@@ -9,50 +9,46 @@
 #define WIFI_RECONNECTION_DELAY 1000 * 60
 
 class WiFiSettingsService : public AdminSettingsService {
+ public:
+  WiFiSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
+  ~WiFiSettingsService();
 
-  public:
+  void begin();
+  void loop();
 
-    WiFiSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
-    ~WiFiSettingsService();
+ protected:
+  void readFromJsonObject(JsonObject& root);
+  void writeToJsonObject(JsonObject& root);
+  void onConfigUpdated();
 
-    void begin();
-    void loop();
+ private:
+  // connection settings
+  String _ssid;
+  String _password;
+  String _hostname;
+  bool _staticIPConfig;
 
-  protected:
+  // for the mangement delay loop
+  unsigned long _lastConnectionAttempt;
 
-    void readFromJsonObject(JsonObject& root);
-    void writeToJsonObject(JsonObject& root);
-    void onConfigUpdated();
-
-  private:
-    // connection settings
-    String _ssid;
-    String _password;
-    String _hostname;
-    bool _staticIPConfig;
-
-    // for the mangement delay loop
-    unsigned long _lastConnectionAttempt;
-
-    // optional configuration for static IP address
-    IPAddress _localIP;
-    IPAddress _gatewayIP;
-    IPAddress _subnetMask;
-    IPAddress _dnsIP1;
-    IPAddress _dnsIP2;
+  // optional configuration for static IP address
+  IPAddress _localIP;
+  IPAddress _gatewayIP;
+  IPAddress _subnetMask;
+  IPAddress _dnsIP1;
+  IPAddress _dnsIP2;
 
 #if defined(ESP8266)
-    WiFiEventHandler _onStationModeDisconnectedHandler;
-    void onStationModeDisconnected(const WiFiEventStationModeDisconnected& event);
+  WiFiEventHandler _onStationModeDisconnectedHandler;
+  void onStationModeDisconnected(const WiFiEventStationModeDisconnected& event);
 #elif defined(ESP_PLATFORM)
-    void onStationModeDisconnected(WiFiEvent_t event, WiFiEventInfo_t info);
+  void onStationModeDisconnected(WiFiEvent_t event, WiFiEventInfo_t info);
 #endif
-    
-    void readIP(JsonObject& root, String key, IPAddress& _ip);
-    void writeIP(JsonObject& root, String key, IPAddress& _ip);
-    void reconfigureWiFiConnection();
-    void manageSTA();
 
+  void readIP(JsonObject& root, String key, IPAddress& _ip);
+  void writeIP(JsonObject& root, String key, IPAddress& _ip);
+  void reconfigureWiFiConnection();
+  void manageSTA();
 };
 
-#endif // end WiFiSettingsService_h
+#endif  // end WiFiSettingsService_h

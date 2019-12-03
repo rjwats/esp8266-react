@@ -2,16 +2,16 @@
 #define APStatus_h
 
 #if defined(ESP8266)
-  #include <ESP8266WiFi.h>
-  #include <ESPAsyncTCP.h>
+#include <ESP8266WiFi.h>
+#include <ESPAsyncTCP.h>
 #elif defined(ESP_PLATFORM)
-  #include <WiFi.h>
-  #include <AsyncTCP.h>
+#include <AsyncTCP.h>
+#include <WiFi.h>
 #endif
 
-#include <ESPAsyncWebServer.h>
 #include <ArduinoJson.h>
 #include <AsyncJson.h>
+#include <ESPAsyncWebServer.h>
 #include <IPAddress.h>
 #include <SecurityManager.h>
 
@@ -19,15 +19,11 @@
 #define AP_STATUS_SERVICE_PATH "/rest/apStatus"
 
 class APStatus {
+ public:
+  APStatus(AsyncWebServer* server, SecurityManager* securityManager);
 
-  public:
-
-    APStatus(AsyncWebServer* server, SecurityManager* securityManager);
-
-  private:
-  
-    void apStatus(AsyncWebServerRequest *request);
-
+ private:
+  void apStatus(AsyncWebServerRequest* request);
 };
 
-#endif // end APStatus_h
+#endif  // end APStatus_h

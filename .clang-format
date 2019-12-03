@@ -1,0 +1,15 @@
+Language: Cpp
+BasedOnStyle: Google
+ColumnLimit: 120
+AllowShortBlocksOnASingleLine: false
+AllowShortFunctionsOnASingleLine: false
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+BinPackArguments: false
+BinPackParameters: false
+BreakConstructorInitializers: AfterColon
+AllowAllParametersOfDeclarationOnNextLine: false
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+ExperimentalAutoDetectBinPacking: false
+KeepEmptyLinesAtTheStartOfBlocks: false
+DerivePointerAlignment: false
