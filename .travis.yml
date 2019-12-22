@@ -8,6 +8,7 @@ cache:
         - "~/.platformio"
 
 install:
+    - pip install npm
     - pip install -U platformio
     - platformio update
 
