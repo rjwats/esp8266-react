@@ -1,25 +1,31 @@
-const { resolve } = require('path');
-const { readdir, unlink } = require('fs').promises;
-const fs = require('fs');
-var path = require('path');
+const { resolve, relative, sep } = require('path');
+const { readdirSync, readFileSync, unlinkSync, existsSync, mkdirSync, createWriteStream } = require('fs');
 var zlib = require('zlib');
-var gzip = zlib.createGzip();
+var mime = require('mime-types');
 
-async function* getFiles(dir) {
-  const entries = await readdir(dir, { withFileTypes: true });
-  for (const entry of entries) {
+function getFilesSync(dir, files = []) {
+  readdirSync(dir, { withFileTypes: true }).forEach(entry => {
     const entryPath = resolve(dir, entry.name);
     if (entry.isDirectory()) {
-      yield* getFiles(entryPath);
+      getFilesSync(entryPath, files);
     } else {
-      yield entryPath;
+      files.push(entryPath);
     }
-  }
+  })
+  return files;
 }
 
 function coherseToBuffer(input) {
   return Buffer.isBuffer(input) ? input : Buffer.from(input);
 }
+
+function createParentDirectories(filePath) {
+  const parentDirectory = resolve(filePath, "../");
+  if (!existsSync(parentDirectory)) {
+    mkdirSync(parentDirectory, { recursive: true });
+  }
+}
+
 
 class ProgmemGenerator {
 
@@ -36,57 +42,71 @@ class ProgmemGenerator {
       { name: 'ProgmemGenerator' },
       (compilation, callback) => {
         const buildPath = compilation.options.output.path;
-        const wwwPath = path.resolve(compilation.options.context, this.options.outputPath);
+        const wwwPath = resolve(compilation.options.context, this.options.outputPath);
+        const fileInfo = [];
 
-        const createProgmemFile = (relativeFilePath, buffer) => {
-          const copyToPath = path.resolve(wwwPath, relativeFilePath);
-          const copyToDir = path.resolve(copyToPath, "../");
+        const processFile = (relativeFilePath, buffer) => {
+          const copyToPath = resolve(wwwPath, relativeFilePath);
+          createParentDirectories(copyToPath);
 
-          if (!fs.existsSync(copyToDir)) {
-            fs.mkdirSync(copyToDir);
-          }
-          const writeStream = fs.createWriteStream(copyToPath, { flags: "wx" });
+          const variable = "ESP_REACT_DATA_" + fileInfo.length;
+          const mimeType = mime.lookup(relativeFilePath);
+          const writeStream = createWriteStream(copyToPath, { flags: "wx" });
+          var size = 0;
           zlib.gzip(buffer, (error, result) => {
             try {
-              var written = 0;
               result.forEach((b, index) => {
                 if (index && !(index % this.options.bytesPerLine)) {
                   writeStream.write("\n");
                 }
                 writeStream.write("0x" + ("00" + b.toString(16).toUpperCase()).substr(-2) + ",");
-                written++;
+                size++;
               });
             } finally {
               writeStream.end();
             }
           });
+
+          fileInfo.push({
+            path: relativeFilePath.replace(sep, "/"),
+            variable,
+            size,
+            mimeType
+          });
         };
 
-
-
-        // remove existing files
-        (async () => {
-          // delete previous resources
-          for await (const filePath of getFiles(wwwPath)) {
-            await unlink(filePath);
+        const processFiles = () => {
+          // remove existing files
+          for (const filePath of getFilesSync(wwwPath)) {
+            unlinkSync(filePath);
           }
 
           // copy static data
-          for await (const filePath of getFiles(buildPath)) {
-            const readStream = fs.readFileSync(filePath);
-            const relativeFilePath = path.relative(buildPath, filePath);
-            createProgmemFile(relativeFilePath, readStream);
+          for (const filePath of getFilesSync(buildPath)) {
+            const readStream = readFileSync(filePath);
+            const relativeFilePath = relative(buildPath, filePath);
+            processFile(relativeFilePath, readStream);
           }
 
           // copy assets
           const { assets } = compilation;
-          Object.keys(assets).forEach(relativeFilePath => {
-            createProgmemFile(relativeFilePath, coherseToBuffer(assets[relativeFilePath].source()));
+          Object.keys(assets).forEach((relativeFilePath) => {
+            processFile(relativeFilePath, coherseToBuffer(assets[relativeFilePath].source()));
           });
+        }
 
-          // trigger the next process
-          callback();
-        })();
+        const writeRegistrationRoutes = (writeStream) => {
+          console.log(JSON.stringify(fileInfo, 2, 2));
+        }
+
+        // process the files
+        processFiles();
+
+        // write registration routes
+        writeRegistrationRoutes();
+
+        // trigger the next plugin
+        callback();
       }
     );
   }
