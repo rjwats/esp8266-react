@@ -23,7 +23,7 @@ module.exports = function override(config, env) {
     miniCssExtractPlugin.options.chunkFilename = "css/[id].[contenthash:4].c.css";
 
     // build progmem data files
-    config.plugins.push(new ProgmemGenerator({ outputPath: "../lib/www", bytesPerLine: 15 }));
+    config.plugins.push(new ProgmemGenerator({ outputPath: "../lib/framework/WWWData.h", bytesPerLine: 20 }));
 
     // add compression plugin, compress javascript
     config.plugins.push(new CompressionPlugin({
