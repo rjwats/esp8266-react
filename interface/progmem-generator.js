@@ -3,6 +3,8 @@ const { readdirSync, readFileSync, createWriteStream } = require('fs');
 var zlib = require('zlib');
 var mime = require('mime-types');
 
+const ARDUINO_INCLUDES = "#include <Arduino.h>\n\n";
+
 function getFilesSync(dir, files = []) {
   readdirSync(dir, { withFileTypes: true }).forEach(entry => {
     const entryPath = resolve(dir, entry.name);
@@ -22,11 +24,12 @@ function coherseToBuffer(input) {
 class ProgmemGenerator {
 
   constructor(options = {}) {
-    const { outputPath, bytesPerLine = 20, indent = "  " } = options;
+    const { outputPath, bytesPerLine = 20, indent = "  ", includes = ARDUINO_INCLUDES } = options;
     this.options = {
       outputPath,
       bytesPerLine,
-      indent
+      indent,
+      includes
     };
   }
 
@@ -38,6 +41,10 @@ class ProgmemGenerator {
         const outputPath = resolve(compilation.options.context, this.options.outputPath);
         const writeStream = createWriteStream(outputPath, { flags: "w" });
         try {
+
+          const writeIncludes = () => {
+            writeStream.write(this.options.includes);
+          }
 
           const processFile = (relativeFilePath, buffer) => {
             const variable = "ESP_REACT_DATA_" + fileInfo.length;
@@ -52,7 +59,7 @@ class ProgmemGenerator {
               }
               writeStream.write("0x" + ("00" + b.toString(16).toUpperCase()).substr(-2) + ",");
               size++;
-            });            
+            });
             writeStream.write("};\n\n");
             fileInfo.push({
               path: relativeFilePath.replace(sep, "/"),
@@ -82,6 +89,7 @@ class ProgmemGenerator {
             console.log(JSON.stringify(fileInfo, 2, 2));
           }
 
+          writeIncludes();
           processFiles();
           writeRegistrationRoutes();
           callback();
