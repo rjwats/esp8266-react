@@ -10,10 +10,10 @@ SystemStatus::SystemStatus(AsyncWebServer* server, SecurityManager* securityMana
 void SystemStatus::systemStatus(AsyncWebServerRequest* request) {
   AsyncJsonResponse* response = new AsyncJsonResponse(false, MAX_ESP_STATUS_SIZE);
   JsonObject root = response->getRoot();
-#if defined(ESP8266)
-  root["esp_platform"] = "esp8266";
-#elif defined(ESP_PLATFORM)
+#ifdef ESP32
   root["esp_platform"] = "esp32";
+#elif defined(ESP8266)
+  root["esp_platform"] = "esp8266";
 #endif
   root["cpu_freq_mhz"] = ESP.getCpuFreqMHz();
   root["free_heap"] = ESP.getFreeHeap();

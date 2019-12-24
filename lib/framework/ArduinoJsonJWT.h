@@ -5,9 +5,10 @@
 #include <ArduinoJson.h>
 #include <libb64/cdecode.h>
 #include <libb64/cencode.h>
-#if defined(ESP_PLATFORM)
+
+#ifdef ESP32
 #include <mbedtls/md.h>
-#else
+#elif defined(ESP8266)
 #include <bearssl/bearssl_hmac.h>
 #endif
 

@@ -37,15 +37,15 @@ class NTPSettingsService : public AdminSettingsService {
   bool _syncEventTriggered = false;
   NTPSyncEvent_t _ntpEvent;
 
-#if defined(ESP8266)
+#ifdef ESP32
+  void onStationModeGotIP(WiFiEvent_t event, WiFiEventInfo_t info);
+  void onStationModeDisconnected(WiFiEvent_t event, WiFiEventInfo_t info);
+#elif defined(ESP8266)
   WiFiEventHandler _onStationModeDisconnectedHandler;
   WiFiEventHandler _onStationModeGotIPHandler;
 
   void onStationModeGotIP(const WiFiEventStationModeGotIP& event);
   void onStationModeDisconnected(const WiFiEventStationModeDisconnected& event);
-#elif defined(ESP_PLATFORM)
-  void onStationModeGotIP(WiFiEvent_t event, WiFiEventInfo_t info);
-  void onStationModeDisconnected(WiFiEvent_t event, WiFiEventInfo_t info);
 #endif
 
   void configureNTP();
