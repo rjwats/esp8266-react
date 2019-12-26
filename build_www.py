@@ -6,19 +6,19 @@ from os import chdir
 
 Import("env")
 
-def defined(flag):
-    my_flags = env.ParseFlags(env["BUILD_FLAGS"])
-    for define in my_flags.get("CPPDEFINES"):
+def flagExists(flag):
+    buildFlags = env.ParseFlags(env["BUILD_FLAGS"])
+    for define in buildFlags.get("CPPDEFINES"):
         if (define == flag or (isinstance(define, list) and define[0] == flag)):
             return True
             
-def build_web():
+def buildWeb():
     chdir("interface")
-    print("Building www...")
+    print("Building interface with npm")
     try:
         print(check_output(["npm", "install"],shell=True).decode("utf-8"))
         print(check_output(["npm", "run", "build"],shell=True).decode("utf-8"))
-        if not defined("PROGMEM_WWW"):
+        if not flagExists("PROGMEM_WWW"):
             buildPath = Path("build")
             wwwPath = Path("../data/www")
             if wwwPath.exists() and wwwPath.is_dir():
@@ -27,4 +27,4 @@ def build_web():
     finally:
         chdir("..")
 
-build_web()
+buildWeb()

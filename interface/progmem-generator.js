@@ -17,6 +17,22 @@ function getFilesSync(dir, files = []) {
   return files;
 }
 
+function generateRouteHandleCalls(linePrefix, fileInfo) {
+  return fileInfo.map(file => `${linePrefix}handler("${file.uri}", "${file.mimeType}", ${file.variable}, ${file.size});`).join('\n');
+}
+
+function generateWWWClass(indent, fileInfo) {
+  return `typedef std::function<void(const String& uri, const String& contentType, const uint8_t * content, size_t len)> RouteRegistrationHandler;
+
+class WWWData {
+  public:
+    static void registerRoutes(RouteRegistrationHandler handler) {
+${generateRouteHandleCalls(indent.repeat(3), fileInfo)}
+    }
+};
+`;
+}
+
 function coherseToBuffer(input) {
   return Buffer.isBuffer(input) ? input : Buffer.from(input);
 }
@@ -62,10 +78,10 @@ class ProgmemGenerator {
             });
             writeStream.write("};\n\n");
             fileInfo.push({
-              path: relativeFilePath.replace(sep, "/"),
+              uri: relativeFilePath.replace(sep, "/"),
+              mimeType,
               variable,
-              size,
-              mimeType
+              size
             });
           };
 
@@ -85,15 +101,14 @@ class ProgmemGenerator {
             });
           }
 
-          const writeRegistrationRoutes = (writeStream) => {
-            console.log(JSON.stringify(fileInfo, 2, 2));
+          const writeWWWClass = () => {
+            writeStream.write(generateWWWClass(this.options.indent, fileInfo));
           }
 
           writeIncludes();
           processFiles();
-          writeRegistrationRoutes();
+          writeWWWClass();          
           callback();
-
         } finally {
           writeStream.end();
         }
