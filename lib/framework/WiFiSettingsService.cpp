@@ -11,17 +11,16 @@ WiFiSettingsService::WiFiSettingsService(AsyncWebServer* server, FS* fs, Securit
   // Disable WiFi config persistance and auto reconnect
   WiFi.persistent(false);
   WiFi.setAutoReconnect(false);
-
-#if defined(ESP8266)
-  _onStationModeDisconnectedHandler = WiFi.onStationModeDisconnected(
-      std::bind(&WiFiSettingsService::onStationModeDisconnected, this, std::placeholders::_1));
-#elif defined(ESP_PLATFORM)
+#ifdef ESP32
   // Init the wifi driver on ESP32
   WiFi.mode(WIFI_MODE_MAX);
   WiFi.mode(WIFI_MODE_NULL);
   WiFi.onEvent(
       std::bind(&WiFiSettingsService::onStationModeDisconnected, this, std::placeholders::_1, std::placeholders::_2),
       WiFiEvent_t::SYSTEM_EVENT_STA_DISCONNECTED);
+#elif defined(ESP8266)
+  _onStationModeDisconnectedHandler = WiFi.onStationModeDisconnected(
+      std::bind(&WiFiSettingsService::onStationModeDisconnected, this, std::placeholders::_1));
 #endif
 }
 
@@ -120,12 +119,12 @@ void WiFiSettingsService::manageSTA() {
       WiFi.config(_localIP, _gatewayIP, _subnetMask, _dnsIP1, _dnsIP2);
     } else {
       // configure for DHCP
-#if defined(ESP8266)
-      WiFi.config(INADDR_ANY, INADDR_ANY, INADDR_ANY);
-      WiFi.hostname(_hostname);
-#elif defined(ESP_PLATFORM)
+#ifdef ESP32
       WiFi.config(INADDR_NONE, INADDR_NONE, INADDR_NONE);
       WiFi.setHostname(_hostname.c_str());
+#elif defined(ESP8266)
+      WiFi.config(INADDR_ANY, INADDR_ANY, INADDR_ANY);
+      WiFi.hostname(_hostname);
 #endif
     }
     // attempt to connect to the network
@@ -133,12 +132,12 @@ void WiFiSettingsService::manageSTA() {
   }
 }
 
-#if defined(ESP8266)
-void WiFiSettingsService::onStationModeDisconnected(const WiFiEventStationModeDisconnected& event) {
+#ifdef ESP32
+void WiFiSettingsService::onStationModeDisconnected(WiFiEvent_t event, WiFiEventInfo_t info) {
   WiFi.disconnect(true);
 }
-#elif defined(ESP_PLATFORM)
-void WiFiSettingsService::onStationModeDisconnected(WiFiEvent_t event, WiFiEventInfo_t info) {
+#elif defined(ESP8266)
+void WiFiSettingsService::onStationModeDisconnected(const WiFiEventStationModeDisconnected& event) {
   WiFi.disconnect(true);
 }
 #endif

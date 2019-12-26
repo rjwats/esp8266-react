@@ -38,11 +38,11 @@ class WiFiSettingsService : public AdminSettingsService {
   IPAddress _dnsIP1;
   IPAddress _dnsIP2;
 
-#if defined(ESP8266)
+#ifdef ESP32
+  void onStationModeDisconnected(WiFiEvent_t event, WiFiEventInfo_t info);
+#elif defined(ESP8266)
   WiFiEventHandler _onStationModeDisconnectedHandler;
   void onStationModeDisconnected(const WiFiEventStationModeDisconnected& event);
-#elif defined(ESP_PLATFORM)
-  void onStationModeDisconnected(WiFiEvent_t event, WiFiEventInfo_t info);
 #endif
 
   void readIP(JsonObject& root, String key, IPAddress& _ip);

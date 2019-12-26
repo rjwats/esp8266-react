@@ -31,10 +31,10 @@ void WiFiScanner::listNetworks(AsyncWebServerRequest* request) {
       network["ssid"] = WiFi.SSID(i);
       network["bssid"] = WiFi.BSSIDstr(i);
       network["channel"] = WiFi.channel(i);
-#if defined(ESP8266)
-      network["encryption_type"] = convertEncryptionType(WiFi.encryptionType(i));
-#elif defined(ESP_PLATFORM)
+#ifdef ESP32
       network["encryption_type"] = (uint8_t)WiFi.encryptionType(i);
+#elif defined(ESP8266)
+      network["encryption_type"] = convertEncryptionType(WiFi.encryptionType(i));
 #endif
     }
     response->setLength();
@@ -46,7 +46,7 @@ void WiFiScanner::listNetworks(AsyncWebServerRequest* request) {
   }
 }
 
-#if defined(ESP8266)
+#ifdef ESP8266
 /*
  * Convert encryption type to standard used by ESP32 rather than the translated form which the esp8266 libaries expose.
  *
