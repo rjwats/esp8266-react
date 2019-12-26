@@ -26,14 +26,14 @@ def deleteTimeHeader(libDepsDir):
         if numDeletionCandidates == 1:
             os.remove(deletionCandidates[0])
         elif numDeletionCandidates > 1:        
-            os.write(2, 'Can\'t delete Time.h, more than one instance found:\n' + '\n'.join(deletionCandidates))
+            os.write(2, "Can\'t delete Time.h, more than one instance found:\n" + "\n".join(deletionCandidates))
             sys.exit(1)
 
 # old lib deps directory
-deleteTimeHeader(os.path.join(env.subst('$PROJECT_DIR'), '.piolibdeps'))
+deleteTimeHeader(os.path.join(env.subst("$PROJECT_DIR"), ".piolibdeps"))
 
 # pre 4.x lib deps directory
-deleteTimeHeader(os.path.join(env.subst('$PROJECTLIBDEPS_DIR'), env.subst('$PIOENV')))
+deleteTimeHeader(os.path.join(env.subst("$PROJECTLIBDEPS_DIR"), env.subst("$PIOENV")))
 
 # >4.x lib deps directory
-deleteTimeHeader(os.path.join(env.subst('$PROJECT_LIBDEPS_DIR'), env.subst('$PIOENV')))
+deleteTimeHeader(os.path.join(env.subst("$PROJECT_LIBDEPS_DIR"), env.subst("$PIOENV")))
