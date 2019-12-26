@@ -18,11 +18,12 @@ def buildWeb():
     try:
         print(check_output(["npm", "install"],shell=True).decode("utf-8"))
         print(check_output(["npm", "run", "build"],shell=True).decode("utf-8"))
+        buildPath = Path("build")
+        wwwPath = Path("../data/www")
+        if wwwPath.exists() and wwwPath.is_dir():
+            rmtree(wwwPath)        
         if not flagExists("PROGMEM_WWW"):
-            buildPath = Path("build")
-            wwwPath = Path("../data/www")
-            if wwwPath.exists() and wwwPath.is_dir():
-                rmtree(wwwPath)
+            print("Copying interface to data directory")
             copytree(buildPath, wwwPath)
     finally:
         chdir("..")
