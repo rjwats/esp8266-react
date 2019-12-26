@@ -1,7 +1,8 @@
+from pathlib import Path
 from shutil import copytree
 from shutil import rmtree
 from subprocess import check_output
-import os import chdir
+from os import chdir
 
 Import("env")
 
@@ -15,11 +16,14 @@ def build_web():
     chdir("interface")
     print("Building www...")
     try:
-        print(check_output(["npm", "install"]))
-        print(check_output(["npm", "run", "build"]))
+        print(check_output(["npm", "install"],shell=True).decode("utf-8"))
+        print(check_output(["npm", "run", "build"],shell=True).decode("utf-8"))
         if not defined("PROGMEM_WWW"):
-            rmtree("../data/www")
-            copytree("build", "../data/www")
+            buildPath = Path("build")
+            wwwPath = Path("../data/www")
+            if wwwPath.exists() and wwwPath.is_dir():
+                rmtree(wwwPath)
+            copytree(buildPath, wwwPath)
     finally:
         chdir("..")
 
