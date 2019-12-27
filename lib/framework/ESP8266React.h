@@ -57,12 +57,6 @@ class ESP8266React {
   APStatus _apStatus;
   SystemStatus _systemStatus;
 
-#ifdef PROGMEM_WWW
-  ArRequestHandlerFunction progmemRequestHandler(const String& uri,
-                                                 const String& contentType,
-                                                 const uint8_t* content,
-                                                 size_t len);
-#endif
 };
 
 #endif

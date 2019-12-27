@@ -13,23 +13,30 @@ ESP8266React::ESP8266React(AsyncWebServer* server, FS* fs) :
     _ntpStatus(server, &_securitySettingsService),
     _apStatus(server, &_securitySettingsService),
     _systemStatus(server, &_securitySettingsService) {
-      
 #ifdef PROGMEM_WWW
-  WWWData::registerRoutes([&](const String& uri, const String& contentType, const uint8_t* content, size_t len) {
-    ArRequestHandlerFunction requestHandler = progmemRequestHandler(uri, contentType, content, len);
-    server->on(uri.c_str(), HTTP_GET, requestHandler);
-    if (uri.equals("index.html")) {
-      server->onNotFound([&](AsyncWebServerRequest* request) {
-        if (request->method() == HTTP_GET) {
-          requestHandler(request);
-        } else if (request->method() == HTTP_OPTIONS) {
-          request->send(200);
-        } else {
-          request->send(404);
+  // Serve static resources from PROGMEM
+  WWWData::registerRoutes(
+      [server, this](const String& uri, const String& contentType, const uint8_t* content, size_t len) {
+        ArRequestHandlerFunction requestHandler = [contentType, content, len](AsyncWebServerRequest* request) {
+          AsyncWebServerResponse* response = request->beginResponse_P(200, contentType, content, len);
+          response->addHeader("Content-Encoding", "gzip");
+          request->send(response);
+        };
+        server->on(uri.c_str(), HTTP_GET, requestHandler);
+        // Serving non matching get requests with "/index.html"
+        // OPTIONS get a straight up 200 response
+        if (uri.equals("/index.html")) {
+          server->onNotFound([requestHandler](AsyncWebServerRequest* request) {
+            if (request->method() == HTTP_GET) {
+              requestHandler(request);
+            } else if (request->method() == HTTP_OPTIONS) {
+              request->send(200);
+            } else {
+              request->send(404);
+            }
+          });
         }
       });
-    }
-  });
 #else
   // Serve static resources from /www/
   server->serveStatic("/js/", SPIFFS, "/www/js/");
@@ -57,19 +64,6 @@ ESP8266React::ESP8266React(AsyncWebServer* server, FS* fs) :
   DefaultHeaders::Instance().addHeader("Access-Control-Allow-Credentials", "true");
 #endif
 }
-
-#ifdef PROGMEM_WWW
-ArRequestHandlerFunction ESP8266React::progmemRequestHandler(const String& uri,
-                                                             const String& contentType,
-                                                             const uint8_t* content,
-                                                             size_t len) {
-  return [&](AsyncWebServerRequest* request) {
-    AsyncWebServerResponse* response = request->beginResponse_P(200, contentType, content, len);
-    response->addHeader("Content-Encoding", "gzip");
-    request->send(response);
-  };
-}
-#endif
 
 void ESP8266React::begin() {
   _securitySettingsService.begin();

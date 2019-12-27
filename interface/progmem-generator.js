@@ -78,7 +78,7 @@ class ProgmemGenerator {
             });
             writeStream.write("};\n\n");
             fileInfo.push({
-              uri: relativeFilePath.replace(sep, "/"),
+              uri: '/' + relativeFilePath.replace(sep, '/'),
               mimeType,
               variable,
               size
@@ -107,7 +107,7 @@ class ProgmemGenerator {
 
           writeIncludes();
           processFiles();
-          writeWWWClass();          
+          writeWWWClass();
           callback();
         } finally {
           writeStream.end();
