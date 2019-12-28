@@ -2,13 +2,13 @@ language: python
 python:
     - "3.8"
 
-sudo: false
+sudo: true
 cache:
     directories:
         - "~/.platformio"
 
 install:
-    - pip install npm
+    - pip install -U npm
     - pip install -U platformio
     - platformio update
 
