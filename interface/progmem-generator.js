@@ -17,22 +17,6 @@ function getFilesSync(dir, files = []) {
   return files;
 }
 
-function generateRouteHandleCalls(linePrefix, fileInfo) {
-  return fileInfo.map(file => `${linePrefix}handler("${file.uri}", "${file.mimeType}", ${file.variable}, ${file.size});`).join('\n');
-}
-
-function generateWWWClass(indent, fileInfo) {
-  return `typedef std::function<void(const String& uri, const String& contentType, const uint8_t * content, size_t len)> RouteRegistrationHandler;
-
-class WWWData {
-  public:
-    static void registerRoutes(RouteRegistrationHandler handler) {
-${generateRouteHandleCalls(indent.repeat(3), fileInfo)}
-    }
-};
-`;
-}
-
 function coherseToBuffer(input) {
   return Buffer.isBuffer(input) ? input : Buffer.from(input);
 }
@@ -41,41 +25,38 @@ class ProgmemGenerator {
 
   constructor(options = {}) {
     const { outputPath, bytesPerLine = 20, indent = "  ", includes = ARDUINO_INCLUDES } = options;
-    this.options = {
-      outputPath,
-      bytesPerLine,
-      indent,
-      includes
-    };
+    this.options = { outputPath, bytesPerLine, indent, includes };
   }
 
   apply(compiler) {
     compiler.hooks.emit.tapAsync(
       { name: 'ProgmemGenerator' },
       (compilation, callback) => {
+        const { outputPath, bytesPerLine, indent, includes } = this.options;
         const fileInfo = [];
-        const outputPath = resolve(compilation.options.context, this.options.outputPath);
-        const writeStream = createWriteStream(outputPath, { flags: "w" });
+        const writeStream = createWriteStream(resolve(compilation.options.context, outputPath), { flags: "w" });
         try {
-
           const writeIncludes = () => {
-            writeStream.write(this.options.includes);
+            writeStream.write(includes);
           }
 
-          const processFile = (relativeFilePath, buffer) => {
+          const writeFile = (relativeFilePath, buffer) => {
             const variable = "ESP_REACT_DATA_" + fileInfo.length;
             const mimeType = mime.lookup(relativeFilePath);
             var size = 0;
             writeStream.write("const uint8_t " + variable + "[] PROGMEM = {");
             const zipBuffer = zlib.gzipSync(buffer);
-            zipBuffer.forEach((b, index) => {
-              if (!(index % this.options.bytesPerLine)) {
+            zipBuffer.forEach((b) => {
+              if (!(size % bytesPerLine)) {
                 writeStream.write("\n");
-                writeStream.write(this.options.indent);
+                writeStream.write(indent);
               }
               writeStream.write("0x" + ("00" + b.toString(16).toUpperCase()).substr(-2) + ",");
               size++;
             });
+            if (size % bytesPerLine) {
+              writeStream.write("\n");
+            }
             writeStream.write("};\n\n");
             fileInfo.push({
               uri: '/' + relativeFilePath.replace(sep, '/'),
@@ -85,28 +66,39 @@ class ProgmemGenerator {
             });
           };
 
-          const processFiles = () => {
+          const writeFiles = () => {
             // process static files
             const buildPath = compilation.options.output.path;
             for (const filePath of getFilesSync(buildPath)) {
               const readStream = readFileSync(filePath);
               const relativeFilePath = relative(buildPath, filePath);
-              processFile(relativeFilePath, readStream);
+              writeFile(relativeFilePath, readStream);
             }
-
             // process assets
             const { assets } = compilation;
             Object.keys(assets).forEach((relativeFilePath) => {
-              processFile(relativeFilePath, coherseToBuffer(assets[relativeFilePath].source()));
+              writeFile(relativeFilePath, coherseToBuffer(assets[relativeFilePath].source()));
             });
           }
 
+          const generateWWWClass = () => {
+            return `typedef std::function<void(const String& uri, const String& contentType, const uint8_t * content, size_t len)> RouteRegistrationHandler;          
+
+class WWWData {
+${indent}public:
+${indent.repeat(2)}static void registerRoutes(RouteRegistrationHandler handler) {
+${fileInfo.map(file => `${indent.repeat(3)}handler("${file.uri}", "${file.mimeType}", ${file.variable}, ${file.size});`).join('\n')}
+${indent.repeat(2)}}
+};
+`;
+          }
+
           const writeWWWClass = () => {
-            writeStream.write(generateWWWClass(this.options.indent, fileInfo));
+            writeStream.write(generateWWWClass());
           }
 
           writeIncludes();
-          processFiles();
+          writeFiles();
           writeWWWClass();
           callback();
         } finally {

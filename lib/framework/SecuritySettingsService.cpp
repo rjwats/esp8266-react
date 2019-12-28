@@ -17,6 +17,9 @@ void SecuritySettingsService::readFromJsonObject(JsonObject& root) {
     for (JsonVariant user : root["users"].as<JsonArray>()) {
       _users.push_back(User(user["username"], user["password"], user["admin"]));
     }
+  } else {
+    _users.push_back(User(DEFAULT_ADMIN_USERNAME, DEFAULT_ADMIN_USERNAME, true));
+    _users.push_back(User(DEFAULT_GUEST_USERNAME, DEFAULT_GUEST_USERNAME, false));
   }
 }
 
