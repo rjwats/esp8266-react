@@ -99,8 +99,11 @@ ${indent.repeat(2)}}
 
           writeIncludes();
           writeFiles();
-          writeWWWClass();
-          callback();
+          writeWWWClass();          
+         
+          writeStream.on('finish', () => {
+            callback();
+          });
         } finally {
           writeStream.end();
         }

@@ -24,7 +24,6 @@ def buildWeb():
     chdir("interface")
     print("Building interface with npm")
     try:
-        executeWithPopen("npm version")
         executeWithPopen("npm install")
         executeWithPopen("npm run build")
         buildPath = Path("build")
