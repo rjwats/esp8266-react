@@ -4,9 +4,9 @@
 #include <Arduino.h>
 
 #ifdef ESP32
-#include <WiFi.h>
 #include <AsyncTCP.h>
 #include <SPIFFS.h>
+#include <WiFi.h>
 #elif defined(ESP8266)
 #include <ESP8266WiFi.h>
 #include <ESPAsyncTCP.h>
@@ -25,6 +25,10 @@
 #include <WiFiScanner.h>
 #include <WiFiSettingsService.h>
 #include <WiFiStatus.h>
+
+#ifdef PROGMEM_WWW
+#include <WWWData.h>
+#endif
 
 class ESP8266React {
  public:
@@ -52,6 +56,7 @@ class ESP8266React {
   NTPStatus _ntpStatus;
   APStatus _apStatus;
   SystemStatus _systemStatus;
+
 };
 
 #endif

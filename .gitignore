@@ -1,10 +1,9 @@
 .pio
-.pioenvs
-.piolibdeps
 .clang_complete
 .gcc-flags.json
 *Thumbs.db
 /data/www
+/lib/framework/WWWData.h
 /interface/build
 /interface/node_modules
 .vscode

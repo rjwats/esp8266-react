@@ -30,7 +30,6 @@ You will need the following before you can get started.
 
 * [PlatformIO](https://platformio.org/) - IDE for development
 * [Node.js](https://nodejs.org) - For building the interface with npm
-* Bash shell, or [Git Bash](https://gitforwindows.org/) if you are under windows
 
 ### Building and uploading the firmware
 
@@ -74,35 +73,15 @@ Alternatively run the 'upload' target:
 platformio run -t upload
 ```
 
-### Building the interface
+### Building & uploading the interface
 
 The interface has been configured with create-react-app and react-app-rewired so the build can customized for the target device. The large artefacts are gzipped and source maps and service worker are excluded from the production build. This reduces the production build to around ~200k, which easily fits on the device.
 
-Change to the ['interface'](interface) directory with your bash shell (or Git Bash) and use the standard commands you would with any react app built with create-react-app:
-
-#### Change to interface directory
-
-```bash
-cd interface
-```
-
-#### Download and install the node modules
-
-```bash
-npm install
-```
-
-#### Build the interface
-
-```bash
-npm run build
-```
-
-> **Note**: The build command will also delete the previously built interface, in the ['data/www'](data/www) directory, replacing it with the freshly built one ready to upload to the device.
+The interface will be automatically built by PlatformIO before it builds the firmware. The project can be configured to serve the interface from either SPIFFS or PROGMEM as your project requires. The default configuration is to serve the content from SPIFFS which requires an additional upload step which is documented below.
 
 #### Uploading the file system image
 
-The compiled user interface may be uploaded to the device by pressing the "Upload File System image" button:
+If service content from SPIFFS (default), build the project first. Then the compiled interface may be uploaded to the device by pressing the "Upload File System image" button:
 
 ![uploadfs](/media/uploadfs.png?raw=true "uploadfs")
 
@@ -112,15 +91,43 @@ Alternatively run the 'uploadfs' target:
 platformio run -t uploadfs
 ```
 
+#### Serving the interface from PROGMEM
+
+You can configure the project to serve the interface from PROGMEM by uncommenting the -D PROGMEM_WWW build flag in ['platformio.ini'](platformio.ini) then re-building and uploading the firmware to the device. 
+
+Be aware that this will consume ~150k of program space which can be especially problematic if you already have a large build artefact or if you have added large javascript dependencies to the interface. The ESP32 binaries are large already, so this will be a problem if you are using one of these devices and require this type of setup.
+
+A method for working around this issue can be to reduce the amount of space allocated to SPIFFS by configuring the device to use a differnt strategy partitioning. If you don't require SPIFFS other than for storing config one approach might be to configure a minimal SPIFFS partition.
+
+For a ESP32 (4mb variant) there is a handy "min_spiffs.csv" partition table which can be enabled easily:
+
+```yaml
+[env:node32s]
+board_build.partitions = min_spiffs.csv
+platform = espressif32
+board = node32s
+```
+
+This is largley left as an exersise for the reader as everyone's requirements will vary.
+
 ### Running the interface locally
 
-You can run a local development server to allow you preview changes to the front end without the need to upload a file system image to the device after each change. Change to the interface directory and run the following command:
+You can run a local development server to allow you preview changes to the front end without the need to upload a file system image to the device after each change. 
+
+Change to the ['interface'](interface) directory with your bash shell (or Git Bash) and use the standard commands you would with any react app built with create-react-app:
 
 ```bash
+cd interface
+```
+
+Install the npm dependencies, if required and start the development server:
+
+```bash
+npm install
 npm start
 ```
 
-> **Note**: To run the interface locally you will need to modify the endpoint root path and enable CORS.
+> **Note**: To run the interface locally you may need to modify the endpoint root path and enable CORS.
 
 #### Changing the endpoint root
 
@@ -141,7 +148,9 @@ You can enable CORS on the back end by uncommenting the -D ENABLE_CORS build fla
 
 ## Device Configuration
 
-As well as containing the interface, the SPIFFS image (in the ['data'](data) folder) contains a JSON settings file for each of the configurable features. The config files can be found in the ['data/config'](data/config) directory:
+The SPIFFS image (in the ['data'](data) folder) contains a JSON settings file for each of the configurable features. 
+
+The config files can be found in the ['data/config'](data/config) directory:
 
 File | Description
 ---- | -----------
@@ -173,28 +182,29 @@ It is recommended that you change the JWT secret and user credentials from their
 
 This project supports ESP8266 and ESP32 platforms. To support OTA programming, enough free space to upload the new sketch and file system image will be required. It is recommended that a board with at least 2mb of flash is used.
 
-By default, the target device is "esp12e". This is a common ESP8266 variant with 4mb of flash:
+The pre-configured environments are "esp12e" and "node32s". These are common ESP8266/ESP32 variants with 4mb of flash:
 
-![ESP12E](/media/esp12e.jpg?raw=true "ESP12E")
+![ESP12E](/media/esp12e.jpg?raw=true "ESP12E") ![ESP32](/media/esp32.jpg?raw=true "ESP32")
 
-The settings file ['platformio.ini'](platformio.ini) configures the platform and board:
+The settings file ['platformio.ini'](platformio.ini) configures the supported environments. Modify these, or add new environments for the devides you need to support. The default environments are as follows:
 
-```
+```yaml
 [env:esp12e]
 platform = espressif8266
 board = esp12e
-```
+board_build.f_cpu = 160000000L
 
-If you want to build for an ESP32 device, all you need to do is re-configure ['platformio.ini'](platformio.ini) with your devices settings. 
-
-![ESP32](/media/esp32.jpg?raw=true "ESP32")
-
-Building for the common esp32 "node32s" board for example requires the following configuration:
-
-```
 [env:node32s]
 platform = espressif32
 board = node32s
+```
+
+If you want to build for a different device, all you need to do is re-configure ['platformio.ini'](platformio.ini) and select an alternative environment by modifying the default_envs variable. Building for the common esp32 "node32s" board for example:
+
+```yaml
+[platformio]
+;default_envs = esp12e
+default_envs = node32s
 ```
 
 ## Customizing and theming
@@ -274,7 +284,11 @@ void setup() {
   Serial.begin(SERIAL_BAUD_RATE);
 
   // start the file system (must be done before starting the framework)
+#ifdef ESP32
+  SPIFFS.begin(true);
+#elif defined(ESP8266)
   SPIFFS.begin();
+#endif
 
   // start the framework and demo project
   esp8266React.begin();

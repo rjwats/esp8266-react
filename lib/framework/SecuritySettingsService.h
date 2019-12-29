@@ -4,6 +4,9 @@
 #include <AdminSettingsService.h>
 #include <SecurityManager.h>
 
+#define DEFAULT_ADMIN_USERNAME "admin"
+#define DEFAULT_GUEST_USERNAME "guest"
+
 #define SECURITY_SETTINGS_FILE "/config/securitySettings.json"
 #define SECURITY_SETTINGS_PATH "/rest/securitySettings"
 

@@ -7,6 +7,7 @@
     "@material-ui/icons": "^4.5.1",
     "compression-webpack-plugin": "^2.0.0",
     "jwt-decode": "^2.2.0",
+    "mime-types": "^2.1.25",
     "moment": "^2.24.0",
     "notistack": "^0.9.6",
     "prop-types": "^15.7.2",
@@ -17,11 +18,12 @@
     "react-material-ui-form-validator": "^2.0.9",
     "react-router": "^5.1.1",
     "react-router-dom": "^5.1.1",
-    "react-scripts": "3.0.1"
+    "react-scripts": "3.0.1",
+    "zlib": "^1.0.5"
   },
   "scripts": {
     "start": "react-app-rewired start",
-    "build": "react-app-rewired build && rm -rf ../data/www && cp -r build ../data/www",
+    "build": "react-app-rewired build",
     "test": "react-app-rewired test --env=jsdom",
     "eject": "react-scripts eject"
   },
