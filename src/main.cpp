@@ -13,7 +13,11 @@ void setup() {
   Serial.begin(SERIAL_BAUD_RATE);
 
   // start the file system (must be done before starting the framework)
+#ifdef ESP32
   SPIFFS.begin(true);
+#elif defined(ESP8266)
+  SPIFFS.begin();
+#endif
 
   // start the framework and demo project
   esp8266React.begin();

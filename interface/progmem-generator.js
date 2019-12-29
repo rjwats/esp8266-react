@@ -1,5 +1,5 @@
 const { resolve, relative, sep } = require('path');
-const { readdirSync, readFileSync, createWriteStream } = require('fs');
+const { readdirSync, existsSync, unlinkSync, readFileSync, createWriteStream } = require('fs');
 var zlib = require('zlib');
 var mime = require('mime-types');
 
@@ -21,6 +21,13 @@ function coherseToBuffer(input) {
   return Buffer.isBuffer(input) ? input : Buffer.from(input);
 }
 
+function cleanAndOpen(path) {
+  if (existsSync(path)) {
+    unlinkSync(path);
+  }
+  return createWriteStream(path, { flags: "w+" });
+}
+
 class ProgmemGenerator {
 
   constructor(options = {}) {
@@ -34,7 +41,7 @@ class ProgmemGenerator {
       (compilation, callback) => {
         const { outputPath, bytesPerLine, indent, includes } = this.options;
         const fileInfo = [];
-        const writeStream = createWriteStream(resolve(compilation.options.context, outputPath), { flags: "w" });
+        const writeStream = cleanAndOpen(resolve(compilation.options.context, outputPath));
         try {
           const writeIncludes = () => {
             writeStream.write(includes);
@@ -99,8 +106,8 @@ ${indent.repeat(2)}}
 
           writeIncludes();
           writeFiles();
-          writeWWWClass();          
-         
+          writeWWWClass();
+
           writeStream.on('finish', () => {
             callback();
           });
