@@ -16,8 +16,9 @@ def buildWeb():
     chdir("interface")
     print("Building interface with npm")
     try:
-        print(check_output(["npm", "install"],shell=True).decode("utf-8"))
-        print(check_output(["npm", "run", "build"],shell=True).decode("utf-8"))
+        print(check_output(["npm", "version"], shell=True).decode("utf-8"))
+        print(check_output(["npm", "install"], shell=True).decode("utf-8"))
+        print(check_output(["npm", "run", "build"], shell=True).decode("utf-8"))
         buildPath = Path("build")
         wwwPath = Path("../data/www")
         if wwwPath.exists() and wwwPath.is_dir():
