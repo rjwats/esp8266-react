@@ -11,20 +11,22 @@ def flagExists(flag):
     for define in buildFlags.get("CPPDEFINES"):
         if (define == flag or (isinstance(define, list) and define[0] == flag)):
             return True
-            
+
+def executeWithPopen(command):
+    with Popen(command, shell=True, stdout=PIPE, universal_newlines=True) as p:
+        for line in p.stdout:
+            print(line, end='')
+        p.wait()
+        if p.returncode != 0:                
+            raise CalledProcessError(p.returncode, p.args)
+
 def buildWeb():
     chdir("interface")
     print("Building interface with npm")
     try:
-        with Popen(["npm", "version"], shell=True, stdout=PIPE, universal_newlines=True) as p:
-            for line in p.stdout:
-                print(line, end='')
-            p.wait()
-            if p.returncode != 0:                
-                raise CalledProcessError(p.returncode, p.args)
-
-        print(check_output(["npm", "install"], shell=True).decode("utf-8"))
-        print(check_output(["npm", "run", "build"], shell=True).decode("utf-8"))
+        executeWithPopen("npm version")
+        executeWithPopen("npm install")
+        executeWithPopen("npm run build")
         buildPath = Path("build")
         wwwPath = Path("../data/www")
         if wwwPath.exists() and wwwPath.is_dir():
