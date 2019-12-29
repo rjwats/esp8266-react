@@ -12,20 +12,12 @@ def flagExists(flag):
         if (define == flag or (isinstance(define, list) and define[0] == flag)):
             return True
 
-def executeWithPopen(command):
-    with Popen(command, shell=True, stdout=PIPE, universal_newlines=True) as p:
-        for line in p.stdout:
-            print(line, end='')
-        p.wait()
-        if p.returncode != 0:                
-            raise CalledProcessError(p.returncode, p.args)
-
 def buildWeb():
     chdir("interface")
     print("Building interface with npm")
     try:
-        executeWithPopen("npm install")
-        executeWithPopen("npm run build")
+        env.Execute("npm install")
+        env.Execute("npm run build")
         buildPath = Path("build")
         wwwPath = Path("../data/www")
         if wwwPath.exists() and wwwPath.is_dir():
