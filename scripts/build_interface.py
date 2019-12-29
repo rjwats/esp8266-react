@@ -1,7 +1,7 @@
 from pathlib import Path
 from shutil import copytree
 from shutil import rmtree
-from subprocess import check_output
+from subprocess import check_output, Popen, PIPE, STDOUT, CalledProcessError
 from os import chdir
 
 Import("env")
@@ -16,7 +16,13 @@ def buildWeb():
     chdir("interface")
     print("Building interface with npm")
     try:
-        print(check_output(["npm", "version"], shell=True).decode("utf-8"))
+        with Popen(["npm", "version"], shell=True, stdout=PIPE, universal_newlines=True) as p:
+            for line in p.stdout:
+                print(line, end='')
+            p.wait()
+            if p.returncode != 0:                
+                raise CalledProcessError(p.returncode, p.args)
+
         print(check_output(["npm", "install"], shell=True).decode("utf-8"))
         print(check_output(["npm", "run", "build"], shell=True).decode("utf-8"))
         buildPath = Path("build")
