@@ -284,7 +284,7 @@ void setup() {
   Serial.begin(SERIAL_BAUD_RATE);
 
   // start the file system (must be done before starting the framework)
-  SPIFFS.begin();
+  SPIFFS.begin(true);
 
   // start the framework and demo project
   esp8266React.begin();
