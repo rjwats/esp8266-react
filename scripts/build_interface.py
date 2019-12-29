@@ -28,4 +28,9 @@ def buildWeb():
     finally:
         chdir("..")
 
-buildWeb()
+if (len(BUILD_TARGETS) == 0 or "upload" in BUILD_TARGETS):
+    buildWeb()
+else:
+    print("Skipping build interface step for target(s): " + ", ".join(BUILD_TARGETS))
+
+
