@@ -1,0 +1,40 @@
+import * as React from 'react';
+import { Redirect, Route, RouteProps, RouteComponentProps } from "react-router-dom";
+import { withSnackbar, WithSnackbarProps } from 'notistack';
+
+import * as Authentication from './Authentication';
+import { withAuthenticationContext, AuthenticationContextProps } from './AuthenticationContext.js';
+
+type ChildComponent = React.ComponentType<RouteComponentProps<any>> | React.ComponentType<any>;
+
+interface AuthenticatedRouteProps extends RouteProps, WithSnackbarProps, AuthenticationContextProps {
+  component: ChildComponent;
+}
+
+type RenderComponent = (props: RouteComponentProps<any>) => React.ReactNode;
+
+export class AuthenticatedRoute extends React.Component<AuthenticatedRouteProps> {
+
+  render() {
+    const { enqueueSnackbar, authenticationContext, component: Component, ...rest } = this.props;
+    const { location } = this.props;
+    const renderComponent: RenderComponent = (props) => {
+      if (authenticationContext.isAuthenticated()) {
+        return (
+          <Component {...props} />
+        );
+      }
+      Authentication.storeLoginRedirect(location);
+      enqueueSnackbar("Please log in to continue.", { variant: 'info' });
+      return (
+        <Redirect to='/' />
+      );
+    }
+    return (
+      <Route {...rest} render={renderComponent} />
+    );
+  }
+
+}
+
+export default withSnackbar(withAuthenticationContext(AuthenticatedRoute));
