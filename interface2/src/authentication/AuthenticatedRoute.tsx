@@ -3,7 +3,7 @@ import { Redirect, Route, RouteProps, RouteComponentProps } from "react-router-d
 import { withSnackbar, WithSnackbarProps } from 'notistack';
 
 import * as Authentication from './Authentication';
-import { withAuthenticationContext, AuthenticationContextProps } from './AuthenticationContext.js';
+import { withAuthenticationContext, AuthenticationContextProps, AuthenticatedContext } from './AuthenticationContext';
 
 type ChildComponent = React.ComponentType<RouteComponentProps<any>> | React.ComponentType<any>;
 
@@ -19,9 +19,11 @@ export class AuthenticatedRoute extends React.Component<AuthenticatedRouteProps>
     const { enqueueSnackbar, authenticationContext, component: Component, ...rest } = this.props;
     const { location } = this.props;
     const renderComponent: RenderComponent = (props) => {
-      if (authenticationContext.isAuthenticated()) {
+      if (authenticationContext.user) {
         return (
-          <Component {...props} />
+          <AuthenticatedContext.Provider value={authenticationContext as AuthenticatedContext}>
+            <Component {...props} />
+          </AuthenticatedContext.Provider>
         );
       }
       Authentication.storeLoginRedirect(location);

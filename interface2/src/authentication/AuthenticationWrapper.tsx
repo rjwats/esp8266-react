@@ -43,8 +43,6 @@ class AuthenticationWrapper extends React.Component<AuthenticationWrapperProps, 
         refresh: this.refresh,
         signIn: this.signIn,
         signOut: this.signOut,
-        isAuthenticated: this.isAuthenticated,
-        isAdmin: this.isAdmin
       },
       initialized: false
     };
@@ -122,14 +120,6 @@ class AuthenticationWrapper extends React.Component<AuthenticationWrapperProps, 
     });
     this.props.enqueueSnackbar("You have signed out.", { variant: 'success', });
     history.push('/');
-  }
-
-  isAuthenticated = () => {
-    return !!this.state.context.user;
-  }
-
-  isAdmin = () => {
-    return !!this.state.context.user?.admin;
   }
 
 }

@@ -1,42 +1,28 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Link, withRouter } from 'react-router-dom';
+import React, { RefObject } from 'react';
+import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
 
-import { withStyles } from '@material-ui/core/styles';
-import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import Hidden from '@material-ui/core/Hidden';
-import Divider from '@material-ui/core/Divider';
-import Button from '@material-ui/core/Button';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import Popper from '@material-ui/core/Popper';
-import MenuIcon from '@material-ui/icons/Menu';
+import { Drawer, AppBar, Toolbar, Avatar, Divider, Button, IconButton } from '@material-ui/core';
+import { ClickAwayListener, Popper, Hidden, Typography } from '@material-ui/core';
+import { List, ListItem, ListItemIcon, ListItemText, ListItemAvatar } from '@material-ui/core';
+import { Card, CardContent, CardActions } from '@material-ui/core';
+
+import { withStyles, createStyles, Theme, WithTheme, WithStyles, withTheme } from '@material-ui/core/styles';
+
 import WifiIcon from '@material-ui/icons/Wifi';
 import SettingsIcon from '@material-ui/icons/Settings';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import SettingsInputAntennaIcon from '@material-ui/icons/SettingsInputAntenna';
 import LockIcon from '@material-ui/icons/Lock';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import CardActions from '@material-ui/core/CardActions';
-import Avatar from '@material-ui/core/Avatar';
+import MenuIcon from '@material-ui/icons/Menu';
 
 import ProjectMenu from '../project/ProjectMenu';
 import { PROJECT_NAME } from '../constants/Env';
-import { withAuthenticationContext } from '../authentication/Context.js';
+import { withAuthenticatedContext, AuthenticatedContextProps } from '../authentication/AuthenticationContext';
 
 const drawerWidth = 290;
 
-const styles = theme => ({
+const styles = (theme: Theme) => createStyles({
   root: {
     display: 'flex',
   },
@@ -77,26 +63,38 @@ const styles = theme => ({
     "& > * + *": {
       marginLeft: theme.spacing(2),
     }
-  },
+  }
 });
 
-class MenuAppBar extends React.Component {
-  state = {
-    mobileOpen: false,
-    authMenuOpen: false
-  };
+interface MenuAppBarState {
+  mobileOpen: boolean;
+  authMenuOpen: boolean;
+}
 
-  anchorRef = React.createRef();
+interface MenuAppBarProps extends AuthenticatedContextProps, WithTheme, WithStyles<typeof styles>, RouteComponentProps {
+  sectionTitle: string;
+}
+
+class MenuAppBar extends React.Component<MenuAppBarProps, MenuAppBarState> {
+
+  constructor(props: MenuAppBarProps) {
+    super(props);
+    this.state = {
+      mobileOpen: false,
+      authMenuOpen: false
+    };
+  }
+
+  anchorRef: RefObject<HTMLButtonElement> = React.createRef();
 
   handleToggle = () => {
     this.setState({ authMenuOpen: !this.state.authMenuOpen });
   }
 
-  handleClose = (event) => {
-    if (this.anchorRef.current && this.anchorRef.current.contains(event.target)) {
+  handleClose = (event: React.MouseEvent<Document>) => {
+    if (this.anchorRef.current && this.anchorRef.current.contains(event.currentTarget)) {
       return;
     }
-
     this.setState({ authMenuOpen: false });
   }
 
@@ -105,7 +103,7 @@ class MenuAppBar extends React.Component {
   };
 
   render() {
-    const { classes, theme, children, sectionTitle, authenticationContext } = this.props;
+    const { classes, theme, children, sectionTitle, authenticatedContext } = this.props;
     const { mobileOpen, authMenuOpen } = this.state;
     const path = this.props.match.url;
     const drawer = (
@@ -138,7 +136,7 @@ class MenuAppBar extends React.Component {
             </ListItemIcon>
             <ListItemText primary="Network Time" />
           </ListItem>
-          <ListItem to='/security/' selected={path.startsWith('/security/')} button component={Link} disabled={!authenticationContext.isAdmin()}>
+          <ListItem to='/security/' selected={path.startsWith('/security/')} button component={Link} disabled={!authenticatedContext.user.admin}>
             <ListItemIcon>
               <LockIcon />
             </ListItemIcon>
@@ -191,13 +189,13 @@ class MenuAppBar extends React.Component {
                               <AccountCircleIcon />
                             </Avatar>
                           </ListItemAvatar>
-                          <ListItemText primary={"Signed in as: " + authenticationContext.user.username} secondary={authenticationContext.isAdmin() ? "Admin User" : undefined} />
+                          <ListItemText primary={"Signed in as: " + authenticatedContext.user.username} secondary={authenticatedContext.user.admin ? "Admin User" : undefined} />
                         </ListItem>
                       </List>
                     </CardContent>
                     <Divider />
                     <CardActions className={classes.authMenuActions}>
-                      <Button variant="contained" color="primary" onClick={authenticationContext.signOut}>Sign Out</Button>
+                      <Button variant="contained" color="primary" onClick={authenticatedContext.signOut}>Sign Out</Button>
                     </CardActions>
                   </Card>
                 </ClickAwayListener>
@@ -243,14 +241,10 @@ class MenuAppBar extends React.Component {
   }
 }
 
-MenuAppBar.propTypes = {
-  classes: PropTypes.object.isRequired,
-  theme: PropTypes.object.isRequired,
-  sectionTitle: PropTypes.string.isRequired,
-};
-
-export default withAuthenticationContext(
-  withRouter(
-    withStyles(styles, { withTheme: true })(MenuAppBar)
+export default withRouter(
+  withTheme(
+    withAuthenticatedContext(
+      withStyles(styles)(MenuAppBar)
+    )
   )
 );

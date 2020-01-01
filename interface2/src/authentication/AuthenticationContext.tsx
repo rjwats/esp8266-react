@@ -9,8 +9,6 @@ export interface AuthenticationContext {
   refresh: () => void;
   signIn: (accessToken: string) => void;
   signOut: () => void;
-  isAuthenticated: () => boolean;
-  isAdmin: () => boolean;
   user?: User;
 }
 
@@ -30,6 +28,31 @@ export function withAuthenticationContext<T extends AuthenticationContextProps>(
         <AuthenticationContext.Consumer>
           {authenticationContext => <Component {...this.props as T} authenticationContext={authenticationContext} />}
         </AuthenticationContext.Consumer>
+      );
+    }
+  };
+}
+
+export interface AuthenticatedContext extends AuthenticationContext {
+  user: User;
+}
+
+const AuthenticatedContextDefaultValue = {} as AuthenticatedContext
+export const AuthenticatedContext = React.createContext(
+  AuthenticatedContextDefaultValue
+);
+
+export interface AuthenticatedContextProps {
+  authenticatedContext: AuthenticatedContext;
+}
+
+export function withAuthenticatedContext<T extends AuthenticatedContextProps>(Component: React.ComponentType<T>) {
+  return class extends React.Component<Omit<T, keyof AuthenticatedContextProps>> {
+    render() {
+      return (
+        <AuthenticatedContext.Consumer>
+          {authenticatedContext => <Component {...this.props as T} authenticatedContext={authenticatedContext} />}
+        </AuthenticatedContext.Consumer>
       );
     }
   };

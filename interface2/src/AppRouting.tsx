@@ -35,9 +35,7 @@ class AppRouting extends Component {
   render() {
     return (
       <AuthenticationWrapper>
-        Hello.
-
-          <Switch>
+        <Switch>
           <UnauthenticatedRoute exact path="/" component={SignInPage} />
           {
             // <AuthenticatedRoute exact path="/wifi/*" component={WiFiConnection} />
@@ -49,7 +47,6 @@ class AppRouting extends Component {
           <AuthenticatedRoute exact path={`/${PROJECT_PATH}/*`} component={ProjectRouting} />
           <Redirect to="/" />
         </Switch>
-
       </AuthenticationWrapper>
     )
   }
