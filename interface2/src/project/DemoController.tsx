@@ -7,44 +7,39 @@ import SaveIcon from '@material-ui/icons/Save';
 
 import { ENDPOINT_ROOT } from '../constants/Env';
 import SectionContent from '../components/SectionContent';
-import { restComponent, RestComponentProps } from '../components/RestComponent';
-import LoadingNotification from '../components/LoadingNotification';
+import RestFormLoader, { RestFormProps } from '../components/RestFormLoader';
+import { RestControllerProps, restController } from '../components/RestController';
 
 export const DEMO_SETTINGS_ENDPOINT = ENDPOINT_ROOT + "demoSettings";
-
-const valueToPercentage = (value: number) => `${Math.round(value / 255 * 100)}%`;
 
 interface DemoSettings {
   blink_speed: number;
 }
 
-class DemoController extends Component<RestComponentProps<DemoSettings>> {
+type DemoControllerProps = RestControllerProps<DemoSettings>;
+
+class DemoController extends Component<DemoControllerProps> {
 
   componentDidMount() {
     this.props.loadData();
   }
 
   render() {
-    const { data, fetched, errorMessage, saveData, loadData, handleSliderChange } = this.props;
     return (
       <SectionContent title="Controller" titleGutter>
-        <LoadingNotification
-          onReset={loadData}
-          fetched={fetched}
-          errorMessage={errorMessage}
-          render={() =>
-            <DemoControllerForm
-              demoSettings={data!}
-              onReset={loadData}
-              onSubmit={saveData}
-              handleSliderChange={handleSliderChange}
-            />
-          }
+        <RestFormLoader
+          {...this.props}
+          render={props => (
+            <DemoControllerForm {...props} />
+          )}
         />
       </SectionContent>
     )
   }
+
 }
+
+export default restController(DEMO_SETTINGS_ENDPOINT, DemoController);
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -58,23 +53,20 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-interface DemoControllerFormProps {
-  demoSettings: DemoSettings;
-  onSubmit: () => void;
-  onReset: () => void;
-  handleSliderChange: (name: keyof DemoSettings) => (event: React.ChangeEvent<{}>, value: number | number[]) => void;
-}
+const valueToPercentage = (value: number) => `${Math.round(value / 255 * 100)}%`;
+
+type DemoControllerFormProps = RestFormProps<DemoSettings>;
 
 function DemoControllerForm(props: DemoControllerFormProps) {
-  const { demoSettings, onSubmit, onReset, handleSliderChange } = props;
+  const { data, saveData, loadData, handleSliderChange } = props;
   const classes = useStyles();
   return (
-    <ValidatorForm onSubmit={onSubmit}>
+    <ValidatorForm onSubmit={saveData}>
       <Typography id="blink-speed-slider" className={classes.blinkSpeedLabel}>
         Blink Speed
       </Typography>
       <Slider
-        value={demoSettings.blink_speed}
+        value={data.blink_speed}
         valueLabelFormat={valueToPercentage}
         aria-labelledby="blink-speed-slider"
         valueLabelDisplay="on"
@@ -85,11 +77,11 @@ function DemoControllerForm(props: DemoControllerFormProps) {
       <Button startIcon={<SaveIcon />} variant="contained" color="primary" className={classes.button} type="submit">
         Save
       </Button>
-      <Button variant="contained" color="secondary" className={classes.button} onClick={onReset}>
+      <Button variant="contained" color="secondary" className={classes.button} onClick={loadData}>
         Reset
       </Button>
     </ValidatorForm>
   );
 }
 
-export default restComponent(DEMO_SETTINGS_ENDPOINT, DemoController);
+

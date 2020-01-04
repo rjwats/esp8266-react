@@ -2,7 +2,7 @@ import React from 'react';
 import { withSnackbar, WithSnackbarProps } from 'notistack';
 import { redirectingAuthorizedFetch } from '../authentication/Authentication';
 
-export interface RestComponentProps<D> {
+export interface RestControllerProps<D> {
   handleValueChange: (name: keyof D) => (event: React.ChangeEvent<HTMLInputElement>) => void;
   handleCheckboxChange: (name: keyof D) => (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => void;
   handleSliderChange: (name: keyof D) => (event: React.ChangeEvent<{}>, value: number | number[]) => void;
@@ -12,24 +12,24 @@ export interface RestComponentProps<D> {
   loadData: () => void;
 
   data?: D;
-  fetched: boolean;
+  loading: boolean;
   errorMessage?: string;
 }
 
-interface RestComponentState<D> {
+interface RestControllerState<D> {
   data?: D;
-  fetched: boolean;
+  loading: boolean;
   errorMessage?: string;
 }
 
-export function restComponent<D>(endpointUrl: string, FormComponent: React.ComponentType<RestComponentProps<D>>): React.ComponentType {
-  return withSnackbar(class extends React.Component<WithSnackbarProps, RestComponentState<D>> {
+export function restController<D>(endpointUrl: string, RestController: React.ComponentType<RestControllerProps<D>>): React.ComponentType {
+  return withSnackbar(class extends React.Component<WithSnackbarProps, RestControllerState<D>> {
 
     constructor(props: WithSnackbarProps) {
       super(props);
       this.state = {
         data: undefined,
-        fetched: false,
+        loading: false,
         errorMessage: undefined
       };
     }
@@ -37,7 +37,7 @@ export function restComponent<D>(endpointUrl: string, FormComponent: React.Compo
     setData = (data: D) => {
       this.setState({
         data,
-        fetched: true,
+        loading: false,
         errorMessage: undefined
       });
     }
@@ -45,7 +45,7 @@ export function restComponent<D>(endpointUrl: string, FormComponent: React.Compo
     loadData = () => {
       this.setState({
         data: undefined,
-        fetched: false,
+        loading: true,
         errorMessage: undefined
       });
       redirectingAuthorizedFetch(endpointUrl).then(response => {
@@ -54,18 +54,16 @@ export function restComponent<D>(endpointUrl: string, FormComponent: React.Compo
         }
         throw Error("Invalid status code: " + response.status);
       }).then(json => {
-        this.setState({ data: json, fetched: true })
+        this.setState({ data: json, loading: false })
       }).catch(error => {
         const errorMessage = error.message || "Unknown error";
-        this.props.enqueueSnackbar("Problem fetching: " + errorMessage, {
-          variant: 'error',
-        });
-        this.setState({ data: undefined, fetched: true, errorMessage });
+        this.props.enqueueSnackbar("Problem fetching: " + errorMessage, { variant: 'error' });
+        this.setState({ data: undefined, loading: false, errorMessage });
       });
     }
 
     saveData = () => {
-      this.setState({ fetched: false });
+      this.setState({ loading: true });
       redirectingAuthorizedFetch(endpointUrl, {
         method: 'POST',
         body: JSON.stringify(this.state.data),
@@ -78,16 +76,12 @@ export function restComponent<D>(endpointUrl: string, FormComponent: React.Compo
         }
         throw Error("Invalid status code: " + response.status);
       }).then(json => {
-        this.props.enqueueSnackbar("Changes successfully applied.", {
-          variant: 'success',
-        });
-        this.setState({ data: json, fetched: true });
+        this.props.enqueueSnackbar("Changes successfully applied.", { variant: 'success' });
+        this.setState({ data: json, loading: false });
       }).catch(error => {
         const errorMessage = error.message || "Unknown error";
-        this.props.enqueueSnackbar("Problem saving: " + errorMessage, {
-          variant: 'error',
-        });
-        this.setState({ data: undefined, fetched: true, errorMessage });
+        this.props.enqueueSnackbar("Problem saving: " + errorMessage, { variant: 'error' });
+        this.setState({ data: undefined, loading: false, errorMessage });
       });
     }
 
@@ -107,7 +101,7 @@ export function restComponent<D>(endpointUrl: string, FormComponent: React.Compo
     };
 
     render() {
-      return <FormComponent
+      return <RestController
         handleValueChange={this.handleValueChange}
         handleCheckboxChange={this.handleCheckboxChange}
         handleSliderChange={this.handleSliderChange}
