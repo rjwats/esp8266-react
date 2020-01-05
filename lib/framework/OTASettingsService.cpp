@@ -25,14 +25,9 @@ void OTASettingsService::onConfigUpdated() {
 }
 
 void OTASettingsService::readFromJsonObject(JsonObject& root) {
-  _enabled = root["enabled"];
-  _port = root["port"];
+  _enabled = root["enabled"] | DEFAULT_OTA_ENABLED;
+  _port = root["port"] | DEFAULT_OTA_PORT;
   _password = root["password"] | DEFAULT_OTA_PASSWORD;
-
-  // provide defaults
-  if (_port < 0) {
-    _port = DEFAULT_OTA_PORT;
-  }
 }
 
 void OTASettingsService::writeToJsonObject(JsonObject& root) {
