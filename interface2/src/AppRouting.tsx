@@ -10,6 +10,7 @@ import AuthenticatedRoute from './authentication/AuthenticatedRoute';
 
 import SignInPage from './containers/SignInPage';
 import ProjectRouting from './project/ProjectRouting';
+import System from './sections/System';
 
 /*
 import { Redirect, Switch } from 'react-router';
@@ -42,7 +43,7 @@ class AppRouting extends Component {
             // <AuthenticatedRoute exact path="/ap/*" component={AccessPoint} />
             // <AuthenticatedRoute exact path="/ntp/*" component={NetworkTime} />
             // <AuthenticatedRoute exact path="/security/*" component={Security} />
-            // <AuthenticatedRoute exact path="/system/*" component={System} />
+            <AuthenticatedRoute exact path="/system/*" component={System} />
           }
           <AuthenticatedRoute exact path={`/${PROJECT_PATH}/*`} component={ProjectRouting} />
           <Redirect to="/" />

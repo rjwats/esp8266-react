@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface SectionContentProps {
   title: string;
-  titleGutter: boolean;
+  titleGutter?: boolean;
 }
 
 const SectionContent: React.FC<SectionContentProps> = (props) => {
