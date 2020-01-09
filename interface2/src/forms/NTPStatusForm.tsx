@@ -13,10 +13,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 
 import { isSynchronized, ntpStatusHighlight, ntpStatus } from '../constants/NTPStatus';
 import { unixTimeToTimeAndDate } from '../constants/TimeFormat';
-import { NTP_STATUS_ENDPOINT } from '../constants/Endpoints';
-import SectionContent from '../components/SectionContent';
-import { RestControllerProps, restController } from '../components/RestController';
-import RestFormLoader, { RestFormProps } from '../components/RestFormLoader';
+import { RestFormProps } from '../components/RestFormLoader';
 import { NTPStatusData } from '../containers/NTPStatus';
 
 const styles = (theme: Theme) => createStyles({
@@ -31,7 +28,7 @@ const styles = (theme: Theme) => createStyles({
 
 type NTPStatusFormProps = RestFormProps<NTPStatusData> & WithStyles<typeof styles>;
 
-class NTPStatusForm extends React.Component<NTPStatusFormProps> {
+class NTPStatusForm extends Component<NTPStatusFormProps> {
 
   createListItems() {
     const { data, classes } = this.props
