@@ -30,83 +30,74 @@ type NTPStatusFormProps = RestFormProps<NTPStatusData> & WithStyles<typeof style
 
 class NTPStatusForm extends Component<NTPStatusFormProps> {
 
-  createListItems() {
+  render() {
     const { data, classes } = this.props
     return (
       <Fragment>
-        <ListItem >
-          <ListItemAvatar>
-            <Avatar className={classes.ntpStatusHighlight}>
-              <UpdateIcon />
-            </Avatar>
-          </ListItemAvatar>
-          <ListItemText primary="Status" secondary={ntpStatus(data)} />
-        </ListItem>
-        <Divider variant="inset" component="li" />
-        {isSynchronized(data) &&
-          <Fragment>
-            <ListItem>
-              <ListItemAvatar>
-                <Avatar>
-                  <AccessTimeIcon />
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText primary="Time Now" secondary={unixTimeToTimeAndDate(data.now)} />
-            </ListItem>
-            <Divider variant="inset" component="li" />
-            <ListItem>
-              <ListItemAvatar>
-                <Avatar>
-                  <SwapVerticalCircleIcon />
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText primary="Last Sync" secondary={data.last_sync > 0 ? unixTimeToTimeAndDate(data.last_sync) : "never"} />
-            </ListItem>
-            <Divider variant="inset" component="li" />
-          </Fragment>
-        }
-        <ListItem>
-          <ListItemAvatar>
-            <Avatar>
-              <DNSIcon />
-            </Avatar>
-          </ListItemAvatar>
-          <ListItemText primary="NTP Server" secondary={data.server} />
-        </ListItem>
-        <Divider variant="inset" component="li" />
-        <ListItem>
-          <ListItemAvatar>
-            <Avatar>
-              <TimerIcon />
-            </Avatar>
-          </ListItemAvatar>
-          <ListItemText primary="Sync Interval" secondary={`${data.interval} seconds.`} />
-        </ListItem>
-        <Divider variant="inset" component="li" />
-        <ListItem>
-          <ListItemAvatar>
-            <Avatar>
-              <AvTimerIcon />
-            </Avatar>
-          </ListItemAvatar>
-          <ListItemText primary="Uptime" secondary={`${data.uptime} seconds.`} />
-        </ListItem>
-        <Divider variant="inset" component="li" />
-      </Fragment>
-    );
-  }
-
-  render() {
-    const { classes } = this.props
-    return (
-      <div>
         <List>
-          {this.createListItems()}
+          <ListItem >
+            <ListItemAvatar>
+              <Avatar className={classes.ntpStatusHighlight}>
+                <UpdateIcon />
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary="Status" secondary={ntpStatus(data)} />
+          </ListItem>
+          <Divider variant="inset" component="li" />
+          {isSynchronized(data) &&
+            <Fragment>
+              <ListItem>
+                <ListItemAvatar>
+                  <Avatar>
+                    <AccessTimeIcon />
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText primary="Time Now" secondary={unixTimeToTimeAndDate(data.now)} />
+              </ListItem>
+              <Divider variant="inset" component="li" />
+              <ListItem>
+                <ListItemAvatar>
+                  <Avatar>
+                    <SwapVerticalCircleIcon />
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText primary="Last Sync" secondary={data.last_sync > 0 ? unixTimeToTimeAndDate(data.last_sync) : "never"} />
+              </ListItem>
+              <Divider variant="inset" component="li" />
+            </Fragment>
+          }
+          <ListItem>
+            <ListItemAvatar>
+              <Avatar>
+                <DNSIcon />
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary="NTP Server" secondary={data.server} />
+          </ListItem>
+          <Divider variant="inset" component="li" />
+          <ListItem>
+            <ListItemAvatar>
+              <Avatar>
+                <TimerIcon />
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary="Sync Interval" secondary={`${data.interval} seconds.`} />
+          </ListItem>
+          <Divider variant="inset" component="li" />
+          <ListItem>
+            <ListItemAvatar>
+              <Avatar>
+                <AvTimerIcon />
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary="Uptime" secondary={`${data.uptime} seconds.`} />
+          </ListItem>
+          <Divider variant="inset" component="li" />
         </List>
         <Button startIcon={<RefreshIcon />} variant="contained" color="secondary" className={classes.button} onClick={this.props.loadData}>
           Refresh
         </Button>
-      </div>
+      </Fragment>
     );
   }
 }
