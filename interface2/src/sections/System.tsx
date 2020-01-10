@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { Redirect, Switch, RouteComponentProps } from 'react-router-dom'
 
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
+import { Tabs, Tab } from '@material-ui/core';
 
 import AuthenticatedRoute from '../authentication/AuthenticatedRoute';
 import MenuAppBar from '../components/MenuAppBar';

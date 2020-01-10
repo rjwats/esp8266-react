@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 
-import { NTP_SETTINGS_ENDPOINT } from '../constants/Endpoints';
-import SectionContent from '../components/SectionContent';
-import NTPSettingsForm from '../forms/NTPSettingsForm';
-import { RestControllerProps, restController } from '../components/RestController';
 import RestFormLoader from '../components/RestFormLoader';
+import SectionContent from '../components/SectionContent';
+import { restController, RestControllerProps} from '../components/RestController';
+import NTPSettingsForm from '../forms/NTPSettingsForm';
+import { NTP_SETTINGS_ENDPOINT } from '../constants/Endpoints';
 
 export interface NTPSettingsData {
   server: string;

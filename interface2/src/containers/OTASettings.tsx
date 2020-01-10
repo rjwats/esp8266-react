@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 
-import { OTA_SETTINGS_ENDPOINT } from '../constants/Endpoints';
-import SectionContent from '../components/SectionContent';
-import OTASettingsForm from '../forms/OTASettingsForm';
-import { restController, RestControllerProps} from '../components/RestController';
 import RestFormLoader from '../components/RestFormLoader';
+import SectionContent from '../components/SectionContent';
+import { restController, RestControllerProps} from '../components/RestController';
+import OTASettingsForm from '../forms/OTASettingsForm';
+import { OTA_SETTINGS_ENDPOINT } from '../constants/Endpoints';
 
 export interface OTASettingsData {
   enabled: boolean;

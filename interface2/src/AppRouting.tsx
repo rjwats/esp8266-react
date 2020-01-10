@@ -13,6 +13,7 @@ import ProjectRouting from './project/ProjectRouting';
 
 import NetworkTime from './sections/NetworkTime';
 import System from './sections/System';
+import AccessPoint from './sections/AccessPoint';
 
 /*
 import { Redirect, Switch } from 'react-router';
@@ -42,12 +43,10 @@ class AppRouting extends Component {
           <UnauthenticatedRoute exact path="/" component={SignInPage} />
           <AuthenticatedRoute exact path="/ntp/*" component={NetworkTime} />
           <AuthenticatedRoute exact path="/system/*" component={System} />
+          <AuthenticatedRoute exact path="/ap/*" component={AccessPoint} />
           {
-            // <AuthenticatedRoute exact path="/wifi/*" component={WiFiConnection} />
-            // <AuthenticatedRoute exact path="/ap/*" component={AccessPoint} />
-         
-            // <AuthenticatedRoute exact path="/security/*" component={Security} />
-           
+            // <AuthenticatedRoute exact path="/wifi/*" component={WiFiConnection} />         
+            // <AuthenticatedRoute exact path="/security/*" component={Security} />           
           }
           <AuthenticatedRoute exact path={`/${PROJECT_PATH}/*`} component={ProjectRouting} />
           <Redirect to="/" />
