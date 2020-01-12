@@ -23,7 +23,7 @@ class APStatus extends Component<APStatusProps> {
 
   render() {
     return (
-      <SectionContent title="AP Status" titleGutter>
+      <SectionContent title="AP Status">
         <RestFormLoader
           {...this.props}
           render={formProps => <APStatusForm {...formProps} />}

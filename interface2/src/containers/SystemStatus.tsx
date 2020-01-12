@@ -25,7 +25,7 @@ class SystemStatus extends Component<SystemStatusProps> {
 
   render() {
     return (
-      <SectionContent title="System Status" titleGutter>
+      <SectionContent title="System Status">
         <RestFormLoader
           {...this.props}
           render={formProps => <SystemStatusForm {...formProps} />}

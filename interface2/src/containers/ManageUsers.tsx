@@ -15,7 +15,7 @@ class ManageUsers extends Component<RestControllerProps<SecuritySettingsData>> {
 
   render() {
     return (
-      <SectionContent title="Manage Users">
+      <SectionContent title="Manage Users" titleGutter>
         <RestFormLoader
           {...this.props}
           render={formProps => <ManageUsersForm {...formProps} />}
