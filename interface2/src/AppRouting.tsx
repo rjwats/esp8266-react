@@ -9,11 +9,11 @@ import UnauthenticatedRoute from './authentication/UnauthenticatedRoute';
 import AuthenticatedRoute from './authentication/AuthenticatedRoute';
 
 import SignInPage from './containers/SignInPage';
-import ProjectRouting from './project/ProjectRouting';
-
 import NetworkTime from './sections/NetworkTime';
 import System from './sections/System';
 import AccessPoint from './sections/AccessPoint';
+import Security from './sections/Security';
+import ProjectRouting from './project/ProjectRouting';
 
 /*
 import { Redirect, Switch } from 'react-router';
@@ -32,7 +32,7 @@ import ProjectRouting from './project/ProjectRouting';
 
 class AppRouting extends Component {
 
-  componentWillMount() {
+  componentDidMount() {
     Authentication.clearLoginRedirect();
   }
 
@@ -44,9 +44,9 @@ class AppRouting extends Component {
           <AuthenticatedRoute exact path="/ntp/*" component={NetworkTime} />
           <AuthenticatedRoute exact path="/system/*" component={System} />
           <AuthenticatedRoute exact path="/ap/*" component={AccessPoint} />
+          <AuthenticatedRoute exact path="/security/*" component={Security} /> 
           {
             // <AuthenticatedRoute exact path="/wifi/*" component={WiFiConnection} />         
-            // <AuthenticatedRoute exact path="/security/*" component={Security} />           
           }
           <AuthenticatedRoute exact path={`/${PROJECT_PATH}/*`} component={ProjectRouting} />
           <Redirect to="/" />

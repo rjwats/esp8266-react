@@ -17,7 +17,7 @@ import ProjectRouting from './project/ProjectRouting';
 
 class AppRouting extends Component {
 
-  componentWillMount() {
+  componentDidMount() {
     Authentication.clearLoginRedirect();
   }
 

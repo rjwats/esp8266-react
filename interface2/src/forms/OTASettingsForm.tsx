@@ -31,7 +31,7 @@ type OTASettingsFormProps = RestFormProps<OTASettingsData> & WithStyles<typeof s
 
 class OTASettingsForm extends React.Component<OTASettingsFormProps> {
 
-  componentWillMount() {
+  componentDidMount() {
     ValidatorForm.addValidationRule('isIPOrHostname', or(isIP, isHostname));
   }
 

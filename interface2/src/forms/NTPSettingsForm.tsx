@@ -25,7 +25,7 @@ type NTPSettingsFormProps = RestFormProps<NTPSettingsData> & WithStyles<typeof s
 
 class NTPSettingsForm extends React.Component<NTPSettingsFormProps> {
 
-  componentWillMount() {
+  componentDidMount() {
     ValidatorForm.addValidationRule('isIPOrHostname', or(isIP, isHostname));
   }
 
