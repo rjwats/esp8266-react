@@ -15,7 +15,7 @@ import PersonAddIcon from '@material-ui/icons/PersonAdd';
 
 import { withAuthenticatedContext, AuthenticatedContextProps } from '../authentication/AuthenticationContext';
 import { RestFormProps } from '../components/RestFormLoader';
-import { SecuritySettingsData, TempUser } from '../containers/SecuritySettings';
+import { SecuritySettingsData, User } from '../containers/SecuritySettings';
 import UserForm from './UserForm';
 
 const styles = (theme: Theme) => createStyles({
@@ -28,7 +28,7 @@ const styles = (theme: Theme) => createStyles({
   }
 });
 
-function compareUsers(a: TempUser, b: TempUser) {
+function compareUsers(a: User, b: User) {
   if (a.username < b.username) {
     return -1;
   }
@@ -43,7 +43,7 @@ type ManageUsersFormProps = RestFormProps<SecuritySettingsData> & AuthenticatedC
 
 type ManageUsersFormState = {
   creating: boolean;
-  user?: TempUser;
+  user?: User;
 }
 
 class ManageUsersForm extends React.Component<ManageUsersFormProps, ManageUsersFormState> {
@@ -71,13 +71,13 @@ class ManageUsersForm extends React.Component<ManageUsersFormProps, ManageUsersF
     return !this.props.data.users.find(u => u.admin);
   }
 
-  removeUser = (user: TempUser) => {
+  removeUser = (user: User) => {
     const { data } = this.props;
     const users = data.users.filter(u => u.username !== user.username);
     this.props.setData({ ...data, users });
   }
 
-  startEditingUser = (user: TempUser) => {
+  startEditingUser = (user: User) => {
     this.setState({
       creating: false,
       user
@@ -103,11 +103,11 @@ class ManageUsersForm extends React.Component<ManageUsersFormProps, ManageUsersF
     }
   };
 
-  handleUserValueChange = (name: keyof TempUser) => (event: React.ChangeEvent<HTMLInputElement>) => {
+  handleUserValueChange = (name: keyof User) => (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ user: { ...this.state.user!, [name]: event.target.value } });
   };
 
-  handleUserCheckboxChange = (name: keyof TempUser) => (event: React.ChangeEvent<HTMLInputElement>) => {
+  handleUserCheckboxChange = (name: keyof User) => (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ user: { ...this.state.user!, [name]: event.target.checked } });
   }
 

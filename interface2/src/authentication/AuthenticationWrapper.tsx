@@ -9,9 +9,9 @@ import { withStyles, Theme, createStyles, WithStyles } from '@material-ui/core/s
 import history from '../history'
 import { VERIFY_AUTHORIZATION_ENDPOINT } from '../constants/Endpoints';
 import { ACCESS_TOKEN, authorizedFetch } from './Authentication';
-import { AuthenticationContext, User } from './AuthenticationContext';
+import { AuthenticationContext, Me } from './AuthenticationContext';
 
-export const decodeUserJWT = (accessToken: string): User => jwtDecode(accessToken);
+export const decodeMeJWT = (accessToken: string): Me => jwtDecode(accessToken);
 
 const styles = (theme: Theme) => createStyles({
   loadingPanel: {
@@ -85,27 +85,27 @@ class AuthenticationWrapper extends React.Component<AuthenticationWrapperProps, 
     if (accessToken) {
       authorizedFetch(VERIFY_AUTHORIZATION_ENDPOINT)
         .then(response => {
-          const user = response.status === 200 ? decodeUserJWT(accessToken) : undefined;
-          this.setState({ initialized: true, context: { ...this.state.context, user } });
+          const me = response.status === 200 ? decodeMeJWT(accessToken) : undefined;
+          this.setState({ initialized: true, context: { ...this.state.context, me } });
         }).catch(error => {
-          this.setState({ initialized: true, context: { ...this.state.context, user: undefined } });
+          this.setState({ initialized: true, context: { ...this.state.context, me: undefined } });
           this.props.enqueueSnackbar("Error verifying authorization: " + error.message, {
             variant: 'error',
           });
         });
     } else {
-      this.setState({ initialized: true, context: { ...this.state.context, user: undefined } });
+      this.setState({ initialized: true, context: { ...this.state.context, me: undefined } });
     }
   }
 
   signIn = (accessToken: string) => {
     try {
       localStorage.setItem(ACCESS_TOKEN, accessToken);
-      const user: User = decodeUserJWT(accessToken);
-      this.setState({ context: { ...this.state.context, user } });
-      this.props.enqueueSnackbar(`Logged in as ${user.username}`, { variant: 'success' });
+      const me: Me = decodeMeJWT(accessToken);
+      this.setState({ context: { ...this.state.context, me } });
+      this.props.enqueueSnackbar(`Logged in as ${me.username}`, { variant: 'success' });
     } catch (err) {
-      this.setState({ initialized: true, context: { ...this.state.context, user: undefined } });
+      this.setState({ initialized: true, context: { ...this.state.context, me: undefined } });
       throw new Error("Failed to parse JWT " + err.message);
     }
   }
@@ -115,7 +115,7 @@ class AuthenticationWrapper extends React.Component<AuthenticationWrapperProps, 
     this.setState({
       context: {
         ...this.state.context,
-        user: undefined
+        me: undefined
       }
     });
     this.props.enqueueSnackbar("You have signed out.", { variant: 'success', });

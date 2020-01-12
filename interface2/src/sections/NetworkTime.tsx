@@ -23,7 +23,7 @@ class NetworkTime extends Component<NetworkTimeProps> {
       <MenuAppBar sectionTitle="Network Time">
         <Tabs value={this.props.match.url} onChange={this.handleTabChange} indicatorColor="primary" textColor="primary" variant="fullWidth">
           <Tab value="/ntp/status" label="NTP Status" />
-          <Tab value="/ntp/settings" label="NTP Settings" disabled={!authenticatedContext.user.admin} />
+          <Tab value="/ntp/settings" label="NTP Settings" disabled={!authenticatedContext.me.admin} />
         </Tabs>
         <Switch>
           <AuthenticatedRoute exact={true} path="/ntp/status" component={NTPStatus} />

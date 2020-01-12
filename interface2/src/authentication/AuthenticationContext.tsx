@@ -1,6 +1,6 @@
 import * as React from "react";
 
-export interface User {
+export interface Me {
   username: string;
   admin: boolean;
 }
@@ -9,7 +9,7 @@ export interface AuthenticationContext {
   refresh: () => void;
   signIn: (accessToken: string) => void;
   signOut: () => void;
-  user?: User;
+  me?: Me;
 }
 
 const AuthenticationContextDefaultValue = {} as AuthenticationContext
@@ -34,7 +34,7 @@ export function withAuthenticationContext<T extends AuthenticationContextProps>(
 }
 
 export interface AuthenticatedContext extends AuthenticationContext {
-  user: User;
+  me: Me;
 }
 
 const AuthenticatedContextDefaultValue = {} as AuthenticatedContext

@@ -5,7 +5,7 @@ import { withStyles, Theme, createStyles, WithStyles } from '@material-ui/core/s
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, FormGroup, FormControlLabel, Switch } from '@material-ui/core';
 
 import PasswordValidator from '../components/PasswordValidator';
-import { TempUser } from '../containers/SecuritySettings';
+import { User } from '../containers/SecuritySettings';
 
 const styles = (theme: Theme) => createStyles({
   textField: {
@@ -18,10 +18,10 @@ const styles = (theme: Theme) => createStyles({
 
 interface UserFormProps extends WithStyles<typeof styles> {
   creating: boolean;
-  user: TempUser;
+  user: User;
   uniqueUsername: (value: any) => boolean;
-  handleValueChange: (name: keyof TempUser) => (event: React.ChangeEvent<HTMLInputElement>) => void;
-  handleCheckboxChange: (name: keyof TempUser) => (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => void;
+  handleValueChange: (name: keyof User) => (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleCheckboxChange: (name: keyof User) => (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => void;
   onDoneEditing: () => void;
   onCancelEditing: () => void;
 }

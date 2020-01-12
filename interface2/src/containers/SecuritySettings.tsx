@@ -6,15 +6,14 @@ import SectionContent from '../components/SectionContent';
 import RestFormLoader from '../components/RestFormLoader';
 import { RestControllerProps, restController } from '../components/RestController';
 
-// TODO - replace user authenticated context user with "Me", this one is the User type.
-export interface TempUser {
+export interface User {
   username: string;
   password: string;
   admin: boolean;
 }
 
 export interface SecuritySettingsData {
-  users: TempUser[];
+  users: User[];
   jwt_secret: string;
 }
 

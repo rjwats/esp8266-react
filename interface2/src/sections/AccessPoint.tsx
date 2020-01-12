@@ -23,7 +23,7 @@ class AccessPoint extends Component<AccessPointProps> {
       <MenuAppBar sectionTitle="Access Point">
         <Tabs value={this.props.match.url} onChange={this.handleTabChange} indicatorColor="primary" textColor="primary" variant="fullWidth">
           <Tab value="/ap/status" label="Access Point Status" />
-          <Tab value="/ap/settings" label="Access Point Settings" disabled={!authenticatedContext.user.admin} />
+          <Tab value="/ap/settings" label="Access Point Settings" disabled={!authenticatedContext.me.admin} />
         </Tabs>
         <Switch>
           <AuthenticatedRoute exact={true} path="/ap/status" component={APStatus} />

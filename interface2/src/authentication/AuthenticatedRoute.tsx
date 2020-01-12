@@ -19,7 +19,7 @@ export class AuthenticatedRoute extends React.Component<AuthenticatedRouteProps>
     const { enqueueSnackbar, authenticationContext, component: Component, ...rest } = this.props;
     const { location } = this.props;
     const renderComponent: RenderComponent = (props) => {
-      if (authenticationContext.user) {
+      if (authenticationContext.me) {
         return (
           <AuthenticatedContext.Provider value={authenticationContext as AuthenticatedContext}>
             <Component {...props} />

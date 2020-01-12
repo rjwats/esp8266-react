@@ -23,7 +23,7 @@ class System extends Component<SystemProps> {
       <MenuAppBar sectionTitle="System">
         <Tabs value={this.props.match.url} onChange={this.handleTabChange} indicatorColor="primary" textColor="primary" variant="fullWidth">
           <Tab value="/system/status" label="System Status" />
-          <Tab value="/system/ota" label="OTA Settings" disabled={!authenticatedContext.user.admin} />
+          <Tab value="/system/ota" label="OTA Settings" disabled={!authenticatedContext.me.admin} />
         </Tabs>
         <Switch>
           <AuthenticatedRoute exact={true} path="/system/status" component={SystemStatus} />

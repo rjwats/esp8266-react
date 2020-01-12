@@ -136,7 +136,7 @@ class MenuAppBar extends React.Component<MenuAppBarProps, MenuAppBarState> {
             </ListItemIcon>
             <ListItemText primary="Network Time" />
           </ListItem>
-          <ListItem to='/security/' selected={path.startsWith('/security/')} button component={Link} disabled={!authenticatedContext.user.admin}>
+          <ListItem to='/security/' selected={path.startsWith('/security/')} button component={Link} disabled={!authenticatedContext.me.admin}>
             <ListItemIcon>
               <LockIcon />
             </ListItemIcon>
@@ -189,7 +189,7 @@ class MenuAppBar extends React.Component<MenuAppBarProps, MenuAppBarState> {
                               <AccountCircleIcon />
                             </Avatar>
                           </ListItemAvatar>
-                          <ListItemText primary={"Signed in as: " + authenticatedContext.user.username} secondary={authenticatedContext.user.admin ? "Admin User" : undefined} />
+                          <ListItemText primary={"Signed in as: " + authenticatedContext.me.username} secondary={authenticatedContext.me.admin ? "Admin User" : undefined} />
                         </ListItem>
                       </List>
                     </CardContent>
