@@ -22,10 +22,10 @@ class SecuritySettings extends Component<RestControllerProps<SecuritySettingsDat
   componentDidMount() {
     this.props.loadData();
   }
-  
+
   render() {
     return (
-      <SectionContent title="Security Settings">
+      <SectionContent title="Security Settings" titleGutter>
         <RestFormLoader
           {...this.props}
           render={formProps => <SecuritySettingsForm {...formProps} />}

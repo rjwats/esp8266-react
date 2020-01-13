@@ -19,7 +19,7 @@ class NTPSettings extends Component<RestControllerProps<NTPSettingsData>> {
 
   render() {
     return (
-      <SectionContent title="NTP Settings">
+      <SectionContent title="NTP Settings" titleGutter>
         <RestFormLoader
           {...this.props}
           render={formProps => <NTPSettingsForm {...formProps} />}

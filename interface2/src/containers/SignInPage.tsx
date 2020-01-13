@@ -34,9 +34,6 @@ const styles = (theme: Theme) => createStyles({
   extendedIcon: {
     marginRight: theme.spacing(0.5),
   },
-  textField: {
-    width: "100%"
-  },
   button: {
     marginRight: theme.spacing(2),
     marginTop: theme.spacing(2),
@@ -61,7 +58,7 @@ class SignInPage extends Component<SignInPageProps, SignInPageState> {
       processing: false
     };
   }
-  
+
   updateInputElement = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = event.currentTarget;
     this.setState(prevState => ({
@@ -114,7 +111,8 @@ class SignInPage extends Component<SignInPageProps, SignInPageState> {
               errorMessages={['Username is required']}
               name="username"
               label="Username"
-              className={classes.textField}
+              fullWidth
+              variant="outlined"
               value={username}
               onChange={this.updateInputElement}
               margin="normal"
@@ -125,7 +123,8 @@ class SignInPage extends Component<SignInPageProps, SignInPageState> {
               errorMessages={['Password is required']}
               name="password"
               label="Password"
-              className={classes.textField}
+              fullWidth
+              variant="outlined"
               value={password}
               onChange={this.updateInputElement}
               margin="normal"

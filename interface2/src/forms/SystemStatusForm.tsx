@@ -148,7 +148,7 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusStat
         <Button startIcon={<RefreshIcon />} variant="contained" color="secondary" className={classes.button} onClick={this.props.loadData}>
           Refresh
         </Button>
-        <Button startIcon={<AutorenewIcon />} variant="contained" color="secondary" className={classes.button} onClick={this.onRestart}>
+        <Button startIcon={<AutorenewIcon />} variant="contained" color="primary" className={classes.button} onClick={this.onRestart}>
           Restart
         </Button>
         {this.renderRestartDialog()}

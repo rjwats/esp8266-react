@@ -12,14 +12,6 @@ import { RestFormProps } from '../components/RestFormLoader';
 import { APSettingsData } from '../containers/APSettings';
 
 const styles = (theme: Theme) => createStyles({
-  textField: {
-    width: "100%"
-  },
-  selectField: {
-    width: "100%",
-    marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(0.5)
-  },
   button: {
     marginRight: theme.spacing(2),
     marginTop: theme.spacing(2),
@@ -34,7 +26,11 @@ class APSettingsForm extends React.Component<APSettingsFormProps> {
     const { classes, data, handleValueChange, saveData, loadData } = this.props;
     return (
       <ValidatorForm onSubmit={saveData} ref="APSettingsForm">
-        <SelectValidator name="provision_mode" label="Provide Access Point..." value={data.provision_mode} className={classes.selectField}
+        <SelectValidator name="provision_mode"
+          label="Provide Access Point..."
+          value={data.provision_mode}
+          fullWidth
+          variant="outlined"
           onChange={handleValueChange('provision_mode')}>
           <MenuItem value={0}>Always</MenuItem>
           <MenuItem value={1}>When WiFi Disconnected</MenuItem>
@@ -48,7 +44,8 @@ class APSettingsForm extends React.Component<APSettingsFormProps> {
               errorMessages={['Access Point SSID is required', 'Access Point SSID must be 32 characters or less']}
               name="ssid"
               label="Access Point SSID"
-              className={classes.textField}
+              fullWidth
+              variant="outlined"
               value={data.ssid}
               onChange={handleValueChange('ssid')}
               margin="normal"
@@ -58,7 +55,8 @@ class APSettingsForm extends React.Component<APSettingsFormProps> {
               errorMessages={['Access Point Password is required', 'Access Point Password must be 64 characters or less']}
               name="password"
               label="Access Point Password"
-              className={classes.textField}
+              fullWidth
+              variant="outlined"
               value={data.password}
               onChange={handleValueChange('password')}
               margin="normal"

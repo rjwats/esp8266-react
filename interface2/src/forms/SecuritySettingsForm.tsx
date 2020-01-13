@@ -11,9 +11,6 @@ import { RestFormProps } from '../components/RestFormLoader';
 import { withAuthenticatedContext, AuthenticatedContextProps } from '../authentication/AuthenticationContext';
 
 const styles = (theme: Theme) => createStyles({
-  textField: {
-    width: "100%"
-  },
   button: {
     marginRight: theme.spacing(2),
     marginTop: theme.spacing(2),
@@ -38,7 +35,8 @@ class SecuritySettingsForm extends React.Component<SecuritySettingsFormProps> {
           errorMessages={['JWT Secret Required', 'JWT Secret must be 64 characters or less']}
           name="jwt_secret"
           label="JWT Secret"
-          className={classes.textField}
+          fullWidth
+          variant="outlined"
           value={data.jwt_secret}
           onChange={handleValueChange('jwt_secret')}
           margin="normal"

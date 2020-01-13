@@ -20,7 +20,7 @@ class OTASettings extends Component<RestControllerProps<OTASettingsData>> {
 
   render() {
     return (
-      <SectionContent title="OTA Settings">
+      <SectionContent title="OTA Settings" titleGutter>
         <RestFormLoader
           {...this.props}
           render={formProps => <OTASettingsForm {...formProps} />}

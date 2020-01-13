@@ -8,9 +8,6 @@ import PasswordValidator from '../components/PasswordValidator';
 import { User } from '../containers/SecuritySettings';
 
 const styles = (theme: Theme) => createStyles({
-  textField: {
-    width: "100%"
-  },
   button: {
     margin: theme.spacing(0.5)
   }
@@ -50,7 +47,8 @@ class UserForm extends React.Component<UserFormProps> {
               errorMessages={creating ? ['Username is required', "Username already exists", "Must be 1-24 characters: alpha numeric, '_' or '.'"] : []}
               name="username"
               label="Username"
-              className={classes.textField}
+              fullWidth
+              variant="outlined"
               value={user.username}
               disabled={!creating}
               onChange={handleValueChange('username')}
@@ -61,7 +59,8 @@ class UserForm extends React.Component<UserFormProps> {
               errorMessages={['Password is required', 'Password must be 64 characters or less']}
               name="password"
               label="Password"
-              className={classes.textField}
+              fullWidth
+              variant="outlined"
               value={user.password}
               onChange={handleValueChange('password')}
               margin="normal"

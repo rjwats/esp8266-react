@@ -12,9 +12,6 @@ import { RestFormProps } from '../components/RestFormLoader';
 import { NTPSettingsData } from '../containers/NTPSettings';
 
 const styles = (theme: Theme) => createStyles({
-  textField: {
-    width: "100%"
-  },
   button: {
     marginRight: theme.spacing(2),
     marginTop: theme.spacing(2),
@@ -38,7 +35,8 @@ class NTPSettingsForm extends React.Component<NTPSettingsFormProps> {
           errorMessages={['Server is required', "Not a valid IP address or hostname"]}
           name="server"
           label="Server"
-          className={classes.textField}
+          fullWidth
+          variant="outlined"
           value={data.server}
           onChange={handleValueChange('server')}
           margin="normal"
@@ -48,7 +46,8 @@ class NTPSettingsForm extends React.Component<NTPSettingsFormProps> {
           errorMessages={['Interval is required', 'Interval must be a number', 'Must be at least 60 seconds', "Must not be more than 86400 seconds (24 hours)"]}
           name="interval"
           label="Interval (Seconds)"
-          className={classes.textField}
+          fullWidth
+          variant="outlined"
           value={data.interval}
           type="number"
           onChange={handleValueChange('interval')}

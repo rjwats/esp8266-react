@@ -32,7 +32,6 @@ export function restController<D, P extends RestControllerProps<D>>(endpointUrl:
         errorMessage: undefined
       };
 
-
       setData = (data: D) => {
         this.setState({
           data,
