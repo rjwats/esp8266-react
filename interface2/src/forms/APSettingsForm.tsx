@@ -31,7 +31,8 @@ class APSettingsForm extends React.Component<APSettingsFormProps> {
           value={data.provision_mode}
           fullWidth
           variant="outlined"
-          onChange={handleValueChange('provision_mode')}>
+          onChange={handleValueChange('provision_mode')}
+          margin="normal">
           <MenuItem value={0}>Always</MenuItem>
           <MenuItem value={1}>When WiFi Disconnected</MenuItem>
           <MenuItem value={2}>Never</MenuItem>
