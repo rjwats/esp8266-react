@@ -81,7 +81,7 @@ class NTPStatusForm extends Component<NTPStatusFormProps> {
                 <TimerIcon />
               </Avatar>
             </ListItemAvatar>
-            <ListItemText primary="Sync Interval" secondary={`${data.interval} seconds.`} />
+            <ListItemText primary="Sync Interval" secondary={`${data.interval} seconds`} />
           </ListItem>
           <Divider variant="inset" component="li" />
           <ListItem>
@@ -90,7 +90,7 @@ class NTPStatusForm extends Component<NTPStatusFormProps> {
                 <AvTimerIcon />
               </Avatar>
             </ListItemAvatar>
-            <ListItemText primary="Uptime" secondary={`${data.uptime} seconds.`} />
+            <ListItemText primary="Uptime" secondary={`${data.uptime} seconds`} />
           </ListItem>
           <Divider variant="inset" component="li" />
         </List>

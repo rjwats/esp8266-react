@@ -10,6 +10,7 @@ import { withAuthenticatedContext, AuthenticatedContextProps } from '../authenti
 import WiFiNetworkScanner from '../containers/WiFiNetworkScanner';
 import { WiFiNetwork } from '../../types';
 import { WiFiConnectionContext } from './WiFiConnectionContext';
+import WiFiSettings from '../containers/WiFiSettings';
 
 type WiFiConnectionProps = AuthenticatedContextProps & RouteComponentProps;
 
@@ -43,17 +44,13 @@ class WiFiConnection extends Component<WiFiConnectionProps, WiFiConnectionContex
         <MenuAppBar sectionTitle="WiFi Connection">
           <Tabs value={this.props.match.url} onChange={this.handleTabChange} indicatorColor="primary" textColor="primary" variant="fullWidth">
             <Tab value="/wifi/status" label="WiFi Status" />
-            {
-              <Tab value="/wifi/scan" label="Scan Networks" disabled={!authenticatedContext.me.admin} />
-              // <Tab value="/wifi/settings" label="WiFi Settings" disabled={!authenticationContext.isAdmin()} />
-            }
+            <Tab value="/wifi/scan" label="Scan Networks" disabled={!authenticatedContext.me.admin} />
+            <Tab value="/wifi/settings" label="WiFi Settings" disabled={!authenticatedContext.me.admin} />
           </Tabs>
           <Switch>
             <AuthenticatedRoute exact={true} path="/wifi/status" component={WiFiStatus} />
-            {
-              <AuthenticatedRoute exact={true} path="/wifi/scan" component={WiFiNetworkScanner} />
-              // <AuthenticatedRoute exact={true} path="/wifi/settings" component={ConfiguredWiFiSettings} />
-            }
+            <AuthenticatedRoute exact={true} path="/wifi/scan" component={WiFiNetworkScanner} />
+            <AuthenticatedRoute exact={true} path="/wifi/settings" component={WiFiSettings} />
             <Redirect to="/wifi/status" />
           </Switch>
         </MenuAppBar>
