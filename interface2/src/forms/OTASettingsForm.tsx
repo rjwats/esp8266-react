@@ -2,7 +2,7 @@ import React from 'react';
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 
 import { withStyles, Theme, createStyles, WithStyles } from '@material-ui/core/styles';
-import { Button, Switch, FormControlLabel } from '@material-ui/core';
+import { Button, Checkbox } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
 
 import PasswordValidator from '../components/PasswordValidator';
@@ -11,6 +11,7 @@ import isHostname from '../validators/isHostname';
 import or from '../validators/or';
 import { OTASettingsData } from '../containers/OTASettings';
 import { RestFormProps } from '../components/RestFormLoader';
+import BlockFormControlLabel from '../components/BlockFormControlLabel';
 
 const styles = (theme: Theme) => createStyles({
   button: {
@@ -31,13 +32,13 @@ class OTASettingsForm extends React.Component<OTASettingsFormProps> {
     const { classes, data, handleValueChange, handleCheckboxChange, saveData, loadData } = this.props;
     return (
       <ValidatorForm onSubmit={saveData}>
-        <FormControlLabel 
+        <BlockFormControlLabel
           control={
-            <Switch
-              checked={data.enabled}
-              onChange={handleCheckboxChange('enabled')}
-              value="enabled"
+            <Checkbox
               color="primary"
+              value="enabled"
+              checked={data.enabled}
+              onChange={handleCheckboxChange("enabled")}
             />
           }
           label="Enable OTA Updates?"
@@ -46,7 +47,7 @@ class OTASettingsForm extends React.Component<OTASettingsFormProps> {
           validators={['required', 'isNumber', 'minNumber:1025', 'maxNumber:65535']}
           errorMessages={['Port is required', "Must be a number", "Must be greater than 1024 ", "Max value is 65535"]}
           name="port"
-          label="Port"   
+          label="Port"
           fullWidth
           variant="outlined"
           value={data.port}

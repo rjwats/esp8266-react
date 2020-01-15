@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 
 import { withStyles, Theme, createStyles, WithStyles } from '@material-ui/core/styles';
-import { Button, Checkbox, FormControlLabel } from '@material-ui/core';
+import { Button, Checkbox } from '@material-ui/core';
 import { List, ListItem, ListItemText, ListItemAvatar, ListItemSecondaryAction } from '@material-ui/core';
 
 import Avatar from '@material-ui/core/Avatar';
@@ -20,11 +20,9 @@ import { WiFiConnectionContext } from '../sections/WiFiConnectionContext';
 import { RestFormProps } from '../components/RestFormLoader';
 import { WiFiSettingsData } from '../containers/WiFiSettings';
 import { isNetworkOpen, networkSecurityMode } from '../constants/WiFiSecurityModes';
+import BlockFormControlLabel from '../components/BlockFormControlLabel';
 
 const styles = (theme: Theme) => createStyles({
-  checkboxControl: {
-    width: "100%"
-  },
   button: {
     marginRight: theme.spacing(2),
     marginTop: theme.spacing(2),
@@ -107,9 +105,10 @@ class WiFiSettingsForm extends React.Component<WiFiStatusFormProps> {
           onChange={handleValueChange('hostname')}
           margin="normal"
         />
-        <FormControlLabel className={classes.checkboxControl}
+        <BlockFormControlLabel
           control={
             <Checkbox
+              color="primary"
               value="static_ip_config"
               checked={data.static_ip_config}
               onChange={handleCheckboxChange("static_ip_config")}

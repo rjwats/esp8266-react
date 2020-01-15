@@ -154,7 +154,7 @@ class MenuAppBar extends React.Component<MenuAppBarProps, MenuAppBarState> {
 
     return (
       <div className={classes.root}>
-        <AppBar position="fixed" className={classes.appBar}>
+        <AppBar position="fixed" className={classes.appBar} elevation={0}>
           <Toolbar>
             <IconButton
               color="inherit"
