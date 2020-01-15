@@ -12,7 +12,7 @@ import AvTimerIcon from '@material-ui/icons/AvTimer';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
 import { isSynchronized, ntpStatusHighlight, ntpStatus } from '../constants/NTPStatus';
-import { unixTimeToTimeAndDate } from '../constants/TimeFormat';
+import { unixTimeToTimeAndDate, humanReadableSeconds } from '../constants/TimeFormat';
 import { RestFormProps } from '../components/RestFormLoader';
 import { NTPStatusData } from '../containers/NTPStatus';
 
@@ -81,7 +81,7 @@ class NTPStatusForm extends Component<NTPStatusFormProps> {
                 <TimerIcon />
               </Avatar>
             </ListItemAvatar>
-            <ListItemText primary="Sync Interval" secondary={`${data.interval} seconds`} />
+            <ListItemText primary="Sync Interval" secondary={humanReadableSeconds(data.interval)} />
           </ListItem>
           <Divider variant="inset" component="li" />
           <ListItem>
@@ -90,7 +90,7 @@ class NTPStatusForm extends Component<NTPStatusFormProps> {
                 <AvTimerIcon />
               </Avatar>
             </ListItemAvatar>
-            <ListItemText primary="Uptime" secondary={`${data.uptime} seconds`} />
+            <ListItemText primary="Uptime" secondary={humanReadableSeconds(data.uptime)} />
           </ListItem>
           <Divider variant="inset" component="li" />
         </List>
