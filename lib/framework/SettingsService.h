@@ -2,8 +2,8 @@
 #define SettingsService_h
 
 #ifdef ESP32
-#include <WiFi.h>
 #include <AsyncTCP.h>
+#include <WiFi.h>
 #elif defined(ESP8266)
 #include <ESP8266WiFi.h>
 #include <ESPAsyncTCP.h>
@@ -35,6 +35,32 @@ class SettingsService : public SettingsPersistence {
   }
 
   virtual ~SettingsService() {
+  }
+
+  void fetchAsString(String& config) {
+    DynamicJsonDocument jsonDocument(MAX_SETTINGS_SIZE);
+    fetchAsDocument(jsonDocument);
+    serializeJson(jsonDocument, config);
+  }
+
+  void updateFromString(String& config) {
+    DynamicJsonDocument jsonDocument(MAX_SETTINGS_SIZE);
+    deserializeJson(jsonDocument, config);
+    updateFromDocument(jsonDocument);
+  }
+
+  void fetchAsDocument(JsonDocument& jsonDocument) {
+    JsonObject jsonObject = jsonDocument.to<JsonObject>();
+    writeToJsonObject(jsonObject);
+  }
+
+  void updateFromDocument(JsonDocument& jsonDocument) {
+    if (jsonDocument.is<JsonObject>()) {
+      JsonObject newConfig = jsonDocument.as<JsonObject>();
+      readFromJsonObject(newConfig);
+      writeToFS();
+      onConfigUpdated();
+    }
   }
 
   void begin() {
