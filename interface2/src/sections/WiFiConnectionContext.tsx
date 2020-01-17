@@ -11,4 +11,3 @@ const WiFiConnectionContextDefaultValue = {} as WiFiConnectionContext
 export const WiFiConnectionContext = React.createContext(
   WiFiConnectionContextDefaultValue
 );
-

@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 
-import { withStyles, createStyles, Theme, WithStyles } from '@material-ui/core/styles';
+import { WithTheme, withTheme } from '@material-ui/core/styles';
 import { Avatar, Divider, List, ListItem, ListItemAvatar, ListItemText } from '@material-ui/core';
 
 import DNSIcon from '@material-ui/icons/Dns';
@@ -15,14 +15,9 @@ import { wifiStatus, wifiStatusHighlight, isConnected } from '../constants/WiFiS
 import { WiFiStatusData } from '../containers/WiFiStatus';
 import FormActions from '../components/FormActions';
 import FormButton from '../components/FormButton';
+import HighlightAvatar from '../components/HighlightAvatar';
 
-const styles = (theme: Theme) => createStyles({
-  wifiStatusHighlight: ({ data }: RestFormProps<WiFiStatusData>) => ({
-    backgroundColor: wifiStatusHighlight(data, theme)
-  })
-});
-
-type WiFiStatusFormProps = RestFormProps<WiFiStatusData> & WithStyles<typeof styles>;
+type WiFiStatusFormProps = RestFormProps<WiFiStatusData> & WithTheme;
 
 class WiFiStatusForm extends Component<WiFiStatusFormProps> {
 
@@ -34,14 +29,14 @@ class WiFiStatusForm extends Component<WiFiStatusFormProps> {
   }
 
   createListItems() {
-    const { data, classes } = this.props
+    const { data, theme } = this.props
     return (
       <Fragment>
         <ListItem>
           <ListItemAvatar>
-            <Avatar className={classes.wifiStatusHighlight}>
+            <HighlightAvatar color={wifiStatusHighlight(data, theme)}>
               <WifiIcon />
-            </Avatar>
+            </HighlightAvatar>
           </ListItemAvatar>
           <ListItemText primary="Status" secondary={wifiStatus(data)} />
         </ListItem>
@@ -107,7 +102,7 @@ class WiFiStatusForm extends Component<WiFiStatusFormProps> {
 
   render() {
     return (
-      <div>
+      <Fragment>
         <List>
           {this.createListItems()}
         </List>
@@ -116,10 +111,10 @@ class WiFiStatusForm extends Component<WiFiStatusFormProps> {
             Refresh
           </FormButton>
         </FormActions>
-      </div>
+      </Fragment>
     );
   }
 
 }
 
-export default withStyles(styles)(WiFiStatusForm);
+export default withTheme(WiFiStatusForm);

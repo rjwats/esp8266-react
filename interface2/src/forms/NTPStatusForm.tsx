@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 
-import { withStyles, createStyles, Theme, WithStyles } from '@material-ui/core/styles';
+import { WithTheme, withTheme } from '@material-ui/core/styles';
 import { Avatar, Divider, List, ListItem, ListItemAvatar, ListItemText } from '@material-ui/core';
 
 import SwapVerticalCircleIcon from '@material-ui/icons/SwapVerticalCircle';
@@ -17,27 +17,22 @@ import { RestFormProps } from '../components/RestFormLoader';
 import { NTPStatusData } from '../containers/NTPStatus';
 import FormActions from '../components/FormActions';
 import FormButton from '../components/FormButton';
+import HighlightAvatar from '../components/HighlightAvatar';
 
-const styles = (theme: Theme) => createStyles({
-  ntpStatusHighlight: ({ data }: RestFormProps<NTPStatusData>) => ({
-    backgroundColor: ntpStatusHighlight(data, theme)
-  })
-});
-
-type NTPStatusFormProps = RestFormProps<NTPStatusData> & WithStyles<typeof styles>;
+type NTPStatusFormProps = RestFormProps<NTPStatusData> & WithTheme;
 
 class NTPStatusForm extends Component<NTPStatusFormProps> {
 
   render() {
-    const { data, classes } = this.props
+    const { data, theme } = this.props
     return (
       <Fragment>
         <List>
           <ListItem >
             <ListItemAvatar>
-              <Avatar className={classes.ntpStatusHighlight}>
+              <HighlightAvatar color={ntpStatusHighlight(data, theme)}>
                 <UpdateIcon />
-              </Avatar>
+              </HighlightAvatar>
             </ListItemAvatar>
             <ListItemText primary="Status" secondary={ntpStatus(data)} />
           </ListItem>
@@ -102,4 +97,4 @@ class NTPStatusForm extends Component<NTPStatusFormProps> {
   }
 }
 
-export default withStyles(styles)(NTPStatusForm);
+export default withTheme(NTPStatusForm);

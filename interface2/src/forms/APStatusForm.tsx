@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 
-import { withStyles, createStyles, Theme, WithStyles } from '@material-ui/core/styles';
+import { WithTheme, withTheme } from '@material-ui/core/styles';
 import { Avatar, Divider, List, ListItem, ListItemAvatar, ListItemText } from '@material-ui/core';
 
 import SettingsInputAntennaIcon from '@material-ui/icons/SettingsInputAntenna';
@@ -13,26 +13,21 @@ import { APStatusData } from '../containers/APStatus';
 import { apStatusHighlight, apStatus } from '../constants/APStatus';
 import FormActions from '../components/FormActions';
 import FormButton from '../components/FormButton';
+import HighlightAvatar from '../components/HighlightAvatar';
 
-const styles = (theme: Theme) => createStyles({
-  apStatusHighlight: ({ data }: RestFormProps<APStatusData>) => ({
-    backgroundColor: apStatusHighlight(data, theme)
-  })
-});
-
-type APStatusFormProps = RestFormProps<APStatusData> & WithStyles<typeof styles>;
+type APStatusFormProps = RestFormProps<APStatusData> & WithTheme;
 
 class APStatusForm extends Component<APStatusFormProps> {
 
   createListItems() {
-    const { classes, data } = this.props
+    const { data, theme } = this.props
     return (
       <Fragment>
         <ListItem>
           <ListItemAvatar>
-            <Avatar className={classes.apStatusHighlight}>
+            <HighlightAvatar color={apStatusHighlight(data, theme)}>
               <SettingsInputAntennaIcon />
-            </Avatar>
+            </HighlightAvatar>
           </ListItemAvatar>
           <ListItemText primary="Status" secondary={apStatus(data)} />
         </ListItem>
@@ -83,4 +78,4 @@ class APStatusForm extends Component<APStatusFormProps> {
 
 }
 
-export default withStyles(styles)(APStatusForm);
+export default withTheme(APStatusForm);

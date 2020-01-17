@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withSnackbar, WithSnackbarProps } from 'notistack';
 
-import { createStyles, WithStyles, Theme, withStyles, Button, Typography, LinearProgress } from '@material-ui/core';
+import { createStyles, WithStyles, Theme, withStyles, Typography, LinearProgress } from '@material-ui/core';
 import PermScanWifiIcon from '@material-ui/icons/PermScanWifi';
 
 import { SCAN_NETWORKS_ENDPOINT, LIST_NETWORKS_ENDPOINT } from '../constants/Endpoints';
@@ -9,6 +9,8 @@ import SectionContent from '../components/SectionContent';
 import WiFiNetworkSelector from '../forms/WiFiNetworkSelector';
 import { redirectingAuthorizedFetch } from '../authentication/Authentication';
 import { WiFiNetworkList, WiFiNetwork } from '../../types';
+import FormButton from '../components/FormButton';
+import FormActions from '../components/FormActions';
 
 const NUM_POLLS = 10
 const POLLING_FREQUENCY = 500
@@ -31,10 +33,6 @@ const styles = (theme: Theme) => createStyles({
   scanningProgress: {
     margin: theme.spacing(4),
     textAlign: "center"
-  },
-  button: {
-    marginRight: theme.spacing(2),
-    marginTop: theme.spacing(2),
   }
 });
 
@@ -152,14 +150,15 @@ class WiFiNetworkScanner extends Component<WiFiNetworkScannerProps, WiFiNetworkS
   }
 
   render() {
-    const { classes } = this.props;
     const { scanningForNetworks } = this.state;
     return (
       <SectionContent title="Network Scanner">
         {this.renderNetworkScanner()}
-        <Button startIcon={<PermScanWifiIcon />} variant="contained" color="secondary" className={classes.button} onClick={this.requestNetworkScan} disabled={scanningForNetworks}>
-          Scan again...
-          </Button>
+        <FormActions>
+          <FormButton startIcon={<PermScanWifiIcon />} variant="contained" color="secondary" onClick={this.requestNetworkScan} disabled={scanningForNetworks}>
+            Scan again...
+          </FormButton>
+        </FormActions>
       </SectionContent>
     );
   }
