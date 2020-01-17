@@ -1,24 +1,12 @@
 import React, { Component } from 'react';
-
-import { Theme, withStyles, WithStyles, createStyles } from '@material-ui/core/styles';
-import { Typography, TableRow, TableBody, TableCell, TableHead, Table } from '@material-ui/core';
-
+import { Typography, TableRow, TableBody, TableCell, TableHead, Table, Box } from '@material-ui/core';
 import SectionContent from '../components/SectionContent';
 
-const styles = (theme: Theme) => createStyles({
-  fileTable: {
-    marginBottom: theme.spacing(2)
-  }
-});
-
-type DemoInformationProps = WithStyles<typeof styles>;
-
-class DemoInformation extends Component<DemoInformationProps> {
+class DemoInformation extends Component {
 
   render() {
-    const { classes } = this.props;
     return (
-      <SectionContent title="Demo Project - Blink Speed Controller" titleGutter>
+      <SectionContent title='Demo Information' titleGutter>
         <Typography variant="body1" paragraph>
           This simple demo project allows you to control the blink speed of the built-in LED.
           It demonstrates how the esp8266-react framework may be extended for your own IoT project.
@@ -31,7 +19,7 @@ class DemoInformation extends Component<DemoInformationProps> {
         <Typography variant="body1" paragraph>
           The demo project interface code stored in the interface/project directory:
         </Typography>
-        <Table className={classes.fileTable}>
+        <Table>
           <TableHead>
             <TableRow>
               <TableCell>
@@ -85,13 +73,15 @@ class DemoInformation extends Component<DemoInformationProps> {
             </TableRow>
           </TableBody>
         </Table>
-        <Typography variant="body1" paragraph>
-          See the project <a href="https://github.com/rjwats/esp8266-react/">README</a> for a full description of the demo project.
-        </Typography>
+        <Box mt={2}>
+          <Typography variant="body1">
+            See the project <a href="https://github.com/rjwats/esp8266-react/">README</a> for a full description of the demo project.
+          </Typography>
+        </Box>
       </SectionContent>
     )
   }
 
 }
 
-export default withStyles(styles)(DemoInformation);
+export default DemoInformation;

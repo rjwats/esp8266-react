@@ -20,7 +20,7 @@ class APSettings extends Component<RestControllerProps<APSettingsData>> {
 
   render() {
     return (
-      <SectionContent title="AP Settings" titleGutter>
+      <SectionContent title="Access Point Settings" titleGutter>
         <RestFormLoader
           {...this.props}
           render={formProps => <APSettingsForm {...formProps} />}

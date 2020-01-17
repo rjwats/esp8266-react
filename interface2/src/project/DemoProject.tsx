@@ -19,8 +19,8 @@ class DemoProject extends Component<RouteComponentProps> {
     return (
       <MenuAppBar sectionTitle="Demo Project">
         <Tabs value={this.props.match.url} onChange={this.handleTabChange} indicatorColor="primary" textColor="primary" variant="fullWidth">
-          <Tab value={`/${PROJECT_PATH}/demo/information`} label="Information" />
-          <Tab value={`/${PROJECT_PATH}/demo/controller`} label="Controller" />
+          <Tab value={`/${PROJECT_PATH}/demo/information`} label="Demo Information" />
+          <Tab value={`/${PROJECT_PATH}/demo/controller`} label="Demo Controller" />
         </Tabs>
         <Switch>
           <AuthenticatedRoute exact path={`/${PROJECT_PATH}/demo/information`} component={DemoInformation} />

@@ -52,7 +52,7 @@ class WiFiSettings extends Component<WiFiSettingsProps> {
 
   render() {
     return (
-      <SectionContent title="WiFi Status">
+      <SectionContent title="WiFi Settings">
         <RestFormLoader
           {...this.props}
           loadData={this.deselectNetworkAndLoadData}
