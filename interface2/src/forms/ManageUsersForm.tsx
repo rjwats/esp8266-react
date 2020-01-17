@@ -1,9 +1,8 @@
 import React, { Fragment } from 'react';
 import { ValidatorForm } from 'react-material-ui-form-validator';
 
-import { withStyles, WithStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { Table, TableBody, TableCell, TableHead, TableFooter, TableRow } from '@material-ui/core';
-import { Box, Button, Typography,  } from '@material-ui/core';
+import { Box, Button, Typography, } from '@material-ui/core';
 
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -17,16 +16,8 @@ import { withAuthenticatedContext, AuthenticatedContextProps } from '../authenti
 import { RestFormProps } from '../components/RestFormLoader';
 import { SecuritySettingsData, User } from '../containers/SecuritySettings';
 import UserForm from './UserForm';
-
-const styles = (theme: Theme) => createStyles({
-  button: {
-    marginRight: theme.spacing(2),
-    marginTop: theme.spacing(2),
-  },
-  table: {
-    '& td, & th': { padding: theme.spacing(0.5) }
-  }
-});
+import FormActions from '../components/FormActions';
+import FormButton from '../components/FormButton';
 
 function compareUsers(a: User, b: User) {
   if (a.username < b.username) {
@@ -38,8 +29,7 @@ function compareUsers(a: User, b: User) {
   return 0;
 }
 
-
-type ManageUsersFormProps = RestFormProps<SecuritySettingsData> & AuthenticatedContextProps & WithStyles<typeof styles>;
+type ManageUsersFormProps = RestFormProps<SecuritySettingsData> & AuthenticatedContextProps;
 
 type ManageUsersFormState = {
   creating: boolean;
@@ -117,12 +107,12 @@ class ManageUsersForm extends React.Component<ManageUsersFormProps, ManageUsersF
   }
 
   render() {
-    const { classes, data, loadData } = this.props;
+    const { data, loadData } = this.props;
     const { user, creating } = this.state;
     return (
       <Fragment>
         <ValidatorForm onSubmit={this.onSubmit}>
-          <Table className={classes.table}>
+          <Table size="small">
             <TableHead>
               <TableRow>
                 <TableCell>Username</TableCell>
@@ -171,12 +161,14 @@ class ManageUsersForm extends React.Component<ManageUsersFormProps, ManageUsersF
               </Box>
             </Typography>
           }
-          <Button startIcon={<SaveIcon />} variant="contained" color="primary" className={classes.button} type="submit" disabled={this.noAdminConfigured()}>
-            Save
-          </Button>
-          <Button variant="contained" color="secondary" className={classes.button} onClick={loadData}>
-            Reset
-      		</Button>
+          <FormActions>
+            <FormButton startIcon={<SaveIcon />} variant="contained" color="primary" type="submit" disabled={this.noAdminConfigured()}>
+              Save
+            </FormButton>
+            <FormButton variant="contained" color="secondary" onClick={loadData}>
+              Reset
+            </FormButton>
+          </FormActions>
         </ValidatorForm>
         {
           user &&
@@ -196,4 +188,4 @@ class ManageUsersForm extends React.Component<ManageUsersFormProps, ManageUsersF
 
 }
 
-export default withAuthenticatedContext(withStyles(styles)(ManageUsersForm));
+export default withAuthenticatedContext(ManageUsersForm);

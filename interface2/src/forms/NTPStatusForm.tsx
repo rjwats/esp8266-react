@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 
 import { withStyles, createStyles, Theme, WithStyles } from '@material-ui/core/styles';
-import { Avatar, Button, Divider, List, ListItem, ListItemAvatar, ListItemText } from '@material-ui/core';
+import { Avatar, Divider, List, ListItem, ListItemAvatar, ListItemText } from '@material-ui/core';
 
 import SwapVerticalCircleIcon from '@material-ui/icons/SwapVerticalCircle';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
@@ -15,15 +15,13 @@ import { isSynchronized, ntpStatusHighlight, ntpStatus } from '../constants/NTPS
 import { unixTimeToTimeAndDate, humanReadableSeconds } from '../constants/TimeFormat';
 import { RestFormProps } from '../components/RestFormLoader';
 import { NTPStatusData } from '../containers/NTPStatus';
+import FormActions from '../components/FormActions';
+import FormButton from '../components/FormButton';
 
 const styles = (theme: Theme) => createStyles({
   ntpStatusHighlight: ({ data }: RestFormProps<NTPStatusData>) => ({
     backgroundColor: ntpStatusHighlight(data, theme)
-  }),
-  button: {
-    marginRight: theme.spacing(2),
-    marginTop: theme.spacing(2),
-  }
+  })
 });
 
 type NTPStatusFormProps = RestFormProps<NTPStatusData> & WithStyles<typeof styles>;
@@ -94,9 +92,11 @@ class NTPStatusForm extends Component<NTPStatusFormProps> {
           </ListItem>
           <Divider variant="inset" component="li" />
         </List>
-        <Button startIcon={<RefreshIcon />} variant="contained" color="secondary" className={classes.button} onClick={this.props.loadData}>
-          Refresh
-        </Button>
+        <FormActions>
+          <FormButton startIcon={<RefreshIcon />} variant="contained" color="secondary" onClick={this.props.loadData}>
+            Refresh
+          </FormButton>
+        </FormActions>
       </Fragment>
     );
   }

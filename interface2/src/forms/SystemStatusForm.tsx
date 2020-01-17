@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from 'react';
 
-import { withStyles, createStyles, Theme, WithStyles } from '@material-ui/core/styles';
 import { Avatar, Button, Divider, Dialog, DialogTitle, DialogContent, DialogActions } from '@material-ui/core';
 import { List, ListItem, ListItemAvatar, ListItemText } from '@material-ui/core';
 
@@ -16,20 +15,15 @@ import { RestFormProps } from '../components/RestFormLoader';
 import { SystemStatusData } from '../containers/SystemStatus';
 import { redirectingAuthorizedFetch } from '../authentication/Authentication';
 import { RESTART_ENDPOINT } from '../constants/Endpoints';
-
-const styles = (theme: Theme) => createStyles({
-  button: {
-    marginRight: theme.spacing(2),
-    marginTop: theme.spacing(2),
-  }
-});
+import FormButton from '../components/FormButton';
+import FormActions from '../components/FormActions';
 
 interface SystemStatusState {
   confirmRestart: boolean;
   processing: boolean;
 }
 
-type SystemStatusFormProps = RestFormProps<SystemStatusData> & WithStyles<typeof styles>;
+type SystemStatusFormProps = RestFormProps<SystemStatusData>;
 
 class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusState> {
 
@@ -139,18 +133,19 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusStat
   }
 
   render() {
-    const { classes } = this.props
     return (
       <Fragment>
         <List>
           {this.createListItems()}
         </List>
-        <Button startIcon={<RefreshIcon />} variant="contained" color="secondary" className={classes.button} onClick={this.props.loadData}>
-          Refresh
-        </Button>
-        <Button startIcon={<AutorenewIcon />} variant="contained" color="primary" className={classes.button} onClick={this.onRestart}>
-          Restart
-        </Button>
+        <FormActions>
+          <FormButton startIcon={<RefreshIcon />} variant="contained" color="secondary" onClick={this.props.loadData}>
+            Refresh
+          </FormButton>
+          <FormButton startIcon={<AutorenewIcon />} variant="contained" color="primary" onClick={this.onRestart}>
+            Restart
+          </FormButton>
+        </FormActions>
         {this.renderRestartDialog()}
       </Fragment>
     );
@@ -158,4 +153,4 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusStat
 
 }
 
-export default withStyles(styles)(SystemStatusForm);
+export default SystemStatusForm;

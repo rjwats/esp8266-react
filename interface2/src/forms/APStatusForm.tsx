@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 
 import { withStyles, createStyles, Theme, WithStyles } from '@material-ui/core/styles';
-import { Avatar, Button, Divider, List, ListItem, ListItemAvatar, ListItemText } from '@material-ui/core';
+import { Avatar, Divider, List, ListItem, ListItemAvatar, ListItemText } from '@material-ui/core';
 
 import SettingsInputAntennaIcon from '@material-ui/icons/SettingsInputAntenna';
 import DeviceHubIcon from '@material-ui/icons/DeviceHub';
@@ -11,15 +11,13 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import { RestFormProps } from '../components/RestFormLoader';
 import { APStatusData } from '../containers/APStatus';
 import { apStatusHighlight, apStatus } from '../constants/APStatus';
+import FormActions from '../components/FormActions';
+import FormButton from '../components/FormButton';
 
 const styles = (theme: Theme) => createStyles({
   apStatusHighlight: ({ data }: RestFormProps<APStatusData>) => ({
     backgroundColor: apStatusHighlight(data, theme)
-  }),
-  button: {
-    marginRight: theme.spacing(2),
-    marginTop: theme.spacing(2),
-  }
+  })
 });
 
 type APStatusFormProps = RestFormProps<APStatusData> & WithStyles<typeof styles>;
@@ -69,15 +67,16 @@ class APStatusForm extends Component<APStatusFormProps> {
   }
 
   render() {
-    const { classes } = this.props
     return (
       <Fragment>
         <List>
           {this.createListItems()}
         </List>
-        <Button startIcon={<RefreshIcon />} variant="contained" color="secondary" className={classes.button} onClick={this.props.loadData}>
-          Refresh
-        </Button>
+        <FormActions>
+          <FormButton startIcon={<RefreshIcon />} variant="contained" color="secondary" onClick={this.props.loadData}>
+            Refresh
+          </FormButton>
+        </FormActions>
       </Fragment>
     );
   }

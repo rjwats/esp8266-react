@@ -1,23 +1,17 @@
 import React from 'react';
 import { ValidatorForm } from 'react-material-ui-form-validator';
 
-import { withStyles, Theme, createStyles, WithStyles } from '@material-ui/core/styles';
-import { Box, Button, Typography } from '@material-ui/core';
+import { Box, Typography } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
 
 import PasswordValidator from '../components/PasswordValidator';
 import { SecuritySettingsData } from '../containers/SecuritySettings';
 import { RestFormProps } from '../components/RestFormLoader';
 import { withAuthenticatedContext, AuthenticatedContextProps } from '../authentication/AuthenticationContext';
+import FormActions from '../components/FormActions';
+import FormButton from '../components/FormButton';
 
-const styles = (theme: Theme) => createStyles({
-  button: {
-    marginRight: theme.spacing(2),
-    marginTop: theme.spacing(2),
-  }
-});
-
-type SecuritySettingsFormProps = RestFormProps<SecuritySettingsData> & AuthenticatedContextProps & WithStyles<typeof styles>;
+type SecuritySettingsFormProps = RestFormProps<SecuritySettingsData> & AuthenticatedContextProps;
 
 class SecuritySettingsForm extends React.Component<SecuritySettingsFormProps> {
 
@@ -27,7 +21,7 @@ class SecuritySettingsForm extends React.Component<SecuritySettingsFormProps> {
   }
 
   render() {
-    const { classes, data, handleValueChange, loadData } = this.props;
+    const { data, handleValueChange, loadData } = this.props;
     return (
       <ValidatorForm onSubmit={this.onSubmit}>
         <PasswordValidator
@@ -46,16 +40,18 @@ class SecuritySettingsForm extends React.Component<SecuritySettingsFormProps> {
             If you modify the JWT Secret, all users will be logged out.
           </Box>
         </Typography>
-        <Button startIcon={<SaveIcon />} variant="contained" color="primary" className={classes.button} type="submit">
-          Save
-        </Button>
-        <Button variant="contained" color="secondary" className={classes.button} onClick={loadData}>
-          Reset
-      	</Button>
+        <FormActions>
+          <FormButton startIcon={<SaveIcon />} variant="contained" color="primary" type="submit">
+            Save
+          </FormButton>
+          <FormButton variant="contained" color="secondary" onClick={loadData}>
+            Reset
+          </FormButton>
+        </FormActions>
       </ValidatorForm>
     );
   }
 
 }
 
-export default withAuthenticatedContext(withStyles(styles)(SecuritySettingsForm));
+export default withAuthenticatedContext(SecuritySettingsForm);

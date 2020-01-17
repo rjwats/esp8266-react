@@ -1,8 +1,6 @@
 import React from 'react';
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 
-import { withStyles, createStyles, Theme, WithStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
 import SaveIcon from '@material-ui/icons/Save';
 
 import isIP from '../validators/isIP';
@@ -10,15 +8,10 @@ import isHostname from '../validators/isHostname';
 import or from '../validators/or';
 import { RestFormProps } from '../components/RestFormLoader';
 import { NTPSettingsData } from '../containers/NTPSettings';
+import FormActions from '../components/FormActions';
+import FormButton from '../components/FormButton';
 
-const styles = (theme: Theme) => createStyles({
-  button: {
-    marginRight: theme.spacing(2),
-    marginTop: theme.spacing(2),
-  }
-});
-
-type NTPSettingsFormProps = RestFormProps<NTPSettingsData> & WithStyles<typeof styles>;
+type NTPSettingsFormProps = RestFormProps<NTPSettingsData>;
 
 class NTPSettingsForm extends React.Component<NTPSettingsFormProps> {
 
@@ -27,7 +20,7 @@ class NTPSettingsForm extends React.Component<NTPSettingsFormProps> {
   }
 
   render() {
-    const { classes, data, handleValueChange, saveData, loadData } = this.props;
+    const { data, handleValueChange, saveData, loadData } = this.props;
     return (
       <ValidatorForm onSubmit={saveData}>
         <TextValidator
@@ -53,15 +46,17 @@ class NTPSettingsForm extends React.Component<NTPSettingsFormProps> {
           onChange={handleValueChange('interval')}
           margin="normal"
         />
-        <Button startIcon={<SaveIcon />} variant="contained" color="primary" className={classes.button} type="submit">
-          Save
-        </Button>
-        <Button variant="contained" color="secondary" className={classes.button} onClick={loadData}>
-          Reset
-        </Button>
+        <FormActions>
+          <FormButton startIcon={<SaveIcon />} variant="contained" color="primary" type="submit">
+            Save
+          </FormButton>
+          <FormButton variant="contained" color="secondary" onClick={loadData}>
+            Reset
+          </FormButton>
+        </FormActions>
       </ValidatorForm>
     );
   }
 }
 
-export default withStyles(styles)(NTPSettingsForm);
+export default NTPSettingsForm;

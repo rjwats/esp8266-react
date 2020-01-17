@@ -1,8 +1,7 @@
 import React, { Fragment } from 'react';
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 
-import { withStyles, Theme, createStyles, WithStyles } from '@material-ui/core/styles';
-import { Button, Checkbox } from '@material-ui/core';
+import { Checkbox } from '@material-ui/core';
 import { List, ListItem, ListItemText, ListItemAvatar, ListItemSecondaryAction } from '@material-ui/core';
 
 import Avatar from '@material-ui/core/Avatar';
@@ -21,15 +20,10 @@ import { RestFormProps } from '../components/RestFormLoader';
 import { WiFiSettingsData } from '../containers/WiFiSettings';
 import { isNetworkOpen, networkSecurityMode } from '../constants/WiFiSecurityModes';
 import BlockFormControlLabel from '../components/BlockFormControlLabel';
+import FormActions from '../components/FormActions';
+import FormButton from '../components/FormButton';
 
-const styles = (theme: Theme) => createStyles({
-  button: {
-    marginRight: theme.spacing(2),
-    marginTop: theme.spacing(2),
-  }
-});
-
-type WiFiStatusFormProps = RestFormProps<WiFiSettingsData> & WithStyles<typeof styles>;
+type WiFiStatusFormProps = RestFormProps<WiFiSettingsData>;
 
 class WiFiSettingsForm extends React.Component<WiFiStatusFormProps> {
 
@@ -44,7 +38,7 @@ class WiFiSettingsForm extends React.Component<WiFiStatusFormProps> {
 
   render() {
     const { selectedNetwork, deselectNetwork } = this.context;
-    const { classes, data, handleValueChange, handleCheckboxChange, saveData, loadData } = this.props;
+    const { data, handleValueChange, handleCheckboxChange, saveData, loadData } = this.props;
     return (
       <ValidatorForm onSubmit={saveData} ref="WiFiSettingsForm">
         {
@@ -176,15 +170,17 @@ class WiFiSettingsForm extends React.Component<WiFiStatusFormProps> {
             />
           </Fragment>
         }
-        <Button startIcon={<SaveIcon />} variant="contained" color="primary" className={classes.button} type="submit">
-          Save
-        </Button>
-        <Button variant="contained" color="secondary" className={classes.button} onClick={loadData}>
-          Reset
-        </Button>
+        <FormActions>
+          <FormButton startIcon={<SaveIcon />} variant="contained" color="primary" type="submit">
+            Save
+          </FormButton>
+          <FormButton variant="contained" color="secondary" onClick={loadData}>
+            Reset
+          </FormButton>
+        </FormActions>
       </ValidatorForm>
     );
   }
 }
 
-export default withStyles(styles)(WiFiSettingsForm);
+export default WiFiSettingsForm;

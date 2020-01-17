@@ -1,20 +1,14 @@
 import React, { RefObject } from 'react';
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 
-import { withStyles, Theme, createStyles, WithStyles } from '@material-ui/core/styles';
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, Checkbox } from '@material-ui/core';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Checkbox } from '@material-ui/core';
 
 import PasswordValidator from '../components/PasswordValidator';
 import { User } from '../containers/SecuritySettings';
 import BlockFormControlLabel from '../components/BlockFormControlLabel';
+import FormButton from '../components/FormButton';
 
-const styles = (theme: Theme) => createStyles({
-  button: {
-    margin: theme.spacing(0.5)
-  }
-});
-
-interface UserFormProps extends WithStyles<typeof styles> {
+interface UserFormProps {
   creating: boolean;
   user: User;
   uniqueUsername: (value: any) => boolean;
@@ -37,7 +31,7 @@ class UserForm extends React.Component<UserFormProps> {
   }
 
   render() {
-    const { classes, user, creating, handleValueChange, handleCheckboxChange, onDoneEditing, onCancelEditing } = this.props;
+    const { user, creating, handleValueChange, handleCheckboxChange, onDoneEditing, onCancelEditing } = this.props;
     return (
       <ValidatorForm onSubmit={onDoneEditing} ref={this.formRef}>
         <Dialog onClose={onCancelEditing} aria-labelledby="user-form-dialog-title" open={true}>
@@ -79,12 +73,12 @@ class UserForm extends React.Component<UserFormProps> {
             />
           </DialogContent>
           <DialogActions>
-            <Button variant="contained" color="primary" className={classes.button} type="submit" onClick={this.submit}>
+            <FormButton variant="contained" color="primary" type="submit" onClick={this.submit}>
               Done
-            </Button>
-            <Button variant="contained" color="secondary" className={classes.button} type="submit" onClick={onCancelEditing}>
+            </FormButton>
+            <FormButton variant="contained" color="secondary" onClick={onCancelEditing}>
               Cancel
-            </Button>
+            </FormButton>
           </DialogActions>
         </Dialog>
       </ValidatorForm>
@@ -92,4 +86,4 @@ class UserForm extends React.Component<UserFormProps> {
   }
 }
 
-export default withStyles(styles)(UserForm);
+export default UserForm;

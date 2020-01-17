@@ -1,8 +1,7 @@
 import React from 'react';
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 
-import { withStyles, Theme, createStyles, WithStyles } from '@material-ui/core/styles';
-import { Button, Checkbox } from '@material-ui/core';
+import { Checkbox } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
 
 import PasswordValidator from '../components/PasswordValidator';
@@ -12,15 +11,10 @@ import or from '../validators/or';
 import { OTASettingsData } from '../containers/OTASettings';
 import { RestFormProps } from '../components/RestFormLoader';
 import BlockFormControlLabel from '../components/BlockFormControlLabel';
+import FormButton from '../components/FormButton';
+import FormActions from '../components/FormActions';
 
-const styles = (theme: Theme) => createStyles({
-  button: {
-    marginRight: theme.spacing(2),
-    marginTop: theme.spacing(2),
-  }
-});
-
-type OTASettingsFormProps = RestFormProps<OTASettingsData> & WithStyles<typeof styles>;
+type OTASettingsFormProps = RestFormProps<OTASettingsData>;
 
 class OTASettingsForm extends React.Component<OTASettingsFormProps> {
 
@@ -29,7 +23,7 @@ class OTASettingsForm extends React.Component<OTASettingsFormProps> {
   }
 
   render() {
-    const { classes, data, handleValueChange, handleCheckboxChange, saveData, loadData } = this.props;
+    const { data, handleValueChange, handleCheckboxChange, saveData, loadData } = this.props;
     return (
       <ValidatorForm onSubmit={saveData}>
         <BlockFormControlLabel
@@ -66,15 +60,17 @@ class OTASettingsForm extends React.Component<OTASettingsFormProps> {
           onChange={handleValueChange('password')}
           margin="normal"
         />
-        <Button startIcon={<SaveIcon />} variant="contained" color="primary" className={classes.button} type="submit">
-          Save
-        </Button>
-        <Button variant="contained" color="secondary" className={classes.button} onClick={loadData}>
-          Reset
-        </Button>
+        <FormActions>
+          <FormButton startIcon={<SaveIcon />} variant="contained" color="primary" type="submit">
+            Save
+          </FormButton>
+          <FormButton variant="contained" color="secondary" onClick={loadData}>
+            Reset
+          </FormButton>
+        </FormActions>
       </ValidatorForm>
     );
   }
 }
 
-export default withStyles(styles)(OTASettingsForm);
+export default OTASettingsForm;

@@ -4,26 +4,19 @@ import { TextValidator, ValidatorForm, SelectValidator } from 'react-material-ui
 import { isAPEnabled } from '../constants/WiFiAPModes';
 import PasswordValidator from '../components/PasswordValidator';
 
-import { withStyles, Theme, createStyles, WithStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
 import MenuItem from '@material-ui/core/MenuItem';
 import SaveIcon from '@material-ui/icons/Save';
 import { RestFormProps } from '../components/RestFormLoader';
 import { APSettingsData } from '../containers/APSettings';
+import FormActions from '../components/FormActions';
+import FormButton from '../components/FormButton';
 
-const styles = (theme: Theme) => createStyles({
-  button: {
-    marginRight: theme.spacing(2),
-    marginTop: theme.spacing(2),
-  }
-});
-
-type APSettingsFormProps = RestFormProps<APSettingsData> & WithStyles<typeof styles>;
+type APSettingsFormProps = RestFormProps<APSettingsData>;
 
 class APSettingsForm extends React.Component<APSettingsFormProps> {
 
   render() {
-    const { classes, data, handleValueChange, saveData, loadData } = this.props;
+    const { data, handleValueChange, saveData, loadData } = this.props;
     return (
       <ValidatorForm onSubmit={saveData} ref="APSettingsForm">
         <SelectValidator name="provision_mode"
@@ -64,15 +57,17 @@ class APSettingsForm extends React.Component<APSettingsFormProps> {
             />
           </Fragment>
         }
-        <Button startIcon={<SaveIcon />} variant="contained" color="primary" className={classes.button} type="submit">
-          Save
-        </Button>
-        <Button variant="contained" color="secondary" className={classes.button} onClick={loadData}>
-          Reset
-        </Button>
+        <FormActions>
+          <FormButton startIcon={<SaveIcon />} variant="contained" color="primary" type="submit">
+            Save
+          </FormButton>
+          <FormButton variant="contained" color="secondary" onClick={loadData}>
+            Reset
+          </FormButton>
+        </FormActions>
       </ValidatorForm>
     );
   }
 }
 
-export default withStyles(styles)(APSettingsForm);
+export default APSettingsForm;
