@@ -12,19 +12,18 @@ void NTPStatus::ntpStatus(AsyncWebServerRequest* request) {
   JsonObject root = response->getRoot();
 
   // request time now first, this can sometimes force a sync
-  time_t timeNow = now();
-  timeStatus_t status = timeStatus();
-  time_t lastSync = NTP.getLastNTPSync();
-  root["status"] = (int)status;
-  root["last_sync"] = lastSync;
-  root["server"] = NTP.getNtpServerName();
-  root["interval"] = NTP.getInterval();
-  root["uptime"] = NTP.getUptime();
+  root["now"] = time(nullptr);
+
+  // root["status"] = (int)status;
+  // root["last_sync"] = lastSync;
+  // root["server"] = NTP.getNtpServerName();
+  // root["interval"] = NTP.getInterval();
+  // root["uptime"] = NTP.getUptime();
 
   // only add now to response if we have successfully synced
-  if (status != timeNotSet) {
-    root["now"] = timeNow;
-  }
+  // if (status != timeNotSet) {
+  //  timeNow;
+  //}
 
   response->setLength();
   request->send(response);

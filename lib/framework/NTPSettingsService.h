@@ -3,12 +3,19 @@
 
 #include <AdminSettingsService.h>
 
-#include <NtpClientLib.h>
-#include <TimeLib.h>
+#include <sntp.h>
+#include <time.h>
+#include <coredecls.h>
+
+// default time for experimenting
+#define RTC_UTC_TEST 1510592825
+
+// default time zone
+#define NTP_SETTINGS_SERVICE_DEFAULT_TIME_ZONE_LABEL "Europe/London"
+#define NTP_SETTINGS_SERVICE_DEFAULT_TIME_ZONE_FORMAT "GMT0BST,M3.5.0/1,M10.5.0"
 
 // default time server
-#define NTP_SETTINGS_SERVICE_DEFAULT_SERVER "pool.ntp.org"
-#define NTP_SETTINGS_SERVICE_DEFAULT_INTERVAL 3600
+#define NTP_SETTINGS_SERVICE_DEFAULT_SERVER "time.google.com"
 
 // min poll delay of 60 secs, max 1 day
 #define NTP_SETTINGS_MIN_INTERVAL 60
@@ -24,18 +31,19 @@ class NTPSettingsService : public AdminSettingsService {
 
   void loop();
 
+
  protected:
   void readFromJsonObject(JsonObject& root);
   void writeToJsonObject(JsonObject& root);
   void onConfigUpdated();
+  void receivedNTPtime();
 
  private:
+  String _tzLabel;
+  String _tzFormat;
   String _server;
-  int _interval;
 
   bool _reconfigureNTP = false;
-  bool _syncEventTriggered = false;
-  NTPSyncEvent_t _ntpEvent;
 
 #ifdef ESP32
   void onStationModeGotIP(WiFiEvent_t event, WiFiEventInfo_t info);
@@ -49,7 +57,6 @@ class NTPSettingsService : public AdminSettingsService {
 #endif
 
   void configureNTP();
-  void processSyncEvent(NTPSyncEvent_t ntpEvent);
 };
 
 #endif  // end NTPSettingsService_h

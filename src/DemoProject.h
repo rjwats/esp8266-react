@@ -1,7 +1,13 @@
 #ifndef DemoProject_h
 #define DemoProject_h
 
+#define PTM(w) \
+  Serial.print(" " #w "="); \
+  Serial.print(tm->tm_##w);
+
 #include <AdminSettingsService.h>
+#include <sys/time.h>
+#include <time.h>
 
 #define BLINK_LED 2
 #define MAX_DELAY 1000
@@ -19,6 +25,7 @@ class DemoProject : public AdminSettingsService {
 
  private:
   unsigned long _lastBlink = 0;
+  unsigned long _lastTimeEcho = 0;
   uint8_t _blinkSpeed = 255;
 
  protected:
