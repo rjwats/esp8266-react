@@ -69,16 +69,16 @@ class NTPStatus extends Component {
                     <AccessTimeIcon />
                   </Avatar>
                 </ListItemAvatar>
-                <ListItemText primary="Time (UTC)" secondary={formatIsoDateTime(data.time_utc)} />
+                <ListItemText primary="Local Time" secondary={formatIsoDateTime(data.time_local)} />
               </ListItem>
               <Divider variant="inset" component="li" />
               <ListItem>
                 <ListItemAvatar>
                   <Avatar>
-                    <SwapVerticalCircleIcon />
+                    <AccessTimeIcon />
                   </Avatar>
                 </ListItemAvatar>
-                <ListItemText primary="Time (Local)" secondary={formatIsoDateTime(data.time_local)} />
+                <ListItemText primary="UTC Time" secondary={formatIsoDateTime(data.time_utc)} />
               </ListItem>
               <Divider variant="inset" component="li" />
             </Fragment>
