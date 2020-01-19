@@ -13,7 +13,7 @@ class NTPSettings extends Component {
   }
 
   render() {
-    const { fetched, errorMessage, data, saveData, setData, loadData, handleValueChange } = this.props;
+    const { fetched, errorMessage, data, saveData, setData, loadData, handleValueChange, handleCheckboxChange } = this.props;
     return (
       <SectionContent title="NTP Settings">
         <LoadingNotification
@@ -27,6 +27,7 @@ class NTPSettings extends Component {
               onSubmit={saveData}
               onReset={loadData}
               handleValueChange={handleValueChange}
+              handleCheckboxChange={handleCheckboxChange}
             />
           }
         />

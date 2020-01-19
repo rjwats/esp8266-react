@@ -14,14 +14,9 @@ NTPSettingsService::NTPSettingsService(AsyncWebServer* server, FS* fs, SecurityM
   _onStationModeGotIPHandler =
       WiFi.onStationModeGotIP(std::bind(&NTPSettingsService::onStationModeGotIP, this, std::placeholders::_1));
 #endif
-  settimeofday_cb(std::bind(&NTPSettingsService::receivedNTPtime, this));
 }
 
 NTPSettingsService::~NTPSettingsService() {
-}
-
-void NTPSettingsService::receivedNTPtime() {
-  Serial.println("GOT TIME!");
 }
 
 void NTPSettingsService::loop() {
@@ -33,12 +28,14 @@ void NTPSettingsService::loop() {
 }
 
 void NTPSettingsService::readFromJsonObject(JsonObject& root) {
+  _enabled = root["enabled"] | NTP_SETTINGS_SERVICE_DEFAULT_ENABLED;
   _server = root["server"] | NTP_SETTINGS_SERVICE_DEFAULT_SERVER;
   _tzLabel = root["tz_label"] | NTP_SETTINGS_SERVICE_DEFAULT_TIME_ZONE_LABEL;
   _tzFormat = root["tz_format"] | NTP_SETTINGS_SERVICE_DEFAULT_TIME_ZONE_FORMAT;
 }
 
 void NTPSettingsService::writeToJsonObject(JsonObject& root) {
+  root["enabled"] = _enabled;
   root["server"] = _server;
   root["tz_label"] = _tzLabel;
   root["tz_format"] = _tzFormat;
@@ -74,7 +71,13 @@ void NTPSettingsService::onStationModeDisconnected(const WiFiEventStationModeDis
 
 void NTPSettingsService::configureNTP() {
   Serial.println("Configuring NTP...");
-
-  // enable sync
-  configTime(_tzFormat.c_str(), _server.c_str());
+  if (_enabled) {
+#ifdef ESP32
+    configTzTime(_tzFormat.c_str(), _server.c_str());
+#elif defined(ESP8266)
+    configTime(_tzFormat.c_str(), _server.c_str());
+#endif
+  } else {
+     sntp_stop();
+  }
 }

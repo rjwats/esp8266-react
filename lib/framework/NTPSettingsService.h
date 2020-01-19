@@ -3,18 +3,17 @@
 
 #include <AdminSettingsService.h>
 
-#include <sntp.h>
 #include <time.h>
-#include <coredecls.h>
-
-// default time for experimenting
-#define RTC_UTC_TEST 1510592825
+#ifdef ESP32
+#include <lwip/apps/sntp.h>
+#elif defined(ESP8266)
+#include <sntp.h>
+#endif
 
 // default time zone
+#define NTP_SETTINGS_SERVICE_DEFAULT_ENABLED true
 #define NTP_SETTINGS_SERVICE_DEFAULT_TIME_ZONE_LABEL "Europe/London"
 #define NTP_SETTINGS_SERVICE_DEFAULT_TIME_ZONE_FORMAT "GMT0BST,M3.5.0/1,M10.5.0"
-
-// default time server
 #define NTP_SETTINGS_SERVICE_DEFAULT_SERVER "time.google.com"
 
 // min poll delay of 60 secs, max 1 day
@@ -31,7 +30,6 @@ class NTPSettingsService : public AdminSettingsService {
 
   void loop();
 
-
  protected:
   void readFromJsonObject(JsonObject& root);
   void writeToJsonObject(JsonObject& root);
@@ -39,6 +37,7 @@ class NTPSettingsService : public AdminSettingsService {
   void receivedNTPtime();
 
  private:
+  bool _enabled;
   String _tzLabel;
   String _tzFormat;
   String _server;

@@ -1,16 +1,17 @@
 #ifndef NTPStatus_h
 #define NTPStatus_h
 
+#include <time.h>
 #ifdef ESP32
 #include <WiFi.h>
 #include <AsyncTCP.h>
+#include <lwip/apps/sntp.h>
 #elif defined(ESP8266)
 #include <ESP8266WiFi.h>
 #include <ESPAsyncTCP.h>
+#include <sntp.h>
 #endif
 
-#include <time.h>
-#include <sntp.h>
 #include <ArduinoJson.h>
 #include <AsyncJson.h>
 #include <ESPAsyncWebServer.h>

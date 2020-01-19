@@ -464,6 +464,10 @@ export const TIME_ZONES = {
   "Etc/Zulu": "UTC0"
 }
 
+export function selectedTimeZone(label, format){
+  return TIME_ZONES[label] === format ? label : undefined;
+}
+
 export function timeZoneSelectItems() {
   return Object.keys(TIME_ZONES).map(label => (
     <MenuItem value={label}>{label}</MenuItem>
