@@ -1,4 +1,3 @@
 import moment from 'moment';
 
-export const TIME_AND_DATE = 'DD/MM/YYYY HH:mm:ss';
-export const unixTimeToTimeAndDate = unixTime => moment.unix(unixTime).format(TIME_AND_DATE);
+export const formatIsoDateTime = isoDateString => moment.parseZone(isoDateString).format('ll @ HH:mm:ss');
