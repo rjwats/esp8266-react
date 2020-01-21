@@ -44,6 +44,7 @@ class APSettingsService : public AdminSettingsService {
   // for the captive portal
   DNSServer* _dnsServer;
 
+  void reconfigureAP();
   void manageAP();
   void startAP();
   void stopAP();

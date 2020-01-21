@@ -9,7 +9,11 @@ APSettingsService::~APSettingsService() {
 
 void APSettingsService::begin() {
   SettingsService::begin();
-  onConfigUpdated();
+  reconfigureAP();
+}
+
+void APSettingsService::reconfigureAP() {
+  _lastManaged = millis() - MANAGE_NETWORK_DELAY;
 }
 
 void APSettingsService::loop() {
@@ -85,5 +89,5 @@ void APSettingsService::writeToJsonObject(JsonObject& root) {
 }
 
 void APSettingsService::onConfigUpdated() {
-  _lastManaged = millis() - MANAGE_NETWORK_DELAY;
+  reconfigureAP();
 }
