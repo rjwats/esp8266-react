@@ -8,17 +8,17 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import Divider from '@material-ui/core/Divider';
+
 import SwapVerticalCircleIcon from '@material-ui/icons/SwapVerticalCircle';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import DNSIcon from '@material-ui/icons/Dns';
-import TimerIcon from '@material-ui/icons/Timer';
 import UpdateIcon from '@material-ui/icons/Update';
 import AvTimerIcon from '@material-ui/icons/AvTimer';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
-import { isSynchronized, ntpStatusHighlight, ntpStatus } from '../constants/NTPStatus';
+import { isNtpActive, ntpStatusHighlight, ntpStatus } from '../constants/NTPStatus';
 import * as Highlight from '../constants/Highlight';
-import { unixTimeToTimeAndDate } from '../constants/TimeFormat';
+import { formatIsoDateTime } from '../constants/TimeFormat';
 import { NTP_STATUS_ENDPOINT } from '../constants/Endpoints';
 import { restComponent } from '../components/RestComponent';
 import LoadingNotification from '../components/LoadingNotification';
@@ -60,28 +60,29 @@ class NTPStatus extends Component {
           <ListItemText primary="Status" secondary={ntpStatus(data)} />
         </ListItem>
         <Divider variant="inset" component="li" />
-        {isSynchronized(data) &&
-          <Fragment>
-            <ListItem>
-              <ListItemAvatar>
-                <Avatar>
-                  <AccessTimeIcon />
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText primary="Time Now" secondary={unixTimeToTimeAndDate(data.now)} />
-            </ListItem>
-            <Divider variant="inset" component="li" />
-            <ListItem>
-              <ListItemAvatar>
-                <Avatar>
-                  <SwapVerticalCircleIcon />
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText primary="Last Sync" secondary={data.last_sync > 0 ? unixTimeToTimeAndDate(data.last_sync) : "never"} />
-            </ListItem>
-            <Divider variant="inset" component="li" />
-          </Fragment>
-        }
+        {
+          isNtpActive(data) && (
+            <Fragment>
+              <ListItem>
+                <ListItemAvatar>
+                  <Avatar>
+                    <AccessTimeIcon />
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText primary="Local Time" secondary={formatIsoDateTime(data.time_local)} />
+              </ListItem>
+              <Divider variant="inset" component="li" />
+              <ListItem>
+                <ListItemAvatar>
+                  <Avatar>
+                    <AccessTimeIcon />
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText primary="UTC Time" secondary={formatIsoDateTime(data.time_utc)} />
+              </ListItem>
+              <Divider variant="inset" component="li" />
+            </Fragment>
+          )}
         <ListItem>
           <ListItemAvatar>
             <Avatar>
@@ -89,15 +90,6 @@ class NTPStatus extends Component {
             </Avatar>
           </ListItemAvatar>
           <ListItemText primary="NTP Server" secondary={data.server} />
-        </ListItem>
-        <Divider variant="inset" component="li" />
-        <ListItem>
-          <ListItemAvatar>
-            <Avatar>
-              <TimerIcon />
-            </Avatar>
-          </ListItemAvatar>
-          <ListItemText primary="Sync Interval" secondary={moment.duration(data.interval, 'seconds').humanize()} />
         </ListItem>
         <Divider variant="inset" component="li" />
         <ListItem>
