@@ -1,9 +1,11 @@
 #ifndef SettingsService_h
 #define SettingsService_h
 
+#include <functional>
+
 #ifdef ESP32
-#include <AsyncTCP.h>
 #include <WiFi.h>
+#include <AsyncTCP.h>
 #elif defined(ESP8266)
 #include <ESP8266WiFi.h>
 #include <ESPAsyncTCP.h>
@@ -16,6 +18,19 @@
 #include <ESPAsyncWebServer.h>
 #include <SecurityManager.h>
 #include <SettingsPersistence.h>
+
+typedef std::function<void(void)> SettingsUpdateCallback;
+static size_t currentUpdateHandlerId;
+
+typedef struct SettingsUpdateHandlerInfo {
+  size_t _id;
+  SettingsUpdateCallback _cb;
+  bool _allowRemove;
+  SettingsUpdateHandlerInfo(SettingsUpdateCallback cb, bool allowRemove) :
+      _id(++currentUpdateHandlerId),
+      _cb(cb),
+      _allowRemove(allowRemove){};
+} SettingsUpdateHandlerInfo_t;
 
 /*
  * Abstraction of a service which stores it's settings as JSON in a file system.
@@ -35,6 +50,15 @@ class SettingsService : public SettingsPersistence {
   }
 
   virtual ~SettingsService() {
+  }
+
+  size_t addUpdateHandler(SettingsUpdateCallback cb, bool allowRemove = true) {
+    if (!cb) {
+      return 0;
+    }
+    SettingsUpdateHandlerInfo_t updateHandler(cb, allowRemove);
+    _settingsUpdateHandlers.push_back(updateHandler);
+    return updateHandler._id;
   }
 
   void fetchAsString(String& config) {
@@ -59,7 +83,7 @@ class SettingsService : public SettingsPersistence {
       JsonObject newConfig = jsonDocument.as<JsonObject>();
       readFromJsonObject(newConfig);
       writeToFS();
-      onConfigUpdated();
+      callUpdateHandlers();
     }
   }
 
@@ -71,6 +95,7 @@ class SettingsService : public SettingsPersistence {
  protected:
   char const* _servicePath;
   AsyncJsonWebHandler _updateHandler;
+  std::list<SettingsUpdateHandlerInfo_t> _settingsUpdateHandlers;
 
   virtual void fetchConfig(AsyncWebServerRequest* request) {
     // handle the request
@@ -90,13 +115,23 @@ class SettingsService : public SettingsPersistence {
 
       // write settings back with a callback to reconfigure the wifi
       AsyncJsonCallbackResponse* response =
-          new AsyncJsonCallbackResponse([this]() { onConfigUpdated(); }, false, MAX_SETTINGS_SIZE);
+          new AsyncJsonCallbackResponse([this]() { callUpdateHandlers(); }, false, MAX_SETTINGS_SIZE);
       JsonObject jsonObject = response->getRoot();
       writeToJsonObject(jsonObject);
       response->setLength();
       request->send(response);
     } else {
       request->send(400);
+    }
+  }
+
+  void callUpdateHandlers() {
+    // call the classes own config update function
+    onConfigUpdated();
+
+    // call all setting update handlers
+    for (const SettingsUpdateHandlerInfo_t& handler : _settingsUpdateHandlers) {
+      handler._cb();
     }
   }
 

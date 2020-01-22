@@ -3,6 +3,7 @@
 DemoProject::DemoProject(AsyncWebServer* server, FS* fs, ESP8266React* esp8266React) :
     AdminSettingsService(server, fs, esp8266React->getSecurityManager(), DEMO_SETTINGS_PATH, DEMO_SETTINGS_FILE),
     _esp8266React(esp8266React) {
+  _esp8266React->getWiFiSettingsService()->addUpdateHandler(std::bind(&DemoProject::onWiFiSettingsUpdate, this));
   pinMode(BLINK_LED, OUTPUT);
 }
 
@@ -34,4 +35,11 @@ void DemoProject::readFromJsonObject(JsonObject& root) {
 void DemoProject::writeToJsonObject(JsonObject& root) {
   // connection settings
   root["blink_speed"] = _blinkSpeed;
+}
+
+void DemoProject::onWiFiSettingsUpdate() {
+  Serial.println("Yee-haw, something updated the WiFi configuration!");
+
+  // remove the handler, so we don't have to observe it any more...
+  // _esp8266React->getWiFiSettingsService()->removeUpdateHandler(_onWiFiSettingsUpdate);
 }

@@ -28,6 +28,7 @@ class DemoProject : public AdminSettingsService {
  protected:
   void readFromJsonObject(JsonObject& root);
   void writeToJsonObject(JsonObject& root);
+  void onWiFiSettingsUpdate();
 };
 
 #endif
