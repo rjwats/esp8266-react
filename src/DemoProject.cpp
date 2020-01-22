@@ -3,7 +3,6 @@
 DemoProject::DemoProject(AsyncWebServer* server, FS* fs, ESP8266React* esp8266React) :
     AdminSettingsService(server, fs, esp8266React->getSecurityManager(), DEMO_SETTINGS_PATH, DEMO_SETTINGS_FILE),
     _esp8266React(esp8266React) {
-  _esp8266React->getWiFiSettingsService()->addUpdateHandler(std::bind(&DemoProject::onWiFiSettingsUpdate, this));
   pinMode(BLINK_LED, OUTPUT);
 }
 
@@ -20,11 +19,22 @@ void DemoProject::loop() {
   if (!_lastEcho || (unsigned long)(currentMillis - _lastEcho) >= ECHO_CFG_DELAY) {
     _lastEcho = currentMillis;
 
-    // round-trip the settings, just for fun.
+    // round-trip the settings
     String config;
     _esp8266React->getSecuritySettingsService()->fetchAsString(config);
     Serial.println(config);
     _esp8266React->getSecuritySettingsService()->updateFromString(config);
+
+    // toggle the observation on and off
+    if (_updateHandler) {
+      Serial.println("No longer observing OTA updates...");
+      _esp8266React->getOTASettingsService()->removeUpdateHandler(_updateHandler);
+      _updateHandler = 0;
+    } else {
+      Serial.println("Now observing OTA updates...");
+      _updateHandler = _esp8266React->getOTASettingsService()->addUpdateHandler(
+          std::bind(&DemoProject::onOTASettingsUpdated, this));
+    }
   }
 }
 
@@ -37,9 +47,6 @@ void DemoProject::writeToJsonObject(JsonObject& root) {
   root["blink_speed"] = _blinkSpeed;
 }
 
-void DemoProject::onWiFiSettingsUpdate() {
-  Serial.println("Yee-haw, something updated the WiFi configuration!");
-
-  // remove the handler, so we don't have to observe it any more...
-  // _esp8266React->getWiFiSettingsService()->removeUpdateHandler(_onWiFiSettingsUpdate);
+void DemoProject::onOTASettingsUpdated() {
+  Serial.println("Yee-haw, something updated the OTA settings!");
 }

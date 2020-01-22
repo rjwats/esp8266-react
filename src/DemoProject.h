@@ -24,11 +24,12 @@ class DemoProject : public AdminSettingsService {
   unsigned long _lastBlink = 0;
   unsigned long _lastEcho = 0;
   uint8_t _blinkSpeed = 255;
+  update_handler_id_t _updateHandler = 0;
 
  protected:
   void readFromJsonObject(JsonObject& root);
   void writeToJsonObject(JsonObject& root);
-  void onWiFiSettingsUpdate();
+  void onOTASettingsUpdated();
 };
 
 #endif

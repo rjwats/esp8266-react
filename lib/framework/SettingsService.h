@@ -19,11 +19,12 @@
 #include <SecurityManager.h>
 #include <SettingsPersistence.h>
 
+typedef size_t update_handler_id_t;
 typedef std::function<void(void)> SettingsUpdateCallback;
-static size_t currentUpdateHandlerId;
+static update_handler_id_t currentUpdateHandlerId;
 
 typedef struct SettingsUpdateHandlerInfo {
-  size_t _id;
+  update_handler_id_t _id;
   SettingsUpdateCallback _cb;
   bool _allowRemove;
   SettingsUpdateHandlerInfo(SettingsUpdateCallback cb, bool allowRemove) :
@@ -52,13 +53,23 @@ class SettingsService : public SettingsPersistence {
   virtual ~SettingsService() {
   }
 
-  size_t addUpdateHandler(SettingsUpdateCallback cb, bool allowRemove = true) {
+  update_handler_id_t addUpdateHandler(SettingsUpdateCallback cb, bool allowRemove = true) {
     if (!cb) {
       return 0;
     }
     SettingsUpdateHandlerInfo_t updateHandler(cb, allowRemove);
     _settingsUpdateHandlers.push_back(updateHandler);
     return updateHandler._id;
+  }
+
+  void removeUpdateHandler(update_handler_id_t id) {
+    for (auto i = _settingsUpdateHandlers.begin(); i != _settingsUpdateHandlers.end();) {
+      if ((*i)._id == id) {
+        i = _settingsUpdateHandlers.erase(i);
+      } else {
+        ++i;
+      }
+    }
   }
 
   void fetchAsString(String& config) {
