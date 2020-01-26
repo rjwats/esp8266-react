@@ -32,8 +32,8 @@ void DemoProject::loop() {
       _updateHandler = 0;
     } else {
       Serial.println("Now observing OTA updates...");
-      _updateHandler = _esp8266React->getOTASettingsService()->addUpdateHandler(
-          std::bind(&DemoProject::onOTASettingsUpdated, this));
+      _updateHandler =
+          _esp8266React->getOTASettingsService()->addUpdateHandler(std::bind(&DemoProject::onOTASettingsUpdated, this));
     }
   }
 }
@@ -48,5 +48,8 @@ void DemoProject::writeToJsonObject(JsonObject& root) {
 }
 
 void DemoProject::onOTASettingsUpdated() {
-  Serial.println("Yee-haw, something updated the OTA settings!");
+  WiFiSettings wifiSettings = _esp8266React->getWiFiSettingsService()->fetch();
+
+  Serial.print("WiFiSettings updated, hostname is now:");
+  Serial.println(wifiSettings.hostname);  
 }

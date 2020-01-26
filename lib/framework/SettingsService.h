@@ -36,6 +36,7 @@ typedef struct SettingsUpdateHandlerInfo {
 /*
  * Abstraction of a service which stores it's settings as JSON in a file system.
  */
+template <class T>
 class SettingsService : public SettingsPersistence {
  public:
   SettingsService(AsyncWebServer* server, FS* fs, char const* servicePath, char const* filePath) :
@@ -72,6 +73,16 @@ class SettingsService : public SettingsPersistence {
     }
   }
 
+  T fetch() {
+    return _settings;
+  }
+
+  void update(T& settings) {
+    _settings = settings;
+    writeToFS();
+    callUpdateHandlers();
+  }
+
   void fetchAsString(String& config) {
     DynamicJsonDocument jsonDocument(MAX_SETTINGS_SIZE);
     fetchAsDocument(jsonDocument);
@@ -104,6 +115,7 @@ class SettingsService : public SettingsPersistence {
   }
 
  protected:
+  T _settings;
   char const* _servicePath;
   AsyncJsonWebHandler _updateHandler;
   std::list<SettingsUpdateHandlerInfo_t> _settingsUpdateHandlers;
