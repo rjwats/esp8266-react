@@ -12,7 +12,12 @@
 #define DEMO_SETTINGS_FILE "/config/demoSettings.json"
 #define DEMO_SETTINGS_PATH "/rest/demoSettings"
 
-class DemoProject : public AdminSettingsService {
+class DemoSettings {
+ public:
+  uint8_t blinkSpeed;
+};
+
+class DemoProject : public AdminSettingsService<DemoSettings> {
  public:
   DemoProject(AsyncWebServer* server, FS* fs, ESP8266React* esp8266React);
   ~DemoProject();
@@ -23,7 +28,6 @@ class DemoProject : public AdminSettingsService {
   ESP8266React* _esp8266React;
   unsigned long _lastBlink = 0;
   unsigned long _lastEcho = 0;
-  uint8_t _blinkSpeed = 255;
   update_handler_id_t _updateHandler = 0;
 
  protected:

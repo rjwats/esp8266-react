@@ -14,43 +14,28 @@
 #define MAX_JWT_SIZE 128
 
 class User {
- private:
-  String _username;
-  String _password;
-  bool _admin;
+ public:
+  String username;
+  String password;
+  bool admin;
 
  public:
-  User(String username, String password, bool admin) : _username(username), _password(password), _admin(admin) {
-  }
-  String getUsername() {
-    return _username;
-  }
-  String getPassword() {
-    return _password;
-  }
-  bool isAdmin() {
-    return _admin;
+  User(String username, String password, bool admin) : username(username), password(password), admin(admin) {
   }
 };
 
 class Authentication {
- private:
-  User* _user;
-  boolean _authenticated;
+ public:
+  User* user;
+  boolean authenticated;
 
  public:
-  Authentication(User& user) : _user(new User(user)), _authenticated(true) {
+  Authentication(User& user) : user(new User(user)), authenticated(true) {
   }
-  Authentication() : _user(nullptr), _authenticated(false) {
+  Authentication() : user(nullptr), authenticated(false) {
   }
   ~Authentication() {
-    delete (_user);
-  }
-  User* getUser() {
-    return _user;
-  }
-  bool isAuthenticated() {
-    return _authenticated;
+    delete (user);
   }
 };
 
@@ -62,10 +47,10 @@ class AuthenticationPredicates {
     return true;
   };
   static bool IS_AUTHENTICATED(Authentication& authentication) {
-    return authentication.isAuthenticated();
+    return authentication.authenticated;
   };
   static bool IS_ADMIN(Authentication& authentication) {
-    return authentication.isAuthenticated() && authentication.getUser()->isAdmin();
+    return authentication.authenticated && authentication.user->admin;
   };
 };
 
@@ -74,37 +59,23 @@ class SecurityManager {
   /*
    * Authenticate, returning the user if found
    */
-  Authentication authenticate(String username, String password);
+  virtual Authentication authenticate(String username, String password) = 0;
 
   /*
    * Check the request header for the Authorization token
    */
-  Authentication authenticateRequest(AsyncWebServerRequest* request);
+  virtual Authentication authenticateRequest(AsyncWebServerRequest* request) = 0;
 
   /*
    * Generate a JWT for the user provided
    */
-  String generateJWT(User* user);
+  virtual String generateJWT(User* user) = 0;
 
   /**
    * Wrap the provided request to provide validation against an AuthenticationPredicate.
    */
-  ArRequestHandlerFunction wrapRequest(ArRequestHandlerFunction onRequest, AuthenticationPredicate predicate);
-
- protected:
-  ArduinoJsonJWT _jwtHandler = ArduinoJsonJWT(DEFAULT_JWT_SECRET);
-  std::list<User> _users;
-
- private:
-  /*
-   * Lookup the user by JWT
-   */
-  Authentication authenticateJWT(String jwt);
-
-  /*
-   * Verify the payload is correct
-   */
-  boolean validatePayload(JsonObject& parsedPayload, User* user);
+  virtual ArRequestHandlerFunction wrapRequest(ArRequestHandlerFunction onRequest,
+                                               AuthenticationPredicate predicate) = 0;
 };
 
 #endif  // end SecurityManager_h

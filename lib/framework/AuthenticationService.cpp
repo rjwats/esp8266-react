@@ -21,7 +21,7 @@ AuthenticationService::~AuthenticationService() {
  */
 void AuthenticationService::verifyAuthorization(AsyncWebServerRequest* request) {
   Authentication authentication = _securityManager->authenticateRequest(request);
-  request->send(authentication.isAuthenticated() ? 200 : 401);
+  request->send(authentication.authenticated ? 200 : 401);
 }
 
 /**
@@ -33,8 +33,8 @@ void AuthenticationService::signIn(AsyncWebServerRequest* request, JsonDocument&
     String username = jsonDocument["username"];
     String password = jsonDocument["password"];
     Authentication authentication = _securityManager->authenticate(username, password);
-    if (authentication.isAuthenticated()) {
-      User* user = authentication.getUser();
+    if (authentication.authenticated) {
+      User* user = authentication.user;
       AsyncJsonResponse* response = new AsyncJsonResponse(false, MAX_AUTHENTICATION_SIZE);
       JsonObject jsonObject = response->getRoot();
       jsonObject["access_token"] = _securityManager->generateJWT(user);

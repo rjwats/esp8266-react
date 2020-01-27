@@ -10,7 +10,7 @@ DemoProject::~DemoProject() {
 }
 
 void DemoProject::loop() {
-  unsigned delay = MAX_DELAY / 255 * (255 - _blinkSpeed);
+  unsigned delay = MAX_DELAY / 255 * (255 - _settings.blinkSpeed);
   unsigned long currentMillis = millis();
   if (!_lastBlink || (unsigned long)(currentMillis - _lastBlink) >= delay) {
     _lastBlink = currentMillis;
@@ -24,6 +24,11 @@ void DemoProject::loop() {
     _esp8266React->getSecuritySettingsService()->fetchAsString(config);
     Serial.println(config);
     _esp8266React->getSecuritySettingsService()->updateFromString(config);
+
+    // grab the settings object from one of the services
+    WiFiSettings settings = _esp8266React->getWiFiSettingsService()->fetch();
+    Serial.print("The ssid is:");
+    Serial.println(settings.ssid);
 
     // toggle the observation on and off
     if (_updateHandler) {
@@ -39,17 +44,17 @@ void DemoProject::loop() {
 }
 
 void DemoProject::readFromJsonObject(JsonObject& root) {
-  _blinkSpeed = root["blink_speed"] | DEFAULT_BLINK_SPEED;
+  _settings.blinkSpeed = root["blink_speed"] | DEFAULT_BLINK_SPEED;
 }
 
 void DemoProject::writeToJsonObject(JsonObject& root) {
   // connection settings
-  root["blink_speed"] = _blinkSpeed;
+  root["blink_speed"] = _settings.blinkSpeed;
 }
 
 void DemoProject::onOTASettingsUpdated() {
   WiFiSettings wifiSettings = _esp8266React->getWiFiSettingsService()->fetch();
 
   Serial.print("WiFiSettings updated, hostname is now:");
-  Serial.println(wifiSettings.hostname);  
+  Serial.println(wifiSettings.hostname);
 }
