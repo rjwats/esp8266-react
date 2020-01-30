@@ -18,7 +18,7 @@ class DemoSettings {
 
 class DemoProject : public AdminSettingsService<DemoSettings> {
  public:
-  DemoProject(AsyncWebServer* server, FS* fs);
+  DemoProject(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
   ~DemoProject();
 
   void loop();

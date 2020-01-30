@@ -1,7 +1,7 @@
 #include <DemoProject.h>
 
-DemoProject::DemoProject(AsyncWebServer* server, FS* fs) :
-    AdminSettingsService(server, fs, esp8266React->getSecurityManager(), DEMO_SETTINGS_PATH, DEMO_SETTINGS_FILE) {
+DemoProject::DemoProject(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) :
+    AdminSettingsService(server, fs, securityManager, DEMO_SETTINGS_PATH, DEMO_SETTINGS_FILE) {
   pinMode(BLINK_LED, OUTPUT);
 }
 
