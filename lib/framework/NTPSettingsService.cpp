@@ -73,7 +73,7 @@ void NTPSettingsService::configureNTP() {
   Serial.println("Configuring NTP...");
   if (_settings.enabled) {
 #ifdef ESP32
-    configTzTime(_tzFormat.c_str(), _server.c_str());
+    configTzTime(_settings.tzFormat.c_str(), _settings.server.c_str());
 #elif defined(ESP8266)
     configTime(_settings.tzFormat.c_str(), _settings.server.c_str());
 #endif
