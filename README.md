@@ -467,7 +467,5 @@ esp8266React.getWiFiSettingsService()->addUpdateHandler([]() {
 * [React](https://reactjs.org/)
 * [Material-UI](https://material-ui-next.com/)
 * [notistack](https://github.com/iamhosseindhv/notistack)
-* [Time](https://github.com/PaulStoffregen/Time)
-* [NtpClient](https://github.com/gmag11/NtpClient)
 * [ArduinoJson](https://github.com/bblanchon/ArduinoJson)
 * [ESPAsyncWebServer](https://github.com/me-no-dev/ESPAsyncWebServer)
