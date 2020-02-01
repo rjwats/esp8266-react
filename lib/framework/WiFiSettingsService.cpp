@@ -18,6 +18,8 @@ WiFiSettingsService::WiFiSettingsService(AsyncWebServer* server, FS* fs, Securit
   WiFi.onEvent(
       std::bind(&WiFiSettingsService::onStationModeDisconnected, this, std::placeholders::_1, std::placeholders::_2),
       WiFiEvent_t::SYSTEM_EVENT_STA_DISCONNECTED);
+  WiFi.onEvent(std::bind(&WiFiSettingsService::onStationModeStop, this, std::placeholders::_1, std::placeholders::_2),
+               WiFiEvent_t::SYSTEM_EVENT_STA_STOP);
 #elif defined(ESP8266)
   _onStationModeDisconnectedHandler = WiFi.onStationModeDisconnected(
       std::bind(&WiFiSettingsService::onStationModeDisconnected, this, std::placeholders::_1));
@@ -54,7 +56,8 @@ void WiFiSettingsService::readFromJsonObject(JsonObject& root) {
   // Turning off static ip config if we don't meet the minimum requirements
   // of ipAddress, gateway and subnet. This may change to static ip only
   // as sensible defaults can be assumed for gateway and subnet
-  if (_settings.staticIPConfig && (_settings.localIP == INADDR_NONE || _settings.gatewayIP == INADDR_NONE || _settings.subnetMask == INADDR_NONE)) {
+  if (_settings.staticIPConfig &&
+      (_settings.localIP == INADDR_NONE || _settings.gatewayIP == INADDR_NONE || _settings.subnetMask == INADDR_NONE)) {
     _settings.staticIPConfig = false;
   }
 }
@@ -79,11 +82,17 @@ void WiFiSettingsService::onConfigUpdated() {
 }
 
 void WiFiSettingsService::reconfigureWiFiConnection() {
-  // disconnect and de-configure wifi
-  WiFi.disconnect(true);
-
   // reset last connection attempt to force loop to reconnect immediately
   _lastConnectionAttempt = 0;
+
+// disconnect and de-configure wifi
+#ifdef ESP32
+  if (WiFi.disconnect(true)) {
+    _stopping = true;
+  }
+#elif defined(ESP8266)
+  WiFi.disconnect(true);
+#endif
 }
 
 void WiFiSettingsService::readIP(JsonObject& root, String key, IPAddress& _ip) {
@@ -135,6 +144,12 @@ void WiFiSettingsService::manageSTA() {
 #ifdef ESP32
 void WiFiSettingsService::onStationModeDisconnected(WiFiEvent_t event, WiFiEventInfo_t info) {
   WiFi.disconnect(true);
+}
+void WiFiSettingsService::onStationModeStop(WiFiEvent_t event, WiFiEventInfo_t info) {
+  if (_stopping) {
+    _lastConnectionAttempt = 0;
+    _stopping = false;
+  }
 }
 #elif defined(ESP8266)
 void WiFiSettingsService::onStationModeDisconnected(const WiFiEventStationModeDisconnected& event) {
