@@ -349,10 +349,22 @@ Alternatively you can extend [AdminSettingsService.h](lib/framework/AdminSetting
 
 ## Extending the framework
 
+It is recommend that you explore the framework code to gain a better understanding of how to use it's features. The framework provides APIs so you can add your own services or features or, if required, directly configure or observe changes to core framework features. Some of these capabilities are detailed below.
+
+### Adding a service with persistant settings
+
+The following code demonstrates how you might extend the framework with a feature which requires a username and password to be configured to drive an unspecified feature. 
+
 ```cpp
 #include <SettingsService.h>
 
-class ExampleSettingsService : public SettingsService {
+class ExampleSettings {
+ public:  
+    String username;
+    String password;
+};
+
+class ExampleSettingsService : public SettingsService<ExampleSettings> {
 
   public:
 
@@ -364,19 +376,14 @@ class ExampleSettingsService : public SettingsService {
   protected:
 
     void readFromJsonObject(JsonObject& root) {
-      _username = root["username"] | "";
-      _password = root["password"] | "";
+      _settings.username = root["username"] | "";
+      _settings.password = root["password"] | "";
     }
 
     void writeToJsonObject(JsonObject& root) {
-      root["username"] = _username;
-      root["password"] = _password;
+      root["username"] = _settings.username;
+      root["password"] = _settings.password;
     }
-
-  private:
-
-    String _username;
-    String _password;
 
 };
 ```
@@ -391,7 +398,7 @@ exampleSettingsService.begin();
 
 There will now be a REST service exposed on "/exampleSettings" for reading and writing (GET/POST) the settings. Any modifications will be persisted in SPIFFS, in this case to "/config/exampleSettings.json"
 
-Sometimes you need to perform an action when the settings are updated, you can achieve this by overriding the onConfigUpdated() function which gets called every time the settings are updated. You can also perform an action when the service starts by overriding the begin() function, being sure to call SettingsService::begin():
+Sometimes you need to perform an action when the settings are updated, you can achieve this by overriding the onConfigUpdated() function which gets called every time the settings are updated. You can also perform an action when the service starts by overriding the begin() function, being sure to call SettingsService::begin(). You can also provide a "loop" function in order to allow your service class continuously perform an action, calling this from the main loop.
 
 ```cpp
 
@@ -409,6 +416,50 @@ void reconfigureTheService() {
   // do whatever is required to react to the new settings
 }
 
+void loop() {
+  // execute somthing as part of the main loop
+}
+
+```
+
+### Accessing settings and services
+
+The framework supplies access to it's SettingsService instances and the SecurityManager via getter functions:
+
+SettingsService               | Description
+---------------------------- | ----------------------------------------------
+getSecurityManager()         | The security manager - detailed above
+getSecuritySettingsService() | Configures the users and other security settings
+getWiFiSettingsService()     | Configures and manages the WiFi network connection
+getAPSettingsService()       | Configures and manages the Access Point
+getNTPSettingsService()      | Configures and manages the network time
+getOTASettingsService()      | Configures and manages the Over-The-Air update feature
+
+These can be used to observe changes to settings. They can also be used to fetch or update settings directly via objects, JSON strings and JsonObjects. Here are some examples of how you may use this.
+
+Inspect the current WiFi settings:
+
+```cpp
+WiFiSettings wifiSettings = esp8266React.getWiFiSettingsService()->fetch();
+Serial.print("The ssid is:");
+Serial.println(wifiSettings.ssid);
+```
+
+Configure the SSID and password:
+
+```cpp
+WiFiSettings wifiSettings = esp8266React->getWiFiSettingsService()->fetch();
+wifiSettings.ssid = "MyNetworkSSID";
+wifiSettings.password = "MySuperSecretPassword";
+esp8266React.getWiFiSettingsService()->update(wifiSettings);
+```
+
+Observe changes to the WiFiSettings:
+
+```cpp
+esp8266React.getWiFiSettingsService()->addUpdateHandler([]() {
+   Serial.println("The WiFi Settings were updated!");
+});
 ```
 
 ## Libraries Used
@@ -416,7 +467,5 @@ void reconfigureTheService() {
 * [React](https://reactjs.org/)
 * [Material-UI](https://material-ui-next.com/)
 * [notistack](https://github.com/iamhosseindhv/notistack)
-* [Time](https://github.com/PaulStoffregen/Time)
-* [NtpClient](https://github.com/gmag11/NtpClient)
 * [ArduinoJson](https://github.com/bblanchon/ArduinoJson)
 * [ESPAsyncWebServer](https://github.com/me-no-dev/ESPAsyncWebServer)

@@ -7,24 +7,33 @@ NTPStatus::NTPStatus(AsyncWebServer* server, SecurityManager* securityManager) {
                                           AuthenticationPredicates::IS_AUTHENTICATED));
 }
 
+String toISOString(tm* time, bool incOffset) {
+  char time_string[25];
+  strftime(time_string, 25, incOffset ? "%FT%T%z" : "%FT%TZ", time);
+  return String(time_string);
+}
+
 void NTPStatus::ntpStatus(AsyncWebServerRequest* request) {
   AsyncJsonResponse* response = new AsyncJsonResponse(false, MAX_NTP_STATUS_SIZE);
   JsonObject root = response->getRoot();
 
-  // request time now first, this can sometimes force a sync
-  time_t timeNow = now();
-  timeStatus_t status = timeStatus();
-  time_t lastSync = NTP.getLastNTPSync();
-  root["status"] = (int)status;
-  root["last_sync"] = lastSync;
-  root["server"] = NTP.getNtpServerName();
-  root["interval"] = NTP.getInterval();
-  root["uptime"] = NTP.getUptime();
+  // grab the current instant in unix seconds
+  time_t now = time(nullptr);
 
-  // only add now to response if we have successfully synced
-  if (status != timeNotSet) {
-    root["now"] = timeNow;
-  }
+  // only provide enabled/disabled status for now
+  root["status"] = sntp_enabled() ? 1 : 0;
+
+  // the current time in UTC
+  root["time_utc"] = toISOString(gmtime(&now), false);
+
+  // local time as ISO String with TZ
+  root["time_local"] = toISOString(localtime(&now), true);
+
+  // the sntp server name
+  root["server"] = sntp_getservername(0);
+
+  // device uptime in seconds
+  root["uptime"] = millis() / 1000;
 
   response->setLength();
   request->send(response);

@@ -3,12 +3,18 @@
 
 #include <AdminSettingsService.h>
 
-#include <NtpClientLib.h>
-#include <TimeLib.h>
+#include <time.h>
+#ifdef ESP32
+#include <lwip/apps/sntp.h>
+#elif defined(ESP8266)
+#include <sntp.h>
+#endif
 
-// default time server
-#define NTP_SETTINGS_SERVICE_DEFAULT_SERVER "pool.ntp.org"
-#define NTP_SETTINGS_SERVICE_DEFAULT_INTERVAL 3600
+// default time zone
+#define NTP_SETTINGS_SERVICE_DEFAULT_ENABLED true
+#define NTP_SETTINGS_SERVICE_DEFAULT_TIME_ZONE_LABEL "Europe/London"
+#define NTP_SETTINGS_SERVICE_DEFAULT_TIME_ZONE_FORMAT "GMT0BST,M3.5.0/1,M10.5.0"
+#define NTP_SETTINGS_SERVICE_DEFAULT_SERVER "time.google.com"
 
 // min poll delay of 60 secs, max 1 day
 #define NTP_SETTINGS_MIN_INTERVAL 60
@@ -17,7 +23,15 @@
 #define NTP_SETTINGS_FILE "/config/ntpSettings.json"
 #define NTP_SETTINGS_SERVICE_PATH "/rest/ntpSettings"
 
-class NTPSettingsService : public AdminSettingsService {
+class NTPSettings {
+ public:
+  bool enabled;
+  String tzLabel;
+  String tzFormat;
+  String server;
+};
+
+class NTPSettingsService : public AdminSettingsService<NTPSettings> {
  public:
   NTPSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
   ~NTPSettingsService();
@@ -28,14 +42,10 @@ class NTPSettingsService : public AdminSettingsService {
   void readFromJsonObject(JsonObject& root);
   void writeToJsonObject(JsonObject& root);
   void onConfigUpdated();
+  void receivedNTPtime();
 
  private:
-  String _server;
-  int _interval;
-
   bool _reconfigureNTP = false;
-  bool _syncEventTriggered = false;
-  NTPSyncEvent_t _ntpEvent;
 
 #ifdef ESP32
   void onStationModeGotIP(WiFiEvent_t event, WiFiEventInfo_t info);
@@ -49,7 +59,6 @@ class NTPSettingsService : public AdminSettingsService {
 #endif
 
   void configureNTP();
-  void processSyncEvent(NTPSyncEvent_t ntpEvent);
 };
 
 #endif  // end NTPSettingsService_h

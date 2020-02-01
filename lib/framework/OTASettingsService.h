@@ -20,7 +20,14 @@
 #define OTA_SETTINGS_FILE "/config/otaSettings.json"
 #define OTA_SETTINGS_SERVICE_PATH "/rest/otaSettings"
 
-class OTASettingsService : public AdminSettingsService {
+class OTASettings {
+ public:
+  bool enabled;
+  int port;
+  String password;
+};
+
+class OTASettingsService : public AdminSettingsService<OTASettings> {
  public:
   OTASettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
   ~OTASettingsService();
@@ -34,9 +41,6 @@ class OTASettingsService : public AdminSettingsService {
 
  private:
   ArduinoOTAClass* _arduinoOTA;
-  bool _enabled;
-  int _port;
-  String _password;
 
   void configureArduinoOTA();
 #ifdef ESP32

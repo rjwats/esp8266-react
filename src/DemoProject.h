@@ -2,6 +2,7 @@
 #define DemoProject_h
 
 #include <AdminSettingsService.h>
+#include <ESP8266React.h>
 
 #define BLINK_LED 2
 #define MAX_DELAY 1000
@@ -10,7 +11,12 @@
 #define DEMO_SETTINGS_FILE "/config/demoSettings.json"
 #define DEMO_SETTINGS_PATH "/rest/demoSettings"
 
-class DemoProject : public AdminSettingsService {
+class DemoSettings {
+ public:
+  uint8_t blinkSpeed;
+};
+
+class DemoProject : public AdminSettingsService<DemoSettings> {
  public:
   DemoProject(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
   ~DemoProject();
@@ -19,7 +25,6 @@ class DemoProject : public AdminSettingsService {
 
  private:
   unsigned long _lastBlink = 0;
-  uint8_t _blinkSpeed = 255;
 
  protected:
   void readFromJsonObject(JsonObject& root);

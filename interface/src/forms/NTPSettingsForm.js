@@ -1,16 +1,25 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
+import { TextValidator, ValidatorForm, SelectValidator } from 'react-material-ui-form-validator';
 
 import { withStyles } from '@material-ui/core/styles';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import Switch from '@material-ui/core/Switch';
 import Button from '@material-ui/core/Button';
 import SaveIcon from '@material-ui/icons/Save';
 
 import isIP from '../validators/isIP';
 import isHostname from '../validators/isHostname';
 import or from '../validators/or';
+import { timeZoneSelectItems, selectedTimeZone, TIME_ZONES } from '../constants/TZ';
 
 const styles = theme => ({
+  switchControl: {
+    width: "100%",
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(0.5)
+  },
   textField: {
     width: "100%"
   },
@@ -26,10 +35,30 @@ class NTPSettingsForm extends React.Component {
     ValidatorForm.addValidationRule('isIPOrHostname', or(isIP, isHostname));
   }
 
+  changeTimeZone = (event) => {
+    const { ntpSettings, setData } = this.props;
+    setData({
+      ...ntpSettings,
+      tz_label: event.target.value,
+      tz_format: TIME_ZONES[event.target.value]
+    });
+  }
+
   render() {
-    const { classes, ntpSettings, handleValueChange, onSubmit, onReset } = this.props;
+    const { classes, ntpSettings, handleValueChange, handleCheckboxChange, onSubmit, onReset } = this.props;
     return (
       <ValidatorForm onSubmit={onSubmit}>
+        <FormControlLabel className={classes.switchControl}
+          control={
+            <Switch
+              checked={ntpSettings.enabled}
+              onChange={handleCheckboxChange('enabled')}
+              value="enabled"
+              color="primary"
+            />
+          }
+          label="Enable NTP?"
+        />        
         <TextValidator
           validators={['required', 'isIPOrHostname']}
           errorMessages={['Server is required', "Not a valid IP address or hostname"]}
@@ -40,17 +69,20 @@ class NTPSettingsForm extends React.Component {
           onChange={handleValueChange('server')}
           margin="normal"
         />
-        <TextValidator
-          validators={['required', 'isNumber', 'minNumber:60', 'maxNumber:86400']}
-          errorMessages={['Interval is required', 'Interval must be a number', 'Must be at least 60 seconds', "Must not be more than 86400 seconds (24 hours)"]}
-          name="interval"
-          label="Interval (Seconds)"
+        <SelectValidator
+          native
+          validators={['required']}
+          errorMessages={['Time zone is required']}
+          labelId="tz_label"
+          label="Time zone"
+          value={selectedTimeZone(ntpSettings.tz_label, ntpSettings.tz_format)}
+          onChange={this.changeTimeZone}
           className={classes.textField}
-          value={ntpSettings.interval}
-          type="number"
-          onChange={handleValueChange('interval')}
           margin="normal"
-        />
+        >
+          <MenuItem disabled={true}>Time zone...</MenuItem>
+          {timeZoneSelectItems()}
+        </SelectValidator>
         <Button startIcon={<SaveIcon />} variant="contained" color="primary" className={classes.button} type="submit">
           Save
         </Button>

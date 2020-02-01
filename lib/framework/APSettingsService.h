@@ -19,7 +19,14 @@
 #define AP_SETTINGS_FILE "/config/apSettings.json"
 #define AP_SETTINGS_SERVICE_PATH "/rest/apSettings"
 
-class APSettingsService : public AdminSettingsService {
+class APSettings {
+ public:
+  uint8_t provisionMode;
+  String ssid;
+  String password;
+};
+
+class APSettingsService : public AdminSettingsService<APSettings> {
  public:
   APSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
   ~APSettingsService();
@@ -33,17 +40,13 @@ class APSettingsService : public AdminSettingsService {
   void onConfigUpdated();
 
  private:
-  // access point settings
-  uint8_t _provisionMode;
-  String _ssid;
-  String _password;
-
   // for the mangement delay loop
   unsigned long _lastManaged;
 
   // for the captive portal
   DNSServer* _dnsServer;
 
+  void reconfigureAP();
   void manageAP();
   void startAP();
   void stopAP();

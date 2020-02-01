@@ -13,3 +13,4 @@ ConstructorInitializerAllOnOneLineOrOnePerLine: true
 ExperimentalAutoDetectBinPacking: false
 KeepEmptyLinesAtTheStartOfBlocks: false
 DerivePointerAlignment: false
+SortIncludes: false

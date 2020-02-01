@@ -13,7 +13,6 @@
 #include <AsyncJson.h>
 #include <ESPAsyncWebServer.h>
 #include <SecurityManager.h>
-#include <TimeLib.h>
 
 #define SCAN_NETWORKS_SERVICE_PATH "/rest/scanNetworks"
 #define LIST_NETWORKS_SERVICE_PATH "/rest/listNetworks"

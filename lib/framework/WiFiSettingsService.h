@@ -6,9 +6,25 @@
 
 #define WIFI_SETTINGS_FILE "/config/wifiSettings.json"
 #define WIFI_SETTINGS_SERVICE_PATH "/rest/wifiSettings"
-#define WIFI_RECONNECTION_DELAY 1000 * 60
+#define WIFI_RECONNECTION_DELAY 1000 * 30
 
-class WiFiSettingsService : public AdminSettingsService {
+class WiFiSettings {
+ public:
+  // core wifi configuration
+  String ssid;
+  String password;
+  String hostname;
+  bool staticIPConfig;
+
+  // optional configuration for static IP address
+  IPAddress localIP;
+  IPAddress gatewayIP;
+  IPAddress subnetMask;
+  IPAddress dnsIP1;
+  IPAddress dnsIP2;
+};
+
+class WiFiSettingsService : public AdminSettingsService<WiFiSettings> {
  public:
   WiFiSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
   ~WiFiSettingsService();
@@ -22,24 +38,12 @@ class WiFiSettingsService : public AdminSettingsService {
   void onConfigUpdated();
 
  private:
-  // connection settings
-  String _ssid;
-  String _password;
-  String _hostname;
-  bool _staticIPConfig;
-
-  // for the mangement delay loop
   unsigned long _lastConnectionAttempt;
 
-  // optional configuration for static IP address
-  IPAddress _localIP;
-  IPAddress _gatewayIP;
-  IPAddress _subnetMask;
-  IPAddress _dnsIP1;
-  IPAddress _dnsIP2;
-
 #ifdef ESP32
+  bool _stopping;
   void onStationModeDisconnected(WiFiEvent_t event, WiFiEventInfo_t info);
+  void onStationModeStop(WiFiEvent_t event, WiFiEventInfo_t info);
 #elif defined(ESP8266)
   WiFiEventHandler _onStationModeDisconnectedHandler;
   void onStationModeDisconnected(const WiFiEventStationModeDisconnected& event);

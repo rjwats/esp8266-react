@@ -3,14 +3,15 @@
 
 #include <SettingsService.h>
 
-class AdminSettingsService : public SettingsService {
+template <class T>
+class AdminSettingsService : public SettingsService<T> {
  public:
   AdminSettingsService(AsyncWebServer* server,
                        FS* fs,
                        SecurityManager* securityManager,
                        char const* servicePath,
                        char const* filePath) :
-      SettingsService(server, fs, servicePath, filePath),
+      SettingsService<T>(server, fs, servicePath, filePath),
       _securityManager(securityManager) {
   }
 
@@ -26,7 +27,7 @@ class AdminSettingsService : public SettingsService {
       return;
     }
     // delegate to underlying implemetation
-    SettingsService::fetchConfig(request);
+    SettingsService<T>::fetchConfig(request);
   }
 
   void updateConfig(AsyncWebServerRequest* request, JsonDocument& jsonDocument) {
@@ -37,7 +38,7 @@ class AdminSettingsService : public SettingsService {
       return;
     }
     // delegate to underlying implemetation
-    SettingsService::updateConfig(request, jsonDocument);
+    SettingsService<T>::updateConfig(request, jsonDocument);
   }
 
   // override this to replace the default authentication predicate, IS_ADMIN
