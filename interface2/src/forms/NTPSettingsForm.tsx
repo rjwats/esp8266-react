@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
+import { TextValidator, ValidatorForm, SelectValidator } from 'react-material-ui-form-validator';
 
 import SaveIcon from '@material-ui/icons/Save';
 
@@ -10,6 +10,9 @@ import { RestFormProps } from '../components/RestFormLoader';
 import { NTPSettingsData } from '../containers/NTPSettings';
 import FormActions from '../components/FormActions';
 import FormButton from '../components/FormButton';
+import BlockFormControlLabel from '../components/BlockFormControlLabel';
+import { Checkbox, MenuItem } from '@material-ui/core';
+import { TIME_ZONES, timeZoneSelectItems, selectedTimeZone } from '../constants/TZ';
 
 type NTPSettingsFormProps = RestFormProps<NTPSettingsData>;
 
@@ -19,10 +22,30 @@ class NTPSettingsForm extends React.Component<NTPSettingsFormProps> {
     ValidatorForm.addValidationRule('isIPOrHostname', or(isIP, isHostname));
   }
 
+  changeTimeZone = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const { data, setData } = this.props;
+    setData({
+      ...data,
+      tz_label: event.target.value,
+      tz_format: TIME_ZONES[event.target.value]
+    });
+  }
+
   render() {
-    const { data, handleValueChange, saveData, loadData } = this.props;
+    const { data, handleValueChange, handleCheckboxChange, saveData, loadData } = this.props;
     return (
       <ValidatorForm onSubmit={saveData}>
+        <BlockFormControlLabel
+          control={
+            <Checkbox
+              checked={data.enabled}
+              onChange={handleCheckboxChange('enabled')}
+              value="enabled"
+              color="primary"
+            />
+          }
+          label="Enable NTP?"
+        />
         <TextValidator
           validators={['required', 'isIPOrHostname']}
           errorMessages={['Server is required', "Not a valid IP address or hostname"]}
@@ -34,18 +57,22 @@ class NTPSettingsForm extends React.Component<NTPSettingsFormProps> {
           onChange={handleValueChange('server')}
           margin="normal"
         />
-        <TextValidator
-          validators={['required', 'isNumber', 'minNumber:60', 'maxNumber:86400']}
-          errorMessages={['Interval is required', 'Interval must be a number', 'Must be at least 60 seconds', "Must not be more than 86400 seconds (24 hours)"]}
-          name="interval"
-          label="Interval (Seconds)"
+        <SelectValidator
+          validators={['required']}
+          errorMessages={['Time zone is required']}
+          name="tz_label"
+          labelId="tz_label"
+          label="Time zone"
           fullWidth
           variant="outlined"
-          value={data.interval}
-          type="number"
-          onChange={handleValueChange('interval')}
+          native
+          value={selectedTimeZone(data.tz_label, data.tz_format)}
+          onChange={this.changeTimeZone}
           margin="normal"
-        />
+        >
+          <MenuItem disabled={true}>Time zone...</MenuItem>
+          {timeZoneSelectItems()}
+        </SelectValidator>
         <FormActions>
           <FormButton startIcon={<SaveIcon />} variant="contained" color="primary" type="submit">
             Save

@@ -7,8 +7,10 @@ import NTPSettingsForm from '../forms/NTPSettingsForm';
 import { NTP_SETTINGS_ENDPOINT } from '../constants/Endpoints';
 
 export interface NTPSettingsData {
+  enabled: boolean;
   server: string;
-  interval: number;
+  tz_label: string;
+  tz_format: string;
 }
 
 class NTPSettings extends Component<RestControllerProps<NTPSettingsData>> {

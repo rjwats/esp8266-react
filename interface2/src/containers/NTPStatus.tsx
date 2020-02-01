@@ -8,10 +8,9 @@ import NTPStatusForm from '../forms/NTPStatusForm';
 
 export interface NTPStatusData {
   status: number;
-  now: number;
-  last_sync: number;
+  time_utc: string;
+  time_local: string;
   server: string;
-  interval: number;
   uptime: number;
 }
 

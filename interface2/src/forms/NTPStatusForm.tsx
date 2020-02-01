@@ -6,18 +6,18 @@ import { Avatar, Divider, List, ListItem, ListItemAvatar, ListItemText } from '@
 import SwapVerticalCircleIcon from '@material-ui/icons/SwapVerticalCircle';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import DNSIcon from '@material-ui/icons/Dns';
-import TimerIcon from '@material-ui/icons/Timer';
 import UpdateIcon from '@material-ui/icons/Update';
 import AvTimerIcon from '@material-ui/icons/AvTimer';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
-import { isSynchronized, ntpStatusHighlight, ntpStatus } from '../constants/NTPStatus';
-import { unixTimeToTimeAndDate, humanReadableSeconds } from '../constants/TimeFormat';
+import { isNtpActive, ntpStatusHighlight, ntpStatus } from '../constants/NTPStatus';
+import { formatIsoDateTime } from '../constants/TimeFormat';
 import { RestFormProps } from '../components/RestFormLoader';
 import { NTPStatusData } from '../containers/NTPStatus';
 import FormActions from '../components/FormActions';
 import FormButton from '../components/FormButton';
 import HighlightAvatar from '../components/HighlightAvatar';
+import moment from 'moment';
 
 type NTPStatusFormProps = RestFormProps<NTPStatusData> & WithTheme;
 
@@ -28,7 +28,7 @@ class NTPStatusForm extends Component<NTPStatusFormProps> {
     return (
       <Fragment>
         <List>
-          <ListItem >
+          <ListItem>
             <ListItemAvatar>
               <HighlightAvatar color={ntpStatusHighlight(data, theme)}>
                 <UpdateIcon />
@@ -37,7 +37,7 @@ class NTPStatusForm extends Component<NTPStatusFormProps> {
             <ListItemText primary="Status" secondary={ntpStatus(data)} />
           </ListItem>
           <Divider variant="inset" component="li" />
-          {isSynchronized(data) &&
+          {isNtpActive(data) && (
             <Fragment>
               <ListItem>
                 <ListItemAvatar>
@@ -45,7 +45,7 @@ class NTPStatusForm extends Component<NTPStatusFormProps> {
                     <AccessTimeIcon />
                   </Avatar>
                 </ListItemAvatar>
-                <ListItemText primary="Time Now" secondary={unixTimeToTimeAndDate(data.now)} />
+                <ListItemText primary="Local Time" secondary={formatIsoDateTime(data.time_local)} />
               </ListItem>
               <Divider variant="inset" component="li" />
               <ListItem>
@@ -54,11 +54,11 @@ class NTPStatusForm extends Component<NTPStatusFormProps> {
                     <SwapVerticalCircleIcon />
                   </Avatar>
                 </ListItemAvatar>
-                <ListItemText primary="Last Sync" secondary={data.last_sync > 0 ? unixTimeToTimeAndDate(data.last_sync) : "never"} />
+                <ListItemText primary="UTC Time" secondary={formatIsoDateTime(data.time_utc)} />
               </ListItem>
               <Divider variant="inset" component="li" />
             </Fragment>
-          }
+          )}
           <ListItem>
             <ListItemAvatar>
               <Avatar>
@@ -71,19 +71,10 @@ class NTPStatusForm extends Component<NTPStatusFormProps> {
           <ListItem>
             <ListItemAvatar>
               <Avatar>
-                <TimerIcon />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary="Sync Interval" secondary={humanReadableSeconds(data.interval)} />
-          </ListItem>
-          <Divider variant="inset" component="li" />
-          <ListItem>
-            <ListItemAvatar>
-              <Avatar>
                 <AvTimerIcon />
               </Avatar>
             </ListItemAvatar>
-            <ListItemText primary="Uptime" secondary={humanReadableSeconds(data.uptime)} />
+            <ListItemText primary="Uptime" secondary={moment.duration(data.uptime, 'seconds').humanize()} />
           </ListItem>
           <Divider variant="inset" component="li" />
         </List>
