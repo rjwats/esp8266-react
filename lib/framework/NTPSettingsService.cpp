@@ -28,17 +28,17 @@ void NTPSettingsService::loop() {
 }
 
 void NTPSettingsService::readFromJsonObject(JsonObject& root) {
-  _enabled = root["enabled"] | NTP_SETTINGS_SERVICE_DEFAULT_ENABLED;
-  _server = root["server"] | NTP_SETTINGS_SERVICE_DEFAULT_SERVER;
-  _tzLabel = root["tz_label"] | NTP_SETTINGS_SERVICE_DEFAULT_TIME_ZONE_LABEL;
-  _tzFormat = root["tz_format"] | NTP_SETTINGS_SERVICE_DEFAULT_TIME_ZONE_FORMAT;
+  _settings.enabled = root["enabled"] | NTP_SETTINGS_SERVICE_DEFAULT_ENABLED;
+  _settings.server = root["server"] | NTP_SETTINGS_SERVICE_DEFAULT_SERVER;
+  _settings.tzLabel = root["tz_label"] | NTP_SETTINGS_SERVICE_DEFAULT_TIME_ZONE_LABEL;
+  _settings.tzFormat = root["tz_format"] | NTP_SETTINGS_SERVICE_DEFAULT_TIME_ZONE_FORMAT;
 }
 
 void NTPSettingsService::writeToJsonObject(JsonObject& root) {
-  root["enabled"] = _enabled;
-  root["server"] = _server;
-  root["tz_label"] = _tzLabel;
-  root["tz_format"] = _tzFormat;
+  root["enabled"] = _settings.enabled;
+  root["server"] = _settings.server;
+  root["tz_label"] = _settings.tzLabel;
+  root["tz_format"] = _settings.tzFormat;
 }
 
 void NTPSettingsService::onConfigUpdated() {
@@ -47,23 +47,23 @@ void NTPSettingsService::onConfigUpdated() {
 
 #ifdef ESP32
 void NTPSettingsService::onStationModeGotIP(WiFiEvent_t event, WiFiEventInfo_t info) {
-  Serial.printf("Got IP address, starting NTP Synchronization\n");
+  Serial.println("Got IP address, starting NTP Synchronization");
   _reconfigureNTP = true;
 }
 
 void NTPSettingsService::onStationModeDisconnected(WiFiEvent_t event, WiFiEventInfo_t info) {
-  Serial.printf("WiFi connection dropped, stopping NTP.\n");
+  Serial.println("WiFi connection dropped, stopping NTP.");
   _reconfigureNTP = false;
   sntp_stop();
 }
 #elif defined(ESP8266)
 void NTPSettingsService::onStationModeGotIP(const WiFiEventStationModeGotIP& event) {
-  Serial.printf("Got IP address, starting NTP Synchronization\n");
+  Serial.println("Got IP address, starting NTP Synchronization");
   _reconfigureNTP = true;
 }
 
 void NTPSettingsService::onStationModeDisconnected(const WiFiEventStationModeDisconnected& event) {
-  Serial.printf("WiFi connection dropped, stopping NTP.\n");
+  Serial.println("WiFi connection dropped, stopping NTP.");
   _reconfigureNTP = false;
   sntp_stop();
 }
@@ -71,13 +71,13 @@ void NTPSettingsService::onStationModeDisconnected(const WiFiEventStationModeDis
 
 void NTPSettingsService::configureNTP() {
   Serial.println("Configuring NTP...");
-  if (_enabled) {
+  if (_settings.enabled) {
 #ifdef ESP32
-    configTzTime(_tzFormat.c_str(), _server.c_str());
+    configTzTime(_settings.tzFormat.c_str(), _settings.server.c_str());
 #elif defined(ESP8266)
-    configTime(_tzFormat.c_str(), _server.c_str());
+    configTime(_settings.tzFormat.c_str(), _settings.server.c_str());
 #endif
   } else {
-     sntp_stop();
+    sntp_stop();
   }
 }

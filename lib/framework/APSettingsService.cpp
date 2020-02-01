@@ -9,7 +9,11 @@ APSettingsService::~APSettingsService() {
 
 void APSettingsService::begin() {
   SettingsService::begin();
-  onConfigUpdated();
+  reconfigureAP();
+}
+
+void APSettingsService::reconfigureAP() {
+  _lastManaged = millis() - MANAGE_NETWORK_DELAY;
 }
 
 void APSettingsService::loop() {
@@ -24,7 +28,8 @@ void APSettingsService::loop() {
 
 void APSettingsService::manageAP() {
   WiFiMode_t currentWiFiMode = WiFi.getMode();
-  if (_provisionMode == AP_MODE_ALWAYS || (_provisionMode == AP_MODE_DISCONNECTED && WiFi.status() != WL_CONNECTED)) {
+  if (_settings.provisionMode == AP_MODE_ALWAYS ||
+      (_settings.provisionMode == AP_MODE_DISCONNECTED && WiFi.status() != WL_CONNECTED)) {
     if (currentWiFiMode == WIFI_OFF || currentWiFiMode == WIFI_STA) {
       startAP();
     }
@@ -37,7 +42,7 @@ void APSettingsService::manageAP() {
 
 void APSettingsService::startAP() {
   Serial.println("Starting software access point");
-  WiFi.softAP(_ssid.c_str(), _password.c_str());
+  WiFi.softAP(_settings.ssid.c_str(), _settings.password.c_str());
   if (!_dnsServer) {
     IPAddress apIp = WiFi.softAPIP();
     Serial.print("Starting captive portal on ");
@@ -65,25 +70,25 @@ void APSettingsService::handleDNS() {
 }
 
 void APSettingsService::readFromJsonObject(JsonObject& root) {
-  _provisionMode = root["provision_mode"] | AP_MODE_ALWAYS;
-  switch (_provisionMode) {
+  _settings.provisionMode = root["provision_mode"] | AP_MODE_ALWAYS;
+  switch (_settings.provisionMode) {
     case AP_MODE_ALWAYS:
     case AP_MODE_DISCONNECTED:
     case AP_MODE_NEVER:
       break;
     default:
-      _provisionMode = AP_MODE_ALWAYS;
+      _settings.provisionMode = AP_MODE_ALWAYS;
   }
-  _ssid = root["ssid"] | AP_DEFAULT_SSID;
-  _password = root["password"] | AP_DEFAULT_PASSWORD;
+  _settings.ssid = root["ssid"] | AP_DEFAULT_SSID;
+  _settings.password = root["password"] | AP_DEFAULT_PASSWORD;
 }
 
 void APSettingsService::writeToJsonObject(JsonObject& root) {
-  root["provision_mode"] = _provisionMode;
-  root["ssid"] = _ssid;
-  root["password"] = _password;
+  root["provision_mode"] = _settings.provisionMode;
+  root["ssid"] = _settings.ssid;
+  root["password"] = _settings.password;
 }
 
 void APSettingsService::onConfigUpdated() {
-  _lastManaged = millis() - MANAGE_NETWORK_DELAY;
+  reconfigureAP();
 }

@@ -9,7 +9,7 @@ DemoProject::~DemoProject() {
 }
 
 void DemoProject::loop() {
-  unsigned delay = MAX_DELAY / 255 * (255 - _blinkSpeed);
+  unsigned delay = MAX_DELAY / 255 * (255 - _settings.blinkSpeed);
   unsigned long currentMillis = millis();
   if (!_lastBlink || (unsigned long)(currentMillis - _lastBlink) >= delay) {
     _lastBlink = currentMillis;
@@ -18,10 +18,10 @@ void DemoProject::loop() {
 }
 
 void DemoProject::readFromJsonObject(JsonObject& root) {
-  _blinkSpeed = root["blink_speed"] | DEFAULT_BLINK_SPEED;
+  _settings.blinkSpeed = root["blink_speed"] | DEFAULT_BLINK_SPEED;
 }
 
 void DemoProject::writeToJsonObject(JsonObject& root) {
   // connection settings
-  root["blink_speed"] = _blinkSpeed;
+  root["blink_speed"] = _settings.blinkSpeed;
 }

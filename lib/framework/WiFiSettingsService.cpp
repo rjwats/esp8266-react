@@ -33,45 +33,45 @@ void WiFiSettingsService::begin() {
 }
 
 void WiFiSettingsService::readFromJsonObject(JsonObject& root) {
-  _ssid = root["ssid"] | "";
-  _password = root["password"] | "";
-  _hostname = root["hostname"] | "";
-  _staticIPConfig = root["static_ip_config"] | false;
+  _settings.ssid = root["ssid"] | "";
+  _settings.password = root["password"] | "";
+  _settings.hostname = root["hostname"] | "";
+  _settings.staticIPConfig = root["static_ip_config"] | false;
 
   // extended settings
-  readIP(root, "local_ip", _localIP);
-  readIP(root, "gateway_ip", _gatewayIP);
-  readIP(root, "subnet_mask", _subnetMask);
-  readIP(root, "dns_ip_1", _dnsIP1);
-  readIP(root, "dns_ip_2", _dnsIP2);
+  readIP(root, "local_ip", _settings.localIP);
+  readIP(root, "gateway_ip", _settings.gatewayIP);
+  readIP(root, "subnet_mask", _settings.subnetMask);
+  readIP(root, "dns_ip_1", _settings.dnsIP1);
+  readIP(root, "dns_ip_2", _settings.dnsIP2);
 
   // Swap around the dns servers if 2 is populated but 1 is not
-  if (_dnsIP1 == INADDR_NONE && _dnsIP2 != INADDR_NONE) {
-    _dnsIP1 = _dnsIP2;
-    _dnsIP2 = INADDR_NONE;
+  if (_settings.dnsIP1 == INADDR_NONE && _settings.dnsIP2 != INADDR_NONE) {
+    _settings.dnsIP1 = _settings.dnsIP2;
+    _settings.dnsIP2 = INADDR_NONE;
   }
 
   // Turning off static ip config if we don't meet the minimum requirements
   // of ipAddress, gateway and subnet. This may change to static ip only
   // as sensible defaults can be assumed for gateway and subnet
-  if (_staticIPConfig && (_localIP == INADDR_NONE || _gatewayIP == INADDR_NONE || _subnetMask == INADDR_NONE)) {
-    _staticIPConfig = false;
+  if (_settings.staticIPConfig && (_settings.localIP == INADDR_NONE || _settings.gatewayIP == INADDR_NONE || _settings.subnetMask == INADDR_NONE)) {
+    _settings.staticIPConfig = false;
   }
 }
 
 void WiFiSettingsService::writeToJsonObject(JsonObject& root) {
   // connection settings
-  root["ssid"] = _ssid;
-  root["password"] = _password;
-  root["hostname"] = _hostname;
-  root["static_ip_config"] = _staticIPConfig;
+  root["ssid"] = _settings.ssid;
+  root["password"] = _settings.password;
+  root["hostname"] = _settings.hostname;
+  root["static_ip_config"] = _settings.staticIPConfig;
 
   // extended settings
-  writeIP(root, "local_ip", _localIP);
-  writeIP(root, "gateway_ip", _gatewayIP);
-  writeIP(root, "subnet_mask", _subnetMask);
-  writeIP(root, "dns_ip_1", _dnsIP1);
-  writeIP(root, "dns_ip_2", _dnsIP2);
+  writeIP(root, "local_ip", _settings.localIP);
+  writeIP(root, "gateway_ip", _settings.gatewayIP);
+  writeIP(root, "subnet_mask", _settings.subnetMask);
+  writeIP(root, "dns_ip_1", _settings.dnsIP1);
+  writeIP(root, "dns_ip_2", _settings.dnsIP2);
 }
 
 void WiFiSettingsService::onConfigUpdated() {
@@ -108,27 +108,27 @@ void WiFiSettingsService::loop() {
 
 void WiFiSettingsService::manageSTA() {
   // Abort if already connected, or if we have no SSID
-  if (WiFi.isConnected() || _ssid.length() == 0) {
+  if (WiFi.isConnected() || _settings.ssid.length() == 0) {
     return;
   }
   // Connect or reconnect as required
   if ((WiFi.getMode() & WIFI_STA) == 0) {
     Serial.println("Connecting to WiFi.");
-    if (_staticIPConfig) {
+    if (_settings.staticIPConfig) {
       // configure for static IP
-      WiFi.config(_localIP, _gatewayIP, _subnetMask, _dnsIP1, _dnsIP2);
+      WiFi.config(_settings.localIP, _settings.gatewayIP, _settings.subnetMask, _settings.dnsIP1, _settings.dnsIP2);
     } else {
       // configure for DHCP
 #ifdef ESP32
       WiFi.config(INADDR_NONE, INADDR_NONE, INADDR_NONE);
-      WiFi.setHostname(_hostname.c_str());
+      WiFi.setHostname(_settings.hostname.c_str());
 #elif defined(ESP8266)
       WiFi.config(INADDR_ANY, INADDR_ANY, INADDR_ANY);
-      WiFi.hostname(_hostname);
+      WiFi.hostname(_settings.hostname);
 #endif
     }
     // attempt to connect to the network
-    WiFi.begin(_ssid.c_str(), _password.c_str());
+    WiFi.begin(_settings.ssid.c_str(), _settings.password.c_str());
   }
 }
 

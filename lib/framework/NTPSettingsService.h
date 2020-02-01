@@ -23,7 +23,15 @@
 #define NTP_SETTINGS_FILE "/config/ntpSettings.json"
 #define NTP_SETTINGS_SERVICE_PATH "/rest/ntpSettings"
 
-class NTPSettingsService : public AdminSettingsService {
+class NTPSettings {
+ public:
+  bool enabled;
+  String tzLabel;
+  String tzFormat;
+  String server;
+};
+
+class NTPSettingsService : public AdminSettingsService<NTPSettings> {
  public:
   NTPSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
   ~NTPSettingsService();
@@ -37,11 +45,6 @@ class NTPSettingsService : public AdminSettingsService {
   void receivedNTPtime();
 
  private:
-  bool _enabled;
-  String _tzLabel;
-  String _tzFormat;
-  String _server;
-
   bool _reconfigureNTP = false;
 
 #ifdef ESP32
