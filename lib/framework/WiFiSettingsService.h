@@ -6,7 +6,7 @@
 
 #define WIFI_SETTINGS_FILE "/config/wifiSettings.json"
 #define WIFI_SETTINGS_SERVICE_PATH "/rest/wifiSettings"
-#define WIFI_RECONNECTION_DELAY 1000 * 60
+#define WIFI_RECONNECTION_DELAY 1000 * 30
 
 class WiFiSettings {
  public:
@@ -41,7 +41,9 @@ class WiFiSettingsService : public AdminSettingsService<WiFiSettings> {
   unsigned long _lastConnectionAttempt;
 
 #ifdef ESP32
+  bool _stopping;
   void onStationModeDisconnected(WiFiEvent_t event, WiFiEventInfo_t info);
+  void onStationModeStop(WiFiEvent_t event, WiFiEventInfo_t info);
 #elif defined(ESP8266)
   WiFiEventHandler _onStationModeDisconnectedHandler;
   void onStationModeDisconnected(const WiFiEventStationModeDisconnected& event);
