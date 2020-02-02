@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 
 import { Avatar, Badge } from '@material-ui/core';
-
 import { List, ListItem, ListItemIcon, ListItemText, ListItemAvatar } from '@material-ui/core';
 
 import WifiIcon from '@material-ui/icons/Wifi';
@@ -9,8 +8,8 @@ import LockIcon from '@material-ui/icons/Lock';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 
 import { isNetworkOpen, networkSecurityMode } from '../constants/WiFiSecurityModes';
-import { WiFiNetworkList, WiFiNetwork } from '../../types';
 import { WiFiConnectionContext } from '../sections/WiFiConnectionContext';
+import { WiFiNetwork, WiFiNetworkList } from '../containers/WiFiNetworkScanner';
 
 interface WiFiNetworkSelectorProps {
   networkList: WiFiNetworkList;

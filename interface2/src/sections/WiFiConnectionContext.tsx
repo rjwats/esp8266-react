@@ -1,5 +1,5 @@
 import React from 'react';
-import { WiFiNetwork } from '../../types';
+import { WiFiNetwork } from '../containers/WiFiNetworkScanner';
 
 export interface WiFiConnectionContext {
   selectedNetwork?: WiFiNetwork;

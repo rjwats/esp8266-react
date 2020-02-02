@@ -8,13 +8,24 @@ import { SCAN_NETWORKS_ENDPOINT, LIST_NETWORKS_ENDPOINT } from '../constants/End
 import SectionContent from '../components/SectionContent';
 import WiFiNetworkSelector from '../forms/WiFiNetworkSelector';
 import { redirectingAuthorizedFetch } from '../authentication/Authentication';
-import { WiFiNetworkList, WiFiNetwork } from '../../types';
 import FormButton from '../components/FormButton';
 import FormActions from '../components/FormActions';
 
 const NUM_POLLS = 10
 const POLLING_FREQUENCY = 500
 const RETRY_EXCEPTION_TYPE = "retry"
+
+export interface WiFiNetworkList {
+  networks: WiFiNetwork[];
+}
+
+export interface WiFiNetwork {
+  rssi: number;
+  ssid: string;
+  bssid: string;
+  channel: number;
+  encryption_type: number;
+}
 
 interface WiFiNetworkScannerState {
   scanningForNetworks: boolean;

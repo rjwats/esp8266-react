@@ -8,8 +8,7 @@ import MenuAppBar from '../components/MenuAppBar';
 import WiFiStatusController from '../containers/WiFiStatusController';
 import WiFiSettingsController from '../containers/WiFiSettingsController';
 import { withAuthenticatedContext, AuthenticatedContextProps } from '../authentication/AuthenticationContext';
-import WiFiNetworkScanner from '../containers/WiFiNetworkScanner';
-import { WiFiNetwork } from '../../types';
+import WiFiNetworkScanner, { WiFiNetwork } from '../containers/WiFiNetworkScanner';
 import { WiFiConnectionContext } from './WiFiConnectionContext';
 
 type WiFiConnectionProps = AuthenticatedContextProps & RouteComponentProps;
