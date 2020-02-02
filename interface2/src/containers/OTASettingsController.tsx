@@ -2,17 +2,19 @@ import React, { Component } from 'react';
 
 import RestFormLoader from '../components/RestFormLoader';
 import SectionContent from '../components/SectionContent';
-import { restController, RestControllerProps} from '../components/RestController';
+import { restController, RestControllerProps } from '../components/RestController';
 import OTASettingsForm from '../forms/OTASettingsForm';
 import { OTA_SETTINGS_ENDPOINT } from '../constants/Endpoints';
 
-export interface OTASettingsData {
+export interface OTASettings {
   enabled: boolean;
   port: number;
   password: string;
 }
 
-class OTASettings extends Component<RestControllerProps<OTASettingsData>> {
+type OTASettingsControllerProps = RestControllerProps<OTASettings>;
+
+class OTASettingsController extends Component<OTASettingsControllerProps> {
 
   componentDidMount() {
     this.props.loadData();
@@ -31,4 +33,4 @@ class OTASettings extends Component<RestControllerProps<OTASettingsData>> {
 
 }
 
-export default restController(OTA_SETTINGS_ENDPOINT, OTASettings);
+export default restController(OTA_SETTINGS_ENDPOINT, OTASettingsController);

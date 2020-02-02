@@ -6,7 +6,7 @@ import { restController, RestControllerProps } from '../components/RestControlle
 import RestFormLoader from '../components/RestFormLoader';
 import WiFiStatusForm from '../forms/WiFiStatusForm';
 
-export interface WiFiStatusData {
+export interface WiFiStatus {
   status: number;
   local_ip: string;
   mac_address: string;
@@ -20,9 +20,9 @@ export interface WiFiStatusData {
   dns_ip_2: string;
 }
 
-type WiFiStatusProps = RestControllerProps<WiFiStatusData>;
+type WiFiStatusControllerProps = RestControllerProps<WiFiStatus>;
 
-class WiFiStatus extends Component<WiFiStatusProps> {
+class WiFiStatusController extends Component<WiFiStatusControllerProps> {
 
   componentDidMount() {
     this.props.loadData();
@@ -41,4 +41,4 @@ class WiFiStatus extends Component<WiFiStatusProps> {
 
 }
 
-export default restController(WIFI_STATUS_ENDPOINT, WiFiStatus);
+export default restController(WIFI_STATUS_ENDPOINT, WiFiStatusController);

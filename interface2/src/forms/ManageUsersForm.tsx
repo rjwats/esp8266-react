@@ -14,7 +14,7 @@ import PersonAddIcon from '@material-ui/icons/PersonAdd';
 
 import { withAuthenticatedContext, AuthenticatedContextProps } from '../authentication/AuthenticationContext';
 import { RestFormProps } from '../components/RestFormLoader';
-import { SecuritySettingsData, User } from '../containers/SecuritySettings';
+import { SecuritySettings, User } from '../containers/SecuritySettingsController';
 import UserForm from './UserForm';
 import FormActions from '../components/FormActions';
 import FormButton from '../components/FormButton';
@@ -29,7 +29,7 @@ function compareUsers(a: User, b: User) {
   return 0;
 }
 
-type ManageUsersFormProps = RestFormProps<SecuritySettingsData> & AuthenticatedContextProps;
+type ManageUsersFormProps = RestFormProps<SecuritySettings> & AuthenticatedContextProps;
 
 type ManageUsersFormState = {
   creating: boolean;

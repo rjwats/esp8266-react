@@ -5,9 +5,11 @@ import SectionContent from '../components/SectionContent';
 import ManageUsersForm from '../forms/ManageUsersForm';
 import RestFormLoader from '../components/RestFormLoader';
 import { restController, RestControllerProps } from '../components/RestController';
-import { SecuritySettingsData } from './SecuritySettings';
+import { SecuritySettings } from './SecuritySettingsController';
 
-class ManageUsers extends Component<RestControllerProps<SecuritySettingsData>> {
+type ManageUsersControllerProps = RestControllerProps<SecuritySettings>;
+
+class ManageUsersController extends Component<ManageUsersControllerProps> {
 
   componentDidMount() {
     this.props.loadData();
@@ -26,4 +28,4 @@ class ManageUsers extends Component<RestControllerProps<SecuritySettingsData>> {
 
 }
 
-export default restController(SECURITY_SETTINGS_ENDPOINT, ManageUsers);
+export default restController(SECURITY_SETTINGS_ENDPOINT, ManageUsersController);

@@ -8,13 +8,13 @@ import PasswordValidator from '../components/PasswordValidator';
 import isIP from '../validators/isIP';
 import isHostname from '../validators/isHostname';
 import or from '../validators/or';
-import { OTASettingsData } from '../containers/OTASettings';
+import { OTASettings } from '../containers/OTASettingsController';
 import { RestFormProps } from '../components/RestFormLoader';
 import BlockFormControlLabel from '../components/BlockFormControlLabel';
 import FormButton from '../components/FormButton';
 import FormActions from '../components/FormActions';
 
-type OTASettingsFormProps = RestFormProps<OTASettingsData>;
+type OTASettingsFormProps = RestFormProps<OTASettings>;
 
 class OTASettingsForm extends React.Component<OTASettingsFormProps> {
 

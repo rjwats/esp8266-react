@@ -1,12 +1,12 @@
-import { NTPStatusData } from "../containers/NTPStatus";
+import { NTPStatus } from "../containers/NTPStatusController";
 import { Theme } from "@material-ui/core";
 
 export const NTP_INACTIVE = 0;
 export const NTP_ACTIVE = 1;
 
-export const isNtpActive = ({ status }: NTPStatusData) => status === NTP_ACTIVE;
+export const isNtpActive = ({ status }: NTPStatus) => status === NTP_ACTIVE;
 
-export const ntpStatusHighlight = ({ status }: NTPStatusData, theme: Theme) => {
+export const ntpStatusHighlight = ({ status }: NTPStatus, theme: Theme) => {
   switch (status) {
     case NTP_INACTIVE:
       return theme.palette.info.main;
@@ -17,7 +17,7 @@ export const ntpStatusHighlight = ({ status }: NTPStatusData, theme: Theme) => {
   }
 }
 
-export const ntpStatus = ({ status }: NTPStatusData) => {
+export const ntpStatus = ({ status }: NTPStatus) => {
   switch (status) {
     case NTP_INACTIVE:
       return "Inactive";

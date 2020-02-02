@@ -12,16 +12,16 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 
 import { RestFormProps } from '../components/RestFormLoader';
 import { wifiStatus, wifiStatusHighlight, isConnected } from '../constants/WiFiStatus';
-import { WiFiStatusData } from '../containers/WiFiStatus';
+import { WiFiStatus } from '../containers/WiFiStatusController';
 import FormActions from '../components/FormActions';
 import FormButton from '../components/FormButton';
 import HighlightAvatar from '../components/HighlightAvatar';
 
-type WiFiStatusFormProps = RestFormProps<WiFiStatusData> & WithTheme;
+type WiFiStatusFormProps = RestFormProps<WiFiStatus> & WithTheme;
 
 class WiFiStatusForm extends Component<WiFiStatusFormProps> {
 
-  dnsServers(status: WiFiStatusData) {
+  dnsServers(status: WiFiStatus) {
     if (!status.dns_ip_1) {
       return "none";
     }

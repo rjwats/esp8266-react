@@ -12,12 +12,14 @@ export interface User {
   admin: boolean;
 }
 
-export interface SecuritySettingsData {
+export interface SecuritySettings {
   users: User[];
   jwt_secret: string;
 }
 
-class SecuritySettings extends Component<RestControllerProps<SecuritySettingsData>> {
+type SecuritySettingsControllerProps = RestControllerProps<SecuritySettings>;
+
+class SecuritySettingsController extends Component<SecuritySettingsControllerProps> {
 
   componentDidMount() {
     this.props.loadData();
@@ -36,4 +38,4 @@ class SecuritySettings extends Component<RestControllerProps<SecuritySettingsDat
 
 }
 
-export default restController(SECURITY_SETTINGS_ENDPOINT, SecuritySettings);
+export default restController(SECURITY_SETTINGS_ENDPOINT, SecuritySettingsController);

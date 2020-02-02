@@ -7,7 +7,7 @@ import { RestControllerProps, restController } from '../components/RestControlle
 import { WiFiConnectionContext } from '../sections/WiFiConnectionContext';
 import RestFormLoader from '../components/RestFormLoader';
 
-export interface WiFiSettingsData {
+export interface WiFiSettings {
   ssid: string;
   password: string;
   hostname: string;
@@ -19,9 +19,9 @@ export interface WiFiSettingsData {
   dns_ip_2?: string;
 }
 
-type WiFiSettingsProps = RestControllerProps<WiFiSettingsData>;
+type WiFiSettingsControllerProps = RestControllerProps<WiFiSettings>;
 
-class WiFiSettings extends Component<WiFiSettingsProps> {
+class WiFiSettingsController extends Component<WiFiSettingsControllerProps> {
 
   static contextType = WiFiConnectionContext;
   context!: React.ContextType<typeof WiFiConnectionContext>;
@@ -29,7 +29,7 @@ class WiFiSettings extends Component<WiFiSettingsProps> {
   componentDidMount() {
     const { selectedNetwork } = this.context;
     if (selectedNetwork) {
-      const wifiSettings: WiFiSettingsData = {
+      const wifiSettings: WiFiSettings = {
         ssid: selectedNetwork.ssid,
         password: "",
         hostname: "esp8266-react",
@@ -64,4 +64,4 @@ class WiFiSettings extends Component<WiFiSettingsProps> {
 
 }
 
-export default restController(WIFI_SETTINGS_ENDPOINT, WiFiSettings);
+export default restController(WIFI_SETTINGS_ENDPOINT, WiFiSettingsController);

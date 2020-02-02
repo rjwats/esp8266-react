@@ -41,6 +41,7 @@ type WiFiNetworkScannerProps = WithSnackbarProps & WithStyles<typeof styles>;
 class WiFiNetworkScanner extends Component<WiFiNetworkScannerProps, WiFiNetworkScannerState> {
 
   pollCount: number = 0;
+
   state: WiFiNetworkScannerState = {
     scanningForNetworks: false,
   };

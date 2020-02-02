@@ -9,13 +9,13 @@ import ComputerIcon from '@material-ui/icons/Computer';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
 import { RestFormProps } from '../components/RestFormLoader';
-import { APStatusData } from '../containers/APStatus';
+import { APStatus } from '../containers/APStatusController';
 import { apStatusHighlight, apStatus } from '../constants/APStatus';
 import FormActions from '../components/FormActions';
 import FormButton from '../components/FormButton';
 import HighlightAvatar from '../components/HighlightAvatar';
 
-type APStatusFormProps = RestFormProps<APStatusData> & WithTheme;
+type APStatusFormProps = RestFormProps<APStatus> & WithTheme;
 
 class APStatusForm extends Component<APStatusFormProps> {
 

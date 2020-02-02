@@ -5,13 +5,13 @@ import { Box, Typography } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
 
 import PasswordValidator from '../components/PasswordValidator';
-import { SecuritySettingsData } from '../containers/SecuritySettings';
+import { SecuritySettings } from '../containers/SecuritySettingsController';
 import { RestFormProps } from '../components/RestFormLoader';
 import { withAuthenticatedContext, AuthenticatedContextProps } from '../authentication/AuthenticationContext';
 import FormActions from '../components/FormActions';
 import FormButton from '../components/FormButton';
 
-type SecuritySettingsFormProps = RestFormProps<SecuritySettingsData> & AuthenticatedContextProps;
+type SecuritySettingsFormProps = RestFormProps<SecuritySettings> & AuthenticatedContextProps;
 
 class SecuritySettingsForm extends React.Component<SecuritySettingsFormProps> {
 

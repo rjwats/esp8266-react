@@ -7,14 +7,14 @@ import isIP from '../validators/isIP';
 import isHostname from '../validators/isHostname';
 import or from '../validators/or';
 import { RestFormProps } from '../components/RestFormLoader';
-import { NTPSettingsData } from '../containers/NTPSettings';
+import { NTPSettings } from '../containers/NTPSettingsController';
 import FormActions from '../components/FormActions';
 import FormButton from '../components/FormButton';
 import BlockFormControlLabel from '../components/BlockFormControlLabel';
 import { Checkbox, MenuItem } from '@material-ui/core';
 import { TIME_ZONES, timeZoneSelectItems, selectedTimeZone } from '../constants/TZ';
 
-type NTPSettingsFormProps = RestFormProps<NTPSettingsData>;
+type NTPSettingsFormProps = RestFormProps<NTPSettings>;
 
 class NTPSettingsForm extends React.Component<NTPSettingsFormProps> {
 

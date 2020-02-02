@@ -7,11 +7,11 @@ import PasswordValidator from '../components/PasswordValidator';
 import MenuItem from '@material-ui/core/MenuItem';
 import SaveIcon from '@material-ui/icons/Save';
 import { RestFormProps } from '../components/RestFormLoader';
-import { APSettingsData } from '../containers/APSettings';
+import { APSettings } from '../containers/APSettingsController';
 import FormActions from '../components/FormActions';
 import FormButton from '../components/FormButton';
 
-type APSettingsFormProps = RestFormProps<APSettingsData>;
+type APSettingsFormProps = RestFormProps<APSettings>;
 
 class APSettingsForm extends React.Component<APSettingsFormProps> {
 

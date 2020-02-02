@@ -6,16 +6,16 @@ import { restController, RestControllerProps } from '../components/RestControlle
 import APStatusForm from '../forms/APStatusForm';
 import { AP_STATUS_ENDPOINT } from '../constants/Endpoints';
 
-export interface APStatusData {
+export interface APStatus {
   active: boolean;
   ip_address: string;
   mac_address: string;
   station_num: number;
 }
 
-type APStatusProps = RestControllerProps<APStatusData>;
+type APStatusControllerProps = RestControllerProps<APStatus>;
 
-class APStatus extends Component<APStatusProps> {
+class APStatusController extends Component<APStatusControllerProps> {
 
   componentDidMount() {
     this.props.loadData();
@@ -33,4 +33,4 @@ class APStatus extends Component<APStatusProps> {
   }
 }
 
-export default restController(AP_STATUS_ENDPOINT, APStatus);
+export default restController(AP_STATUS_ENDPOINT, APStatusController);

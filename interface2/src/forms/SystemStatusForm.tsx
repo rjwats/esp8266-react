@@ -12,22 +12,22 @@ import AutorenewIcon from '@material-ui/icons/Autorenew';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
 import { RestFormProps } from '../components/RestFormLoader';
-import { SystemStatusData } from '../containers/SystemStatus';
+import { SystemStatus } from '../containers/SystemStatusController';
 import { redirectingAuthorizedFetch } from '../authentication/Authentication';
 import { RESTART_ENDPOINT } from '../constants/Endpoints';
 import FormButton from '../components/FormButton';
 import FormActions from '../components/FormActions';
 
-interface SystemStatusState {
+interface SystemStatusFormState {
   confirmRestart: boolean;
   processing: boolean;
 }
 
-type SystemStatusFormProps = RestFormProps<SystemStatusData>;
+type SystemStatusFormProps = RestFormProps<SystemStatus>;
 
-class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusState> {
+class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusFormState> {
 
-  state: SystemStatusState = {
+  state: SystemStatusFormState = {
     confirmRestart: false,
     processing: false
   }

@@ -6,13 +6,15 @@ import { restController, RestControllerProps} from '../components/RestController
 import APSettingsForm from '../forms/APSettingsForm';
 import { AP_SETTINGS_ENDPOINT } from '../constants/Endpoints';
 
-export interface APSettingsData {
+export interface APSettings {
   provision_mode: number;
   ssid: string;
   password: string;  
 }
 
-class APSettings extends Component<RestControllerProps<APSettingsData>> {
+type APSettingsControllerProps = RestControllerProps<APSettings>;
+
+class APSettingsController extends Component<APSettingsControllerProps> {
 
   componentDidMount() {
     this.props.loadData();
@@ -31,4 +33,4 @@ class APSettings extends Component<RestControllerProps<APSettingsData>> {
   
 }
 
-export default restController(AP_SETTINGS_ENDPOINT, APSettings);
+export default restController(AP_SETTINGS_ENDPOINT, APSettingsController);

@@ -5,8 +5,8 @@ import { Tabs, Tab } from '@material-ui/core';
 
 import AuthenticatedRoute from '../authentication/AuthenticatedRoute';
 import MenuAppBar from '../components/MenuAppBar';
-import OTASettings from '../containers/OTASettings';
-import SystemStatus from '../containers/SystemStatus';
+import SystemStatusController from '../containers/SystemStatusController';
+import OTASettingsController from '../containers/OTASettingsController';
 import { withAuthenticatedContext, AuthenticatedContextProps } from '../authentication/AuthenticationContext';
 
 type SystemProps = AuthenticatedContextProps & RouteComponentProps;
@@ -26,8 +26,8 @@ class System extends Component<SystemProps> {
           <Tab value="/system/ota" label="OTA Settings" disabled={!authenticatedContext.me.admin} />
         </Tabs>
         <Switch>
-          <AuthenticatedRoute exact={true} path="/system/status" component={SystemStatus} />
-          <AuthenticatedRoute exact={true} path="/system/ota" component={OTASettings} />
+          <AuthenticatedRoute exact={true} path="/system/status" component={SystemStatusController} />
+          <AuthenticatedRoute exact={true} path="/system/ota" component={OTASettingsController} />
           <Redirect to="/system/status" />
         </Switch>
       </MenuAppBar>

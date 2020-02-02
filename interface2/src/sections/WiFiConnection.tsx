@@ -5,12 +5,12 @@ import { Tabs, Tab } from '@material-ui/core';
 
 import AuthenticatedRoute from '../authentication/AuthenticatedRoute';
 import MenuAppBar from '../components/MenuAppBar';
-import WiFiStatus from '../containers/WiFiStatus';
+import WiFiStatusController from '../containers/WiFiStatusController';
+import WiFiSettingsController from '../containers/WiFiSettingsController';
 import { withAuthenticatedContext, AuthenticatedContextProps } from '../authentication/AuthenticationContext';
 import WiFiNetworkScanner from '../containers/WiFiNetworkScanner';
 import { WiFiNetwork } from '../../types';
 import { WiFiConnectionContext } from './WiFiConnectionContext';
-import WiFiSettings from '../containers/WiFiSettings';
 
 type WiFiConnectionProps = AuthenticatedContextProps & RouteComponentProps;
 
@@ -48,9 +48,9 @@ class WiFiConnection extends Component<WiFiConnectionProps, WiFiConnectionContex
             <Tab value="/wifi/settings" label="WiFi Settings" disabled={!authenticatedContext.me.admin} />
           </Tabs>
           <Switch>
-            <AuthenticatedRoute exact={true} path="/wifi/status" component={WiFiStatus} />
+            <AuthenticatedRoute exact={true} path="/wifi/status" component={WiFiStatusController} />
             <AuthenticatedRoute exact={true} path="/wifi/scan" component={WiFiNetworkScanner} />
-            <AuthenticatedRoute exact={true} path="/wifi/settings" component={WiFiSettings} />
+            <AuthenticatedRoute exact={true} path="/wifi/settings" component={WiFiSettingsController} />
             <Redirect to="/wifi/status" />
           </Switch>
         </MenuAppBar>

@@ -7,8 +7,8 @@ import AuthenticatedRoute from '../authentication/AuthenticatedRoute';
 import { AuthenticatedContextProps } from '../authentication/AuthenticationContext';
 
 import MenuAppBar from '../components/MenuAppBar';
-import ManageUsers from '../containers/ManageUsers';
-import SecuritySettings from '../containers/SecuritySettings';
+import ManageUsersController from '../containers/ManageUsersController';
+import SecuritySettingsController from '../containers/SecuritySettingsController';
 
 type SecurityProps = AuthenticatedContextProps & RouteComponentProps;
 
@@ -26,8 +26,8 @@ class Security extends Component<SecurityProps> {
           <Tab value="/security/settings" label="Security Settings" />
         </Tabs>
         <Switch>
-          <AuthenticatedRoute exact={true} path="/security/users" component={ManageUsers} />
-          <AuthenticatedRoute exact={true} path="/security/settings" component={SecuritySettings} />
+          <AuthenticatedRoute exact={true} path="/security/users" component={ManageUsersController} />
+          <AuthenticatedRoute exact={true} path="/security/settings" component={SecuritySettingsController} />
           <Redirect to="/security/users" />
         </Switch>
       </MenuAppBar>

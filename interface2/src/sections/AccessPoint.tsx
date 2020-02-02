@@ -5,8 +5,8 @@ import { Tabs, Tab } from '@material-ui/core';
 
 import AuthenticatedRoute from '../authentication/AuthenticatedRoute';
 import MenuAppBar from '../components/MenuAppBar';
-import APSettings from '../containers/APSettings';
-import APStatus from '../containers/APStatus';
+import APSettingsController from '../containers/APSettingsController';
+import APStatusController from '../containers/APStatusController';
 import { AuthenticatedContextProps, withAuthenticatedContext } from '../authentication/AuthenticationContext';
 
 type AccessPointProps = AuthenticatedContextProps & RouteComponentProps;
@@ -26,8 +26,8 @@ class AccessPoint extends Component<AccessPointProps> {
           <Tab value="/ap/settings" label="Access Point Settings" disabled={!authenticatedContext.me.admin} />
         </Tabs>
         <Switch>
-          <AuthenticatedRoute exact={true} path="/ap/status" component={APStatus} />
-          <AuthenticatedRoute exact={true} path="/ap/settings" component={APSettings} />
+          <AuthenticatedRoute exact={true} path="/ap/status" component={APStatusController} />
+          <AuthenticatedRoute exact={true} path="/ap/settings" component={APSettingsController} />
           <Redirect to="/ap/status" />
         </Switch>
       </MenuAppBar>

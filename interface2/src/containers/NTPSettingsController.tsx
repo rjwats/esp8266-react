@@ -6,14 +6,16 @@ import { restController, RestControllerProps} from '../components/RestController
 import NTPSettingsForm from '../forms/NTPSettingsForm';
 import { NTP_SETTINGS_ENDPOINT } from '../constants/Endpoints';
 
-export interface NTPSettingsData {
+export interface NTPSettings {
   enabled: boolean;
   server: string;
   tz_label: string;
   tz_format: string;
 }
 
-class NTPSettings extends Component<RestControllerProps<NTPSettingsData>> {
+type NTPSettingsControllerProps = RestControllerProps<NTPSettings>;
+
+class NTPSettingsController extends Component<NTPSettingsControllerProps> {
 
   componentDidMount() {
     this.props.loadData();
@@ -32,4 +34,4 @@ class NTPSettings extends Component<RestControllerProps<NTPSettingsData>> {
 
 }
 
-export default restController(NTP_SETTINGS_ENDPOINT, NTPSettings);
+export default restController(NTP_SETTINGS_ENDPOINT, NTPSettingsController);

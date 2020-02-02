@@ -6,7 +6,7 @@ import { RestControllerProps, restController } from '../components/RestControlle
 import RestFormLoader from '../components/RestFormLoader';
 import NTPStatusForm from '../forms/NTPStatusForm';
 
-export interface NTPStatusData {
+export interface NTPStatus {
   status: number;
   time_utc: string;
   time_local: string;
@@ -14,9 +14,9 @@ export interface NTPStatusData {
   uptime: number;
 }
 
-type NTPStatusProps = RestControllerProps<NTPStatusData>;
+type NTPStatusControllerProps = RestControllerProps<NTPStatus>;
 
-class NTPStatus extends Component<NTPStatusProps> {
+class NTPStatusController extends Component<NTPStatusControllerProps> {
 
   componentDidMount() {
     this.props.loadData();
@@ -35,4 +35,4 @@ class NTPStatus extends Component<NTPStatusProps> {
 
 }
 
-export default restController(NTP_STATUS_ENDPOINT, NTPStatus);
+export default restController(NTP_STATUS_ENDPOINT, NTPStatusController);

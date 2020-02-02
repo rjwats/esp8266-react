@@ -13,13 +13,13 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import { isNtpActive, ntpStatusHighlight, ntpStatus } from '../constants/NTPStatus';
 import { formatIsoDateTime } from '../constants/TimeFormat';
 import { RestFormProps } from '../components/RestFormLoader';
-import { NTPStatusData } from '../containers/NTPStatus';
+import { NTPStatus } from '../containers/NTPStatusController';
 import FormActions from '../components/FormActions';
 import FormButton from '../components/FormButton';
 import HighlightAvatar from '../components/HighlightAvatar';
 import moment from 'moment';
 
-type NTPStatusFormProps = RestFormProps<NTPStatusData> & WithTheme;
+type NTPStatusFormProps = RestFormProps<NTPStatus> & WithTheme;
 
 class NTPStatusForm extends Component<NTPStatusFormProps> {
 

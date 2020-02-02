@@ -6,7 +6,7 @@ import { restController, RestControllerProps } from '../components/RestControlle
 import SystemStatusForm from '../forms/SystemStatusForm';
 import { SYSTEM_STATUS_ENDPOINT } from '../constants/Endpoints';
 
-export interface SystemStatusData {
+export interface SystemStatus {
   esp_platform: string;
   cpu_freq_mhz: number;
   free_heap: number;
@@ -15,9 +15,9 @@ export interface SystemStatusData {
   flash_chip_size: number;
 }
 
-type SystemStatusProps = RestControllerProps<SystemStatusData>;
+type SystemStatusControllerProps = RestControllerProps<SystemStatus>;
 
-class SystemStatus extends Component<SystemStatusProps> {
+class SystemStatusController extends Component<SystemStatusControllerProps> {
 
   componentDidMount() {
     this.props.loadData();
@@ -36,4 +36,4 @@ class SystemStatus extends Component<SystemStatusProps> {
 
 }
 
-export default restController(SYSTEM_STATUS_ENDPOINT, SystemStatus);
+export default restController(SYSTEM_STATUS_ENDPOINT, SystemStatusController);

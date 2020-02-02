@@ -17,13 +17,13 @@ import optional from '../validators/optional';
 import PasswordValidator from '../components/PasswordValidator';
 import { WiFiConnectionContext } from '../sections/WiFiConnectionContext';
 import { RestFormProps } from '../components/RestFormLoader';
-import { WiFiSettingsData } from '../containers/WiFiSettings';
+import { WiFiSettings } from '../containers/WiFiSettingsController';
 import { isNetworkOpen, networkSecurityMode } from '../constants/WiFiSecurityModes';
 import BlockFormControlLabel from '../components/BlockFormControlLabel';
 import FormActions from '../components/FormActions';
 import FormButton from '../components/FormButton';
 
-type WiFiStatusFormProps = RestFormProps<WiFiSettingsData>;
+type WiFiStatusFormProps = RestFormProps<WiFiSettings>;
 
 class WiFiSettingsForm extends React.Component<WiFiStatusFormProps> {
 
