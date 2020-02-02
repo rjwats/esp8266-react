@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react';
+import moment from 'moment';
 
 import { WithTheme, withTheme } from '@material-ui/core/styles';
 import { Avatar, Divider, List, ListItem, ListItemAvatar, ListItemText } from '@material-ui/core';
@@ -12,12 +13,8 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 
 import { isNtpActive, ntpStatusHighlight, ntpStatus } from '../constants/NTPStatus';
 import { formatIsoDateTime } from '../constants/TimeFormat';
-import { RestFormProps } from '../components/RestFormLoader';
+import { RestFormProps, FormActions, FormButton, HighlightAvatar } from '../components';
 import { NTPStatus } from '../containers/NTPStatusController';
-import FormActions from '../components/FormActions';
-import FormButton from '../components/FormButton';
-import HighlightAvatar from '../components/HighlightAvatar';
-import moment from 'moment';
 
 type NTPStatusFormProps = RestFormProps<NTPStatus> & WithTheme;
 

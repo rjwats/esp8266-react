@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 
-import { WIFI_SETTINGS_ENDPOINT } from '../constants/Endpoints';
-import SectionContent from '../components/SectionContent';
+import {restController, RestControllerProps, RestFormLoader, SectionContent } from '../components';
 import WiFiSettingsForm from '../forms/WiFiSettingsForm';
-import { RestControllerProps, restController } from '../components/RestController';
 import { WiFiConnectionContext } from '../sections/WiFiConnectionContext';
-import RestFormLoader from '../components/RestFormLoader';
+import { WIFI_SETTINGS_ENDPOINT } from '../constants/Endpoints';
 
 export interface WiFiSettings {
   ssid: string;

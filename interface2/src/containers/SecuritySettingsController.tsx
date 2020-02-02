@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 
-import { SECURITY_SETTINGS_ENDPOINT } from '../constants/Endpoints';
+import {restController, RestControllerProps, RestFormLoader, SectionContent } from '../components';
 import SecuritySettingsForm from '../forms/SecuritySettingsForm';
-import SectionContent from '../components/SectionContent';
-import RestFormLoader from '../components/RestFormLoader';
-import { RestControllerProps, restController } from '../components/RestController';
+import { SECURITY_SETTINGS_ENDPOINT } from '../constants/Endpoints';
 
 export interface User {
   username: string;

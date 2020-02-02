@@ -4,7 +4,7 @@ import { Redirect, Switch, RouteComponentProps } from 'react-router-dom'
 import { Tabs, Tab } from '@material-ui/core';
 
 import AuthenticatedRoute from '../authentication/AuthenticatedRoute';
-import MenuAppBar from '../components/MenuAppBar';
+import { MenuAppBar } from '../components';
 import SystemStatusController from '../containers/SystemStatusController';
 import OTASettingsController from '../containers/OTASettingsController';
 import { withAuthenticatedContext, AuthenticatedContextProps } from '../authentication/AuthenticationContext';

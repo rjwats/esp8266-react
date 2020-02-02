@@ -11,12 +11,10 @@ import DataUsageIcon from '@material-ui/icons/DataUsage';
 import AutorenewIcon from '@material-ui/icons/Autorenew';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
-import { RestFormProps } from '../components/RestFormLoader';
+import { RestFormProps, FormButton, FormActions } from '../components';
 import { SystemStatus } from '../containers/SystemStatusController';
 import { redirectingAuthorizedFetch } from '../authentication/Authentication';
 import { RESTART_ENDPOINT } from '../constants/Endpoints';
-import FormButton from '../components/FormButton';
-import FormActions from '../components/FormActions';
 
 interface SystemStatusFormState {
   confirmRestart: boolean;

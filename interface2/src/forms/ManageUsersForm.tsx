@@ -13,11 +13,9 @@ import SaveIcon from '@material-ui/icons/Save';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 
 import { withAuthenticatedContext, AuthenticatedContextProps } from '../authentication/AuthenticationContext';
-import { RestFormProps } from '../components/RestFormLoader';
+import { RestFormProps, FormActions, FormButton } from '../components';
 import { SecuritySettings, User } from '../containers/SecuritySettingsController';
 import UserForm from './UserForm';
-import FormActions from '../components/FormActions';
-import FormButton from '../components/FormButton';
 
 function compareUsers(a: User, b: User) {
   if (a.username < b.username) {

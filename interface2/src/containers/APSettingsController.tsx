@@ -1,15 +1,13 @@
 import React, { Component } from 'react';
 
-import RestFormLoader from '../components/RestFormLoader';
-import SectionContent from '../components/SectionContent';
-import { restController, RestControllerProps} from '../components/RestController';
+import {restController, RestControllerProps, RestFormLoader, SectionContent } from '../components';
 import APSettingsForm from '../forms/APSettingsForm';
 import { AP_SETTINGS_ENDPOINT } from '../constants/Endpoints';
 
 export interface APSettings {
   provision_mode: number;
   ssid: string;
-  password: string;  
+  password: string;
 }
 
 type APSettingsControllerProps = RestControllerProps<APSettings>;
@@ -30,7 +28,7 @@ class APSettingsController extends Component<APSettingsControllerProps> {
       </SectionContent>
     )
   }
-  
+
 }
 
 export default restController(AP_SETTINGS_ENDPOINT, APSettingsController);

@@ -1,18 +1,16 @@
 import React from 'react';
 import { TextValidator, ValidatorForm, SelectValidator } from 'react-material-ui-form-validator';
 
+import { Checkbox, MenuItem } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
+
+import { RestFormProps, FormActions, FormButton, BlockFormControlLabel } from '../components';
+import { NTPSettings } from '../containers/NTPSettingsController';
+import { TIME_ZONES, timeZoneSelectItems, selectedTimeZone } from '../constants/TZ';
 
 import isIP from '../validators/isIP';
 import isHostname from '../validators/isHostname';
 import or from '../validators/or';
-import { RestFormProps } from '../components/RestFormLoader';
-import { NTPSettings } from '../containers/NTPSettingsController';
-import FormActions from '../components/FormActions';
-import FormButton from '../components/FormButton';
-import BlockFormControlLabel from '../components/BlockFormControlLabel';
-import { Checkbox, MenuItem } from '@material-ui/core';
-import { TIME_ZONES, timeZoneSelectItems, selectedTimeZone } from '../constants/TZ';
 
 type NTPSettingsFormProps = RestFormProps<NTPSettings>;
 

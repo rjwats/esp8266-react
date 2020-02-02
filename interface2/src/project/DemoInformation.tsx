@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Typography, TableRow, TableBody, TableCell, TableHead, Table, Box } from '@material-ui/core';
-import SectionContent from '../components/SectionContent';
+import { SectionContent } from '../components';
 
 class DemoInformation extends Component {
 

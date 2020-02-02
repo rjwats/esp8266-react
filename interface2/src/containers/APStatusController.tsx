@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 
-import RestFormLoader from '../components/RestFormLoader';
-import SectionContent from '../components/SectionContent';
-import { restController, RestControllerProps } from '../components/RestController';
+import {restController, RestControllerProps, RestFormLoader, SectionContent } from '../components';
 import APStatusForm from '../forms/APStatusForm';
 import { AP_STATUS_ENDPOINT } from '../constants/Endpoints';
 

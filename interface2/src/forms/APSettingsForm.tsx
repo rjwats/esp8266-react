@@ -1,15 +1,12 @@
 import React, { Fragment } from 'react';
 import { TextValidator, ValidatorForm, SelectValidator } from 'react-material-ui-form-validator';
 
-import { isAPEnabled } from '../constants/WiFiAPModes';
-import PasswordValidator from '../components/PasswordValidator';
-
 import MenuItem from '@material-ui/core/MenuItem';
 import SaveIcon from '@material-ui/icons/Save';
-import { RestFormProps } from '../components/RestFormLoader';
+
+import { isAPEnabled } from '../constants/WiFiAPModes';
+import {PasswordValidator, RestFormProps, FormActions, FormButton} from '../components';
 import { APSettings } from '../containers/APSettingsController';
-import FormActions from '../components/FormActions';
-import FormButton from '../components/FormButton';
 
 type APSettingsFormProps = RestFormProps<APSettings>;
 

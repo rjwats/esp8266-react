@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 
-import { SECURITY_SETTINGS_ENDPOINT } from '../constants/Endpoints';
-import SectionContent from '../components/SectionContent';
+import {restController, RestControllerProps, RestFormLoader, SectionContent } from '../components';
 import ManageUsersForm from '../forms/ManageUsersForm';
-import RestFormLoader from '../components/RestFormLoader';
-import { restController, RestControllerProps } from '../components/RestController';
 import { SecuritySettings } from './SecuritySettingsController';
+import { SECURITY_SETTINGS_ENDPOINT } from '../constants/Endpoints';
 
 type ManageUsersControllerProps = RestControllerProps<SecuritySettings>;
 

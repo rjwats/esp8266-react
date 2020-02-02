@@ -1,8 +1,7 @@
 import React, { Fragment } from 'react';
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 
-import { Checkbox } from '@material-ui/core';
-import { List, ListItem, ListItemText, ListItemAvatar, ListItemSecondaryAction } from '@material-ui/core';
+import { Checkbox, List, ListItem, ListItemText, ListItemAvatar, ListItemSecondaryAction } from '@material-ui/core';
 
 import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
@@ -11,17 +10,14 @@ import LockOpenIcon from '@material-ui/icons/LockOpen';
 import DeleteIcon from '@material-ui/icons/Delete';
 import SaveIcon from '@material-ui/icons/Save';
 
+import { WiFiConnectionContext } from '../sections/WiFiConnectionContext';
+import { RestFormProps, PasswordValidator, BlockFormControlLabel, FormActions, FormButton } from '../components';
+import { WiFiSettings } from '../containers/WiFiSettingsController';
+import { isNetworkOpen, networkSecurityMode } from '../constants/WiFiSecurityModes';
+
 import isIP from '../validators/isIP';
 import isHostname from '../validators/isHostname';
 import optional from '../validators/optional';
-import PasswordValidator from '../components/PasswordValidator';
-import { WiFiConnectionContext } from '../sections/WiFiConnectionContext';
-import { RestFormProps } from '../components/RestFormLoader';
-import { WiFiSettings } from '../containers/WiFiSettingsController';
-import { isNetworkOpen, networkSecurityMode } from '../constants/WiFiSecurityModes';
-import BlockFormControlLabel from '../components/BlockFormControlLabel';
-import FormActions from '../components/FormActions';
-import FormButton from '../components/FormButton';
 
 type WiFiStatusFormProps = RestFormProps<WiFiSettings>;
 

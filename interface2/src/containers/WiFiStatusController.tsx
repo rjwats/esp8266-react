@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 
-import SectionContent from '../components/SectionContent';
-import { WIFI_STATUS_ENDPOINT } from '../constants/Endpoints';
-import { restController, RestControllerProps } from '../components/RestController';
-import RestFormLoader from '../components/RestFormLoader';
+import {restController, RestControllerProps, RestFormLoader, SectionContent } from '../components';
 import WiFiStatusForm from '../forms/WiFiStatusForm';
+import { WIFI_STATUS_ENDPOINT } from '../constants/Endpoints';
 
 export interface WiFiStatus {
   status: number;

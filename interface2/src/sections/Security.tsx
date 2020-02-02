@@ -5,8 +5,7 @@ import { Tabs, Tab } from '@material-ui/core';
 
 import AuthenticatedRoute from '../authentication/AuthenticatedRoute';
 import { AuthenticatedContextProps } from '../authentication/AuthenticationContext';
-
-import MenuAppBar from '../components/MenuAppBar';
+import { MenuAppBar } from '../components';
 import ManageUsersController from '../containers/ManageUsersController';
 import SecuritySettingsController from '../containers/SecuritySettingsController';
 

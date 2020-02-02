@@ -4,15 +4,12 @@ import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 import { Checkbox } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
 
-import PasswordValidator from '../components/PasswordValidator';
+import { OTASettings } from '../containers/OTASettingsController';
+import { RestFormProps, BlockFormControlLabel, PasswordValidator, FormButton, FormActions } from '../components';
+
 import isIP from '../validators/isIP';
 import isHostname from '../validators/isHostname';
 import or from '../validators/or';
-import { OTASettings } from '../containers/OTASettingsController';
-import { RestFormProps } from '../components/RestFormLoader';
-import BlockFormControlLabel from '../components/BlockFormControlLabel';
-import FormButton from '../components/FormButton';
-import FormActions from '../components/FormActions';
 
 type OTASettingsFormProps = RestFormProps<OTASettings>;
 

@@ -4,12 +4,9 @@ import { ValidatorForm } from 'react-material-ui-form-validator';
 import { Box, Typography } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
 
-import PasswordValidator from '../components/PasswordValidator';
 import { SecuritySettings } from '../containers/SecuritySettingsController';
-import { RestFormProps } from '../components/RestFormLoader';
+import { RestFormProps, PasswordValidator, FormActions, FormButton } from '../components';
 import { withAuthenticatedContext, AuthenticatedContextProps } from '../authentication/AuthenticationContext';
-import FormActions from '../components/FormActions';
-import FormButton from '../components/FormButton';
 
 type SecuritySettingsFormProps = RestFormProps<SecuritySettings> & AuthenticatedContextProps;
 

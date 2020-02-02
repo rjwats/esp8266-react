@@ -10,12 +10,9 @@ import SettingsInputAntennaIcon from '@material-ui/icons/SettingsInputAntenna';
 import DeviceHubIcon from '@material-ui/icons/DeviceHub';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
-import { RestFormProps } from '../components/RestFormLoader';
+import { RestFormProps, FormActions, FormButton, HighlightAvatar } from '../components';
 import { wifiStatus, wifiStatusHighlight, isConnected } from '../constants/WiFiStatus';
 import { WiFiStatus } from '../containers/WiFiStatusController';
-import FormActions from '../components/FormActions';
-import FormButton from '../components/FormButton';
-import HighlightAvatar from '../components/HighlightAvatar';
 
 type WiFiStatusFormProps = RestFormProps<WiFiStatus> & WithTheme;
 

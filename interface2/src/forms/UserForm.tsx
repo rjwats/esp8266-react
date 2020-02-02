@@ -3,10 +3,8 @@ import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 
 import { Dialog, DialogTitle, DialogContent, DialogActions, Checkbox } from '@material-ui/core';
 
-import PasswordValidator from '../components/PasswordValidator';
+import { PasswordValidator, BlockFormControlLabel, FormButton } from '../components';
 import { User } from '../containers/SecuritySettingsController';
-import BlockFormControlLabel from '../components/BlockFormControlLabel';
-import FormButton from '../components/FormButton';
 
 interface UserFormProps {
   creating: boolean;

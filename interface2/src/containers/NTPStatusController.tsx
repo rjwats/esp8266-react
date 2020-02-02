@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 
-import { NTP_STATUS_ENDPOINT } from '../constants/Endpoints';
-import SectionContent from '../components/SectionContent';
-import { RestControllerProps, restController } from '../components/RestController';
-import RestFormLoader from '../components/RestFormLoader';
+import {restController, RestControllerProps, RestFormLoader, SectionContent } from '../components';
 import NTPStatusForm from '../forms/NTPStatusForm';
+import { NTP_STATUS_ENDPOINT } from '../constants/Endpoints';
 
 export interface NTPStatus {
   status: number;

@@ -4,12 +4,10 @@ import { withSnackbar, WithSnackbarProps } from 'notistack';
 import { createStyles, WithStyles, Theme, withStyles, Typography, LinearProgress } from '@material-ui/core';
 import PermScanWifiIcon from '@material-ui/icons/PermScanWifi';
 
-import { SCAN_NETWORKS_ENDPOINT, LIST_NETWORKS_ENDPOINT } from '../constants/Endpoints';
-import SectionContent from '../components/SectionContent';
+import { FormActions, FormButton, SectionContent } from '../components';
 import WiFiNetworkSelector from '../forms/WiFiNetworkSelector';
 import { redirectingAuthorizedFetch } from '../authentication/Authentication';
-import FormButton from '../components/FormButton';
-import FormActions from '../components/FormActions';
+import { SCAN_NETWORKS_ENDPOINT, LIST_NETWORKS_ENDPOINT } from '../constants/Endpoints';
 
 const NUM_POLLS = 10
 const POLLING_FREQUENCY = 500
