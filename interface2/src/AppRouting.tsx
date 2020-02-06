@@ -8,13 +8,13 @@ import AuthenticationWrapper from './authentication/AuthenticationWrapper';
 import UnauthenticatedRoute from './authentication/UnauthenticatedRoute';
 import AuthenticatedRoute from './authentication/AuthenticatedRoute';
 
-import SignInPage from './containers/SignInPage';
+import SignIn from './SignIn';
 import ProjectRouting from './project/ProjectRouting';
-import WiFiConnection from './sections/WiFiConnection';
-import AccessPoint from './sections/AccessPoint';
-import NetworkTime from './sections/NetworkTime';
-import Security from './sections/Security';
-import System from './sections/System';
+import WiFiConnection from './wifi/WiFiConnection';
+import AccessPoint from './ap/AccessPoint';
+import NetworkTime from './ntp/NetworkTime';
+import Security from './security/Security';
+import System from './system/System';
 
 class AppRouting extends Component {
 
@@ -26,7 +26,7 @@ class AppRouting extends Component {
     return (
       <AuthenticationWrapper>
         <Switch>
-          <UnauthenticatedRoute exact path="/" component={SignInPage} />
+          <UnauthenticatedRoute exact path="/" component={SignIn} />
           <AuthenticatedRoute exact path={`/${PROJECT_PATH}/*`} component={ProjectRouting} />
           <AuthenticatedRoute exact path="/wifi/*" component={WiFiConnection} />         
           <AuthenticatedRoute exact path="/ap/*" component={AccessPoint} />
