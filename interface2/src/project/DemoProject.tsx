@@ -3,9 +3,10 @@ import { Redirect, Switch, RouteComponentProps } from 'react-router-dom'
 
 import { Tabs, Tab } from '@material-ui/core';
 
-import { PROJECT_PATH } from '../constants/Env';
+import { PROJECT_PATH } from '../api';
 import { MenuAppBar } from '../components';
-import AuthenticatedRoute from '../authentication/AuthenticatedRoute';
+import { AuthenticatedRoute } from '../authentication';
+
 import DemoInformation from './DemoInformation';
 import DemoController from './DemoController';
 

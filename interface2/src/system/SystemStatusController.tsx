@@ -1,18 +1,10 @@
 import React, { Component } from 'react';
 
 import {restController, RestControllerProps, RestFormLoader, SectionContent } from '../components';
-import { SYSTEM_STATUS_ENDPOINT } from '../constants/Endpoints';
+import { SYSTEM_STATUS_ENDPOINT } from '../api';
 
 import SystemStatusForm from './SystemStatusForm';
-
-export interface SystemStatus {
-  esp_platform: string;
-  cpu_freq_mhz: number;
-  free_heap: number;
-  sketch_size: number;
-  free_sketch_space: number;
-  flash_chip_size: number;
-}
+import { SystemStatus } from './types';
 
 type SystemStatusControllerProps = RestControllerProps<SystemStatus>;
 

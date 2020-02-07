@@ -1,16 +1,10 @@
 import React, { Component } from 'react';
 
 import {restController, RestControllerProps, RestFormLoader, SectionContent } from '../components';
-import { NTP_SETTINGS_ENDPOINT } from '../constants/Endpoints';
+import { NTP_SETTINGS_ENDPOINT } from '../api';
 
 import NTPSettingsForm from './NTPSettingsForm';
-
-export interface NTPSettings {
-  enabled: boolean;
-  server: string;
-  tz_label: string;
-  tz_format: string;
-}
+import { NTPSettings } from './types';
 
 type NTPSettingsControllerProps = RestControllerProps<NTPSettings>;
 

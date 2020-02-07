@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { Redirect, Switch } from 'react-router';
 
-import { PROJECT_PATH } from '../constants/Env';
-import AuthenticatedRoute from '../authentication/AuthenticatedRoute';
+import { PROJECT_PATH } from '../api';
+import { AuthenticatedRoute } from '../authentication';
+
 import DemoProject from './DemoProject';
 
 class ProjectRouting extends Component {

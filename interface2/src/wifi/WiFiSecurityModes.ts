@@ -1,4 +1,4 @@
-import { WiFiNetwork } from "./WiFiNetworkScanner";
+import { WiFiNetwork } from "./types";
 
 export const WIFI_AUTH_OPEN = 0;
 export const WIFI_AUTH_WEP = 1;

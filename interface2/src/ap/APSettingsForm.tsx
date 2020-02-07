@@ -6,8 +6,8 @@ import SaveIcon from '@material-ui/icons/Save';
 
 import {PasswordValidator, RestFormProps, FormActions, FormButton} from '../components';
 
-import { APSettings } from './APSettingsController';
 import { isAPEnabled, AP_MODE_ALWAYS, AP_MODE_DISCONNECTED, AP_NEVER } from './APModes';
+import { APSettings } from './types';
 
 type APSettingsFormProps = RestFormProps<APSettings>;
 

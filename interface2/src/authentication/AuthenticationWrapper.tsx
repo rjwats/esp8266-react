@@ -7,7 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import { withStyles, Theme, createStyles, WithStyles } from '@material-ui/core/styles';
 
 import history from '../history'
-import { VERIFY_AUTHORIZATION_ENDPOINT } from '../constants/Endpoints';
+import { VERIFY_AUTHORIZATION_ENDPOINT } from '../api';
 import { ACCESS_TOKEN, authorizedFetch } from './Authentication';
 import { AuthenticationContext, Me } from './AuthenticationContext';
 

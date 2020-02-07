@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { Switch, Redirect } from 'react-router';
 
-import { PROJECT_PATH } from './constants/Env';
-
 import * as Authentication from './authentication/Authentication';
 import AuthenticationWrapper from './authentication/AuthenticationWrapper';
 import UnauthenticatedRoute from './authentication/UnauthenticatedRoute';
@@ -15,6 +13,8 @@ import AccessPoint from './ap/AccessPoint';
 import NetworkTime from './ntp/NetworkTime';
 import Security from './security/Security';
 import System from './system/System';
+
+import { PROJECT_PATH } from './api';
 
 class AppRouting extends Component {
 

@@ -3,8 +3,7 @@ import { Redirect, Switch, RouteComponentProps } from 'react-router-dom'
 
 import { Tabs, Tab } from '@material-ui/core';
 
-import AuthenticatedRoute from '../authentication/AuthenticatedRoute';
-import { AuthenticatedContextProps } from '../authentication/AuthenticationContext';
+import { AuthenticatedContextProps, AuthenticatedRoute } from '../authentication';
 import { MenuAppBar } from '../components';
 
 import ManageUsersController from './ManageUsersController';

@@ -1,4 +1,4 @@
-import { APSettings } from "./APSettingsController";
+import { APSettings } from "./types";
 
 export const AP_MODE_ALWAYS = 0;
 export const AP_MODE_DISCONNECTED = 1;

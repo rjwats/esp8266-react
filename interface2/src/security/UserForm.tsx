@@ -5,7 +5,7 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, Checkbox } from '@ma
 
 import { PasswordValidator, BlockFormControlLabel, FormButton } from '../components';
 
-import { User } from './SecuritySettingsController';
+import { User } from './types';
 
 interface UserFormProps {
   creating: boolean;

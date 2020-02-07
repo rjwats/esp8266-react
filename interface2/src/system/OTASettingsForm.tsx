@@ -7,7 +7,7 @@ import SaveIcon from '@material-ui/icons/Save';
 import { RestFormProps, BlockFormControlLabel, PasswordValidator, FormButton, FormActions } from '../components';
 import {isIP,isHostname,or}  from '../validators';
 
-import { OTASettings } from './OTASettingsController';
+import { OTASettings } from './types';
 
 type OTASettingsFormProps = RestFormProps<OTASettings>;
 

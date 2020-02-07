@@ -1,5 +1,5 @@
 import { Theme } from '@material-ui/core';
-import { WiFiStatus } from './WiFiStatusController';
+import { WiFiStatus } from './types';
 
 export const WIFI_STATUS_IDLE = 0;
 export const WIFI_STATUS_NO_SSID_AVAIL = 1;

@@ -17,8 +17,8 @@ import LockIcon from '@material-ui/icons/Lock';
 import MenuIcon from '@material-ui/icons/Menu';
 
 import ProjectMenu from '../project/ProjectMenu';
-import { PROJECT_NAME } from '../constants/Env';
-import { withAuthenticatedContext, AuthenticatedContextProps } from '../authentication/AuthenticationContext';
+import { PROJECT_NAME } from '../api';
+import { withAuthenticatedContext, AuthenticatedContextProps } from '../authentication';
 
 const drawerWidth = 290;
 
@@ -195,7 +195,7 @@ class MenuAppBar extends React.Component<MenuAppBarProps, MenuAppBarState> {
                     </CardContent>
                     <Divider />
                     <CardActions className={classes.authMenuActions}>
-                      <Button variant="contained" color="primary" onClick={authenticatedContext.signOut}>Sign Out</Button>
+                      <Button variant="contained" fullWidth color="primary" onClick={authenticatedContext.signOut}>Sign Out</Button>
                     </CardActions>
                   </Card>
                 </ClickAwayListener>

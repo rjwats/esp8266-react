@@ -4,8 +4,8 @@ import { ValidatorForm } from 'react-material-ui-form-validator';
 import { Typography, Slider, Box } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
 
+import { ENDPOINT_ROOT } from '../api';
 import { restController, RestControllerProps, RestFormLoader, RestFormProps, FormActions, FormButton, SectionContent } from '../components';
-import { ENDPOINT_ROOT } from '../constants/Env';
 
 export const DEMO_SETTINGS_ENDPOINT = ENDPOINT_ROOT + "demoSettings";
 

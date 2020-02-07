@@ -3,19 +3,8 @@ import React, { Component } from 'react';
 import {restController, RestControllerProps, RestFormLoader, SectionContent } from '../components';
 import WiFiSettingsForm from './WiFiSettingsForm';
 import { WiFiConnectionContext } from './WiFiConnectionContext';
-import { WIFI_SETTINGS_ENDPOINT } from '../constants/Endpoints';
-
-export interface WiFiSettings {
-  ssid: string;
-  password: string;
-  hostname: string;
-  static_ip_config: boolean;
-  local_ip?: string;
-  gateway_ip?: string;
-  subnet_mask?: string;
-  dns_ip_1?: string;
-  dns_ip_2?: string;
-}
+import { WIFI_SETTINGS_ENDPOINT } from '../api';
+import { WiFiSettings } from './types';
 
 type WiFiSettingsControllerProps = RestControllerProps<WiFiSettings>;
 

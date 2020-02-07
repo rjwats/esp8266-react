@@ -1,20 +1,10 @@
 import React, { Component } from 'react';
 
 import {restController, RestControllerProps, RestFormLoader, SectionContent } from '../components';
-import { SECURITY_SETTINGS_ENDPOINT } from '../constants/Endpoints';
+import { SECURITY_SETTINGS_ENDPOINT } from '../api';
 
 import SecuritySettingsForm from './SecuritySettingsForm';
-
-export interface User {
-  username: string;
-  password: string;
-  admin: boolean;
-}
-
-export interface SecuritySettings {
-  users: User[];
-  jwt_secret: string;
-}
+import { SecuritySettings } from './types';
 
 type SecuritySettingsControllerProps = RestControllerProps<SecuritySettings>;
 

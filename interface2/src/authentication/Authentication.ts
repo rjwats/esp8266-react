@@ -1,7 +1,7 @@
 import * as H from 'history';
 
 import history from '../history';
-import { PROJECT_PATH } from '../constants/Env';
+import { PROJECT_PATH } from '../api';
 
 export const ACCESS_TOKEN = 'access_token';
 export const LOGIN_PATHNAME = 'loginPathname';

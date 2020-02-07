@@ -2,21 +2,8 @@ import React, { Component } from 'react';
 
 import {restController, RestControllerProps, RestFormLoader, SectionContent } from '../components';
 import WiFiStatusForm from './WiFiStatusForm';
-import { WIFI_STATUS_ENDPOINT } from '../constants/Endpoints';
-
-export interface WiFiStatus {
-  status: number;
-  local_ip: string;
-  mac_address: string;
-  rssi: number;
-  ssid: string;
-  bssid: string;
-  channel: number;
-  subnet_mask: string;
-  gateway_ip: string;
-  dns_ip_1: string;
-  dns_ip_2: string;
-}
+import { WIFI_STATUS_ENDPOINT } from '../api';
+import { WiFiStatus } from './types';
 
 type WiFiStatusControllerProps = RestControllerProps<WiFiStatus>;
 

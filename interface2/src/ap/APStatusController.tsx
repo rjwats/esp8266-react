@@ -1,16 +1,10 @@
 import React, { Component } from 'react';
 
 import {restController, RestControllerProps, RestFormLoader, SectionContent } from '../components';
-import { AP_STATUS_ENDPOINT } from '../constants/Endpoints';
+import { AP_STATUS_ENDPOINT } from '../api';
 
 import APStatusForm from './APStatusForm';
-
-export interface APStatus {
-  active: boolean;
-  ip_address: string;
-  mac_address: string;
-  station_num: number;
-}
+import { APStatus } from './types';
 
 type APStatusControllerProps = RestControllerProps<APStatus>;
 

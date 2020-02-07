@@ -9,7 +9,7 @@ import LockOpenIcon from '@material-ui/icons/LockOpen';
 
 import { isNetworkOpen, networkSecurityMode } from './WiFiSecurityModes';
 import { WiFiConnectionContext } from './WiFiConnectionContext';
-import { WiFiNetwork, WiFiNetworkList } from './WiFiNetworkScanner';
+import { WiFiNetwork, WiFiNetworkList } from './types';
 
 interface WiFiNetworkSelectorProps {
   networkList: WiFiNetworkList;

@@ -4,7 +4,7 @@ import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
 import {List, ListItem, ListItemIcon, ListItemText} from '@material-ui/core';
 import SettingsRemoteIcon from '@material-ui/icons/SettingsRemote';
 
-import { PROJECT_PATH } from '../constants/Env';
+import { PROJECT_PATH } from '../api';
 
 class ProjectMenu extends Component<RouteComponentProps> {
 

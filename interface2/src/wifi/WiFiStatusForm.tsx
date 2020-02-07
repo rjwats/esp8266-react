@@ -12,7 +12,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 
 import { RestFormProps, FormActions, FormButton, HighlightAvatar } from '../components';
 import { wifiStatus, wifiStatusHighlight, isConnected } from './WiFiStatus';
-import { WiFiStatus } from './WiFiStatusController';
+import { WiFiStatus } from './types';
 
 type WiFiStatusFormProps = RestFormProps<WiFiStatus> & WithTheme;
 

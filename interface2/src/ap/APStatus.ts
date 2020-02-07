@@ -1,5 +1,5 @@
 import { Theme } from "@material-ui/core";
-import { APStatus } from "./APStatusController";
+import { APStatus } from "./types";
 
 export const apStatusHighlight = ({ active }: APStatus, theme: Theme) => {
   return active ? theme.palette.success.main : theme.palette.info.main;

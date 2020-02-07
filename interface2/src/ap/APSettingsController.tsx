@@ -1,15 +1,10 @@
 import React, { Component } from 'react';
 
-import { AP_SETTINGS_ENDPOINT } from '../constants/Endpoints';
+import { AP_SETTINGS_ENDPOINT } from '../api';
 import {restController, RestControllerProps, RestFormLoader, SectionContent } from '../components';
 
 import APSettingsForm from './APSettingsForm';
-
-export interface APSettings {
-  provision_mode: number;
-  ssid: string;
-  password: string;
-}
+import { APSettings } from './types';
 
 type APSettingsControllerProps = RestControllerProps<APSettings>;
 

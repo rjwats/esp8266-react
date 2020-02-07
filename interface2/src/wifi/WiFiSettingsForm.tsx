@@ -14,9 +14,8 @@ import { RestFormProps, PasswordValidator, BlockFormControlLabel, FormActions, F
 import { isIP, isHostname, optional } from '../validators';
 
 import { WiFiConnectionContext } from './WiFiConnectionContext';
-import { WiFiSettings } from './WiFiSettingsController';
 import { isNetworkOpen, networkSecurityMode } from './WiFiSecurityModes';
-
+import { WiFiSettings } from './types';
 
 type WiFiStatusFormProps = RestFormProps<WiFiSettings>;
 

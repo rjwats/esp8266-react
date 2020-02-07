@@ -8,8 +8,7 @@ import { RestFormProps, FormActions, FormButton, BlockFormControlLabel } from '.
 import { isIP, isHostname, or } from '../validators';
 
 import { TIME_ZONES, timeZoneSelectItems, selectedTimeZone } from './TZ';
-import { NTPSettings } from './NTPSettingsController';
-
+import { NTPSettings } from './types';
 
 type NTPSettingsFormProps = RestFormProps<NTPSettings>;
 

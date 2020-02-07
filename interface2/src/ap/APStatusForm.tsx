@@ -9,8 +9,8 @@ import ComputerIcon from '@material-ui/icons/Computer';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
 import { RestFormProps, FormActions, FormButton, HighlightAvatar } from '../components';
-import { APStatus } from './APStatusController';
 import { apStatusHighlight, apStatus } from './APStatus';
+import { APStatus } from './types';
 
 type APStatusFormProps = RestFormProps<APStatus> & WithTheme;
 

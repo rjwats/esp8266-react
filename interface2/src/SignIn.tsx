@@ -8,8 +8,7 @@ import ForwardIcon from '@material-ui/icons/Forward';
 
 import { withAuthenticationContext, AuthenticationContextProps } from './authentication/AuthenticationContext';
 import {PasswordValidator} from './components';
-import { PROJECT_NAME } from './constants/Env';
-import { SIGN_IN_ENDPOINT } from './constants/Endpoints';
+import { PROJECT_NAME, SIGN_IN_ENDPOINT } from './api';
 
 const styles = (theme: Theme) => createStyles({
   loginPage: {

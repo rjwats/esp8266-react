@@ -1,17 +1,10 @@
 import React, { Component } from 'react';
 
-import {restController, RestControllerProps, RestFormLoader, SectionContent } from '../components';
-import { NTP_STATUS_ENDPOINT } from '../constants/Endpoints';
+import { restController, RestControllerProps, RestFormLoader, SectionContent } from '../components';
+import { NTP_STATUS_ENDPOINT } from '../api';
 
 import NTPStatusForm from './NTPStatusForm';
-
-export interface NTPStatus {
-  status: number;
-  time_utc: string;
-  time_local: string;
-  server: string;
-  uptime: number;
-}
+import { NTPStatus } from './types';
 
 type NTPStatusControllerProps = RestControllerProps<NTPStatus>;
 

@@ -3,15 +3,14 @@ import { Redirect, Switch, RouteComponentProps } from 'react-router-dom'
 
 import { Tabs, Tab } from '@material-ui/core';
 
-import { withAuthenticatedContext, AuthenticatedContextProps } from '../authentication/AuthenticationContext';
-import AuthenticatedRoute from '../authentication/AuthenticatedRoute';
-
+import { withAuthenticatedContext, AuthenticatedContextProps, AuthenticatedRoute } from '../authentication';
 import { MenuAppBar } from '../components';
 
 import WiFiStatusController from './WiFiStatusController';
 import WiFiSettingsController from './WiFiSettingsController';
-import WiFiNetworkScanner, { WiFiNetwork } from './WiFiNetworkScanner';
+import WiFiNetworkScanner from './WiFiNetworkScanner';
 import { WiFiConnectionContext } from './WiFiConnectionContext';
+import { WiFiNetwork } from './types';
 
 type WiFiConnectionProps = AuthenticatedContextProps & RouteComponentProps;
 

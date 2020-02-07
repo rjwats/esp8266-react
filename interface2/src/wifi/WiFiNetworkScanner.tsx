@@ -5,25 +5,15 @@ import { createStyles, WithStyles, Theme, withStyles, Typography, LinearProgress
 import PermScanWifiIcon from '@material-ui/icons/PermScanWifi';
 
 import { FormActions, FormButton, SectionContent } from '../components';
+import { redirectingAuthorizedFetch } from '../authentication';
+import { SCAN_NETWORKS_ENDPOINT, LIST_NETWORKS_ENDPOINT } from '../api';
+
 import WiFiNetworkSelector from './WiFiNetworkSelector';
-import { redirectingAuthorizedFetch } from '../authentication/Authentication';
-import { SCAN_NETWORKS_ENDPOINT, LIST_NETWORKS_ENDPOINT } from '../constants/Endpoints';
+import { WiFiNetworkList, WiFiNetwork } from './types';
 
 const NUM_POLLS = 10
 const POLLING_FREQUENCY = 500
 const RETRY_EXCEPTION_TYPE = "retry"
-
-export interface WiFiNetworkList {
-  networks: WiFiNetwork[];
-}
-
-export interface WiFiNetwork {
-  rssi: number;
-  ssid: string;
-  bssid: string;
-  channel: number;
-  encryption_type: number;
-}
 
 interface WiFiNetworkScannerState {
   scanningForNetworks: boolean;

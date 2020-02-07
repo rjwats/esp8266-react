@@ -1,5 +1,5 @@
 import { Theme } from "@material-ui/core";
-import { NTPStatus } from "./NTPStatusController";
+import { NTPStatus } from "./types";
 
 export const NTP_INACTIVE = 0;
 export const NTP_ACTIVE = 1;

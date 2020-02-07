@@ -1,6 +1,7 @@
 import React from 'react';
 import { withSnackbar, WithSnackbarProps } from 'notistack';
-import { redirectingAuthorizedFetch } from '../authentication/Authentication';
+
+import { redirectingAuthorizedFetch } from '../authentication';
 
 export interface RestControllerProps<D> extends WithSnackbarProps {
   handleValueChange: (name: keyof D) => (event: React.ChangeEvent<HTMLInputElement>) => void;

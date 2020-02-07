@@ -14,8 +14,8 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import { RestFormProps, FormActions, FormButton, HighlightAvatar } from '../components';
 
 import { isNtpActive, ntpStatusHighlight, ntpStatus } from './NTPStatus';
-import { NTPStatus } from './NTPStatusController';
 import { formatIsoDateTime } from './TimeFormat';
+import { NTPStatus } from './types';
 
 type NTPStatusFormProps = RestFormProps<NTPStatus> & WithTheme;
 

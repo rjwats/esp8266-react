@@ -12,11 +12,11 @@ import IconButton from '@material-ui/core/IconButton';
 import SaveIcon from '@material-ui/icons/Save';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 
-import { withAuthenticatedContext, AuthenticatedContextProps } from '../authentication/AuthenticationContext';
+import { withAuthenticatedContext, AuthenticatedContextProps } from '../authentication';
 import { RestFormProps, FormActions, FormButton } from '../components';
 
-import { SecuritySettings, User } from './SecuritySettingsController';
 import UserForm from './UserForm';
+import { SecuritySettings, User } from './types';
 
 function compareUsers(a: User, b: User) {
   if (a.username < b.username) {
