@@ -24,8 +24,6 @@ class OTASettingsForm extends React.Component<OTASettingsFormProps> {
         <BlockFormControlLabel
           control={
             <Checkbox
-              color="primary"
-              value="enabled"
               checked={data.enabled}
               onChange={handleCheckboxChange("enabled")}
             />

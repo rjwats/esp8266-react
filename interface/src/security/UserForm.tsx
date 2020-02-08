@@ -62,7 +62,6 @@ class UserForm extends React.Component<UserFormProps> {
             <BlockFormControlLabel
               control={
                 <Checkbox
-                  color="primary"
                   value="admin"
                   checked={user.admin}
                   onChange={handleCheckboxChange('admin')}

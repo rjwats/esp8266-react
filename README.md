@@ -213,13 +213,18 @@ The framework, and MaterialUI allows for a reasonable degree of customization wi
 
 ### Theming the app
 
-The app can be easily themed by editing the [MaterialUI theme](https://material-ui.com/customization/themes/). Edit the theme in ['interface/src/CustomMuiTheme.tsx'](interface/src/CustomMuiTheme.tsx) as you desire:
+The app can be easily themed by editing the [MaterialUI theme](https://material-ui.com/customization/theming/). Edit the theme in ['interface/src/CustomMuiTheme.tsx'](interface/src/CustomMuiTheme.tsx) as you desire. For example, here is a dark theme:
 
 ```js
 const theme = createMuiTheme({
   palette: {
-    primary: deepOrange,
-    secondary: blueGrey,
+    type:"dark",
+    primary: {
+      main: '#222',
+    },
+    secondary: {
+      main: '#666',
+    },
     info: {
       main: blueGrey[900]
     },
@@ -232,9 +237,11 @@ const theme = createMuiTheme({
     success: {
       main: green[500]
     }
-  },
+  }
 });
 ```
+
+![Dark Theme](/media/dark.png?raw=true "Dark Theme")
 
 ### Changing the app icon
 

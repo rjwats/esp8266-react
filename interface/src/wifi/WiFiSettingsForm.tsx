@@ -96,7 +96,6 @@ class WiFiSettingsForm extends React.Component<WiFiStatusFormProps> {
         <BlockFormControlLabel
           control={
             <Checkbox
-              color="primary"
               value="static_ip_config"
               checked={data.static_ip_config}
               onChange={handleCheckboxChange("static_ip_config")}

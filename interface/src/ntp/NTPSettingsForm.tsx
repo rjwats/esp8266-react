@@ -37,7 +37,6 @@ class NTPSettingsForm extends React.Component<NTPSettingsFormProps> {
               checked={data.enabled}
               onChange={handleCheckboxChange('enabled')}
               value="enabled"
-              color="primary"
             />
           }
           label="Enable NTP?"
