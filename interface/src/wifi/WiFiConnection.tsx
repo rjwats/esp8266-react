@@ -42,7 +42,7 @@ class WiFiConnection extends Component<WiFiConnectionProps, WiFiConnectionContex
     return (
       <WiFiConnectionContext.Provider value={this.state}>
         <MenuAppBar sectionTitle="WiFi Connection">
-          <Tabs value={this.props.match.url} onChange={this.handleTabChange} indicatorColor="primary" textColor="primary" variant="fullWidth">
+          <Tabs value={this.props.match.url} onChange={this.handleTabChange} variant="fullWidth">
             <Tab value="/wifi/status" label="WiFi Status" />
             <Tab value="/wifi/scan" label="Scan Networks" disabled={!authenticatedContext.me.admin} />
             <Tab value="/wifi/settings" label="WiFi Settings" disabled={!authenticatedContext.me.admin} />

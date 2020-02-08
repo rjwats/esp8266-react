@@ -21,7 +21,7 @@ class System extends Component<SystemProps> {
     const { authenticatedContext } = this.props;
     return (
       <MenuAppBar sectionTitle="System">
-        <Tabs value={this.props.match.url} onChange={this.handleTabChange} indicatorColor="primary" textColor="primary" variant="fullWidth">
+        <Tabs value={this.props.match.url} onChange={this.handleTabChange} variant="fullWidth">
           <Tab value="/system/status" label="System Status" />
           <Tab value="/system/ota" label="OTA Settings" disabled={!authenticatedContext.me.admin} />
         </Tabs>
