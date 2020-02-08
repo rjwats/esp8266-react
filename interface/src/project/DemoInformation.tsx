@@ -33,7 +33,7 @@ class DemoInformation extends Component {
           <TableBody>
             <TableRow>
               <TableCell>
-                ProjectMenu.js
+                ProjectMenu.tsx
               </TableCell>
               <TableCell>
                 You can add your project's screens to the side bar here.
@@ -41,7 +41,7 @@ class DemoInformation extends Component {
             </TableRow>
             <TableRow>
               <TableCell>
-                ProjectRouting.js
+                ProjectRouting.tsx
               </TableCell>
               <TableCell>
                 The routing which controls the screens of your project.
@@ -49,7 +49,7 @@ class DemoInformation extends Component {
             </TableRow>
             <TableRow>
               <TableCell>
-                DemoProject.js
+                DemoProject.tsx
               </TableCell>
               <TableCell>
                 This screen, with tabs and tab routing.
@@ -57,15 +57,15 @@ class DemoInformation extends Component {
             </TableRow>
             <TableRow>
               <TableCell>
-                DemoInformation.js
+                DemoInformation.tsx
               </TableCell>
               <TableCell>
-                The demo information tab.
+                The demo information page.
               </TableCell>
             </TableRow>
             <TableRow>
               <TableCell>
-                DemoController.js
+                DemoController.tsx
               </TableCell>
               <TableCell>
                 The demo controller tab, to control the built-in LED.
