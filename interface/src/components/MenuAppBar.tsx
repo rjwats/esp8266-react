@@ -109,7 +109,7 @@ class MenuAppBar extends React.Component<MenuAppBarProps, MenuAppBarState> {
     const drawer = (
       <div>
         <Toolbar>
-          <Typography variant="h6" color="primary">
+          <Typography variant="h6" color="textPrimary">
             {PROJECT_NAME}
           </Typography>
           <Divider absolute />

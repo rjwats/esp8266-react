@@ -213,17 +213,25 @@ The framework, and MaterialUI allows for a reasonable degree of customization wi
 
 ### Theming the app
 
-The app can be easily themed by editing the [MaterialUI theme](https://material-ui.com/customization/themes/). Edit the theme in ['interface/src/App.js'](interface/src/App.js) as you desire:
+The app can be easily themed by editing the [MaterialUI theme](https://material-ui.com/customization/themes/). Edit the theme in ['interface/src/CustomMuiTheme.tsx'](interface/src/CustomMuiTheme.tsx) as you desire:
 
 ```js
 const theme = createMuiTheme({
   palette: {
-    primary: red,
-    secondary: deepOrange,
-    highlight_idle: blueGrey[900],
-    highlight_warn: orange[500],
-    highlight_error: red[500],
-    highlight_success: green[500],
+    primary: deepOrange,
+    secondary: blueGrey,
+    info: {
+      main: blueGrey[900]
+    },
+    warning: {
+      main: orange[500]
+    },
+    error: {
+      main: red[500]
+    },
+    success: {
+      main: green[500]
+    }
   },
 });
 ```
