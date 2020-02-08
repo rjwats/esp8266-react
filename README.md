@@ -448,7 +448,7 @@ Serial.println(wifiSettings.ssid);
 Configure the SSID and password:
 
 ```cpp
-WiFiSettings wifiSettings = esp8266React->getWiFiSettingsService()->fetch();
+WiFiSettings wifiSettings = esp8266React.getWiFiSettingsService()->fetch();
 wifiSettings.ssid = "MyNetworkSSID";
 wifiSettings.password = "MySuperSecretPassword";
 esp8266React.getWiFiSettingsService()->update(wifiSettings);
