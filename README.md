@@ -213,20 +213,35 @@ The framework, and MaterialUI allows for a reasonable degree of customization wi
 
 ### Theming the app
 
-The app can be easily themed by editing the [MaterialUI theme](https://material-ui.com/customization/themes/). Edit the theme in ['interface/src/App.js'](interface/src/App.js) as you desire:
+The app can be easily themed by editing the [MaterialUI theme](https://material-ui.com/customization/theming/). Edit the theme in ['interface/src/CustomMuiTheme.tsx'](interface/src/CustomMuiTheme.tsx) as you desire. For example, here is a dark theme:
 
 ```js
 const theme = createMuiTheme({
   palette: {
-    primary: red,
-    secondary: deepOrange,
-    highlight_idle: blueGrey[900],
-    highlight_warn: orange[500],
-    highlight_error: red[500],
-    highlight_success: green[500],
-  },
+    type:"dark",
+    primary: {
+      main: '#222',
+    },
+    secondary: {
+      main: '#666',
+    },
+    info: {
+      main: blueGrey[900]
+    },
+    warning: {
+      main: orange[500]
+    },
+    error: {
+      main: red[500]
+    },
+    success: {
+      main: green[500]
+    }
+  }
 });
 ```
+
+![Dark Theme](/media/dark.png?raw=true "Dark Theme")
 
 ### Changing the app icon
 
@@ -448,7 +463,7 @@ Serial.println(wifiSettings.ssid);
 Configure the SSID and password:
 
 ```cpp
-WiFiSettings wifiSettings = esp8266React->getWiFiSettingsService()->fetch();
+WiFiSettings wifiSettings = esp8266React.getWiFiSettingsService()->fetch();
 wifiSettings.ssid = "MyNetworkSSID";
 wifiSettings.password = "MySuperSecretPassword";
 esp8266React.getWiFiSettingsService()->update(wifiSettings);
