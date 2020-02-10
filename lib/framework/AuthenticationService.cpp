@@ -1,3 +1,4 @@
+#ifndef FT_SECURITY_DISABLED
 #include <AuthenticationService.h>
 
 AuthenticationService::AuthenticationService(AsyncWebServer* server, SecurityManager* securityManager) :
@@ -46,3 +47,5 @@ void AuthenticationService::signIn(AsyncWebServerRequest* request, JsonDocument&
   AsyncWebServerResponse* response = request->beginResponse(401);
   request->send(response);
 }
+
+#endif

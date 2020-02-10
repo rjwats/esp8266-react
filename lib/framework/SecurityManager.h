@@ -54,6 +54,8 @@ class AuthenticationPredicates {
   };
 };
 
+#ifndef FT_SECURITY_DISABLED
+
 class SecurityManager {
  public:
   /*
@@ -78,4 +80,14 @@ class SecurityManager {
                                                AuthenticationPredicate predicate) = 0;
 };
 
+#else
+
+// minimal set of functions to support framework code with security settings disabled
+class SecurityManager {
+ public:
+  virtual Authentication authenticateRequest(AsyncWebServerRequest* request);
+  virtual ArRequestHandlerFunction wrapRequest(ArRequestHandlerFunction onRequest, AuthenticationPredicate predicate);
+};
+
+#endif  // end FT_SECURITY_DISABLED
 #endif  // end SecurityManager_h

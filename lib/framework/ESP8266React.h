@@ -15,7 +15,9 @@
 
 #include <APSettingsService.h>
 #include <APStatus.h>
+#ifndef FT_SECURITY_DISABLED
 #include <AuthenticationService.h>
+#endif
 #include <NTPSettingsService.h>
 #include <NTPStatus.h>
 #include <OTASettingsService.h>
@@ -41,9 +43,11 @@ class ESP8266React {
     return &_securitySettingsService;
   }
 
-   SettingsService<SecuritySettings>* getSecuritySettingsService() {
+#ifndef FT_SECURITY_DISABLED
+  SettingsService<SecuritySettings>* getSecuritySettingsService() {
     return &_securitySettingsService;
   }
+#endif
 
   SettingsService<WiFiSettings>* getWiFiSettingsService() {
     return &_wifiSettingsService;
@@ -68,9 +72,9 @@ class ESP8266React {
   NTPSettingsService _ntpSettingsService;
   OTASettingsService _otaSettingsService;
   RestartService _restartService;
-
+#ifndef FT_SECURITY_DISABLED
   AuthenticationService _authenticationService;
-
+#endif
   WiFiScanner _wifiScanner;
   WiFiStatus _wifiStatus;
   NTPStatus _ntpStatus;

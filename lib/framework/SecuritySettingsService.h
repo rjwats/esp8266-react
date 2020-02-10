@@ -10,6 +10,8 @@
 #define SECURITY_SETTINGS_FILE "/config/securitySettings.json"
 #define SECURITY_SETTINGS_PATH "/rest/securitySettings"
 
+#ifndef FT_SECURITY_DISABLED
+
 class SecuritySettings {
  public:
   String jwtSecret;
@@ -45,4 +47,17 @@ class SecuritySettingsService : public AdminSettingsService<SecuritySettings>, p
   boolean validatePayload(JsonObject& parsedPayload, User* user);
 };
 
-#endif  // end SecuritySettingsService_h
+#else
+
+class SecuritySettingsService : public SecurityManager {
+ public:
+  SecuritySettingsService(AsyncWebServer* server, FS* fs);
+  ~SecuritySettingsService();
+
+  // minimal set of functions to support framework with security settings disabled
+  Authentication authenticateRequest(AsyncWebServerRequest* request);
+  ArRequestHandlerFunction wrapRequest(ArRequestHandlerFunction onRequest, AuthenticationPredicate predicate);
+};
+
+#endif // end FT_SECURITY_DISABLED
+#endif // end SecuritySettingsService_h

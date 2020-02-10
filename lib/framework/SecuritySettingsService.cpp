@@ -1,5 +1,7 @@
 #include <SecuritySettingsService.h>
 
+#ifndef FT_SECURITY_DISABLED
+
 SecuritySettingsService::SecuritySettingsService(AsyncWebServer* server, FS* fs) :
     AdminSettingsService(server, fs, this, SECURITY_SETTINGS_PATH, SECURITY_SETTINGS_FILE),
     SecurityManager() {
@@ -15,7 +17,7 @@ void SecuritySettingsService::readFromJsonObject(JsonObject& root) {
   _settings.users.clear();
   if (root["users"].is<JsonArray>()) {
     for (JsonVariant user : root["users"].as<JsonArray>()) {
-     _settings.users.push_back(User(user["username"], user["password"], user["admin"]));
+      _settings.users.push_back(User(user["username"], user["password"], user["admin"]));
     }
   } else {
     _settings.users.push_back(User(DEFAULT_ADMIN_USERNAME, DEFAULT_ADMIN_USERNAME, true));
@@ -37,9 +39,8 @@ void SecuritySettingsService::writeToJsonObject(JsonObject& root) {
   }
 }
 
-
-Authentication SecuritySettingsService::authenticateRequest(AsyncWebServerRequest *request) {
-  AsyncWebHeader *authorizationHeader = request->getHeader(AUTHORIZATION_HEADER);
+Authentication SecuritySettingsService::authenticateRequest(AsyncWebServerRequest* request) {
+  AsyncWebHeader* authorizationHeader = request->getHeader(AUTHORIZATION_HEADER);
   if (authorizationHeader) {
     String value = authorizationHeader->value();
     if (value.startsWith(AUTHORIZATION_HEADER_PREFIX)) {
@@ -74,19 +75,19 @@ Authentication SecuritySettingsService::authenticate(String username, String pas
   return Authentication();
 }
 
-inline void populateJWTPayload(JsonObject &payload, User *user) {
+inline void populateJWTPayload(JsonObject& payload, User* user) {
   payload["username"] = user->username;
   payload["admin"] = user->admin;
 }
 
-boolean SecuritySettingsService::validatePayload(JsonObject &parsedPayload, User *user) {
+boolean SecuritySettingsService::validatePayload(JsonObject& parsedPayload, User* user) {
   DynamicJsonDocument _jsonDocument(MAX_JWT_SIZE);
   JsonObject payload = _jsonDocument.to<JsonObject>();
   populateJWTPayload(payload, user);
   return payload == parsedPayload;
 }
 
-String SecuritySettingsService::generateJWT(User *user) {
+String SecuritySettingsService::generateJWT(User* user) {
   DynamicJsonDocument _jsonDocument(MAX_JWT_SIZE);
   JsonObject payload = _jsonDocument.to<JsonObject>();
   populateJWTPayload(payload, user);
@@ -94,8 +95,8 @@ String SecuritySettingsService::generateJWT(User *user) {
 }
 
 ArRequestHandlerFunction SecuritySettingsService::wrapRequest(ArRequestHandlerFunction onRequest,
-                                                      AuthenticationPredicate predicate) {
-  return [this, onRequest, predicate](AsyncWebServerRequest *request) {
+                                                              AuthenticationPredicate predicate) {
+  return [this, onRequest, predicate](AsyncWebServerRequest* request) {
     Authentication authentication = authenticateRequest(request);
     if (!predicate(authentication)) {
       request->send(401);
@@ -104,3 +105,25 @@ ArRequestHandlerFunction SecuritySettingsService::wrapRequest(ArRequestHandlerFu
     onRequest(request);
   };
 }
+
+#else
+
+User ADMIN_USER = User(DEFAULT_ADMIN_USERNAME, DEFAULT_ADMIN_USERNAME, true);
+
+SecuritySettingsService::SecuritySettingsService(AsyncWebServer* server, FS* fs) : SecurityManager() {
+}
+SecuritySettingsService::~SecuritySettingsService() {
+}
+
+// Return the admin user on all request - disabling security features
+Authentication SecuritySettingsService::authenticateRequest(AsyncWebServerRequest* request) {
+  return Authentication(ADMIN_USER);
+}
+
+// Return the function unwrapped
+ArRequestHandlerFunction SecuritySettingsService::wrapRequest(ArRequestHandlerFunction onRequest,
+                                                              AuthenticationPredicate predicate) {
+  return onRequest;
+}
+
+#endif
