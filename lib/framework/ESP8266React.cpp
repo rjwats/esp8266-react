@@ -1,13 +1,14 @@
 #include <ESP8266React.h>
 
 ESP8266React::ESP8266React(AsyncWebServer* server, FS* fs) :
+    _featuresService(server),
     _securitySettingsService(server, fs),
     _wifiSettingsService(server, fs, &_securitySettingsService),
     _apSettingsService(server, fs, &_securitySettingsService),
     _ntpSettingsService(server, fs, &_securitySettingsService),
     _otaSettingsService(server, fs, &_securitySettingsService),
     _restartService(server, &_securitySettingsService),
-#ifndef FT_SECURITY_DISABLED
+#if USING(FT_SECURITY)
     _authenticationService(server, &_securitySettingsService),
 #endif
     _wifiScanner(server, &_securitySettingsService),
@@ -68,7 +69,7 @@ ESP8266React::ESP8266React(AsyncWebServer* server, FS* fs) :
 }
 
 void ESP8266React::begin() {
-#ifndef FT_SECURITY_DISABLED
+#if USING(FT_SECURITY)
   _securitySettingsService.begin();
 #endif
   _wifiSettingsService.begin();

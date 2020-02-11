@@ -2,6 +2,7 @@
 #define ESP8266React_h
 
 #include <Arduino.h>
+#include <FeaturesService.h>
 
 #ifdef ESP32
 #include <AsyncTCP.h>
@@ -15,7 +16,7 @@
 
 #include <APSettingsService.h>
 #include <APStatus.h>
-#ifndef FT_SECURITY_DISABLED
+#if USING(FT_SECURITY)
 #include <AuthenticationService.h>
 #endif
 #include <NTPSettingsService.h>
@@ -43,7 +44,7 @@ class ESP8266React {
     return &_securitySettingsService;
   }
 
-#ifndef FT_SECURITY_DISABLED
+#if USING(FT_SECURITY)
   SettingsService<SecuritySettings>* getSecuritySettingsService() {
     return &_securitySettingsService;
   }
@@ -66,13 +67,14 @@ class ESP8266React {
   }
 
  private:
+  FeaturesService _featuresService;
   SecuritySettingsService _securitySettingsService;
   WiFiSettingsService _wifiSettingsService;
   APSettingsService _apSettingsService;
   NTPSettingsService _ntpSettingsService;
   OTASettingsService _otaSettingsService;
   RestartService _restartService;
-#ifndef FT_SECURITY_DISABLED
+#if USING(FT_SECURITY)
   AuthenticationService _authenticationService;
 #endif
   WiFiScanner _wifiScanner;

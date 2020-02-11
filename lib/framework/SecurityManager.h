@@ -1,6 +1,7 @@
 #ifndef SecurityManager_h
 #define SecurityManager_h
 
+#include <Features.h>
 #include <ArduinoJsonJWT.h>
 #include <ESPAsyncWebServer.h>
 #include <list>
@@ -54,7 +55,7 @@ class AuthenticationPredicates {
   };
 };
 
-#ifndef FT_SECURITY_DISABLED
+#if USING(FT_SECURITY)
 
 class SecurityManager {
  public:
@@ -89,5 +90,5 @@ class SecurityManager {
   virtual ArRequestHandlerFunction wrapRequest(ArRequestHandlerFunction onRequest, AuthenticationPredicate predicate);
 };
 
-#endif  // end FT_SECURITY_DISABLED
+#endif  // end USING(FT_SECURITY)
 #endif  // end SecurityManager_h

@@ -1,6 +1,6 @@
 #include <SecuritySettingsService.h>
 
-#ifndef FT_SECURITY_DISABLED
+#if USING(FT_SECURITY)
 
 SecuritySettingsService::SecuritySettingsService(AsyncWebServer* server, FS* fs) :
     AdminSettingsService(server, fs, this, SECURITY_SETTINGS_PATH, SECURITY_SETTINGS_FILE),
@@ -126,4 +126,4 @@ ArRequestHandlerFunction SecuritySettingsService::wrapRequest(ArRequestHandlerFu
   return onRequest;
 }
 
-#endif
+#endif  // end USING(FT_SECURITY)

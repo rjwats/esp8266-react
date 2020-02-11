@@ -1,6 +1,7 @@
 #ifndef SecuritySettingsService_h
 #define SecuritySettingsService_h
 
+#include <Features.h>
 #include <AdminSettingsService.h>
 #include <SecurityManager.h>
 
@@ -10,7 +11,7 @@
 #define SECURITY_SETTINGS_FILE "/config/securitySettings.json"
 #define SECURITY_SETTINGS_PATH "/rest/securitySettings"
 
-#ifndef FT_SECURITY_DISABLED
+#if USING(FT_SECURITY)
 
 class SecuritySettings {
  public:
@@ -59,5 +60,5 @@ class SecuritySettingsService : public SecurityManager {
   ArRequestHandlerFunction wrapRequest(ArRequestHandlerFunction onRequest, AuthenticationPredicate predicate);
 };
 
-#endif // end FT_SECURITY_DISABLED
+#endif // end USING(FT_SECURITY)
 #endif // end SecuritySettingsService_h
