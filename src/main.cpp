@@ -1,4 +1,4 @@
-#include <DemoProject.h>
+#include <FermentationChamber.h>
 #include <ESP8266React.h>
 #include <FS.h>
 
@@ -6,7 +6,7 @@
 
 AsyncWebServer server(80);
 ESP8266React esp8266React(&server, &SPIFFS);
-DemoProject demoProject = DemoProject(&server, &SPIFFS, esp8266React.getSecurityManager());
+FermentationChamber fermentationChamber = FermentationChamber(&server, &SPIFFS);
 
 void setup() {
   // start serial and filesystem
@@ -23,7 +23,7 @@ void setup() {
   esp8266React.begin();
 
   // start the demo project
-  demoProject.begin();
+  fermentationChamber.begin();
 
   // start the server
   server.begin();
@@ -34,5 +34,5 @@ void loop() {
   esp8266React.loop();
 
   // run the demo project's loop function
-  demoProject.loop();
+  fermentationChamber.loop();
 }
