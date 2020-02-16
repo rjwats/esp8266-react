@@ -6,8 +6,9 @@ import { Tabs, Tab } from '@material-ui/core';
 import { PROJECT_PATH } from '../api';
 import { AuthenticatedRoute } from '../authentication';
 import { MenuAppBar } from '../components';
-import DemoInformation from './DemoInformation';
-import DemoController from './DemoController';
+import ChamberSettingsController from './ChamberSettingsController';
+import ChamberLogController from './ChamberLogController';
+import ChamberStatusController from './ChamberStatusController';
 
 class ProjectRouting extends Component<RouteComponentProps>  {
 
@@ -17,15 +18,17 @@ class ProjectRouting extends Component<RouteComponentProps>  {
 
   render() {
     return (
-      <MenuAppBar sectionTitle="Demo Project">
+      <MenuAppBar sectionTitle="Fermentation Chamber">
         <Tabs value={this.props.match.url} onChange={this.handleTabChange} variant="fullWidth">
-          <Tab value={`/${PROJECT_PATH}/information`} label="Demo Information" />
-          <Tab value={`/${PROJECT_PATH}/controller`} label="Demo Controller" />
+          <Tab value={`/${PROJECT_PATH}/status`} label="Chamber Status" />
+          <Tab value={`/${PROJECT_PATH}/log`} label="Chamber Log" />
+          <Tab value={`/${PROJECT_PATH}/settings`} label="Chamber Settings" />
         </Tabs>
         <Switch>
-          <AuthenticatedRoute exact path={`/${PROJECT_PATH}/information`} component={DemoInformation} />
-          <AuthenticatedRoute exact path={`/${PROJECT_PATH}/controller`} component={DemoController} />
-          <Redirect to={`/${PROJECT_PATH}/information`} />
+          <AuthenticatedRoute exact path={`/${PROJECT_PATH}/status`} component={ChamberStatusController} />
+          <AuthenticatedRoute exact path={`/${PROJECT_PATH}/log`} component={ChamberLogController} />
+          <AuthenticatedRoute exact path={`/${PROJECT_PATH}/settings`} component={ChamberSettingsController} />
+          <Redirect to={`/${PROJECT_PATH}/status`} />
         </Switch>
       </MenuAppBar>
     )

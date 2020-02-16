@@ -25,8 +25,8 @@ class Security extends Component<SecurityProps> {
           <Tab value="/security/settings" label="Security Settings" />
         </Tabs>
         <Switch>
-          <AuthenticatedRoute exact={true} path="/security/users" component={ManageUsersController} />
-          <AuthenticatedRoute exact={true} path="/security/settings" component={SecuritySettingsController} />
+          <AuthenticatedRoute exact path="/security/users" component={ManageUsersController} />
+          <AuthenticatedRoute exact path="/security/settings" component={SecuritySettingsController} />
           <Redirect to="/security/users" />
         </Switch>
       </MenuAppBar>

@@ -1,5 +1,26 @@
+import { ENDPOINT_ROOT } from "../api";
 
-type SensorTemperatures = { [sensor_address: string]: number; }
+export const CHAMBER_SETTINGS_ENDPOINT = ENDPOINT_ROOT + "chamberSettings";
+export const CHAMBER_STATUS_ENDPOINT = ENDPOINT_ROOT + "chamberStatus";
+export const LOG_DATA_ENDPOINT = ENDPOINT_ROOT + "logData";
+
+export interface SensorTemperature {
+  temp_c: number;
+}
+
+export type SensorTemperatures = { [sensor_address: string]: SensorTemperature; }
+
+export interface ChamberDataSet {
+  data: ChamberData[];
+}
+
+export interface ChamberData {
+  time: number;
+  status: number;
+  chamber_temp: number;
+  ambient_temp: number;
+  target_temp: number;
+}
 
 export interface ChamberStatus {
   // configurable addresses for sensors

@@ -1,9 +1,14 @@
-import { ChamberStatus } from "./types";
 import { Theme } from "@material-ui/core";
+
+import { ChamberStatus } from "./types";
 
 export const CHAMBER_STATUS_IDLE = 0;
 export const CHAMBER_STATUS_HEATING = 1;
 export const CHAMBER_STATUS_COOLING = 2;
+
+export const chamberEnabledHighlight = (enabled: boolean, theme: Theme) => {
+  return enabled ? theme.palette.success.main : "";
+}
 
 export const chamberStatusHighlight = ({ status }: ChamberStatus, theme: Theme) => {
   switch (status) {
