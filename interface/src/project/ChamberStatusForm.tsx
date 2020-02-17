@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 
-import { Divider, List, Avatar, ListItemText, ListItem, withTheme, WithTheme } from '@material-ui/core';
+import { Divider, List, Avatar, ListItemAvatar, ListItemText, ListItem, withTheme, WithTheme } from '@material-ui/core';
 
 import KitchenIcon from '@material-ui/icons/Kitchen';
 import NaturePeopleIcon from '@material-ui/icons/NaturePeople';
@@ -17,10 +17,6 @@ type ChamberStatusFormProps = RestFormProps<ChamberStatus> & WithTheme;
 
 class ChamberStatusForm extends Component<ChamberStatusFormProps> {
 
-  componentDidMount() {
-    this.props.loadData();
-  }
-
   sensorTemp(sensorId: string, sensors: SensorTemperatures) {
     if (sensors[sensorId]) {
       return sensors[sensorId].temp_c.toFixed(1) + "°C";
@@ -35,42 +31,59 @@ class ChamberStatusForm extends Component<ChamberStatusFormProps> {
       <Fragment>
         <List>
           <ListItem>
-            <HighlightAvatar color={chamberStatusHighlight(data, theme)}>
-              <KitchenIcon />
-            </HighlightAvatar>
+            <ListItemAvatar>
+              <HighlightAvatar color={chamberStatusHighlight(data, theme)}>
+                <KitchenIcon />
+              </HighlightAvatar>
+            </ListItemAvatar>
             <ListItemText primary="Chamber Status" secondary={chamberStatus(data)} />
           </ListItem>
+          <Divider variant="inset" component="li" />
           <ListItem>
-            <Avatar>
-              <TagFacesIcon />
-            </Avatar>
+            <ListItemAvatar>
+              <Avatar>
+                <TagFacesIcon />
+              </Avatar>
+            </ListItemAvatar>
             <ListItemText primary="Target Temperature" secondary={data.target_temp + "°C"} />
           </ListItem>
+          <Divider variant="inset" component="li" />
           <ListItem>
-            <Avatar>
-              <KitchenIcon />
-            </Avatar>
+            <ListItemAvatar>
+              <Avatar>
+                <KitchenIcon />
+              </Avatar>
+            </ListItemAvatar>
             <ListItemText primary="Chamber Temperature" secondary={this.sensorTemp(data.chamber_sensor_address, data.sensors)} />
           </ListItem>
+          <Divider variant="inset" component="li" />
           <ListItem>
-            <Avatar>
-              <NaturePeopleIcon />
-            </Avatar>
+            <ListItemAvatar>
+              <Avatar>
+                <NaturePeopleIcon />
+              </Avatar>
+            </ListItemAvatar>
             <ListItemText primary="Ambient Temperature" secondary={this.sensorTemp(data.ambient_sensor_address, data.sensors)} />
           </ListItem>
           <Divider variant="inset" component="li" />
           <ListItem>
-            <HighlightAvatar color={chamberEnabledHighlight(data.enable_cooler, theme)}>
-              <AcUnitIcon />
-            </HighlightAvatar>
+            <ListItemAvatar>
+              <HighlightAvatar color={chamberEnabledHighlight(data.enable_cooler, theme)}>
+                <AcUnitIcon />
+              </HighlightAvatar>
+            </ListItemAvatar>
             <ListItemText primary="Cooler Enabled?" secondary={data.enable_cooler ? "Enabled" : "Disabled"} />
           </ListItem>
+          <Divider variant="inset" component="li" />
           <ListItem>
-            <HighlightAvatar color={chamberEnabledHighlight(data.enable_heater, theme)}>
-              <WbSunnyIcon />
-            </HighlightAvatar>
+            <ListItemAvatar>
+              <HighlightAvatar color={chamberEnabledHighlight(data.enable_heater, theme)}>
+                <WbSunnyIcon />
+              </HighlightAvatar>
+            </ListItemAvatar>
             <ListItemText primary="Heater Enabled?" secondary={data.enable_heater ? "Enabled" : "Disabled"} />
           </ListItem>
+          <Divider variant="inset" component="li" />
         </List>
         <FormActions>
           <FormButton variant="contained" color="secondary" onClick={loadData}>

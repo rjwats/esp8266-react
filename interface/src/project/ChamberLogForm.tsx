@@ -11,10 +11,6 @@ type ChamberLogFormProps = RestFormProps<ChamberDataSet>;
 
 class ChamberLogForm extends Component<ChamberLogFormProps> {
 
-  componentDidMount() {
-    this.props.loadData();
-  }
-
   render() {
     const { data, loadData } = this.props;
     const labels: Moment[] = [];
