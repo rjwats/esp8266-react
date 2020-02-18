@@ -6,6 +6,7 @@ import moment, { Moment } from 'moment';
 import { RestFormProps, FormActions, FormButton } from '../components';
 
 import { ChamberDataSet, ChamberData } from './types';
+import ChartWrapper from './ChartWrapper';
 
 type ChamberLogFormProps = RestFormProps<ChamberDataSet>;
 
@@ -109,7 +110,9 @@ class ChamberLogForm extends Component<ChamberLogFormProps> {
 
     return (
       <Fragment>
+        <ChartWrapper>
         <Line data={chartData} options={chartOptions} />
+        </ChartWrapper>
         <FormActions>
           <FormButton variant="contained" color="secondary" onClick={loadData}>
             Refresh
