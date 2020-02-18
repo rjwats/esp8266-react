@@ -16,4 +16,4 @@ install:
     - platformio update
 
 script:
-    - platformio run
+    - platformio run -e esp12e -e node32s
