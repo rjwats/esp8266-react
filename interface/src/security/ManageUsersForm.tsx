@@ -131,10 +131,10 @@ class ManageUsersForm extends React.Component<ManageUsersFormProps, ManageUsersF
                     }
                   </TableCell>
                   <TableCell align="center">
-                    <IconButton aria-label="Delete" onClick={() => this.removeUser(user)}>
+                    <IconButton size="small" aria-label="Delete" onClick={() => this.removeUser(user)}>
                       <DeleteIcon />
                     </IconButton>
-                    <IconButton aria-label="Edit" onClick={() => this.startEditingUser(user)}>
+                    <IconButton size="small" aria-label="Edit" onClick={() => this.startEditingUser(user)}>
                       <EditIcon />
                     </IconButton>
                   </TableCell>
