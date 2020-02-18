@@ -26,8 +26,8 @@ class System extends Component<SystemProps> {
           <Tab value="/system/ota" label="OTA Settings" disabled={!authenticatedContext.me.admin} />
         </Tabs>
         <Switch>
-          <AuthenticatedRoute exact={true} path="/system/status" component={SystemStatusController} />
-          <AuthenticatedRoute exact={true} path="/system/ota" component={OTASettingsController} />
+          <AuthenticatedRoute exact path="/system/status" component={SystemStatusController} />
+          <AuthenticatedRoute exact path="/system/ota" component={OTASettingsController} />
           <Redirect to="/system/status" />
         </Switch>
       </MenuAppBar>
