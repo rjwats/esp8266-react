@@ -26,8 +26,8 @@ class NetworkTime extends Component<NetworkTimeProps> {
           <Tab value="/ntp/settings" label="NTP Settings" disabled={!authenticatedContext.me.admin} />
         </Tabs>
         <Switch>
-          <AuthenticatedRoute exact={true} path="/ntp/status" component={NTPStatusController} />
-          <AuthenticatedRoute exact={true} path="/ntp/settings" component={NTPSettingsController} />
+          <AuthenticatedRoute exact path="/ntp/status" component={NTPStatusController} />
+          <AuthenticatedRoute exact path="/ntp/settings" component={NTPSettingsController} />
           <Redirect to="/ntp/status" />
         </Switch>
       </MenuAppBar>

@@ -91,7 +91,7 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
         onClose={this.onRestartRejected}
       >
         <DialogTitle>Confirm Restart</DialogTitle>
-        <DialogContent dividers={true}>
+        <DialogContent dividers>
           Are you sure you want to restart the device?
         </DialogContent>
         <DialogActions>

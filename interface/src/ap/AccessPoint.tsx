@@ -26,8 +26,8 @@ class AccessPoint extends Component<AccessPointProps> {
           <Tab value="/ap/settings" label="Access Point Settings" disabled={!authenticatedContext.me.admin} />
         </Tabs>
         <Switch>
-          <AuthenticatedRoute exact={true} path="/ap/status" component={APStatusController} />
-          <AuthenticatedRoute exact={true} path="/ap/settings" component={APSettingsController} />
+          <AuthenticatedRoute exact path="/ap/status" component={APStatusController} />
+          <AuthenticatedRoute exact path="/ap/settings" component={APSettingsController} />
           <Redirect to="/ap/status" />
         </Switch>
       </MenuAppBar>

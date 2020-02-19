@@ -48,9 +48,9 @@ class WiFiConnection extends Component<WiFiConnectionProps, WiFiConnectionContex
             <Tab value="/wifi/settings" label="WiFi Settings" disabled={!authenticatedContext.me.admin} />
           </Tabs>
           <Switch>
-            <AuthenticatedRoute exact={true} path="/wifi/status" component={WiFiStatusController} />
-            <AuthenticatedRoute exact={true} path="/wifi/scan" component={WiFiNetworkScanner} />
-            <AuthenticatedRoute exact={true} path="/wifi/settings" component={WiFiSettingsController} />
+            <AuthenticatedRoute exact path="/wifi/status" component={WiFiStatusController} />
+            <AuthenticatedRoute exact path="/wifi/scan" component={WiFiNetworkScanner} />
+            <AuthenticatedRoute exact path="/wifi/settings" component={WiFiSettingsController} />
             <Redirect to="/wifi/status" />
           </Switch>
         </MenuAppBar>
