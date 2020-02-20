@@ -1,7 +1,11 @@
 #ifndef CircularLog_h
 #define CircularLog_h
 
+#ifdef ESP32
+#include <SPIFFS.h>
+#elif defined(ESP8266)
 #include <FS.h>
+#endif
 
 #define INVALID_SLOT 1
 
