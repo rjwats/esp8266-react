@@ -65,7 +65,7 @@ class NTPSettingsForm extends React.Component<NTPSettingsFormProps> {
           onChange={this.changeTimeZone}
           margin="normal"
         >
-          <MenuItem disabled={true}>Time zone...</MenuItem>
+          <MenuItem disabled>Time zone...</MenuItem>
           {timeZoneSelectItems()}
         </SelectValidator>
         <FormActions>
