@@ -1,4 +1,4 @@
-import { ENDPOINT_ROOT } from "../api";
+import { ENDPOINT_ROOT } from "../../api";
 
 export const CHAMBER_SETTINGS_ENDPOINT = ENDPOINT_ROOT + "chamberSettings";
 export const CHAMBER_STATUS_ENDPOINT = ENDPOINT_ROOT + "chamberStatus";

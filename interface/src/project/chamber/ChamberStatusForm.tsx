@@ -8,7 +8,7 @@ import AcUnitIcon from '@material-ui/icons/AcUnit';
 import TagFacesIcon from '@material-ui/icons/TagFaces';
 import WbSunnyIcon from '@material-ui/icons/WbSunny';
 
-import { RestFormProps, HighlightAvatar, FormActions, FormButton } from '../components';
+import { RestFormProps, HighlightAvatar, FormActions, FormButton } from '../../components';
 
 import { ChamberStatus, SensorTemperatures } from './types';
 import { chamberStatusHighlight, chamberStatus, chamberEnabledHighlight } from './ChamberStatus';

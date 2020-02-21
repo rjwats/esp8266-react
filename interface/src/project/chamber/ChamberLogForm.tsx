@@ -3,7 +3,7 @@ import { ChartDataSets, ChartData, ChartOptions } from "chart.js";
 import { Line } from 'react-chartjs-2';
 import moment, { Moment } from 'moment';
 
-import { RestFormProps, FormActions, FormButton } from '../components';
+import { RestFormProps, FormActions, FormButton } from '../../components';
 
 import { ChamberDataSet, ChamberData } from './types';
 import ChartWrapper from './ChartWrapper';

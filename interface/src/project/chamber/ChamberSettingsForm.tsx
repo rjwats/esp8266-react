@@ -4,8 +4,9 @@ import { TextValidator, ValidatorForm, SelectValidator } from 'react-material-ui
 import { MenuItem, Checkbox } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
 
+import { RestFormProps, FormActions, FormButton, BlockFormControlLabel } from '../../components';
+
 import { ChamberSettings, SensorTemperatures, ChamberStatus } from './types';
-import { RestFormProps, FormActions, FormButton, BlockFormControlLabel } from '../components';
 
 interface ChamberSettingsFormProps extends RestFormProps<ChamberSettings> {
   chamberStatus: ChamberStatus;

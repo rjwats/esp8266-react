@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import { RestControllerProps, RestFormLoader, SectionContent, restController } from "../components";
+import { RestControllerProps, RestFormLoader, SectionContent, restController } from "../../components";
 
 import { CHAMBER_STATUS_ENDPOINT, ChamberStatus } from "./types";
 import ChamberStatusForm from "./ChamberStatusForm";

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 
-import { restController, RestControllerProps, SectionContent, RestFormLoader } from '../components';
+import { restController, RestControllerProps, SectionContent, RestFormLoader } from '../../components';
 
-import ChamberLogForm from './ChamberLogForm';
 import { LOG_DATA_ENDPOINT, ChamberDataSet } from './types';
+import ChamberLogForm from './ChamberLogForm';
 
 type ChamberLogControllerProps = RestControllerProps<ChamberDataSet>;
 
