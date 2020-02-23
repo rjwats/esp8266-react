@@ -20,7 +20,6 @@ NTPSettingsService::~NTPSettingsService() {
 }
 
 void NTPSettingsService::loop() {
-  // detect when we need to re-configure NTP and do it in the main loop
   if (_reconfigureNTP) {
     _reconfigureNTP = false;
     configureNTP();
