@@ -67,6 +67,10 @@ class ESP8266React {
     return &_mqttSettingsService;
   }
 
+  AsyncMqttClient* getMQTTClient() {
+    return _mqttSettingsService.getMqttClient();
+  }
+
  private:
   SecuritySettingsService _securitySettingsService;
   WiFiSettingsService _wifiSettingsService;

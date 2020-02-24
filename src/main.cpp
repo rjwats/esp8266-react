@@ -6,7 +6,7 @@
 
 AsyncWebServer server(80);
 ESP8266React esp8266React(&server, &SPIFFS);
-DemoProject demoProject = DemoProject(&server, &SPIFFS, esp8266React.getSecurityManager());
+DemoProject demoProject = DemoProject(&server, &SPIFFS, esp8266React.getSecurityManager(), esp8266React.getMQTTClient());
 
 void setup() {
   // start serial and filesystem

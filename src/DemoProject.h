@@ -18,13 +18,21 @@ class DemoSettings {
 
 class DemoProject : public AdminSettingsService<DemoSettings> {
  public:
-  DemoProject(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
+  DemoProject(AsyncWebServer* server, FS* fs, SecurityManager* securityManager, AsyncMqttClient* mqttClient);
   ~DemoProject();
 
   void loop();
 
  private:
+  AsyncMqttClient* _mqttClient;
   unsigned long _lastBlink = 0;
+  void registerConfig(bool sessionPresent);
+  void onMqttMessage(char* topic,
+                     char* payload,
+                     AsyncMqttClientMessageProperties properties,
+                     size_t len,
+                     size_t index,
+                     size_t total);
 
  protected:
   void readFromJsonObject(JsonObject& root);
