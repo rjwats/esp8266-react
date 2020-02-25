@@ -43,8 +43,10 @@ void MQTTSettingsService::readFromJsonObject(JsonObject& root) {
   _settings.username = root["username"] | MQTT_SETTINGS_SERVICE_DEFAULT_USERNAME;
   _settings.password = root["password"] | MQTT_SETTINGS_SERVICE_DEFAULT_PASSWORD;
   _settings.clientId = root["client_id"] | MQTT_SETTINGS_SERVICE_DEFAULT_CLIENT_ID;
+  // TODO - see above.
   _settings.keepAlive = root["keep_alive"] | MQTT_SETTINGS_SERVICE_DEFAULT_KEEP_ALIVE;
   _settings.cleanSession = root["clean_session"] | MQTT_SETTINGS_SERVICE_DEFAULT_CLEAN_SESSION;
+  // TODO - see above.
   _settings.maxTopicLength = root["max_topic_length"] | MQTT_SETTINGS_SERVICE_DEFAULT_MAX_TOPIC_LENGTH;
 }
 
