@@ -20,6 +20,7 @@ MQTTSettingsService::~MQTTSettingsService() {
 }
 
 void MQTTSettingsService::loop() {
+  // TODO - reconnection handler
   if (_reconfigureMqtt) {
     _reconfigureMqtt = false;
     configureMQTT();
