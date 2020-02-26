@@ -177,7 +177,6 @@ class ManageUsersForm extends React.Component<ManageUsersFormProps, ManageUsersF
             onDoneEditing={this.doneEditingUser}
             onCancelEditing={this.cancelEditingUser}
             handleValueChange={this.handleUserValueChange}
-            handleCheckboxChange={this.handleUserCheckboxChange}
             uniqueUsername={this.uniqueUsername}
           />
         }
