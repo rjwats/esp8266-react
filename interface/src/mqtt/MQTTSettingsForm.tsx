@@ -54,18 +54,6 @@ class MQTTSettingsForm extends React.Component<MQTTSettingsFormProps> {
           onChange={handleValueChange('port')}
           margin="normal"
         />
-        {("secure" in data) &&
-          <BlockFormControlLabel
-            control={
-              <Checkbox
-                checked={data.secure}
-                onChange={handleValueChange('secure')}
-                value="secure"
-              />
-            }
-            label="Secure?"
-          />
-        }
         <TextField
           name="username"
           label="Username"

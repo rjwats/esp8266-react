@@ -10,10 +10,9 @@
 #define MAX_MQTT_STATUS_SIZE 1024
 #define MQTT_STATUS_SERVICE_PATH "/rest/mqttStatus"
 
-#define MQTT_SETTINGS_SERVICE_DEFAULT_ENABLED true
+#define MQTT_SETTINGS_SERVICE_DEFAULT_ENABLED false
 #define MQTT_SETTINGS_SERVICE_DEFAULT_HOST "test.mosquitto.org"
 #define MQTT_SETTINGS_SERVICE_DEFAULT_PORT 1883
-#define MQTT_SETTINGS_SERVICE_DEFAULT_SECURE false
 #define MQTT_SETTINGS_SERVICE_DEFAULT_USERNAME ""
 #define MQTT_SETTINGS_SERVICE_DEFAULT_PASSWORD ""
 #define MQTT_SETTINGS_SERVICE_DEFAULT_CLIENT_ID "esp-react"
@@ -27,12 +26,6 @@ class MQTTSettings {
   bool enabled;
   String host;
   uint16_t port;
-
-#if ASYNC_TCP_SSL_ENABLED
-  // TODO - fingerprints - if secure
-  bool secure;
-#endif
-  // TODO - LWT
 
   // username and password
   String username;
