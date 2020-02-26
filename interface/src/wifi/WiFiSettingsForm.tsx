@@ -32,7 +32,7 @@ class WiFiSettingsForm extends React.Component<WiFiStatusFormProps> {
 
   render() {
     const { selectedNetwork, deselectNetwork } = this.context;
-    const { data, handleValueChange, handleCheckboxChange, saveData, loadData } = this.props;
+    const { data, handleValueChange, saveData, loadData } = this.props;
     return (
       <ValidatorForm onSubmit={saveData} ref="WiFiSettingsForm">
         {
@@ -98,7 +98,7 @@ class WiFiSettingsForm extends React.Component<WiFiStatusFormProps> {
             <Checkbox
               value="static_ip_config"
               checked={data.static_ip_config}
-              onChange={handleCheckboxChange("static_ip_config")}
+              onChange={handleValueChange("static_ip_config")}
             />
           }
           label="Static IP Config?"

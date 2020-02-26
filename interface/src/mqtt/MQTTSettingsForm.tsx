@@ -18,14 +18,14 @@ class MQTTSettingsForm extends React.Component<MQTTSettingsFormProps> {
   }
 
   render() {
-    const { data, handleValueChange, handleCheckboxChange, saveData, loadData } = this.props;
+    const { data, handleValueChange, saveData, loadData } = this.props;
     return (
       <ValidatorForm onSubmit={saveData}>
         <BlockFormControlLabel
           control={
             <Checkbox
               checked={data.enabled}
-              onChange={handleCheckboxChange('enabled')}
+              onChange={handleValueChange('enabled')}
               value="enabled"
             />
           }
@@ -59,7 +59,7 @@ class MQTTSettingsForm extends React.Component<MQTTSettingsFormProps> {
             control={
               <Checkbox
                 checked={data.secure}
-                onChange={handleCheckboxChange('secure')}
+                onChange={handleValueChange('secure')}
                 value="secure"
               />
             }
@@ -109,7 +109,7 @@ class MQTTSettingsForm extends React.Component<MQTTSettingsFormProps> {
           control={
             <Checkbox
               checked={data.clean_session}
-              onChange={handleCheckboxChange('clean_session')}
+              onChange={handleValueChange('clean_session')}
               value="clean_session"
             />
           }

@@ -12,7 +12,6 @@ interface UserFormProps {
   user: User;
   uniqueUsername: (value: any) => boolean;
   handleValueChange: (name: keyof User) => (event: React.ChangeEvent<HTMLInputElement>) => void;
-  handleCheckboxChange: (name: keyof User) => (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => void;
   onDoneEditing: () => void;
   onCancelEditing: () => void;
 }
@@ -30,7 +29,7 @@ class UserForm extends React.Component<UserFormProps> {
   }
 
   render() {
-    const { user, creating, handleValueChange, handleCheckboxChange, onDoneEditing, onCancelEditing } = this.props;
+    const { user, creating, handleValueChange, onDoneEditing, onCancelEditing } = this.props;
     return (
       <ValidatorForm onSubmit={onDoneEditing} ref={this.formRef}>
         <Dialog onClose={onCancelEditing} aria-labelledby="user-form-dialog-title" open>
@@ -64,7 +63,7 @@ class UserForm extends React.Component<UserFormProps> {
                 <Checkbox
                   value="admin"
                   checked={user.admin}
-                  onChange={handleCheckboxChange('admin')}
+                  onChange={handleValueChange('admin')}
                 />
               }
               label="Admin?"

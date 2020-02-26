@@ -5,7 +5,6 @@ import { redirectingAuthorizedFetch } from '../authentication';
 
 export interface RestControllerProps<D> extends WithSnackbarProps {
   handleValueChange: (name: keyof D) => (event: React.ChangeEvent<HTMLInputElement>) => void;
-  handleCheckboxChange: (name: keyof D) => (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => void;
   handleSliderChange: (name: keyof D) => (event: React.ChangeEvent<{}>, value: number | number[]) => void;
 
   setData: (data: D) => void;
@@ -21,6 +20,17 @@ interface RestControllerState<D> {
   data?: D;
   loading: boolean;
   errorMessage?: string;
+}
+
+const extractValue = (event: React.ChangeEvent<HTMLInputElement>) => {
+  switch (event.target.type) {
+    case "number":
+      return event.target.valueAsNumber;
+    case "checkbox":
+      return event.target.checked;
+    default:
+      return event.target.value
+  }
 }
 
 export function restController<D, P extends RestControllerProps<D>>(endpointUrl: string, RestController: React.ComponentType<P & RestControllerProps<D>>) {
@@ -85,12 +95,7 @@ export function restController<D, P extends RestControllerProps<D>>(endpointUrl:
       }
 
       handleValueChange = (name: keyof D) => (event: React.ChangeEvent<HTMLInputElement>) => {
-        const data = { ...this.state.data!, [name]: event.target.value };
-        this.setState({ data });
-      }
-
-      handleCheckboxChange = (name: keyof D) => (event: React.ChangeEvent<HTMLInputElement>) => {
-        const data = { ...this.state.data!, [name]: event.target.checked };
+        const data = { ...this.state.data!, [name]: extractValue(event) };
         this.setState({ data });
       }
 
@@ -102,7 +107,6 @@ export function restController<D, P extends RestControllerProps<D>>(endpointUrl:
       render() {
         return <RestController
           handleValueChange={this.handleValueChange}
-          handleCheckboxChange={this.handleCheckboxChange}
           handleSliderChange={this.handleSliderChange}
           setData={this.setData}
           saveData={this.saveData}
