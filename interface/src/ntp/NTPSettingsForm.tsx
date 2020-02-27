@@ -28,14 +28,14 @@ class NTPSettingsForm extends React.Component<NTPSettingsFormProps> {
   }
 
   render() {
-    const { data, handleValueChange, handleCheckboxChange, saveData, loadData } = this.props;
+    const { data, handleValueChange, saveData, loadData } = this.props;
     return (
       <ValidatorForm onSubmit={saveData}>
         <BlockFormControlLabel
           control={
             <Checkbox
               checked={data.enabled}
-              onChange={handleCheckboxChange('enabled')}
+              onChange={handleValueChange('enabled')}
               value="enabled"
             />
           }
