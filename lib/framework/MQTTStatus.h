@@ -24,12 +24,8 @@ class MQTTStatus {
 
  private:
   MQTTSettingsService* _mqttSettingsService;
-  bool _connected;
-  AsyncMqttClientDisconnectReason _disconnectReason;
 
   void mqttStatus(AsyncWebServerRequest* request);
-  void onMqttConnect(bool sessionPresent);
-  void onMqttDisconnect(AsyncMqttClientDisconnectReason reason);
 };
 
 #endif  // end MQTTStatus_h

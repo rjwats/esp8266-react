@@ -14,17 +14,39 @@ MQTTSettingsService::MQTTSettingsService(AsyncWebServer* server, FS* fs, Securit
   _onStationModeGotIPHandler =
       WiFi.onStationModeGotIP(std::bind(&MQTTSettingsService::onStationModeGotIP, this, std::placeholders::_1));
 #endif
+  _mqttClient.onConnect(std::bind(&MQTTSettingsService::onMqttConnect, this, std::placeholders::_1));
+  _mqttClient.onDisconnect(std::bind(&MQTTSettingsService::onMqttDisconnect, this, std::placeholders::_1));
 }
 
 MQTTSettingsService::~MQTTSettingsService() {
 }
 
 void MQTTSettingsService::loop() {
-  // TODO - reconnection handler
-  if (_reconfigureMqtt) {
+  if (_reconfigureMqtt || (_disconnectedAt && (unsigned long)(millis() - _disconnectedAt) >= MQTT_RECONNECTION_DELAY)) {
     _reconfigureMqtt = false;
+    _disconnectedAt = 0;
     configureMQTT();
   }
+}
+
+bool MQTTSettingsService::isEnabled() {
+  return _settings.enabled;
+}
+
+bool MQTTSettingsService::isConnected() {
+  return _connected;
+}
+
+const char* MQTTSettingsService::getClientId() {
+  return _mqttClient.getClientId();
+}
+
+AsyncMqttClientDisconnectReason MQTTSettingsService::getDisconnectReason() {
+  return _disconnectReason;
+}
+
+AsyncMqttClient* MQTTSettingsService::getMqttClient() {
+  return &_mqttClient;
 }
 
 void MQTTSettingsService::readFromJsonObject(JsonObject& root) {
@@ -34,10 +56,8 @@ void MQTTSettingsService::readFromJsonObject(JsonObject& root) {
   _settings.username = root["username"] | MQTT_SETTINGS_SERVICE_DEFAULT_USERNAME;
   _settings.password = root["password"] | MQTT_SETTINGS_SERVICE_DEFAULT_PASSWORD;
   _settings.clientId = root["client_id"] | MQTT_SETTINGS_SERVICE_DEFAULT_CLIENT_ID;
-  // TODO - see above.
   _settings.keepAlive = root["keep_alive"] | MQTT_SETTINGS_SERVICE_DEFAULT_KEEP_ALIVE;
   _settings.cleanSession = root["clean_session"] | MQTT_SETTINGS_SERVICE_DEFAULT_CLEAN_SESSION;
-  // TODO - see above.
   _settings.maxTopicLength = root["max_topic_length"] | MQTT_SETTINGS_SERVICE_DEFAULT_MAX_TOPIC_LENGTH;
 }
 
@@ -51,6 +71,23 @@ void MQTTSettingsService::writeToJsonObject(JsonObject& root) {
   root["keep_alive"] = _settings.keepAlive;
   root["clean_session"] = _settings.cleanSession;
   root["max_topic_length"] = _settings.maxTopicLength;
+}
+
+void MQTTSettingsService::onMqttConnect(bool sessionPresent) {
+  Serial.print("Connected to MQTT, ");
+  Serial.print(sessionPresent ? "with" : "without");
+  Serial.println(" persistent session");
+  _connected = true;
+}
+
+void MQTTSettingsService::onMqttDisconnect(AsyncMqttClientDisconnectReason reason) {
+  Serial.print("Disconnected from MQTT reason: ");
+  Serial.println((uint8_t)reason);
+  _connected = false;
+  _disconnectReason = reason;
+  if (!_supressReconnect) {
+    _disconnectedAt = millis();
+  }
 }
 
 void MQTTSettingsService::onConfigUpdated() {
@@ -80,9 +117,12 @@ void MQTTSettingsService::onStationModeDisconnected(const WiFiEventStationModeDi
 #endif
 
 void MQTTSettingsService::configureMQTT() {
-  Serial.println("Configuring MQTT...");
+  _supressReconnect = true;
   _mqttClient.disconnect();
+  _supressReconnect = false;
+  
   if (_settings.enabled) {
+    Serial.println("Connecting to MQTT...");
     _mqttClient.setServer(_settings.host.c_str(), _settings.port);
     if (_settings.username.length() > 0) {
       const char* username = _settings.username.c_str();

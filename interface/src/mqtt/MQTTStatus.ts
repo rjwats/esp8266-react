@@ -1,14 +1,20 @@
 import { Theme } from "@material-ui/core";
 import { MQTTStatus, MQTTDisconnectReason } from "./types";
 
-export const mqttStatusHighlight = ({ connected }: MQTTStatus, theme: Theme) => {
+export const mqttStatusHighlight = ({ enabled, connected }: MQTTStatus, theme: Theme) => {
+  if (!enabled) {
+    return theme.palette.info.main;
+  }
   if (connected) {
     return theme.palette.success.main;
   }
-  return theme.palette.info.main;
+  return theme.palette.error.main;
 }
 
-export const mqttStatus = ({ connected }: MQTTStatus) => {
+export const mqttStatus = ({ enabled, connected }: MQTTStatus) => {
+  if (!enabled) {
+    return "Not enabled";
+  }
   if (connected) {
     return "Connected";
   }

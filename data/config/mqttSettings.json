@@ -7,7 +7,6 @@
   "username": "mqttuser",
   "password": "mqttpassword",
   "keepAlive": 16,
-  "clientId": "esp-react",
   "cleanSession": true,
   "maxTopicLength": 128
 }

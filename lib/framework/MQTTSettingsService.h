@@ -4,6 +4,8 @@
 #include <AdminSettingsService.h>
 #include <AsyncMqttClient.h>
 
+#define MQTT_RECONNECTION_DELAY 5000
+
 #define MQTT_SETTINGS_FILE "/config/mqttSettings.json"
 #define MQTT_SETTINGS_SERVICE_PATH "/rest/mqttSettings"
 
@@ -15,7 +17,7 @@
 #define MQTT_SETTINGS_SERVICE_DEFAULT_PORT 1883
 #define MQTT_SETTINGS_SERVICE_DEFAULT_USERNAME ""
 #define MQTT_SETTINGS_SERVICE_DEFAULT_PASSWORD ""
-#define MQTT_SETTINGS_SERVICE_DEFAULT_CLIENT_ID "esp-react"
+#define MQTT_SETTINGS_SERVICE_DEFAULT_CLIENT_ID generateClientId()
 #define MQTT_SETTINGS_SERVICE_DEFAULT_KEEP_ALIVE 16
 #define MQTT_SETTINGS_SERVICE_DEFAULT_CLEAN_SESSION true
 #define MQTT_SETTINGS_SERVICE_DEFAULT_MAX_TOPIC_LENGTH 128
@@ -46,10 +48,11 @@ class MQTTSettingsService : public AdminSettingsService<MQTTSettings> {
   ~MQTTSettingsService();
 
   void loop();
-
-  AsyncMqttClient* getMqttClient() {
-    return &_mqttClient;
-  }
+  bool isEnabled();
+  bool isConnected();
+  const char* getClientId();
+  AsyncMqttClientDisconnectReason getDisconnectReason();
+  AsyncMqttClient* getMqttClient();
 
  protected:
   void readFromJsonObject(JsonObject& root);
@@ -59,6 +62,12 @@ class MQTTSettingsService : public AdminSettingsService<MQTTSettings> {
  private:
   AsyncMqttClient _mqttClient;
   bool _reconfigureMqtt;
+  bool _supressReconnect;
+  unsigned long _disconnectedAt;
+
+  // connection status
+  bool _connected;
+  AsyncMqttClientDisconnectReason _disconnectReason;
 
 #ifdef ESP32
   void onStationModeGotIP(WiFiEvent_t event, WiFiEventInfo_t info);
@@ -68,9 +77,20 @@ class MQTTSettingsService : public AdminSettingsService<MQTTSettings> {
   WiFiEventHandler _onStationModeGotIPHandler;
   void onStationModeGotIP(const WiFiEventStationModeGotIP& event);
   void onStationModeDisconnected(const WiFiEventStationModeDisconnected& event);
+
+  void onMqttConnect(bool sessionPresent);
+  void onMqttDisconnect(AsyncMqttClientDisconnectReason reason);
 #endif
 
   void configureMQTT();
+
+  static String generateClientId() {
+#ifdef ESP32
+    return "esp32-" + String(ESP.getEfuseMac(), HEX);
+#elif defined(ESP8266)
+    return "esp8266-" + String(ESP.getChipId(), HEX);
+#endif
+  }
 };
 
 extern AsyncMqttClient MqttClient;

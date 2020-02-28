@@ -10,6 +10,7 @@ export enum MQTTDisconnectReason {
 }
 
 export interface MQTTStatus {
+  enabled: boolean;
   connected: boolean;
   client_id: string;
   disconnect_reason: MQTTDisconnectReason;
