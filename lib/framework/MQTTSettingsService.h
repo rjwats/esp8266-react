@@ -76,16 +76,15 @@ class MQTTSettingsService : public AdminSettingsService<MQTTSettings> {
   WiFiEventHandler _onStationModeGotIPHandler;
   void onStationModeGotIP(const WiFiEventStationModeGotIP& event);
   void onStationModeDisconnected(const WiFiEventStationModeDisconnected& event);
+#endif
 
   void onMqttConnect(bool sessionPresent);
   void onMqttDisconnect(AsyncMqttClientDisconnectReason reason);
-#endif
-
   void configureMQTT();
 
   static String generateClientId() {
 #ifdef ESP32
-    return "esp32-" + String(ESP.getEfuseMac(), HEX);
+    return "esp32-" + String((unsigned long) ESP.getEfuseMac(), HEX);
 #elif defined(ESP8266)
     return "esp8266-" + String(ESP.getChipId(), HEX);
 #endif
