@@ -23,9 +23,12 @@ MQTTSettingsService::~MQTTSettingsService() {
 
 void MQTTSettingsService::loop() {
   if (_reconfigureMqtt || (_disconnectedAt && (unsigned long)(millis() - _disconnectedAt) >= MQTT_RECONNECTION_DELAY)) {
+    // reconfigure MQTT client
+    configureMQTT();
+
+    // clear the reconnection flags
     _reconfigureMqtt = false;
     _disconnectedAt = 0;
-    configureMQTT();
   }
 }
 
@@ -85,43 +88,50 @@ void MQTTSettingsService::onMqttDisconnect(AsyncMqttClientDisconnectReason reaso
   Serial.println((uint8_t)reason);
   _connected = false;
   _disconnectReason = reason;
-  if (!_supressReconnect) {
-    _disconnectedAt = millis();
-  }
+  _disconnectedAt = millis();
 }
 
 void MQTTSettingsService::onConfigUpdated() {
   _reconfigureMqtt = true;
+  _disconnectedAt = 0;
 }
 
 #ifdef ESP32
 void MQTTSettingsService::onStationModeGotIP(WiFiEvent_t event, WiFiEventInfo_t info) {
-  _reconfigureMqtt = true;
+  if (_settings.enabled) {
+    Serial.println("WiFi connection dropped, starting MQTT client.");
+    onConfigUpdated();
+  }
 }
 
 void MQTTSettingsService::onStationModeDisconnected(WiFiEvent_t event, WiFiEventInfo_t info) {
-  Serial.println("WiFi connection dropped, stopping MQTT client.");
-  _reconfigureMqtt = false;
-  _mqttClient.disconnect();
+  if (_settings.enabled) {
+    Serial.println("WiFi connection dropped, stopping MQTT client.");
+    onConfigUpdated();
+  }
 }
 #elif defined(ESP8266)
 void MQTTSettingsService::onStationModeGotIP(const WiFiEventStationModeGotIP& event) {
-  _reconfigureMqtt = true;
+  if (_settings.enabled) {
+    Serial.println("WiFi connection dropped, starting MQTT client.");
+    onConfigUpdated();
+  }
 }
 
 void MQTTSettingsService::onStationModeDisconnected(const WiFiEventStationModeDisconnected& event) {
-  Serial.println("WiFi connection dropped, stopping MQTT client.");
-  _reconfigureMqtt = false;
-  _mqttClient.disconnect();
+  if (_settings.enabled) {
+    Serial.println("WiFi connection dropped, stopping MQTT client.");
+    onConfigUpdated();
+  }
 }
 #endif
 
 void MQTTSettingsService::configureMQTT() {
-  _supressReconnect = true;
+  // disconnect if currently connected
   _mqttClient.disconnect();
-  _supressReconnect = false;
-  
-  if (_settings.enabled) {
+
+  // only connect if WiFi is connected and MQTT is enabled
+  if (_settings.enabled && WiFi.isConnected()) {
     Serial.println("Connecting to MQTT...");
     _mqttClient.setServer(_settings.host.c_str(), _settings.port);
     if (_settings.username.length() > 0) {

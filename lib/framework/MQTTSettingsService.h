@@ -62,7 +62,6 @@ class MQTTSettingsService : public AdminSettingsService<MQTTSettings> {
  private:
   AsyncMqttClient _mqttClient;
   bool _reconfigureMqtt;
-  bool _supressReconnect;
   unsigned long _disconnectedAt;
 
   // connection status
