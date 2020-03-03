@@ -1,19 +1,25 @@
 #ifndef DemoProject_h
 #define DemoProject_h
 
+#include <ArduinoJson.h>
 #include <AdminSettingsService.h>
 #include <ESP8266React.h>
 
 #define BLINK_LED 2
-#define MAX_DELAY 1000
+#define PRINT_DELAY 5000
 
-#define DEFAULT_BLINK_SPEED 100
+#define DEFAULT_LED_STATE false
+#define OFF_STATE "OFF"
+#define ON_STATE "ON"
+#define LED_ON 0x0
+#define LED_OFF 0x1
+
 #define DEMO_SETTINGS_FILE "/config/demoSettings.json"
 #define DEMO_SETTINGS_PATH "/rest/demoSettings"
 
 class DemoSettings {
  public:
-  uint8_t blinkSpeed;
+  bool ledOn;
 };
 
 class DemoProject : public AdminSettingsService<DemoSettings> {
@@ -22,11 +28,13 @@ class DemoProject : public AdminSettingsService<DemoSettings> {
   ~DemoProject();
 
   void loop();
+  void begin();
 
  private:
+  unsigned long _lastPrint = 0;
   AsyncMqttClient* _mqttClient;
-  unsigned long _lastBlink = 0;
-  void registerConfig(bool sessionPresent);
+  void configureMQTT();
+  void publishState();
   void onMqttMessage(char* topic,
                      char* payload,
                      AsyncMqttClientMessageProperties properties,
@@ -37,6 +45,7 @@ class DemoProject : public AdminSettingsService<DemoSettings> {
  protected:
   void readFromJsonObject(JsonObject& root);
   void writeToJsonObject(JsonObject& root);
+  void onConfigUpdated();
 };
 
 #endif

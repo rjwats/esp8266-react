@@ -4,7 +4,7 @@ import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 import { Checkbox, TextField } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
 
-import { RestFormProps, FormActions, FormButton, BlockFormControlLabel } from '../components';
+import { RestFormProps, FormActions, FormButton, BlockFormControlLabel, PasswordValidator } from '../components';
 import { isIP, isHostname, or } from '../validators';
 
 import { MQTTSettings } from './types';
@@ -63,7 +63,7 @@ class MQTTSettingsForm extends React.Component<MQTTSettingsFormProps> {
           onChange={handleValueChange('username')}
           margin="normal"
         />
-        <TextField
+        <PasswordValidator
           name="password"
           label="Password"
           fullWidth

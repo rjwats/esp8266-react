@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import { ValidatorForm } from 'react-material-ui-form-validator';
 
-import { Typography, Slider, Box } from '@material-ui/core';
+import { Typography, Box, Checkbox } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
 
 import { ENDPOINT_ROOT } from '../api';
-import { restController, RestControllerProps, RestFormLoader, RestFormProps, FormActions, FormButton, SectionContent } from '../components';
+import { restController, RestControllerProps, RestFormLoader, RestFormProps, FormActions, FormButton, SectionContent, BlockFormControlLabel } from '../components';
 
 export const DEMO_SETTINGS_ENDPOINT = ENDPOINT_ROOT + "demoSettings";
 
 interface DemoSettings {
-  blink_speed: number;
+  led_on: boolean;
 }
 
 type DemoControllerProps = RestControllerProps<DemoSettings>;
@@ -23,7 +23,7 @@ class DemoController extends Component<DemoControllerProps> {
 
   render() {
     return (
-      <SectionContent title='Demo Controller' titleGutter>
+      <SectionContent title='Demo Controller (REST)' titleGutter>
         <RestFormLoader
           {...this.props}
           render={props => (
@@ -38,28 +38,27 @@ class DemoController extends Component<DemoControllerProps> {
 
 export default restController(DEMO_SETTINGS_ENDPOINT, DemoController);
 
-const valueToPercentage = (value: number) => `${Math.round(value / 255 * 100)}%`;
-
 type DemoControllerFormProps = RestFormProps<DemoSettings>;
 
 function DemoControllerForm(props: DemoControllerFormProps) {
-  const { data, saveData, loadData, handleSliderChange } = props;
+  const { data, saveData, loadData, handleValueChange } = props;
   return (
     <ValidatorForm onSubmit={saveData}>
-      <Typography id="blink-speed-slider">
-        Blink Speed
-      </Typography>
-      <Box pt={5}>
-        <Slider
-          value={data.blink_speed}
-          valueLabelFormat={valueToPercentage}
-          aria-labelledby="blink-speed-slider"
-          valueLabelDisplay="on"
-          min={0}
-          max={255}
-          onChange={handleSliderChange('blink_speed')}
-        />
+      <Box bgcolor="primary.main" color="primary.contrastText" p={2} mt={2} mb={2}>
+        <Typography variant="body1">
+          The form below controls the LED via the RESTful service exposed by the ESP device.
+        </Typography>
       </Box>
+      <BlockFormControlLabel
+        control={
+          <Checkbox
+            checked={data.led_on}
+            onChange={handleValueChange('led_on')}
+            color="primary"
+          />
+        }
+        label="Enable OTA Updates?"
+      />
       <FormActions>
         <FormButton startIcon={<SaveIcon />} variant="contained" color="primary" type="submit">
           Save
