@@ -14,13 +14,8 @@ export interface ChamberDataSet {
   data: ChamberData[];
 }
 
-export interface ChamberData {
-  time: number;
-  status: number;
-  chamber_temp: number;
-  ambient_temp: number;
-  target_temp: number;
-}
+// time, status, chamber_temp, ambient_temp, target_temp
+export type ChamberData = [number, number, number, number, number]; 
 
 export interface ChamberStatus {
   // configurable addresses for sensors

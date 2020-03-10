@@ -26,16 +26,6 @@ class ChamberLogForm extends Component<ChamberLogFormProps> {
       data: []
     };
 
-    const ambientDataset: ChartDataSets = {
-      label: 'Ambient',
-      radius: 0,
-      backgroundColor: 'rgba(11,144,0,0.4)',
-      borderColor: 'rgba(11,144,0,1)',
-      fill: false,
-      yAxisID: "y-axis-temperature",
-      data: [],
-    };
-
     const heatingDataset: ChartDataSets = {
       label: 'Heating',
       radius: 0,
@@ -58,12 +48,22 @@ class ChamberLogForm extends Component<ChamberLogFormProps> {
       data: [],
     };
 
+    const ambientDataset: ChartDataSets = {
+      label: 'Ambient',
+      radius: 0,
+      backgroundColor: 'rgba(11,144,0,0.4)',
+      borderColor: 'rgba(11,144,0,1)',
+      fill: false,
+      yAxisID: "y-axis-temperature",
+      data: [],
+    };
+
     data.data.forEach((entry: ChamberData) => {
-      labels.push(moment.unix(entry.time));
-      chamberDataset.data!.push(entry.chamber_temp);
-      ambientDataset.data!.push(entry.ambient_temp);
-      (heatingDataset.data! as Array<number | null>).push(entry.status === 1 ? 1 : null);
-      (coolingDataset.data! as Array<number | null>).push(entry.status === 2 ? 1 : null);
+      labels.push(moment.unix(entry[0]));      
+      (heatingDataset.data! as Array<number | null>).push(entry[1] === 1 ? 1 : null);
+      (coolingDataset.data! as Array<number | null>).push(entry[1] === 2 ? 1 : null);
+      chamberDataset.data!.push(entry[2]);
+      ambientDataset.data!.push(entry[3]);
     });
 
     const chartData: ChartData = {

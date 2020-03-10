@@ -204,18 +204,18 @@ void FermentationChamber::performLogging() {
 void FermentationChamber::logData(AsyncWebServerRequest* request) {
   uint16_t loggingSlot = ((_loggedAt + LOG_PERIOD_SECONDS) / LOG_PERIOD_SECONDS) % LOG_SLOTS;
   unsigned long oldestExpectedTime = _loggedAt - (LOG_PERIOD_SECONDS * (LOG_SLOTS - 1));
-  AsyncJsonResponse* response = new AsyncJsonResponse(false);
+  AsyncJsonResponse* response = new AsyncJsonResponse(false, 3042);
   JsonObject root = response->getRoot();
   JsonArray data = root.createNestedArray("data");
 
   _circularLog.readAllEntries(loggingSlot, [&](ChamberLogEntry* entry) {
     if (entry->time >= oldestExpectedTime) {
-      JsonObject entryData = data.createNestedObject();
-      entryData["time"] = entry->time;
-      entryData["status"] = entry->status;
-      entryData["chamber_temp"] = entry->chamberTemp;
-      entryData["ambient_temp"] = entry->ambientTemp;
-      entryData["target_temp"] = entry->targetTemp;
+      JsonArray entryData = data.createNestedArray();
+      entryData.add(entry->time);
+      entryData.add(entry->status);
+      entryData.add(entry->chamberTemp);
+      entryData.add(entry->ambientTemp);
+      entryData.add(entry->targetTemp);
     }
   });
 
