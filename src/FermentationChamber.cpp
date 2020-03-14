@@ -180,7 +180,7 @@ void FermentationChamber::performLogging() {
   // If we have never logged, or if enough time has elapsed since we last logged
   if (!_loggedAt || (unsigned long)(loggingTime - _loggedAt) >= LOG_PERIOD_SECONDS) {
     // round down to nearest LOG_PERIOD_SECONDS
-    uint16_t loggingSlot = (loggingTime / LOG_PERIOD_SECONDS) % LOG_SLOTS;
+    uint16_t loggingSlot = ((time_t)(loggingTime / LOG_PERIOD_SECONDS)) % LOG_SLOTS;
     loggingTime = loggingTime - (loggingTime % LOG_PERIOD_SECONDS);
 
     ChamberLogEntry entry;
@@ -195,21 +195,37 @@ void FermentationChamber::performLogging() {
   }
 }
 
-/**
- * Returns pages of logging data. Starting from now back in time. Supports the following parameters:
- *
- * "pageSize" - Number of hours of log data to return, one page is one hour. (1 min (default), 6 max)
- * "" - Number of hours of log data to return, one page is one hour. (0 min (default), 24 max)
- */
 void FermentationChamber::logData(AsyncWebServerRequest* request) {
-  uint16_t loggingSlot = ((_loggedAt + LOG_PERIOD_SECONDS) / LOG_PERIOD_SECONDS) % LOG_SLOTS;
-  unsigned long oldestExpectedTime = _loggedAt - (LOG_PERIOD_SECONDS * (LOG_SLOTS - 1));
-  AsyncJsonResponse* response = new AsyncJsonResponse(false, 3042);
+  // abort if we've never logged
+  time_t endTime = _loggedAt;
+  if (!endTime) {
+    request->send(503, "text/plain", "Service Unavailable - NTP not initialized");
+    return;
+  }
+
+  // offset in hours
+  int offset = 0;
+  if (request->hasParam("offset")) {
+    AsyncWebParameter* offsetParam = request->getParam("offset");
+    offset = atoi(offsetParam->value().c_str());
+    if (offset < 0 && offset > 23) {
+      offset = 0;
+    }
+  }
+
+  // calculate start and end time of requested range
+  endTime = endTime - (offset * SECONDS_IN_HOUR);
+  time_t startTime = endTime - SECONDS_IN_HOUR;
+
+  // calculate the start slot
+  uint16_t startSlot = (((time_t)startTime + LOG_PERIOD_SECONDS) / LOG_PERIOD_SECONDS) % LOG_SLOTS;
+
+  // render the response
+  AsyncJsonResponse* response = new AsyncJsonResponse(false, 6144);
   JsonObject root = response->getRoot();
   JsonArray data = root.createNestedArray("data");
-
-  _circularLog.readAllEntries(loggingSlot, [&](ChamberLogEntry* entry) {
-    if (entry->time >= oldestExpectedTime) {
+  _circularLog.readEntries(startSlot, LOG_SLOTS_PER_HOUR, [&](ChamberLogEntry* entry) {
+    if (entry->time >= startTime && entry->time <= endTime) {
       JsonArray entryData = data.createNestedArray();
       entryData.add(entry->time);
       entryData.add(entry->status);

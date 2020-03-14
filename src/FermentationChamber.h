@@ -15,7 +15,8 @@
 // in a circular buffer in SPIFFS. This results in very low wear on the flash chip
 // only 1 write per sector per day.
 #define LOG_SLOTS_PER_HOUR 60
-#define LOG_SLOTS 60 * 24
+#define LOG_SLOTS 1440
+#define SECONDS_IN_HOUR 3600
 #define LOG_PERIOD_SECONDS 60
 #define LOG_MAX_PAGE_SIZE 6
 #define LOG_DEFAULT_PAGE_SIZE 1
@@ -36,7 +37,7 @@
 #define STATUS_COOLING 2
 
 struct ChamberLogEntry {
-  unsigned long time;
+  time_t  time;
   uint8_t status;
   float chamberTemp;
   float ambientTemp;
