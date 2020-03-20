@@ -76,6 +76,5 @@ void ESP8266React::begin() {
 void ESP8266React::loop() {
   _wifiSettingsService.loop();
   _apSettingsService.loop();
-  _ntpSettingsService.loop();
   _otaSettingsService.loop();
 }

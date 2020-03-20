@@ -1,11 +1,19 @@
 #include <DemoProject.h>
 
-DemoProject::DemoProject(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) :
-    AdminSettingsService(server, fs, securityManager, DEMO_SETTINGS_PATH, DEMO_SETTINGS_FILE) {
+static DemoSettingsSerializer SERIALIZER;
+static DemoSettingsDeserializer DESERIALIZER;
+
+DemoProject::DemoProject(FS* fs, AsyncWebServer* server, SecurityManager* securityManager) :
+    _settingsPersistence(&SERIALIZER, &DESERIALIZER, this, fs, DEMO_SETTINGS_FILE),
+    _settingsEndpoint(&SERIALIZER, &DESERIALIZER, this, server, DEMO_SETTINGS_PATH, securityManager) {
   pinMode(BLINK_LED, OUTPUT);
 }
 
 DemoProject::~DemoProject() {
+}
+
+void DemoProject::begin() {
+  _settingsPersistence.readFromFS();
 }
 
 void DemoProject::loop() {
@@ -15,13 +23,4 @@ void DemoProject::loop() {
     _lastBlink = currentMillis;
     digitalWrite(BLINK_LED, !digitalRead(BLINK_LED));
   }
-}
-
-void DemoProject::readFromJsonObject(JsonObject& root) {
-  _settings.blinkSpeed = root["blink_speed"] | DEFAULT_BLINK_SPEED;
-}
-
-void DemoProject::writeToJsonObject(JsonObject& root) {
-  // connection settings
-  root["blink_speed"] = _settings.blinkSpeed;
 }
