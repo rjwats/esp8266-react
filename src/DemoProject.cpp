@@ -9,9 +9,6 @@ DemoProject::DemoProject(AsyncWebServer* server, FS* fs, SecurityManager* securi
   pinMode(BLINK_LED, OUTPUT);
 }
 
-DemoProject::~DemoProject() {
-}
-
 void DemoProject::begin() {
   _settingsPersistence.readFromFS();
 }

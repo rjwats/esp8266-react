@@ -34,7 +34,6 @@ class DemoSettingsDeserializer : public SettingsDeserializer<DemoSettings> {
 class DemoProject : public SettingsService<DemoSettings> {
  public:
   DemoProject(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
-  ~DemoProject();
 
   void begin();
   void loop();
