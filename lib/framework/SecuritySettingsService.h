@@ -55,7 +55,7 @@ class SecuritySettingsDeserializer : public SettingsDeserializer<SecuritySetting
 
 class SecuritySettingsService : public SettingsService<SecuritySettings>, public SecurityManager {
  public:
-  SecuritySettingsService(FS* fs, AsyncWebServer* server);
+  SecuritySettingsService(AsyncWebServer* server, FS* fs);
 
   void begin();
 
@@ -67,8 +67,8 @@ class SecuritySettingsService : public SettingsService<SecuritySettings>, public
   ArJsonRequestHandlerFunction wrapCallback(ArJsonRequestHandlerFunction callback, AuthenticationPredicate predicate);
 
  private:
-  SettingsPersistence<SecuritySettings> _settingsPersistence;
   SettingsEndpoint<SecuritySettings> _settingsEndpoint;
+  SettingsPersistence<SecuritySettings> _settingsPersistence;
   ArduinoJsonJWT _jwtHandler = ArduinoJsonJWT(DEFAULT_JWT_SECRET);
 
   void configureJWTHandler();

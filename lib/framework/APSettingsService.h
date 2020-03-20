@@ -56,14 +56,14 @@ class APSettingsDeserializer : public SettingsDeserializer<APSettings> {
 
 class APSettingsService : public SettingsService<APSettings> {
  public:
-  APSettingsService(FS* fs, AsyncWebServer* server, SecurityManager* securityManager);
+  APSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
 
   void begin();
   void loop();
 
  private:
-  SettingsPersistence<APSettings> _settingsPersistence;
   SettingsEndpoint<APSettings> _settingsEndpoint;
+  SettingsPersistence<APSettings> _settingsPersistence;
 
   // for the mangement delay loop
   unsigned long _lastManaged;

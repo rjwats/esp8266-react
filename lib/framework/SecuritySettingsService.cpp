@@ -3,9 +3,9 @@
 static SecuritySettingsSerializer SERIALIZER;
 static SecuritySettingsDeserializer DESERIALIZER;
 
-SecuritySettingsService::SecuritySettingsService(FS* fs, AsyncWebServer* server) :
-    _settingsPersistence(&SERIALIZER, &DESERIALIZER, this, fs, SECURITY_SETTINGS_FILE),
-    _settingsEndpoint(&SERIALIZER, &DESERIALIZER, this, server, SECURITY_SETTINGS_PATH, this) {
+SecuritySettingsService::SecuritySettingsService(AsyncWebServer* server, FS* fs) :
+    _settingsEndpoint(&SERIALIZER, &DESERIALIZER, this, server, SECURITY_SETTINGS_PATH, this),
+    _settingsPersistence(&SERIALIZER, &DESERIALIZER, this, fs, SECURITY_SETTINGS_FILE) {
   addUpdateHandler([&](void* origin) { configureJWTHandler(); }, false);
 }
 

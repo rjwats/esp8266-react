@@ -3,9 +3,9 @@
 static WiFiSettingsSerializer SERIALIZER;
 static WiFiSettingsDeserializer DESERIALIZER;
 
-WiFiSettingsService::WiFiSettingsService(FS* fs, AsyncWebServer* server, SecurityManager* securityManager) :
-    _settingsPersistence(&SERIALIZER, &DESERIALIZER, this, fs, WIFI_SETTINGS_FILE),
-    _settingsEndpoint(&SERIALIZER, &DESERIALIZER, this, server, WIFI_SETTINGS_SERVICE_PATH, securityManager) {
+WiFiSettingsService::WiFiSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) :
+    _settingsEndpoint(&SERIALIZER, &DESERIALIZER, this, server, WIFI_SETTINGS_SERVICE_PATH, securityManager),
+    _settingsPersistence(&SERIALIZER, &DESERIALIZER, this, fs, WIFI_SETTINGS_FILE) {
   // We want the device to come up in opmode=0 (WIFI_OFF), when erasing the flash this is not the default.
   // If needed, we save opmode=0 before disabling persistence so the device boots with WiFi disabled in the future.
   if (WiFi.getMode() != WIFI_OFF) {

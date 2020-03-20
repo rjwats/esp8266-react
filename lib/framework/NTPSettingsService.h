@@ -50,13 +50,13 @@ class NTPSettingsDeserializer : public SettingsDeserializer<NTPSettings> {
 
 class NTPSettingsService : public SettingsService<NTPSettings> {
  public:
-  NTPSettingsService(FS* fs, AsyncWebServer* server, SecurityManager* securityManager);
+  NTPSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
 
   void begin();
 
  private:
-  SettingsPersistence<NTPSettings> _settingsPersistence;
   SettingsEndpoint<NTPSettings> _settingsEndpoint;
+  SettingsPersistence<NTPSettings> _settingsPersistence;
 
 #ifdef ESP32
   void onStationModeGotIP(WiFiEvent_t event, WiFiEventInfo_t info);

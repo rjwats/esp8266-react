@@ -3,9 +3,9 @@
 static NTPSettingsSerializer SERIALIZER;
 static NTPSettingsDeserializer DESERIALIZER;
 
-NTPSettingsService::NTPSettingsService(FS* fs, AsyncWebServer* server, SecurityManager* securityManager) :
-    _settingsPersistence(&SERIALIZER, &DESERIALIZER, this, fs, NTP_SETTINGS_FILE),
-    _settingsEndpoint(&SERIALIZER, &DESERIALIZER, this, server, NTP_SETTINGS_SERVICE_PATH, securityManager) {
+NTPSettingsService::NTPSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) :
+    _settingsEndpoint(&SERIALIZER, &DESERIALIZER, this, server, NTP_SETTINGS_SERVICE_PATH, securityManager),
+    _settingsPersistence(&SERIALIZER, &DESERIALIZER, this, fs, NTP_SETTINGS_FILE) {
 #ifdef ESP32
   WiFi.onEvent(
       std::bind(&NTPSettingsService::onStationModeDisconnected, this, std::placeholders::_1, std::placeholders::_2),

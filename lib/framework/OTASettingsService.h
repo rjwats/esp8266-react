@@ -48,14 +48,14 @@ class OTASettingsDeserializer : public SettingsDeserializer<OTASettings> {
 
 class OTASettingsService : public SettingsService<OTASettings> {
  public:
-  OTASettingsService(FS* fs, AsyncWebServer* server, SecurityManager* securityManager);
+  OTASettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
 
   void begin();
   void loop();
 
  private:
-  SettingsPersistence<OTASettings> _settingsPersistence;
   SettingsEndpoint<OTASettings> _settingsEndpoint;
+  SettingsPersistence<OTASettings> _settingsPersistence;
   ArduinoOTAClass* _arduinoOTA;
 
   void configureArduinoOTA();

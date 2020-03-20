@@ -1,11 +1,11 @@
 #include <ESP8266React.h>
 
 ESP8266React::ESP8266React(AsyncWebServer* server, FS* fs) :
-    _securitySettingsService(fs, server),
-    _wifiSettingsService(fs, server, &_securitySettingsService),
-    _apSettingsService(fs, server, &_securitySettingsService),
-    _ntpSettingsService(fs, server, &_securitySettingsService),
-    _otaSettingsService(fs, server, &_securitySettingsService),
+    _securitySettingsService(server, fs),
+    _wifiSettingsService(server, fs, &_securitySettingsService),
+    _apSettingsService(server, fs, &_securitySettingsService),
+    _ntpSettingsService(server, fs, &_securitySettingsService),
+    _otaSettingsService(server, fs, &_securitySettingsService),
     _restartService(server, &_securitySettingsService),
     _authenticationService(server, &_securitySettingsService),
     _wifiScanner(server, &_securitySettingsService),

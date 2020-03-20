@@ -76,14 +76,14 @@ class WiFiSettingsDeserializer : public SettingsDeserializer<WiFiSettings> {
 
 class WiFiSettingsService : public SettingsService<WiFiSettings> {
  public:
-  WiFiSettingsService(FS* fs, AsyncWebServer* server, SecurityManager* securityManager);
+  WiFiSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
 
   void begin();
   void loop();
 
  private:
-  SettingsPersistence<WiFiSettings> _settingsPersistence;
   SettingsEndpoint<WiFiSettings> _settingsEndpoint;
+  SettingsPersistence<WiFiSettings> _settingsPersistence;
   unsigned long _lastConnectionAttempt;
 
 #ifdef ESP32
