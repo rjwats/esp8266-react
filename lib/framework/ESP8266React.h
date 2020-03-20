@@ -41,7 +41,7 @@ class ESP8266React {
     return &_securitySettingsService;
   }
 
-   SettingsService<SecuritySettings>* getSecuritySettingsService() {
+  SettingsService<SecuritySettings>* getSecuritySettingsService() {
     return &_securitySettingsService;
   }
 

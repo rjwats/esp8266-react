@@ -1,7 +1,8 @@
 #ifndef NTPSettingsService_h
 #define NTPSettingsService_h
 
-#include <AdminSettingsService.h>
+#include <SettingsEndpoint.h>
+#include <SettingsPersistence.h>
 
 #include <time.h>
 #ifdef ESP32
@@ -16,10 +17,6 @@
 #define NTP_SETTINGS_SERVICE_DEFAULT_TIME_ZONE_FORMAT "GMT0BST,M3.5.0/1,M10.5.0"
 #define NTP_SETTINGS_SERVICE_DEFAULT_SERVER "time.google.com"
 
-// min poll delay of 60 secs, max 1 day
-#define NTP_SETTINGS_MIN_INTERVAL 60
-#define NTP_SETTINGS_MAX_INTERVAL 86400
-
 #define NTP_SETTINGS_FILE "/config/ntpSettings.json"
 #define NTP_SETTINGS_SERVICE_PATH "/rest/ntpSettings"
 
@@ -31,21 +28,35 @@ class NTPSettings {
   String server;
 };
 
-class NTPSettingsService : public AdminSettingsService<NTPSettings> {
+class NTPSettingsSerializer : public SettingsSerializer<NTPSettings> {
  public:
-  NTPSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
-  ~NTPSettingsService();
+  void serialize(NTPSettings& settings, JsonObject root) {
+    root["enabled"] = settings.enabled;
+    root["server"] = settings.server;
+    root["tz_label"] = settings.tzLabel;
+    root["tz_format"] = settings.tzFormat;
+  }
+};
 
-  void loop();
+class NTPSettingsDeserializer : public SettingsDeserializer<NTPSettings> {
+ public:
+  void deserialize(NTPSettings& settings, JsonObject root) {
+    settings.enabled = root["enabled"] | NTP_SETTINGS_SERVICE_DEFAULT_ENABLED;
+    settings.server = root["server"] | NTP_SETTINGS_SERVICE_DEFAULT_SERVER;
+    settings.tzLabel = root["tz_label"] | NTP_SETTINGS_SERVICE_DEFAULT_TIME_ZONE_LABEL;
+    settings.tzFormat = root["tz_format"] | NTP_SETTINGS_SERVICE_DEFAULT_TIME_ZONE_FORMAT;
+  }
+};
 
- protected:
-  void readFromJsonObject(JsonObject& root);
-  void writeToJsonObject(JsonObject& root);
-  void onConfigUpdated();
-  void receivedNTPtime();
+class NTPSettingsService : public SettingsService<NTPSettings> {
+ public:
+  NTPSettingsService(FS* fs, AsyncWebServer* server, SecurityManager* securityManager);
+
+  void begin();
 
  private:
-  bool _reconfigureNTP = false;
+  SettingsPersistence<NTPSettings> _settingsPersistence;
+  SettingsEndpoint<NTPSettings> _settingsEndpoint;
 
 #ifdef ESP32
   void onStationModeGotIP(WiFiEvent_t event, WiFiEventInfo_t info);
@@ -57,7 +68,6 @@ class NTPSettingsService : public AdminSettingsService<NTPSettings> {
   void onStationModeGotIP(const WiFiEventStationModeGotIP& event);
   void onStationModeDisconnected(const WiFiEventStationModeDisconnected& event);
 #endif
-
   void configureNTP();
 };
 

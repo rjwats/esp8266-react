@@ -1,7 +1,9 @@
 #ifndef APSettingsConfig_h
 #define APSettingsConfig_h
 
-#include <AdminSettingsService.h>
+#include <SettingsEndpoint.h>
+#include <SettingsPersistence.h>
+
 #include <DNSServer.h>
 #include <IPAddress.h>
 
@@ -26,20 +28,43 @@ class APSettings {
   String password;
 };
 
-class APSettingsService : public AdminSettingsService<APSettings> {
+class APSettingsSerializer : public SettingsSerializer<APSettings> {
  public:
-  APSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
-  ~APSettingsService();
+  void serialize(APSettings& settings, JsonObject root) {
+    root["provision_mode"] = settings.provisionMode;
+    root["ssid"] = settings.ssid;
+    root["password"] = settings.password;
+  }
+};
+
+class APSettingsDeserializer : public SettingsDeserializer<APSettings> {
+ public:
+  void deserialize(APSettings& settings, JsonObject root) {
+    settings.provisionMode = root["provision_mode"] | AP_MODE_ALWAYS;
+    switch (settings.provisionMode) {
+      case AP_MODE_ALWAYS:
+      case AP_MODE_DISCONNECTED:
+      case AP_MODE_NEVER:
+        break;
+      default:
+        settings.provisionMode = AP_MODE_ALWAYS;
+    }
+    settings.ssid = root["ssid"] | AP_DEFAULT_SSID;
+    settings.password = root["password"] | AP_DEFAULT_PASSWORD;
+  }
+};
+
+class APSettingsService : public SettingsService<APSettings> {
+ public:
+  APSettingsService(FS* fs, AsyncWebServer* server, SecurityManager* securityManager);
 
   void begin();
   void loop();
 
- protected:
-  void readFromJsonObject(JsonObject& root);
-  void writeToJsonObject(JsonObject& root);
-  void onConfigUpdated();
-
  private:
+  SettingsPersistence<APSettings> _settingsPersistence;
+  SettingsEndpoint<APSettings> _settingsEndpoint;
+
   // for the mangement delay loop
   unsigned long _lastManaged;
 

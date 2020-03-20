@@ -1,7 +1,8 @@
 #ifndef OTASettingsService_h
 #define OTASettingsService_h
 
-#include <AdminSettingsService.h>
+#include <SettingsEndpoint.h>
+#include <SettingsPersistence.h>
 
 #ifdef ESP32
 #include <ESPmDNS.h>
@@ -27,19 +28,34 @@ class OTASettings {
   String password;
 };
 
-class OTASettingsService : public AdminSettingsService<OTASettings> {
+class OTASettingsSerializer : public SettingsSerializer<OTASettings> {
  public:
-  OTASettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
-  ~OTASettingsService();
+  void serialize(OTASettings& settings, JsonObject root) {
+    root["enabled"] = settings.enabled;
+    root["port"] = settings.port;
+    root["password"] = settings.password;
+  }
+};
 
+class OTASettingsDeserializer : public SettingsDeserializer<OTASettings> {
+ public:
+  void deserialize(OTASettings& settings, JsonObject root) {
+    settings.enabled = root["enabled"] | DEFAULT_OTA_ENABLED;
+    settings.port = root["port"] | DEFAULT_OTA_PORT;
+    settings.password = root["password"] | DEFAULT_OTA_PASSWORD;
+  }
+};
+
+class OTASettingsService : public SettingsService<OTASettings> {
+ public:
+  OTASettingsService(FS* fs, AsyncWebServer* server, SecurityManager* securityManager);
+
+  void begin();
   void loop();
 
- protected:
-  void onConfigUpdated();
-  void readFromJsonObject(JsonObject& root);
-  void writeToJsonObject(JsonObject& root);
-
  private:
+  SettingsPersistence<OTASettings> _settingsPersistence;
+  SettingsEndpoint<OTASettings> _settingsEndpoint;
   ArduinoOTAClass* _arduinoOTA;
 
   void configureArduinoOTA();

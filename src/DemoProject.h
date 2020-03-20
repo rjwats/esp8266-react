@@ -1,7 +1,8 @@
 #ifndef DemoProject_h
 #define DemoProject_h
 
-#include <AdminSettingsService.h>
+#include <SettingsEndpoint.h>
+#include <SettingsPersistence.h>
 #include <ESP8266React.h>
 
 #define BLINK_LED 2
@@ -16,19 +17,33 @@ class DemoSettings {
   uint8_t blinkSpeed;
 };
 
-class DemoProject : public AdminSettingsService<DemoSettings> {
+class DemoSettingsSerializer : public SettingsSerializer<DemoSettings> {
  public:
-  DemoProject(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
+  void serialize(DemoSettings& settings, JsonObject root) {
+    root["blink_speed"] = settings.blinkSpeed;
+  }
+};
+
+class DemoSettingsDeserializer : public SettingsDeserializer<DemoSettings> {
+ public:
+  void deserialize(DemoSettings& settings, JsonObject root) {
+    settings.blinkSpeed = root["blink_speed"] | DEFAULT_BLINK_SPEED;
+  }
+};
+
+class DemoProject : public SettingsService<DemoSettings> {
+ public:
+  DemoProject(FS* fs, AsyncWebServer* server, SecurityManager* securityManager);
   ~DemoProject();
 
+  void begin();
   void loop();
 
  private:
-  unsigned long _lastBlink = 0;
+  SettingsPersistence<DemoSettings> _settingsPersistence;
+  SettingsEndpoint<DemoSettings> _settingsEndpoint;
 
- protected:
-  void readFromJsonObject(JsonObject& root);
-  void writeToJsonObject(JsonObject& root);
+  unsigned long _lastBlink = 0;
 };
 
 #endif
