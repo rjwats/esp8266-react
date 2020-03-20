@@ -3,9 +3,9 @@
 static DemoSettingsSerializer SERIALIZER;
 static DemoSettingsDeserializer DESERIALIZER;
 
-DemoProject::DemoProject(FS* fs, AsyncWebServer* server, SecurityManager* securityManager) :
-    _settingsPersistence(&SERIALIZER, &DESERIALIZER, this, fs, DEMO_SETTINGS_FILE),
-    _settingsEndpoint(&SERIALIZER, &DESERIALIZER, this, server, DEMO_SETTINGS_PATH, securityManager) {
+DemoProject::DemoProject(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) :
+    _settingsEndpoint(&SERIALIZER, &DESERIALIZER, this, server, DEMO_SETTINGS_PATH, securityManager),
+    _settingsPersistence(&SERIALIZER, &DESERIALIZER, this, fs, DEMO_SETTINGS_FILE) {
   pinMode(BLINK_LED, OUTPUT);
 }
 

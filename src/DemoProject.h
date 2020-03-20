@@ -33,15 +33,15 @@ class DemoSettingsDeserializer : public SettingsDeserializer<DemoSettings> {
 
 class DemoProject : public SettingsService<DemoSettings> {
  public:
-  DemoProject(FS* fs, AsyncWebServer* server, SecurityManager* securityManager);
+  DemoProject(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
   ~DemoProject();
 
   void begin();
   void loop();
 
  private:
-  SettingsPersistence<DemoSettings> _settingsPersistence;
   SettingsEndpoint<DemoSettings> _settingsEndpoint;
+  SettingsPersistence<DemoSettings> _settingsPersistence;
 
   unsigned long _lastBlink = 0;
 };
