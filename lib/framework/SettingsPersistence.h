@@ -11,7 +11,7 @@
 /**
  * SettingsPersistance takes care of loading and saving settings when they change.
  *
- * SettingsPersistence automatically registers it's writeToFS function as an update handler with the settings manager
+ * SettingsPersistence automatically registers writeToFS as an update handler with the settings manager
  * when constructed, saving any updates to the file system.
  */
 template <class T>
@@ -27,7 +27,7 @@ class SettingsPersistence {
       _settingsManager(settingsManager),
       _fs(fs),
       _filePath(filePath) {
-    _settingsManager->addUpdateHandler([&](void* origin) { writeToFS(); }, false);
+    enableAutomatic();
   }
 
   void readFromFS() {
@@ -54,8 +54,8 @@ class SettingsPersistence {
   bool writeToFS() {
     // create and populate a new json object
     DynamicJsonDocument jsonDocument = DynamicJsonDocument(MAX_SETTINGS_SIZE);
-    _settingsManager->update(
-        [&](T& settings) { _settingsSerializer->serialize(settings, jsonDocument.to<JsonObject>()); }, false);
+    _settingsManager->read(
+        [&](T& settings) { _settingsSerializer->serialize(settings, jsonDocument.to<JsonObject>()); });
 
     // serialize it to filesystem
     File settingsFile = _fs->open(_filePath, "w");
@@ -71,12 +71,26 @@ class SettingsPersistence {
     return true;
   }
 
+  void disableAutomatic() {
+    if (_updateHandlerId) {
+      _settingsManager->removeUpdateHandler(_updateHandlerId);
+      _updateHandlerId = 0;
+    }
+  }
+
+  void enableAutomatic() {
+    if (!_updateHandlerId) {
+      _updateHandlerId = _settingsManager->addUpdateHandler([&](void* origin) { writeToFS(); });
+    }
+  }
+
  private:
   SettingsSerializer<T>* _settingsSerializer;
   SettingsDeserializer<T>* _settingsDeserializer;
   SettingsService<T>* _settingsManager;
   FS* _fs;
   char const* _filePath;
+  update_handler_id_t _updateHandlerId = 0;
 
   // read the settings, but do not call propogate
   void readSettings(JsonObject root) {

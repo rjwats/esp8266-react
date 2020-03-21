@@ -3,6 +3,10 @@
 
 #include <list>
 #include <functional>
+#ifdef ESP32
+#include <freertos/freertos.h>
+#include <freertos/semphr.h>
+#endif
 
 typedef size_t update_handler_id_t;
 typedef std::function<void(void* origin)> SettingsUpdateCallback;
@@ -21,6 +25,11 @@ typedef struct SettingsUpdateHandlerInfo {
 template <class T>
 class SettingsService {
  public:
+#ifdef ESP32
+  SettingsService() : _updateMutex(xSemaphoreCreateRecursiveMutex()) {
+  }
+#endif
+
   update_handler_id_t addUpdateHandler(SettingsUpdateCallback cb, bool allowRemove = true) {
     if (!cb) {
       return 0;
@@ -40,11 +49,25 @@ class SettingsService {
     }
   }
 
-  void update(std::function<void(T&)> callback, bool propogate = true, void* origin = nullptr) {
+  void update(std::function<void(T&)> callback, bool propogate, void* origin = nullptr) {
+#ifdef ESP32
+    xSemaphoreTakeRecursive(_updateMutex, portMAX_DELAY);
+#endif
     callback(_settings);
     if (propogate) {
       callUpdateHandlers(origin);
     }
+#ifdef ESP32
+    xSemaphoreGiveRecursive(_updateMutex);
+#endif
+  }
+
+  void update(std::function<void(T&)> callback, void* origin = nullptr) {
+    update(callback, true, origin);
+  }
+
+  void read(std::function<void(T&)> callback) {
+    update(callback, false);
   }
 
   void callUpdateHandlers(void* origin = nullptr) {
@@ -55,9 +78,11 @@ class SettingsService {
 
  protected:
   T _settings;
-
+#ifdef ESP32
+  SemaphoreHandle_t _updateMutex;
+#endif
  private:
   std::list<SettingsUpdateHandlerInfo_t> _settingsUpdateHandlers;
 };
 
-#endif  // end SettingsService
+#endif  // end SettingsService_h

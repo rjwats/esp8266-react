@@ -273,7 +273,7 @@ There is also a manifest file which contains the app name to use when adding the
 }
 ```
 
-## Back end overview
+## Back end
 
 The back end is a set of REST endpoints hosted by a [ESPAsyncWebServer](https://github.com/me-no-dev/ESPAsyncWebServer) instance. The ['lib/framework'](lib/framework) directory contains the majority of the back end code. The framework contains of a number of useful utility classes which you can use when extending it. The project also comes with a demo project to give you some help getting started. 
 
@@ -328,15 +328,15 @@ void loop() {
 }
 ```
 
-## Developing with the framework
+### Developing with the framework
 
 The framework promotes a modular design and exposes features you may re-use to speed up the development of your project. Where possible it is recommended that you use the features the frameworks supplies. These are documented below.
 
 The following diagram visualises how the framework's modular components fit together. They are described in detail below.
 
-TODO: DIAGRAM GOES HERE!!!
+![framework diagram](/media/framework.svg?raw=true "framework diagram")
 
-### Settings service
+#### Settings service
 
 The [SettingsService.h](lib/framework/SettingsService.h) class is a responsible for managing settings and interfacing with code which wants to control or respond to changes in those settings. You can define a data class to hold settings then build a SettingsService instance to manage them:
 
@@ -351,7 +351,7 @@ class LightSettingsService : public SettingsService<LightSettings> {
 };
 ```
 
-You may listen for changes to settings by registering an update handler callback. The callback may be removed later if required. An origin pointer is passed to the update handler. This may point to the client or object which originated the update, it may also be "nullptr" if the updating code did not provide one:
+You may listen for changes to settings by registering an update handler callback. It is possible to remove an update handler later if required. An "origin" pointer is passed to the update handler which may point to the client or object which made the update.
 
 ```cpp
 // register an update handler
@@ -365,7 +365,15 @@ update_handler_id_t myUpdateHandler = lightSettingsService.addUpdateHandler(
 lightSettingsService.removeUpdateHandler(myUpdateHandler);
 ```
 
-SettingsService exposes an update function which allows the caller to read from or write to the settings. Updates performed using the update function will immediately call the registered update handler callbacks. If you are modifing settings held by a SettingsService instance, it should usually be done this way.
+SettingsService exposes a read function which you may use to safely read the settings. This function takes care of protecting against parallel access to the settings in multi-core enviornments such as the ESP32.
+
+```cpp
+lightSettingsService.read([&](LightSettings& settings) {
+  digitalWrite(LED_PIN, settings.on ? HIGH : LOW)
+});
+```
+
+SettingsService also exposes an update function which allows the caller to update the settings. The update function takes care of calling the registered update handler callbacks once the update is complete.
 
 ```cpp
 lightSettingsService.update([&](LightSettings& settings) {
@@ -373,12 +381,7 @@ lightSettingsService.update([&](LightSettings& settings) {
 });
 ```
 
-TODO: Implement and utalize getSettings() to return reference, remove optional propogation - easier to explain (document here)!
-TODO: Maybe document callUpdateHandlers function (?)
-
-### Serialization
-
-TODO: Support any JsonVariant (?)
+#### Serialization
 
 When transmitting settings over HTTP, WebSockets or MQTT they must to be marshalled into a serialzable form. The framework uses ArduinoJson for serialization and provides the abstract classes [SettingsSerializer.h](lib/framework/SettingsSerializer.h) and [SettingsDeserializer.h](lib/framework/SettingsDeserializer.h) to facilitate the seriliaztion of settings:
 
@@ -400,46 +403,22 @@ class LightSettingsDeserializer : public SettingsDeserializer<LightSettings> {
 };
 ```
 
-It is recommended you make create singletons for your serialzers, they should be stateless.
+It is recommended you make create singletons for your serialzers and that they are stateless:
 
 ```cpp
 static LightSettingsSerializer SERIALIZER;
 static LightSettingsDeserializer DESERIALIZER;
 ```
 
-### Endpoints
+#### Endpoints
 
 The framework provides a [SettingsEndpoint.h](lib/framework/SettingsEndpoint.h) class which may be used to register GET and POST handlers to read and update the settings over HTTP. You may construct a SettingsEndpoint as a part of the SettingsService or separately if you prefer. The code below demonstrates how to extend the LightSettingsService class to provide an unsecured endpoint:
 
 ```cpp
 class LightSettingsService : public SettingsService<LightSettings> {
  public:
-  LightSettingsService(AsyncWebServer* server) :
-      _settingsEndpoint(&SERIALIZER,
-                        &DESERIALIZER,
-                        this,
-                        server,
-                        "/rest/lightSettings") {
-  }
-
- private:
-  SettingsEndpoint<LightSettings> _settingsEndpoint;
-};
-```
-
-You may secure the endpoints provided by SettingsEndpoint using authentication predicates which are [documented below](#security-features):
-
-```cpp
-class LightSettingsService : public SettingsService<LightSettings> {
- public:
   LightSettingsService(AsyncWebServer* server, SecurityManager* securityManager) :
-      _settingsEndpoint(&SERIALIZER,
-                        &DESERIALIZER,
-                        this,
-                        server,
-                        "/rest/lightSettings",
-                        securityManager,
-                        AuthenticationPredicates::IS_AUTHENTICATED) {
+      _settingsEndpoint(&SERIALIZER, &DESERIALIZER, this, server, "/rest/lightSettings") {
   }
 
  private:
@@ -447,9 +426,13 @@ class LightSettingsService : public SettingsService<LightSettings> {
 };
 ```
 
-### Persistence
+Endpoint security is provided by authentication predicates which are [documented below](#security-features). A security manager and authentication predicate may be provided if an secure endpoint is required. The demo app shows how endpoints can be secured.
 
-[SettingsPersistence.h](lib/framework/SettingsPersistence.h) allows you to save settings to the filesystem. The SettingsPersistence class automatically writes changes to the file system when settings are updated. As with SettingsEndpoint you may elect to construct this as a part of the SettingsService or separately. The code below demonstrates how to extend the LightSettingsService class to provide persistence:
+#### Persistence
+
+[SettingsPersistence.h](lib/framework/SettingsPersistence.h) allows you to save settings to the filesystem. SettingsPersistence automatically writes changes to the file system when settings are updated. This feature can be disabled by calling `disableAutomatic()` if manual control of persistence is required.
+
+As with SettingsEndpoint you may elect to construct this as a part of a SettingsService class or separately. The code below demonstrates how to extend the LightSettingsService class to provide persistence:
 
 ```cpp
 class LightSettingsService : public SettingsService<LightSettings> {
