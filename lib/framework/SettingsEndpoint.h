@@ -64,7 +64,8 @@ class SettingsEndpoint {
 
   void fetchSettings(AsyncWebServerRequest* request) {
     AsyncJsonResponse* response = new AsyncJsonResponse(false, MAX_SETTINGS_SIZE);
-    _settingsSerializer->serialize(_settingsManager->getSettings(), response->getRoot().as<JsonObject>());
+    _settingsManager->update(
+        [&](T& settings) { _settingsSerializer->serialize(settings, response->getRoot().as<JsonObject>()); }, false);
     response->setLength();
     request->send(response);
   }
@@ -77,7 +78,12 @@ class SettingsEndpoint {
       request->onDisconnect([this]() { _settingsManager->callUpdateHandlers(); });
 
       // update the settings, deferring the call to the update handlers to when the response is complete
-      _settingsDeserializer->deserialize(_settingsManager->getSettings(), json.as<JsonObject>());
+      _settingsManager->update(
+          [&](T& settings) {
+            _settingsDeserializer->deserialize(settings, json.as<JsonObject>());
+            _settingsSerializer->serialize(settings, response->getRoot().as<JsonObject>());
+          },
+          false);
 
       // write the response to the client
       response->setLength();

@@ -40,13 +40,11 @@ class SettingsService {
     }
   }
 
-  T& getSettings() {
-    return _settings;
-  }
-
-  void update(std::function<void(T&)> callback, void* origin = nullptr) {
+  void update(std::function<void(T&)> callback, bool propogate = true, void* origin = nullptr) {
     callback(_settings);
-    callUpdateHandlers(origin);
+    if (propogate) {
+      callUpdateHandlers(origin);
+    }
   }
 
   void callUpdateHandlers(void* origin = nullptr) {
