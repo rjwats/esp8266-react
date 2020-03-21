@@ -54,8 +54,7 @@ class SettingsPersistence {
   bool writeToFS() {
     // create and populate a new json object
     DynamicJsonDocument jsonDocument = DynamicJsonDocument(MAX_SETTINGS_SIZE);
-    _settingsManager->update(
-        [&](T& settings) { _settingsSerializer->serialize(settings, jsonDocument.to<JsonObject>()); }, false);
+    _settingsSerializer->serialize(_settingsManager->getSettings(), jsonDocument.to<JsonObject>());
 
     // serialize it to filesystem
     File settingsFile = _fs->open(_filePath, "w");
@@ -80,7 +79,7 @@ class SettingsPersistence {
 
   // read the settings, but do not call propogate
   void readSettings(JsonObject root) {
-    _settingsManager->update([&](T& settings) { _settingsDeserializer->deserialize(settings, root); }, false);
+    _settingsDeserializer->deserialize(_settingsManager->getSettings(), root);
   }
 
  protected:
