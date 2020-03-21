@@ -328,17 +328,142 @@ void loop() {
 }
 ```
 
-### Adding endpoints
+## Developing with the framework
 
-There are some simple classes that support adding configurable services/features to the device:
+The framework promotes a modular design and exposes features you may re-use to speed up the development of your project. Where possible it is recommended that you use the features the frameworks supplies. These are documented below.
 
-Class | Description
------ | -----------
-[SimpleService.h](lib/framework/SimpleService.h) | Exposes an endpoint to read and write settings as JSON. Extend this class and implement the functions which serialize the settings to/from JSON.
-[SettingsService.h](lib/framework/SettingsService.h) | As above, however this class also handles persisting the settings as JSON to the file system.
-[AdminSettingsService.h](lib/framework/AdminSettingsService.h) | Extends SettingsService to secure the endpoint to administrators only, the authentication predicate can be overridden if required.
+The following diagram visualises how the framework's modular components fit together. They are described in detail below.
 
-The demo project shows how these can be used, explore the framework classes for more examples.
+TODO: DIAGRAM GOES HERE!!!
+
+### Settings service
+
+The [SettingsService.h](lib/framework/SettingsService.h) class is a responsible for managing settings and interfacing with code which wants to control or respond to changes in those settings. You can define a data class to hold settings then build a SettingsService instance to manage them:
+
+```cpp
+class LightSettings {
+ public:
+  bool on = false;
+  uint8_t brightness = 255;
+};
+
+class LightSettingsService : public SettingsService<LightSettings> {
+};
+```
+
+You may listen for changes to settings by registering an update handler callback. The callback may be removed later if required. An origin pointer is passed to the update handler. This may point to the client or object which originated the update, it may also be "nullptr" if the updating code did not provide one:
+
+```cpp
+// register an update handler
+update_handler_id_t myUpdateHandler = lightSettingsService.addUpdateHandler(
+  [&](void* origin) {
+    Serial.println("The light settings have been updated"); 
+  }
+);
+
+// remove the update handler
+lightSettingsService.removeUpdateHandler(myUpdateHandler);
+```
+
+SettingsService exposes an update function which allows the caller to read from or write to the settings. Updates performed using the update function will immediately call the registered update handler callbacks. If you are modifing settings held by a SettingsService instance, it should usually be done this way.
+
+```cpp
+lightSettingsService.update([&](LightSettings& settings) {
+  settings.on = true;  // turn on the lights!
+});
+```
+
+TODO: Implement and utalize getSettings() to return reference, remove optional propogation - easier to explain (document here)!
+TODO: Maybe document callUpdateHandlers function (?)
+
+### Serialization
+
+TODO: Support any JsonVariant (?)
+
+When transmitting settings over HTTP, WebSockets or MQTT they must to be marshalled into a serialzable form. The framework uses ArduinoJson for serialization and provides the abstract classes [SettingsSerializer.h](lib/framework/SettingsSerializer.h) and [SettingsDeserializer.h](lib/framework/SettingsDeserializer.h) to facilitate the seriliaztion of settings:
+
+```cpp
+class LightSettingsSerializer : public SettingsSerializer<LightSettings> {
+ public:
+  void serialize(LightSettings& settings, JsonObject root) {
+    root["on"] = settings.on;
+    root["brightness"] = settings.brightness;
+  }
+};
+
+class LightSettingsDeserializer : public SettingsDeserializer<LightSettings> {
+ public:
+  void deserialize(LightSettings& settings, JsonObject root) {
+    settings.on = root["on"] | false;
+    settings.brightness = root["brightness"] | 255;
+  }
+};
+```
+
+It is recommended you make create singletons for your serialzers, they should be stateless.
+
+```cpp
+static LightSettingsSerializer SERIALIZER;
+static LightSettingsDeserializer DESERIALIZER;
+```
+
+### Endpoints
+
+The framework provides a [SettingsEndpoint.h](lib/framework/SettingsEndpoint.h) class which may be used to register GET and POST handlers to read and update the settings over HTTP. You may construct a SettingsEndpoint as a part of the SettingsService or separately if you prefer. The code below demonstrates how to extend the LightSettingsService class to provide an unsecured endpoint:
+
+```cpp
+class LightSettingsService : public SettingsService<LightSettings> {
+ public:
+  LightSettingsService(AsyncWebServer* server) :
+      _settingsEndpoint(&SERIALIZER,
+                        &DESERIALIZER,
+                        this,
+                        server,
+                        "/rest/lightSettings") {
+  }
+
+ private:
+  SettingsEndpoint<LightSettings> _settingsEndpoint;
+};
+```
+
+You may secure the endpoints provided by SettingsEndpoint using authentication predicates which are [documented below](#security-features):
+
+```cpp
+class LightSettingsService : public SettingsService<LightSettings> {
+ public:
+  LightSettingsService(AsyncWebServer* server, SecurityManager* securityManager) :
+      _settingsEndpoint(&SERIALIZER,
+                        &DESERIALIZER,
+                        this,
+                        server,
+                        "/rest/lightSettings",
+                        securityManager,
+                        AuthenticationPredicates::IS_AUTHENTICATED) {
+  }
+
+ private:
+  SettingsEndpoint<LightSettings> _settingsEndpoint;
+};
+```
+
+### Persistence
+
+[SettingsPersistence.h](lib/framework/SettingsPersistence.h) allows you to save settings to the filesystem. The SettingsPersistence class automatically writes changes to the file system when settings are updated. As with SettingsEndpoint you may elect to construct this as a part of the SettingsService or separately. The code below demonstrates how to extend the LightSettingsService class to provide persistence:
+
+```cpp
+class LightSettingsService : public SettingsService<LightSettings> {
+ public:
+  LightSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) :
+      _settingsEndpoint(&SERIALIZER, &DESERIALIZER, this, server, "/rest/lightSettings"),
+      _settingsPersistence(&SERIALIZER, &DESERIALIZER, this, fs, "/config/lightSettings.json") {
+  }
+
+ private:
+  SettingsEndpoint<LightSettings> _settingsEndpoint;
+  SettingsPersistence<LightSettings> _settingsPersistence;
+};
+```
 
 ### Security features
 
