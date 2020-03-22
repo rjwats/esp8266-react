@@ -4,7 +4,7 @@
 #include <list>
 #include <functional>
 #ifdef ESP32
-#include <freertos/freertos.h>
+#include <freertos/freeRTOS.h>
 #include <freertos/semphr.h>
 #endif
 
