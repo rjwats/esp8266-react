@@ -474,6 +474,6 @@ export function selectedTimeZone(label: string, format: string) {
 
 export function timeZoneSelectItems() {
   return Object.keys(TIME_ZONES).map(label => (
-    <MenuItem value={label}>{label}</MenuItem>
+    <MenuItem key={label} value={label}>{label}</MenuItem>
   ));
 }

@@ -33,11 +33,11 @@ class SecuritySettingsForm extends React.Component<SecuritySettingsFormProps> {
           onChange={handleValueChange('jwt_secret')}
           margin="normal"
         />
-        <Typography component="div" variant="body1">
-          <Box bgcolor="primary.main" color="primary.contrastText" p={2} mt={2} mb={2}>
+        <Box bgcolor="primary.main" color="primary.contrastText" p={2} mt={2} mb={2}>
+          <Typography variant="body1">
             If you modify the JWT Secret, all users will be logged out.
-          </Box>
-        </Typography>
+          </Typography>
+        </Box>
         <FormActions>
           <FormButton startIcon={<SaveIcon />} variant="contained" color="primary" type="submit">
             Save

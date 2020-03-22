@@ -154,11 +154,13 @@ class ManageUsersForm extends React.Component<ManageUsersFormProps, ManageUsersF
           </Table>
           {
             this.noAdminConfigured() &&
-            <Typography component="div" variant="body1">
+            (
               <Box bgcolor="error.main" color="error.contrastText" p={2} mt={2} mb={2}>
-                You must have at least one admin user configured.
+                <Typography variant="body1">
+                  You must have at least one admin user configured.
+                </Typography>
               </Box>
-            </Typography>
+            )
           }
           <FormActions>
             <FormButton startIcon={<SaveIcon />} variant="contained" color="primary" type="submit" disabled={this.noAdminConfigured()}>
