@@ -334,7 +334,7 @@ The framework promotes a modular design and exposes features you may re-use to s
 
 The following diagram visualises how the framework's modular components fit together. They are described in detail below.
 
-![framework diagram](/media/framework.svg?raw=true "framework diagram")
+![framework diagram](/media/framework.png?raw=true "framework diagram")
 
 #### Settings service
 
