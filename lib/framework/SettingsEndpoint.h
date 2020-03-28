@@ -25,7 +25,7 @@ class SettingsEndpoint {
                    AuthenticationPredicate authenticationPredicate = AuthenticationPredicates::IS_ADMIN) :
       _settingsSerializer(settingsSerializer),
       _settingsDeserializer(settingsDeserializer),
-      _settingsManager(settingsManager),
+      _settingsService(settingsManager),
       _updateHandler(
           servicePath,
           securityManager->wrapCallback(
@@ -47,7 +47,7 @@ class SettingsEndpoint {
                    const String& servicePath) :
       _settingsSerializer(settingsSerializer),
       _settingsDeserializer(settingsDeserializer),
-      _settingsManager(settingsManager),
+      _settingsService(settingsManager),
       _updateHandler(servicePath,
                      std::bind(&SettingsEndpoint::updateSettings, this, std::placeholders::_1, std::placeholders::_2)) {
     server->on(servicePath.c_str(), HTTP_GET, std::bind(&SettingsEndpoint::fetchSettings, this, std::placeholders::_1));
@@ -59,12 +59,12 @@ class SettingsEndpoint {
  protected:
   SettingsSerializer<T>* _settingsSerializer;
   SettingsDeserializer<T>* _settingsDeserializer;
-  SettingsService<T>* _settingsManager;
+  SettingsService<T>* _settingsService;
   AsyncCallbackJsonWebHandler _updateHandler;
 
   void fetchSettings(AsyncWebServerRequest* request) {
     AsyncJsonResponse* response = new AsyncJsonResponse(false, MAX_SETTINGS_SIZE);
-    _settingsManager->read(
+    _settingsService->read(
         [&](T& settings) { _settingsSerializer->serialize(settings, response->getRoot().as<JsonObject>()); });
     response->setLength();
     request->send(response);
@@ -75,10 +75,10 @@ class SettingsEndpoint {
       AsyncJsonResponse* response = new AsyncJsonResponse(false, MAX_SETTINGS_SIZE);
 
       // use callback to update the settings once the response is complete
-      request->onDisconnect([this]() { _settingsManager->callUpdateHandlers(); });
+      request->onDisconnect([this]() { _settingsService->callUpdateHandlers(); });
 
       // update the settings, deferring the call to the update handlers to when the response is complete
-      _settingsManager->update(
+      _settingsService->update(
           [&](T& settings) {
             _settingsDeserializer->deserialize(settings, json.as<JsonObject>());
             _settingsSerializer->serialize(settings, response->getRoot().as<JsonObject>());

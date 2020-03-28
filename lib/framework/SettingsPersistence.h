@@ -24,7 +24,7 @@ class SettingsPersistence {
                       char const* filePath) :
       _settingsSerializer(settingsSerializer),
       _settingsDeserializer(settingsDeserializer),
-      _settingsManager(settingsManager),
+      _settingsService(settingsManager),
       _fs(fs),
       _filePath(filePath) {
     enableAutomatic();
@@ -54,7 +54,7 @@ class SettingsPersistence {
   bool writeToFS() {
     // create and populate a new json object
     DynamicJsonDocument jsonDocument = DynamicJsonDocument(MAX_SETTINGS_SIZE);
-    _settingsManager->read(
+    _settingsService->read(
         [&](T& settings) { _settingsSerializer->serialize(settings, jsonDocument.to<JsonObject>()); });
 
     // serialize it to filesystem
@@ -73,28 +73,28 @@ class SettingsPersistence {
 
   void disableAutomatic() {
     if (_updateHandlerId) {
-      _settingsManager->removeUpdateHandler(_updateHandlerId);
+      _settingsService->removeUpdateHandler(_updateHandlerId);
       _updateHandlerId = 0;
     }
   }
 
   void enableAutomatic() {
     if (!_updateHandlerId) {
-      _updateHandlerId = _settingsManager->addUpdateHandler([&](void* origin) { writeToFS(); });
+      _updateHandlerId = _settingsService->addUpdateHandler([&](void* origin) { writeToFS(); });
     }
   }
 
  private:
   SettingsSerializer<T>* _settingsSerializer;
   SettingsDeserializer<T>* _settingsDeserializer;
-  SettingsService<T>* _settingsManager;
+  SettingsService<T>* _settingsService;
   FS* _fs;
   char const* _filePath;
   update_handler_id_t _updateHandlerId = 0;
 
   // read the settings, but do not call propogate
   void readSettings(JsonObject root) {
-    _settingsManager->update([&](T& settings) { _settingsDeserializer->deserialize(settings, root); }, false);
+    _settingsService->update([&](T& settings) { _settingsDeserializer->deserialize(settings, root); }, false);
   }
 
  protected:
