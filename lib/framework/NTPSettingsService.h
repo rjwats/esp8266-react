@@ -42,7 +42,6 @@ class NTPSettingsService : public AdminSettingsService<NTPSettings> {
   void readFromJsonObject(JsonObject& root);
   void writeToJsonObject(JsonObject& root);
   void onConfigUpdated();
-  void receivedNTPtime();
 
  private:
   bool _reconfigureNTP = false;
