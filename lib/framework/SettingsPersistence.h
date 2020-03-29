@@ -94,7 +94,7 @@ class SettingsPersistence {
 
   // read the settings, but do not call propogate
   void readSettings(JsonObject root) {
-    _settingsService->update([&](T& settings) { _settingsDeserializer->deserialize(settings, root); }, false);
+    _settingsService->read([&](T& settings) { _settingsDeserializer->deserialize(settings, root); });
   }
 
  protected:

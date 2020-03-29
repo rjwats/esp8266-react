@@ -78,7 +78,7 @@ class SettingsEndpoint {
       request->onDisconnect([this]() { _settingsService->callUpdateHandlers(); });
 
       // update the settings, deferring the call to the update handlers to when the response is complete
-      _settingsService->update(
+      _settingsService->withSettings(
           [&](T& settings) {
             _settingsDeserializer->deserialize(settings, json.as<JsonObject>());
             _settingsSerializer->serialize(settings, response->getRoot().as<JsonObject>());

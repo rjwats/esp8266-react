@@ -49,7 +49,7 @@ class SettingsService {
     }
   }
 
-  void update(std::function<void(T&)> callback, bool propogate, void* origin = nullptr) {
+  void withSettings(std::function<void(T&)> callback, bool propogate, void* origin = nullptr) {
 #ifdef ESP32
     xSemaphoreTakeRecursive(_updateMutex, portMAX_DELAY);
 #endif
@@ -63,11 +63,11 @@ class SettingsService {
   }
 
   void update(std::function<void(T&)> callback, void* origin = nullptr) {
-    update(callback, true, origin);
+    withSettings(callback, true, origin);
   }
 
   void read(std::function<void(T&)> callback) {
-    update(callback, false);
+    withSettings(callback, false);
   }
 
   void callUpdateHandlers(void* origin = nullptr) {

@@ -20,6 +20,7 @@ MQTTSettingsService::MQTTSettingsService(AsyncWebServer* server, FS* fs, Securit
 #endif
   _mqttClient.onConnect(std::bind(&MQTTSettingsService::onMqttConnect, this, std::placeholders::_1));
   _mqttClient.onDisconnect(std::bind(&MQTTSettingsService::onMqttDisconnect, this, std::placeholders::_1));
+  addUpdateHandler([&](void* origin) { onConfigUpdated(); }, false);
 }
 
 MQTTSettingsService::~MQTTSettingsService() {
