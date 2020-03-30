@@ -10,8 +10,9 @@ DemoProject::DemoProject(AsyncWebServer* server,
                          SecurityManager* securityManager,
                          AsyncMqttClient* mqttClient,
                          LightSettingsService* lightSettingsService) :
-    _settingsEndpoint(&SERIALIZER, &DESERIALIZER, this, server, DEMO_SETTINGS_PATH, securityManager),
+    _settingsEndpoint(&SERIALIZER, &DESERIALIZER, this, server, DEMO_SETTINGS_ENDPOINT_PATH, securityManager),
     _settingsBroker(&HA_SERIALIZER, &HA_DESERIALIZER, this, mqttClient),
+    _settingsSocket(&SERIALIZER, &DESERIALIZER, this, server, DEMO_SETTINGS_SOCKET_PATH),
     _mqttClient(mqttClient),
     _lightSettingsService(lightSettingsService) {
   // configure blink led to be output

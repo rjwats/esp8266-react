@@ -4,7 +4,7 @@
 #include <LightSettingsService.h>
 #include <SettingsEndpoint.h>
 #include <SettingsBroker.h>
-#include <SettingsPersistence.h>
+#include <SettingsSocket.h>
 #include <ESP8266React.h>
 
 #define BLINK_LED 2
@@ -16,7 +16,8 @@
 #define LED_ON 0x0
 #define LED_OFF 0x1
 
-#define DEMO_SETTINGS_PATH "/rest/demoSettings"
+#define DEMO_SETTINGS_ENDPOINT_PATH "/rest/demoSettings"
+#define DEMO_SETTINGS_SOCKET_PATH "/ws/demoSettings"
 
 class DemoSettings {
  public:
@@ -63,6 +64,7 @@ class DemoProject : public SettingsService<DemoSettings> {
  private:
   SettingsEndpoint<DemoSettings> _settingsEndpoint;
   SettingsBroker<DemoSettings> _settingsBroker;
+  SettingsSocket<DemoSettings> _settingsSocket;
   AsyncMqttClient* _mqttClient;
   LightSettingsService* _lightSettingsService;
 

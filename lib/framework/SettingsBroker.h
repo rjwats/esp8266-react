@@ -95,7 +95,7 @@ class SettingsBroker {
     // deserialize from string
     DynamicJsonDocument json(MAX_SETTINGS_SIZE);
     DeserializationError error = deserializeJson(json, payload, len);
-    if (!error) {
+    if (!error && json.is<JsonObject>()) {
       _settingsService->update(
           [&](T& settings) { _settingsDeserializer->deserialize(settings, json.as<JsonObject>()); });
     }
