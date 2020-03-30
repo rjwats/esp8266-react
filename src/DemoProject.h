@@ -1,6 +1,7 @@
 #ifndef DemoProject_h
 #define DemoProject_h
 
+#include <LightSettingsService.h>
 #include <SettingsEndpoint.h>
 #include <SettingsBroker.h>
 #include <SettingsPersistence.h>
@@ -15,12 +16,7 @@
 #define LED_ON 0x0
 #define LED_OFF 0x1
 
-#define DEMO_SETTINGS_FILE "/config/demoSettings.json"
 #define DEMO_SETTINGS_PATH "/rest/demoSettings"
-
-#define DEMO_SETTINGS_CONFIG_TOPIC "homeassistant/light/esp_demo/config"
-#define DEMO_SETTINGS_SET_TOPIC "homeassistant/light/esp_demo/set"
-#define DEMO_SETTINGS_STATE_TOPIC "homeassistant/light/esp_demo/state"
 
 class DemoSettings {
  public:
@@ -58,17 +54,20 @@ class HomeAssistantDeserializer : public SettingsDeserializer<DemoSettings> {
 
 class DemoProject : public SettingsService<DemoSettings> {
  public:
-  DemoProject(AsyncWebServer* server, FS* fs, SecurityManager* securityManager, AsyncMqttClient* mqttClient);
+  DemoProject(AsyncWebServer* server,
+              SecurityManager* securityManager,
+              AsyncMqttClient* mqttClient,
+              LightSettingsService* lightSettingsService);
   void begin();
 
  private:
   SettingsEndpoint<DemoSettings> _settingsEndpoint;
-  SettingsPersistence<DemoSettings> _settingsPersistence;
   SettingsBroker<DemoSettings> _settingsBroker;
   AsyncMqttClient* _mqttClient;
+  LightSettingsService* _lightSettingsService;
+
   void registerConfig();
   void onConfigUpdated();
-
 };
 
 #endif

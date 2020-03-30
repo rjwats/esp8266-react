@@ -27,15 +27,11 @@ class SettingsBroker {
   SettingsBroker(SettingsSerializer<T>* settingsSerializer,
                  SettingsDeserializer<T>* settingsDeserializer,
                  SettingsService<T>* settingsService,
-                 AsyncMqttClient* mqttClient,
-                 const char* setTopic,
-                 const char* stateTopic) :
+                 AsyncMqttClient* mqttClient) :
       _settingsSerializer(settingsSerializer),
       _settingsDeserializer(settingsDeserializer),
       _settingsService(settingsService),
-      _mqttClient(mqttClient),
-      _setTopic(setTopic),
-      _stateTopic(stateTopic) {
+      _mqttClient(mqttClient) {
     _settingsService->addUpdateHandler([&](void* origin) { publish(); }, false);
     _mqttClient->onConnect(std::bind(&SettingsBroker::configureMQTT, this));
     _mqttClient->onMessage(std::bind(&SettingsBroker::onMqttMessage,
@@ -48,9 +44,17 @@ class SettingsBroker {
                                      std::placeholders::_6));
   }
 
+  void configureBroker(String setTopic, String stateTopic) {
+    _setTopic = setTopic;
+    _stateTopic = stateTopic;
+    configureMQTT();
+  }
+
  protected:
   virtual void configureMQTT() {
-    _mqttClient->subscribe(_setTopic, 2);
+    if (_setTopic.length() > 0) {
+      _mqttClient->subscribe(_setTopic.c_str(), 2);
+    }
     publish();
   }
 
@@ -59,11 +63,11 @@ class SettingsBroker {
   SettingsDeserializer<T>* _settingsDeserializer;
   SettingsService<T>* _settingsService;
   AsyncMqttClient* _mqttClient;
-  const char* _setTopic;
-  const char* _stateTopic;
+  String _setTopic;
+  String _stateTopic;
 
   void publish() {
-    if (_mqttClient->connected()) {
+    if (_stateTopic.length() > 0 && _mqttClient->connected()) {
       // serialize to json doc
       DynamicJsonDocument json(MAX_SETTINGS_SIZE);
       _settingsService->read([&](T& settings) { _settingsSerializer->serialize(settings, json.to<JsonObject>()); });
@@ -72,7 +76,8 @@ class SettingsBroker {
       String payload;
       serializeJson(json, payload);
 
-      _mqttClient->publish(_stateTopic, 0, false, payload.c_str());
+      // publish the payload
+      _mqttClient->publish(_stateTopic.c_str(), 0, false, payload.c_str());
     }
   }
 
@@ -83,7 +88,7 @@ class SettingsBroker {
                      size_t index,
                      size_t total) {
     // we only care about the topic we are watching in this class
-    if (strcmp(_setTopic, topic)) {
+    if (strcmp(_setTopic.c_str(), topic)) {
       return;
     }
 

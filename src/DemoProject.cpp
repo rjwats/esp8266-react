@@ -7,30 +7,28 @@ static HomeAssistantSerializer HA_SERIALIZER;
 static HomeAssistantDeserializer HA_DESERIALIZER;
 
 DemoProject::DemoProject(AsyncWebServer* server,
-                         FS* fs,
                          SecurityManager* securityManager,
-                         AsyncMqttClient* mqttClient) :
+                         AsyncMqttClient* mqttClient,
+                         LightSettingsService* lightSettingsService) :
     _settingsEndpoint(&SERIALIZER, &DESERIALIZER, this, server, DEMO_SETTINGS_PATH, securityManager),
-    _settingsPersistence(&SERIALIZER, &DESERIALIZER, this, fs, DEMO_SETTINGS_FILE),
-    _settingsBroker(&HA_SERIALIZER,
-                    &HA_DESERIALIZER,
-                    this,
-                    mqttClient,
-                    DEMO_SETTINGS_SET_TOPIC,
-                    DEMO_SETTINGS_STATE_TOPIC),
-    _mqttClient(mqttClient) {
+    _settingsBroker(&HA_SERIALIZER, &HA_DESERIALIZER, this, mqttClient),
+    _mqttClient(mqttClient),
+    _lightSettingsService(lightSettingsService) {
   // configure blink led to be output
   pinMode(BLINK_LED, OUTPUT);
 
   // configure MQTT callback
-  mqttClient->onConnect(std::bind(&DemoProject::registerConfig, this));
+  _mqttClient->onConnect(std::bind(&DemoProject::registerConfig, this));
+
+  // configure update handler for when the light settings change
+  _lightSettingsService->addUpdateHandler([&](void* origin) { registerConfig(); }, false);
 
   // configure settings service update handler to update LED state
   addUpdateHandler([&](void* origin) { onConfigUpdated(); }, false);
 }
 
 void DemoProject::begin() {
-  _settingsPersistence.readFromFS();
+  _settings.ledOn = DEFAULT_LED_STATE;
   onConfigUpdated();
 }
 
@@ -39,17 +37,30 @@ void DemoProject::onConfigUpdated() {
 }
 
 void DemoProject::registerConfig() {
-  Serial.println("Registering config....");
+  if (!_mqttClient->connected()) {
+    return;
+  }
+  String configTopic;
+  String setTopic;
+  String stateTopic;
 
   DynamicJsonDocument doc(256);
-  doc["~"] = "homeassistant/light/esp_demo";
-  doc["name"] = "ESP Demo LED";
-  doc["unique_id"] = "esp_demo_light";
+  _lightSettingsService->read([&](LightSettings& settings) {
+    configTopic = settings.mqttPath + "/config";
+    setTopic = settings.mqttPath + "/set";
+    stateTopic = settings.mqttPath + "/state";
+    doc["~"] = settings.mqttPath;
+    doc["name"] = settings.name;
+    doc["unique_id"] = settings.uniqueId;
+  });
   doc["cmd_t"] = "~/set";
   doc["stat_t"] = "~/state";
   doc["schema"] = "json";
   doc["brightness"] = false;
+
   String payload;
   serializeJson(doc, payload);
-  _mqttClient->publish(DEMO_SETTINGS_CONFIG_TOPIC, 0, false, payload.c_str());
+  _mqttClient->publish(configTopic.c_str(), 0, false, payload.c_str());
+
+  _settingsBroker.configureBroker(setTopic, stateTopic);
 }
