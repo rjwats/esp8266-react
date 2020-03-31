@@ -9,3 +9,4 @@ export { default as SectionContent } from './SectionContent';
 
 export * from './RestFormLoader';
 export * from './RestController';
+export * from './SocketController';

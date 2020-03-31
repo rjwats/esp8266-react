@@ -16,13 +16,7 @@ export interface RestControllerProps<D> extends WithSnackbarProps {
   errorMessage?: string;
 }
 
-interface RestControllerState<D> {
-  data?: D;
-  loading: boolean;
-  errorMessage?: string;
-}
-
-const extractValue = (event: React.ChangeEvent<HTMLInputElement>) => {
+export const extractEventValue = (event: React.ChangeEvent<HTMLInputElement>) => {
   switch (event.target.type) {
     case "number":
       return event.target.valueAsNumber;
@@ -31,6 +25,12 @@ const extractValue = (event: React.ChangeEvent<HTMLInputElement>) => {
     default:
       return event.target.value
   }
+}
+
+interface RestControllerState<D> {
+  data?: D;
+  loading: boolean;
+  errorMessage?: string;
 }
 
 export function restController<D, P extends RestControllerProps<D>>(endpointUrl: string, RestController: React.ComponentType<P & RestControllerProps<D>>) {
@@ -95,7 +95,7 @@ export function restController<D, P extends RestControllerProps<D>>(endpointUrl:
       }
 
       handleValueChange = (name: keyof D) => (event: React.ChangeEvent<HTMLInputElement>) => {
-        const data = { ...this.state.data!, [name]: extractValue(event) };
+        const data = { ...this.state.data!, [name]: extractEventValue(event) };
         this.setState({ data });
       }
 

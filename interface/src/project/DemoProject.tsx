@@ -9,6 +9,7 @@ import { AuthenticatedRoute } from '../authentication';
 
 import DemoInformation from './DemoInformation';
 import DemoController from './DemoController';
+import DemoSocketController from './DemoSocketController';
 
 class DemoProject extends Component<RouteComponentProps> {
 
@@ -20,12 +21,14 @@ class DemoProject extends Component<RouteComponentProps> {
     return (
       <MenuAppBar sectionTitle="Demo Project">
         <Tabs value={this.props.match.url} onChange={this.handleTabChange} variant="fullWidth">
-          <Tab value={`/${PROJECT_PATH}/demo/information`} label="Demo Information" />
-          <Tab value={`/${PROJECT_PATH}/demo/controller`} label="Demo Controller" />
+          <Tab value={`/${PROJECT_PATH}/demo/information`} label="Information" />
+          <Tab value={`/${PROJECT_PATH}/demo/controller`} label="Rest Controller" />
+          <Tab value={`/${PROJECT_PATH}/demo/socket`} label="Socket Controller" />
         </Tabs>
         <Switch>
           <AuthenticatedRoute exact path={`/${PROJECT_PATH}/demo/information`} component={DemoInformation} />
           <AuthenticatedRoute exact path={`/${PROJECT_PATH}/demo/controller`} component={DemoController} />
+          <AuthenticatedRoute exact path={`/${PROJECT_PATH}/demo/socket`} component={DemoSocketController} />
           <Redirect to={`/${PROJECT_PATH}/demo/information`} />
         </Switch>
       </MenuAppBar>

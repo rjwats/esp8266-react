@@ -4,18 +4,18 @@ import { ValidatorForm } from 'react-material-ui-form-validator';
 import { Typography, Box, Checkbox } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
 
-import { ENDPOINT_ROOT } from '../api';
-import { restController, RestControllerProps, RestFormLoader, RestFormProps, FormActions, FormButton, SectionContent, BlockFormControlLabel } from '../components';
+import { WEB_SOCKET_ROOT } from '../api';
+import { RestControllerProps, RestFormLoader, RestFormProps, SectionContent, BlockFormControlLabel, socketController, FormActions, FormButton } from '../components';
 
-export const DEMO_SETTINGS_ENDPOINT = ENDPOINT_ROOT + "demoSettings";
+export const DEMO_SETTINGS_WEBSOCKET_URL = WEB_SOCKET_ROOT + "/demoSettings";
 
 interface DemoSettings {
   led_on: boolean;
 }
 
-type DemoControllerProps = RestControllerProps<DemoSettings>;
+type DemoSocketControllerProps = RestControllerProps<DemoSettings>;
 
-class DemoController extends Component<DemoControllerProps> {
+class DemoSocketController extends Component<DemoSocketControllerProps> {
 
   componentDidMount() {
     this.props.loadData();
@@ -23,11 +23,11 @@ class DemoController extends Component<DemoControllerProps> {
 
   render() {
     return (
-      <SectionContent title='Demo Controller (REST)' titleGutter>
+      <SectionContent title='Demo Controller (WebSockets)' titleGutter>
         <RestFormLoader
           {...this.props}
           render={props => (
-            <DemoControllerForm {...props} />
+            <DemoSocketControllerForm {...props} />
           )}
         />
       </SectionContent>
@@ -36,11 +36,11 @@ class DemoController extends Component<DemoControllerProps> {
 
 }
 
-export default restController(DEMO_SETTINGS_ENDPOINT, DemoController);
+export default socketController(DEMO_SETTINGS_WEBSOCKET_URL, 100, DemoSocketController);
 
-type DemoControllerFormProps = RestFormProps<DemoSettings>;
+type DemoSocketControllerFormProps = RestFormProps<DemoSettings>;
 
-function DemoControllerForm(props: DemoControllerFormProps) {
+function DemoSocketControllerForm(props: DemoSocketControllerFormProps) {
   const { data, saveData, loadData, handleValueChange } = props;
   return (
     <ValidatorForm onSubmit={saveData}>
