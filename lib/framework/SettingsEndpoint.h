@@ -12,6 +12,7 @@
 #include <SettingsDeserializer.h>
 
 #define MAX_SETTINGS_SIZE 1024
+#define SETTINGS_ENDPOINT_ORIGIN_ID "endpoint"
 
 template <class T>
 class SettingsEndpoint {
@@ -65,7 +66,7 @@ class SettingsEndpoint {
   void fetchSettings(AsyncWebServerRequest* request) {
     AsyncJsonResponse* response = new AsyncJsonResponse(false, MAX_SETTINGS_SIZE);
     _settingsService->read(
-        [&](T& settings) { _settingsSerializer->serialize(settings, response->getRoot().as<JsonObject>()); });
+        [&](T& settings) { _settingsSerializer->serialize(settings, response->getRoot().to<JsonObject>()); });
     response->setLength();
     request->send(response);
   }
@@ -75,15 +76,13 @@ class SettingsEndpoint {
       AsyncJsonResponse* response = new AsyncJsonResponse(false, MAX_SETTINGS_SIZE);
 
       // use callback to update the settings once the response is complete
-      request->onDisconnect([this]() { _settingsService->callUpdateHandlers(); });
+      request->onDisconnect([this]() { _settingsService->callUpdateHandlers(SETTINGS_ENDPOINT_ORIGIN_ID); });
 
       // update the settings, deferring the call to the update handlers to when the response is complete
-      _settingsService->withSettings(
-          [&](T& settings) {
-            _settingsDeserializer->deserialize(settings, json.as<JsonObject>());
-            _settingsSerializer->serialize(settings, response->getRoot().as<JsonObject>());
-          },
-          false);
+      _settingsService->updateWithoutPropogation([&](T& settings) {
+        _settingsDeserializer->deserialize(settings, json.as<JsonObject>());
+        _settingsSerializer->serialize(settings, response->getRoot().as<JsonObject>());
+      });
 
       // write the response to the client
       response->setLength();

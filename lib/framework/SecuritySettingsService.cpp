@@ -6,7 +6,7 @@ static SecuritySettingsDeserializer DESERIALIZER;
 SecuritySettingsService::SecuritySettingsService(AsyncWebServer* server, FS* fs) :
     _settingsEndpoint(&SERIALIZER, &DESERIALIZER, this, server, SECURITY_SETTINGS_PATH, this),
     _settingsPersistence(&SERIALIZER, &DESERIALIZER, this, fs, SECURITY_SETTINGS_FILE) {
-  addUpdateHandler([&](void* origin) { configureJWTHandler(); }, false);
+  addUpdateHandler([&](String originId) { configureJWTHandler(); }, false);
 }
 
 void SecuritySettingsService::begin() {
@@ -60,15 +60,15 @@ inline void populateJWTPayload(JsonObject& payload, User* user) {
 }
 
 boolean SecuritySettingsService::validatePayload(JsonObject& parsedPayload, User* user) {
-  DynamicJsonDocument _jsonDocument(MAX_JWT_SIZE);
-  JsonObject payload = _jsonDocument.to<JsonObject>();
+  DynamicJsonDocument jsonDocument(MAX_JWT_SIZE);
+  JsonObject payload = jsonDocument.to<JsonObject>();
   populateJWTPayload(payload, user);
   return payload == parsedPayload;
 }
 
 String SecuritySettingsService::generateJWT(User* user) {
-  DynamicJsonDocument _jsonDocument(MAX_JWT_SIZE);
-  JsonObject payload = _jsonDocument.to<JsonObject>();
+  DynamicJsonDocument jsonDocument(MAX_JWT_SIZE);
+  JsonObject payload = jsonDocument.to<JsonObject>();
   populateJWTPayload(payload, user);
   return _jwtHandler.buildJWT(payload);
 }

@@ -1,6 +1,8 @@
 #ifndef SettingsService_h
 #define SettingsService_h
 
+#include <Arduino.h>
+
 #include <list>
 #include <functional>
 #ifdef ESP32
@@ -9,7 +11,7 @@
 #endif
 
 typedef size_t update_handler_id_t;
-typedef std::function<void(void* origin)> SettingsUpdateCallback;
+typedef std::function<void(String originId)> SettingsUpdateCallback;
 static update_handler_id_t currentUpdatedHandlerId;
 
 typedef struct SettingsUpdateHandlerInfo {
@@ -17,9 +19,7 @@ typedef struct SettingsUpdateHandlerInfo {
   SettingsUpdateCallback _cb;
   bool _allowRemove;
   SettingsUpdateHandlerInfo(SettingsUpdateCallback cb, bool allowRemove) :
-      _id(++currentUpdatedHandlerId),
-      _cb(cb),
-      _allowRemove(allowRemove){};
+      _id(++currentUpdatedHandlerId), _cb(cb), _allowRemove(allowRemove){};
 } SettingsUpdateHandlerInfo_t;
 
 template <class T>
@@ -49,30 +49,34 @@ class SettingsService {
     }
   }
 
-  void withSettings(std::function<void(T&)> callback, bool propogate, void* origin = nullptr) {
+  void updateWithoutPropogation(std::function<void(T&)> callback) {
+    read(callback);
+  }
+
+  void update(std::function<void(T&)> callback, String originId) {
 #ifdef ESP32
     xSemaphoreTakeRecursive(_updateMutex, portMAX_DELAY);
 #endif
     callback(_settings);
-    if (propogate) {
-      callUpdateHandlers(origin);
-    }
+    callUpdateHandlers(originId);
 #ifdef ESP32
     xSemaphoreGiveRecursive(_updateMutex);
 #endif
   }
 
-  void update(std::function<void(T&)> callback, void* origin = nullptr) {
-    withSettings(callback, true, origin);
-  }
-
   void read(std::function<void(T&)> callback) {
-    withSettings(callback, false);
+#ifdef ESP32
+    xSemaphoreTakeRecursive(_updateMutex, portMAX_DELAY);
+#endif
+    callback(_settings);
+#ifdef ESP32
+    xSemaphoreGiveRecursive(_updateMutex);
+#endif
   }
 
-  void callUpdateHandlers(void* origin = nullptr) {
+  void callUpdateHandlers(String originId) {
     for (const SettingsUpdateHandlerInfo_t& handler : _settingsUpdateHandlers) {
-      handler._cb(origin);
+      handler._cb(originId);
     }
   }
 

@@ -80,7 +80,7 @@ class SettingsPersistence {
 
   void enableAutomatic() {
     if (!_updateHandlerId) {
-      _updateHandlerId = _settingsService->addUpdateHandler([&](void* origin) { writeToFS(); });
+      _updateHandlerId = _settingsService->addUpdateHandler([&](String originId) { writeToFS(); });
     }
   }
 

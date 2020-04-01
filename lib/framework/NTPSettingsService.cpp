@@ -18,7 +18,7 @@ NTPSettingsService::NTPSettingsService(AsyncWebServer* server, FS* fs, SecurityM
   _onStationModeGotIPHandler =
       WiFi.onStationModeGotIP(std::bind(&NTPSettingsService::onStationModeGotIP, this, std::placeholders::_1));
 #endif
-  addUpdateHandler([&](void* origin) { configureNTP(); }, false);
+  addUpdateHandler([&](String originId) { configureNTP(); }, false);
 }
 
 void NTPSettingsService::begin() {

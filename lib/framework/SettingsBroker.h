@@ -7,6 +7,7 @@
 #include <AsyncMqttClient.h>
 
 #define MAX_SETTINGS_SIZE 1024
+#define SETTINGS_BROKER_ORIGIN_ID "broker"
 
 /**
  * SettingsBroker is designed to operate with Home Assistant and takes care of observing state change requests over MQTT
@@ -32,7 +33,7 @@ class SettingsBroker {
       _settingsDeserializer(settingsDeserializer),
       _settingsService(settingsService),
       _mqttClient(mqttClient) {
-    _settingsService->addUpdateHandler([&](void* origin) { publish(); }, false);
+    _settingsService->addUpdateHandler([&](String originId) { publish(); }, false);
     _mqttClient->onConnect(std::bind(&SettingsBroker::configureMQTT, this));
     _mqttClient->onMessage(std::bind(&SettingsBroker::onMqttMessage,
                                      this,
@@ -97,7 +98,7 @@ class SettingsBroker {
     DeserializationError error = deserializeJson(json, payload, len);
     if (!error && json.is<JsonObject>()) {
       _settingsService->update(
-          [&](T& settings) { _settingsDeserializer->deserialize(settings, json.as<JsonObject>()); });
+          [&](T& settings) { _settingsDeserializer->deserialize(settings, json.as<JsonObject>()); }, SETTINGS_BROKER_ORIGIN_ID);
     }
   }
 };

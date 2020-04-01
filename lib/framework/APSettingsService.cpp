@@ -6,7 +6,7 @@ static APSettingsDeserializer DESERIALIZER;
 APSettingsService::APSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) :
     _settingsEndpoint(&SERIALIZER, &DESERIALIZER, this, server, AP_SETTINGS_SERVICE_PATH, securityManager),
     _settingsPersistence(&SERIALIZER, &DESERIALIZER, this, fs, AP_SETTINGS_FILE) {
-  addUpdateHandler([&](void* origin) { reconfigureAP(); }, false);
+  addUpdateHandler([&](String originId) { reconfigureAP(); }, false);
 }
 
 void APSettingsService::begin() {

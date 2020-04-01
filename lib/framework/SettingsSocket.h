@@ -8,6 +8,10 @@
 
 #define MAX_SIMPLE_MSG_SIZE 1024
 
+#define SETTINGS_SOCKET_CLIENT_ID_MSG_SIZE 128
+#define SETTINGS_SOCKET_ORIGIN "socket"
+#define SETTINGS_SOCKET_CLIENT_ORIGIN_ID_PREFIX "socket:"
+
 /**
  * SettingsSocket is designed to provide WebSocket based communication for making and observing updates to settings.
  *
@@ -34,7 +38,7 @@ class SettingsSocket {
                                  std::placeholders::_4,
                                  std::placeholders::_5,
                                  std::placeholders::_6));
-    _settingsService->addUpdateHandler([&](void* origin) { broadcastPayload(nullptr, origin); }, false);
+    _settingsService->addUpdateHandler([&](String originId) { transmitData(nullptr, originId); }, false);
     _server->addHandler(&_webSocket);
   }
 
@@ -46,7 +50,7 @@ class SettingsSocket {
   AsyncWebSocket _webSocket;
 
   /**
-   * Responds to the WSEvent by sending the current payload to the clients when they connect and by applying the changes
+   * Responds to the WSEvent by sending the current settings to the clients when they connect and by applying the changes
    * sent to the socket directly to the settings service.
    */
   void onWSEvent(AsyncWebSocket* server,
@@ -56,20 +60,40 @@ class SettingsSocket {
                  uint8_t* data,
                  size_t len) {
     if (type == WS_EVT_CONNECT) {
-      // send the payload to the client upon connect
-      broadcastPayload(client);
+      // when a client connects, we transmit it's id and the current payload
+      transmitId(client);
+      transmitData(client, SETTINGS_SOCKET_ORIGIN);
     } else if (type == WS_EVT_DATA) {
       AwsFrameInfo* info = (AwsFrameInfo*)arg;
-      // we only support single frame messages. That gives us 2930 bytes, should be plenty!
-      if (info->final && info->index == 0 && info->len == len && info->opcode == WS_TEXT) {
-        DynamicJsonDocument json = DynamicJsonDocument(MAX_SIMPLE_MSG_SIZE);
-        DeserializationError error = deserializeJson(json, (char*)data, len);
-        if (!error && json.is<JsonObject>()) {
-          _settingsService->update(
-              [&](T& settings) { _settingsDeserializer->deserialize(settings, json.as<JsonObject>()); }, client);
+      if (info->final && info->index == 0 && info->len == len) {
+        if (info->opcode == WS_TEXT) {
+          DynamicJsonDocument jsonDocument = DynamicJsonDocument(MAX_SIMPLE_MSG_SIZE);
+          DeserializationError error = deserializeJson(jsonDocument, (char*)data);
+          if (!error && jsonDocument.is<JsonObject>()) {
+            _settingsService->update(
+                [&](T& settings) { _settingsDeserializer->deserialize(settings, jsonDocument.as<JsonObject>()); },
+                clientId(client));
+          }
         }
       }
     }
+  }
+
+  void transmitId(AsyncWebSocketClient* client) {
+    DynamicJsonDocument jsonDocument = DynamicJsonDocument(SETTINGS_SOCKET_CLIENT_ID_MSG_SIZE);
+    JsonObject root = jsonDocument.to<JsonObject>();
+    root["type"] = "id";
+    root["id"] = clientId(client);
+    size_t len = measureJson(jsonDocument);
+    AsyncWebSocketMessageBuffer* buffer = _webSocket.makeBuffer(len);
+    if (buffer) {
+      serializeJson(jsonDocument, (char*)buffer->get(), len + 1);
+      client->text(buffer);
+    }
+  }
+
+  String clientId(AsyncWebSocketClient* client) {
+    return SETTINGS_SOCKET_CLIENT_ORIGIN_ID_PREFIX + String(client->id());
   }
 
   /**
@@ -79,37 +103,23 @@ class SettingsSocket {
    * Original implementation sent clients their own IDs so they could ignore updates they initiated. This approach
    * simplifies the client and the server implementation but may not be sufficent for all use-cases.
    */
-  void broadcastPayload(AsyncWebSocketClient* destination = nullptr, void* origin = nullptr) {
-    // write the payload to the json object
-    DynamicJsonDocument json = DynamicJsonDocument(MAX_SIMPLE_MSG_SIZE);
-    _settingsService->read([&](T& settings) { _settingsSerializer->serialize(settings, json.to<JsonObject>()); });
+  void transmitData(AsyncWebSocketClient* client, String originId) {
+    DynamicJsonDocument jsonDocument = DynamicJsonDocument(MAX_SIMPLE_MSG_SIZE);
+    JsonObject root = jsonDocument.to<JsonObject>();
+    root["type"] = "payload";
+    root["origin_id"] = originId;
+    JsonObject payload = root.createNestedObject("payload");
+    _settingsService->read([&](T& settings) { _settingsSerializer->serialize(settings, payload); });
 
-    // construct a WS buffer of the correct size (if possible)
-    size_t len = measureJson(json);
+    size_t len = measureJson(jsonDocument);
     AsyncWebSocketMessageBuffer* buffer = _webSocket.makeBuffer(len);
-    if (!buffer) {
-      Serial.println("Failed to create WS buffer");
-      return;
-    }
-
-    // serialize the payload to the buffer
-    serializeJson(json, (char*)buffer->get(), len + 1);
-
-    // broadcast the payload as required
-    if (destination != nullptr) {
-      if (destination->status() == WS_CONNECTED) {
-        destination->text(buffer);
+    if (buffer) {
+      serializeJson(jsonDocument, (char*)buffer->get(), len + 1);
+      if (client) {
+        client->text(buffer);
+      } else {
+        _webSocket.textAll(buffer);
       }
-    } else if (origin == nullptr) {
-      _webSocket.textAll(buffer);
-    } else {
-      buffer->lock();
-      for (const auto& client : _webSocket.getClients()) {
-        if (client != origin && client->status() == WS_CONNECTED) {
-          client->text(buffer);
-        }
-      }
-      buffer->unlock();
     }
   }
 };

@@ -22,10 +22,10 @@ DemoProject::DemoProject(AsyncWebServer* server,
   _mqttClient->onConnect(std::bind(&DemoProject::registerConfig, this));
 
   // configure update handler for when the light settings change
-  _lightSettingsService->addUpdateHandler([&](void* origin) { registerConfig(); }, false);
+  _lightSettingsService->addUpdateHandler([&](String originId) { registerConfig(); }, false);
 
   // configure settings service update handler to update LED state
-  addUpdateHandler([&](void* origin) { onConfigUpdated(); }, false);
+  addUpdateHandler([&](String originId) { onConfigUpdated(); }, false);
 }
 
 void DemoProject::begin() {

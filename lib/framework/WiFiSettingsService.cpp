@@ -29,7 +29,7 @@ WiFiSettingsService::WiFiSettingsService(AsyncWebServer* server, FS* fs, Securit
       std::bind(&WiFiSettingsService::onStationModeDisconnected, this, std::placeholders::_1));
 #endif
 
-  addUpdateHandler([&](void* origin) { reconfigureWiFiConnection(); }, false);
+  addUpdateHandler([&](String originId) { reconfigureWiFiConnection(); }, false);
 }
 
 void WiFiSettingsService::begin() {

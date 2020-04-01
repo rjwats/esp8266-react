@@ -356,7 +356,7 @@ You may listen for changes to settings by registering an update handler callback
 ```cpp
 // register an update handler
 update_handler_id_t myUpdateHandler = lightSettingsService.addUpdateHandler(
-  [&](void* origin) {
+  [&](String originId) {
     Serial.println("The light settings have been updated"); 
   }
 );
