@@ -5,7 +5,6 @@ import { redirectingAuthorizedFetch } from '../authentication';
 
 export interface RestControllerProps<D> extends WithSnackbarProps {
   handleValueChange: (name: keyof D) => (event: React.ChangeEvent<HTMLInputElement>) => void;
-  handleSliderChange: (name: keyof D) => (event: React.ChangeEvent<{}>, value: number | number[]) => void;
 
   setData: (data: D) => void;
   saveData: () => void;
@@ -99,15 +98,9 @@ export function restController<D, P extends RestControllerProps<D>>(endpointUrl:
         this.setState({ data });
       }
 
-      handleSliderChange = (name: keyof D) => (event: React.ChangeEvent<{}>, value: number | number[]) => {
-        const data = { ...this.state.data!, [name]: value };
-        this.setState({ data });
-      };
-
       render() {
         return <RestController
           handleValueChange={this.handleValueChange}
-          handleSliderChange={this.handleSliderChange}
           setData={this.setData}
           saveData={this.saveData}
           loadData={this.loadData}

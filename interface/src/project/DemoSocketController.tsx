@@ -5,26 +5,20 @@ import { Typography, Box, Checkbox } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
 
 import { WEB_SOCKET_ROOT } from '../api';
-import { RestControllerProps, RestFormLoader, RestFormProps, SectionContent, BlockFormControlLabel, socketController, FormActions, FormButton } from '../components';
+import { SocketControllerProps, SocketFormLoader, SocketFormProps, SectionContent, BlockFormControlLabel, socketController, FormActions, FormButton } from '../components';
+
+import { DemoSettings } from './types';
 
 export const DEMO_SETTINGS_WEBSOCKET_URL = WEB_SOCKET_ROOT + "/demoSettings";
 
-interface DemoSettings {
-  led_on: boolean;
-}
-
-type DemoSocketControllerProps = RestControllerProps<DemoSettings>;
+type DemoSocketControllerProps = SocketControllerProps<DemoSettings>;
 
 class DemoSocketController extends Component<DemoSocketControllerProps> {
 
-  componentDidMount() {
-    this.props.loadData();
-  }
-
   render() {
     return (
-      <SectionContent title='Demo Controller (WebSockets)' titleGutter>
-        <RestFormLoader
+      <SectionContent title='WebSocket Controller' titleGutter>
+        <SocketFormLoader
           {...this.props}
           render={props => (
             <DemoSocketControllerForm {...props} />
@@ -38,15 +32,15 @@ class DemoSocketController extends Component<DemoSocketControllerProps> {
 
 export default socketController(DEMO_SETTINGS_WEBSOCKET_URL, 100, DemoSocketController);
 
-type DemoSocketControllerFormProps = RestFormProps<DemoSettings>;
+type DemoSocketControllerFormProps = SocketFormProps<DemoSettings>;
 
 function DemoSocketControllerForm(props: DemoSocketControllerFormProps) {
-  const { data, saveData, loadData, handleValueChange } = props;
+  const { data, saveData, handleValueChange } = props;
   return (
     <ValidatorForm onSubmit={saveData}>
       <Box bgcolor="primary.main" color="primary.contrastText" p={2} mt={2} mb={2}>
         <Typography variant="body1">
-          The form below controls the LED via the RESTful service exposed by the ESP device.
+          The form below controls the LED via the WebSocket exposed by the ESP device.
         </Typography>
       </Box>
       <BlockFormControlLabel
@@ -62,9 +56,6 @@ function DemoSocketControllerForm(props: DemoSocketControllerFormProps) {
       <FormActions>
         <FormButton startIcon={<SaveIcon />} variant="contained" color="primary" type="submit">
           Save
-        </FormButton>
-        <FormButton variant="contained" color="secondary" onClick={loadData}>
-          Reset
         </FormButton>
       </FormActions>
     </ValidatorForm>

@@ -1,22 +1,50 @@
 import React from 'react';
 import Sockette from 'sockette';
 import throttle from 'lodash/throttle';
-
 import { withSnackbar, WithSnackbarProps } from 'notistack';
 
-import { RestControllerProps, extractEventValue } from '.';
+import { extractEventValue } from '.';
 
-interface SocketControllerState<D> {
-  ws: Sockette;
-  loading: boolean;
+export interface SocketControllerProps<D> extends WithSnackbarProps {
+  handleValueChange: (name: keyof D) => (event: React.ChangeEvent<HTMLInputElement>) => void;
+
+  setData: (data: D) => void;
+  saveData: () => void;
+  saveDataAndClear(): () => void;
+
+  connected: boolean;
   data?: D;
 }
 
-export function socketController<D, P extends RestControllerProps<D>>(wsUrl: string, wsThrottle: number, SocketController: React.ComponentType<P & RestControllerProps<D>>) {
-  return withSnackbar(
-    class extends React.Component<Omit<P, keyof RestControllerProps<D>> & WithSnackbarProps, SocketControllerState<D>> {
+interface SocketControllerState<D> {
+  ws: Sockette;
+  connected: boolean;
+  clientId?: string;
+  data?: D;
+}
 
-      constructor(props: Omit<P, keyof RestControllerProps<D>> & WithSnackbarProps) {
+enum SocketMessageType {
+  ID = "id",
+  PAYLOAD = "payload"
+}
+
+interface SocketIdMessage {
+  type: typeof SocketMessageType.ID;
+  id: string;
+}
+
+interface SocketPayloadMessage<D> {
+  type: typeof SocketMessageType.PAYLOAD;
+  origin_id: string;
+  payload: D;
+}
+
+export type SocketMessage<D> = SocketIdMessage | SocketPayloadMessage<D>;
+
+export function socketController<D, P extends SocketControllerProps<D>>(wsUrl: string, wsThrottle: number, SocketController: React.ComponentType<P & SocketControllerProps<D>>) {
+  return withSnackbar(
+    class extends React.Component<Omit<P, keyof SocketControllerProps<D>> & WithSnackbarProps, SocketControllerState<D>> {
+      constructor(props: Omit<P, keyof SocketControllerProps<D>> & WithSnackbarProps) {
         super(props);
         this.state = {
           ws: new Sockette(wsUrl, {
@@ -24,25 +52,43 @@ export function socketController<D, P extends RestControllerProps<D>>(wsUrl: str
             onopen: this.onOpen,
             onclose: this.onClose,
           }),
-          data: undefined,
-          loading: true
+          connected: false
         }
+      }
+
+      componentWillUnmount() {
+        this.state.ws.close();
       }
 
       onMessage = (event: MessageEvent) => {
         const rawData = event.data;
         if (typeof rawData === 'string' || rawData instanceof String) {
-          var data = JSON.parse(rawData as string) as D;
-          this.setState({ data });
+          this.handleMessage(JSON.parse(rawData as string) as SocketMessage<D>);
+        }
+      }
+
+      handleMessage = (socketMessage: SocketMessage<D>) => {
+        switch (socketMessage.type) {
+          case SocketMessageType.ID:
+            this.setState({ clientId: socketMessage.id });
+            break;
+          case SocketMessageType.PAYLOAD:
+            const { clientId, data } = this.state;
+            if (clientId && (!data || clientId !== socketMessage.origin_id)) {
+              this.setState(
+                { data: socketMessage.payload }
+              );
+            }
+            break;
         }
       }
 
       onOpen = () => {
-        this.setState({ loading: false });
+        this.setState({ connected: true });
       }
 
       onClose = () => {
-        this.setState({ loading: true, data: undefined });
+        this.setState({ connected: false, clientId: undefined, data: undefined });
       }
 
       setData = (data: D) => {
@@ -50,35 +96,34 @@ export function socketController<D, P extends RestControllerProps<D>>(wsUrl: str
       }
 
       saveData = throttle(() => {
-        const { ws, loading, data } = this.state;
-        if (!loading) {
+        const { ws, connected, data } = this.state;
+        if (connected) {
           ws.json(data);
         }
       }, wsThrottle);
 
-
-      loadData = () => {
-        this.state.ws.reconnect()
-      }
+      saveDataAndClear = throttle(() => {
+        const { ws, connected, data } = this.state;
+        if (connected) {
+          this.setState({
+            data: undefined
+          }, () => ws.json(data));
+        }
+      }, wsThrottle);
 
       handleValueChange = (name: keyof D) => (event: React.ChangeEvent<HTMLInputElement>) => {
         const data = { ...this.state.data!, [name]: extractEventValue(event) };
         this.setState({ data });
       }
 
-      handleSliderChange = (name: keyof D) => (event: React.ChangeEvent<{}>, value: number | number[]) => {
-        const data = { ...this.state.data!, [name]: value };
-        this.setState({ data });
-      };
-
       render() {
         return <SocketController
           handleValueChange={this.handleValueChange}
-          handleSliderChange={this.handleSliderChange}
           setData={this.setData}
           saveData={this.saveData}
-          loadData={this.loadData}
-          {...this.state}
+          saveDataAndClear={this.saveDataAndClear}
+          connected={this.state.connected}
+          data={this.state.data}
           {...this.props as P}
         />;
       }
