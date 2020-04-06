@@ -6,7 +6,7 @@ import { redirectingAuthorizedFetch } from '../authentication';
 export interface RestControllerProps<D> extends WithSnackbarProps {
   handleValueChange: (name: keyof D) => (event: React.ChangeEvent<HTMLInputElement>) => void;
 
-  setData: (data: D) => void;
+  setData: (data: D, callback?: () => void) => void;
   saveData: () => void;
   loadData: () => void;
 
@@ -42,12 +42,12 @@ export function restController<D, P extends RestControllerProps<D>>(endpointUrl:
         errorMessage: undefined
       };
 
-      setData = (data: D) => {
+      setData = (data: D, callback?: () => void) => {
         this.setState({
           data,
           loading: false,
           errorMessage: undefined
-        });
+        }, callback);
       }
 
       loadData = () => {

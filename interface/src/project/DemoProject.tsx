@@ -10,6 +10,7 @@ import { AuthenticatedRoute } from '../authentication';
 import DemoInformation from './DemoInformation';
 import DemoRestController from './DemoRestController';
 import DemoSocketController from './DemoSocketController';
+import DemoBrokerSettingsController from './DemoBrokerSettingsController';
 
 class DemoProject extends Component<RouteComponentProps> {
 
@@ -24,11 +25,13 @@ class DemoProject extends Component<RouteComponentProps> {
           <Tab value={`/${PROJECT_PATH}/demo/information`} label="Information" />
           <Tab value={`/${PROJECT_PATH}/demo/rest`} label="REST Controller" />
           <Tab value={`/${PROJECT_PATH}/demo/socket`} label="WebSocket Controller" />
+          <Tab value={`/${PROJECT_PATH}/demo/mqtt`} label="MQTT Controller" />
         </Tabs>
         <Switch>
           <AuthenticatedRoute exact path={`/${PROJECT_PATH}/demo/information`} component={DemoInformation} />
           <AuthenticatedRoute exact path={`/${PROJECT_PATH}/demo/rest`} component={DemoRestController} />
           <AuthenticatedRoute exact path={`/${PROJECT_PATH}/demo/socket`} component={DemoSocketController} />
+          <AuthenticatedRoute exact path={`/${PROJECT_PATH}/demo/mqtt`} component={DemoBrokerSettingsController} />
           <Redirect to={`/${PROJECT_PATH}/demo/information`} />
         </Switch>
       </MenuAppBar>

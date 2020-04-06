@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { ValidatorForm } from 'react-material-ui-form-validator';
 
-import { Typography, Box, Checkbox } from '@material-ui/core';
-import SaveIcon from '@material-ui/icons/Save';
-
+import { Typography, Box, Switch } from '@material-ui/core';
 import { WEB_SOCKET_ROOT } from '../api';
-import { SocketControllerProps, SocketFormLoader, SocketFormProps, SectionContent, BlockFormControlLabel, socketController, FormActions, FormButton } from '../components';
+import { SocketControllerProps, SocketFormLoader, SocketFormProps, socketController } from '../components';
+import { SectionContent, BlockFormControlLabel } from '../components';
 
 import { DemoSettings } from './types';
 
@@ -35,29 +34,29 @@ export default socketController(DEMO_SETTINGS_WEBSOCKET_URL, 100, DemoSocketCont
 type DemoSocketControllerFormProps = SocketFormProps<DemoSettings>;
 
 function DemoSocketControllerForm(props: DemoSocketControllerFormProps) {
-  const { data, saveData, handleValueChange } = props;
+  const { data, saveData, setData } = props;
+
+  const changeLedOn = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setData({ led_on: event.target.checked }, saveData);
+  }
+
   return (
     <ValidatorForm onSubmit={saveData}>
       <Box bgcolor="primary.main" color="primary.contrastText" p={2} mt={2} mb={2}>
         <Typography variant="body1">
-          The form below controls the LED via the WebSocket exposed by the ESP device.
+          The switch below controls the LED via the WebSocket, its state will automatically update whenever the LED state changes.
         </Typography>
       </Box>
       <BlockFormControlLabel
         control={
-          <Checkbox
+          <Switch
             checked={data.led_on}
-            onChange={handleValueChange('led_on')}
+            onChange={changeLedOn}
             color="primary"
           />
         }
         label="LED State?"
       />
-      <FormActions>
-        <FormButton startIcon={<SaveIcon />} variant="contained" color="primary" type="submit">
-          Save
-        </FormButton>
-      </FormActions>
     </ValidatorForm>
   );
 }

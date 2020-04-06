@@ -8,7 +8,7 @@ import { extractEventValue } from '.';
 export interface SocketControllerProps<D> extends WithSnackbarProps {
   handleValueChange: (name: keyof D) => (event: React.ChangeEvent<HTMLInputElement>) => void;
 
-  setData: (data: D) => void;
+  setData: (data: D, callback?: () => void) => void;
   saveData: () => void;
   saveDataAndClear(): () => void;
 
@@ -91,8 +91,8 @@ export function socketController<D, P extends SocketControllerProps<D>>(wsUrl: s
         this.setState({ connected: false, clientId: undefined, data: undefined });
       }
 
-      setData = (data: D) => {
-        this.setState({ data });
+      setData = (data: D, callback?: () => void) => {
+        this.setState({ data }, callback);
       }
 
       saveData = throttle(() => {
