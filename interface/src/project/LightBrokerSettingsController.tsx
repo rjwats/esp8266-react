@@ -7,13 +7,13 @@ import SaveIcon from '@material-ui/icons/Save';
 import { ENDPOINT_ROOT } from '../api';
 import { restController, RestControllerProps, RestFormLoader, RestFormProps, FormActions, FormButton, SectionContent } from '../components';
 
-import { DemoBrokerSettings } from './types';
+import { LightBrokerSettings } from './types';
 
-export const DEMO_BROKER_SETTINGS_ENDPOINT = ENDPOINT_ROOT + "lightSettings";
+export const LIGHT_BROKER_SETTINGS_ENDPOINT = ENDPOINT_ROOT + "brokerSettings";
 
-type DemoBrokerSettingsControllerProps = RestControllerProps<DemoBrokerSettings>;
+type LightBrokerSettingsControllerProps = RestControllerProps<LightBrokerSettings>;
 
-class DemoBrokerSettingsController extends Component<DemoBrokerSettingsControllerProps> {
+class LightBrokerSettingsController extends Component<LightBrokerSettingsControllerProps> {
 
   componentDidMount() {
     this.props.loadData();
@@ -21,11 +21,11 @@ class DemoBrokerSettingsController extends Component<DemoBrokerSettingsControlle
 
   render() {
     return (
-      <SectionContent title='REST Controller' titleGutter>
+      <SectionContent title='MQTT Controller' titleGutter>
         <RestFormLoader
           {...this.props}
           render={props => (
-            <DemoBrokerSettingsControllerForm {...props} />
+            <LightBrokerSettingsControllerForm {...props} />
           )}
         />
       </SectionContent>
@@ -34,11 +34,11 @@ class DemoBrokerSettingsController extends Component<DemoBrokerSettingsControlle
 
 }
 
-export default restController(DEMO_BROKER_SETTINGS_ENDPOINT, DemoBrokerSettingsController);
+export default restController(LIGHT_BROKER_SETTINGS_ENDPOINT, LightBrokerSettingsController);
 
-type DemoBrokerSettingsControllerFormProps = RestFormProps<DemoBrokerSettings>;
+type LightBrokerSettingsControllerFormProps = RestFormProps<LightBrokerSettings>;
 
-function DemoBrokerSettingsControllerForm(props: DemoBrokerSettingsControllerFormProps) {
+function LightBrokerSettingsControllerForm(props: LightBrokerSettingsControllerFormProps) {
   const { data, saveData, loadData, handleValueChange } = props;
   return (
     <ValidatorForm onSubmit={saveData}>

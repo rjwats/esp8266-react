@@ -1,55 +1,75 @@
 #ifndef LightSettingsService_h
 #define LightSettingsService_h
 
+#include <LightBrokerSettingsService.h>
 #include <SettingsEndpoint.h>
 #include <SettingsBroker.h>
-#include <SettingsPersistence.h>
+#include <SettingsSocket.h>
 #include <ESP8266React.h>
 
-#define LIGHT_SETTINGS_FILE "/config/lightSettings.json"
-#define LIGHT_SETTINGS_PATH "/rest/lightSettings"
+#define BLINK_LED 2
+#define PRINT_DELAY 5000
+
+#define DEFAULT_LED_STATE false
+#define OFF_STATE "OFF"
+#define ON_STATE "ON"
+#define LED_ON 0x0
+#define LED_OFF 0x1
+
+#define LIGHT_SETTINGS_ENDPOINT_PATH "/rest/lightSettings"
+#define LIGHT_SETTINGS_SOCKET_PATH "/ws/lightSettings"
 
 class LightSettings {
  public:
-  String mqttPath;
-  String name;
-  String uniqueId;
+  bool ledOn;
 };
-
-static String defaultDeviceValue(String prefix = "") {
-#ifdef ESP32
-  return prefix + String((unsigned long)ESP.getEfuseMac(), HEX);
-#elif defined(ESP8266)
-  return prefix + String(ESP.getChipId(), HEX);
-#endif
-}
 
 class LightSettingsSerializer : public SettingsSerializer<LightSettings> {
  public:
   void serialize(LightSettings& settings, JsonObject root) {
-    root["mqtt_path"] = settings.mqttPath;
-    root["name"] = settings.name;
-    root["unique_id"] = settings.uniqueId;
+    root["led_on"] = settings.ledOn;
   }
 };
 
 class LightSettingsDeserializer : public SettingsDeserializer<LightSettings> {
  public:
   void deserialize(LightSettings& settings, JsonObject root) {
-    settings.mqttPath = root["mqtt_path"] | defaultDeviceValue("homeassistant/light/");
-    settings.name = root["name"] | defaultDeviceValue("light-");
-    settings.uniqueId = root["unique_id"] | defaultDeviceValue("light-");
+    settings.ledOn = root["led_on"] | DEFAULT_LED_STATE;
+  }
+};
+
+class HomeAssistantSerializer : public SettingsSerializer<LightSettings> {
+ public:
+  void serialize(LightSettings& settings, JsonObject root) {
+    root["state"] = settings.ledOn ? ON_STATE : OFF_STATE;
+  }
+};
+
+class HomeAssistantDeserializer : public SettingsDeserializer<LightSettings> {
+ public:
+  void deserialize(LightSettings& settings, JsonObject root) {
+    String state = root["state"];
+    settings.ledOn = strcmp(ON_STATE, state.c_str()) ? false : true;
   }
 };
 
 class LightSettingsService : public SettingsService<LightSettings> {
  public:
-  LightSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
+  LightSettingsService(AsyncWebServer* server,
+                       SecurityManager* securityManager,
+                       AsyncMqttClient* mqttClient,
+                       LightBrokerSettingsService* lightBrokerSettingsService);
   void begin();
 
  private:
   SettingsEndpoint<LightSettings> _settingsEndpoint;
-  SettingsPersistence<LightSettings> _settingsPersistence;
+  SettingsBroker<LightSettings> _settingsBroker;
+  SettingsSocket<LightSettings> _settingsSocket;
+  AsyncMqttClient* _mqttClient;
+  LightBrokerSettingsService* _lightBrokerSettingsService;
+
+  void registerConfig();
+  void onConfigUpdated();
 };
 
-#endif  // end LightSettingsService_h
+#endif

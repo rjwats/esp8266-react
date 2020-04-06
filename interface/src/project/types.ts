@@ -1,8 +1,8 @@
-export interface DemoSettings {
+export interface LightSettings {
   led_on: boolean;
 }
 
-export interface DemoBrokerSettings { 
+export interface LightBrokerSettings { 
   unique_id : string;
   name: string;
   mqtt_path : string;

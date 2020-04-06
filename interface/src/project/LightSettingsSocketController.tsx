@@ -6,13 +6,13 @@ import { WEB_SOCKET_ROOT } from '../api';
 import { SocketControllerProps, SocketFormLoader, SocketFormProps, socketController } from '../components';
 import { SectionContent, BlockFormControlLabel } from '../components';
 
-import { DemoSettings } from './types';
+import { LightSettings } from './types';
 
-export const DEMO_SETTINGS_WEBSOCKET_URL = WEB_SOCKET_ROOT + "/demoSettings";
+export const LIGHT_SETTINGS_WEBSOCKET_URL = WEB_SOCKET_ROOT + "/lightSettings";
 
-type DemoSocketControllerProps = SocketControllerProps<DemoSettings>;
+type LightSettingsSocketControllerProps = SocketControllerProps<LightSettings>;
 
-class DemoSocketController extends Component<DemoSocketControllerProps> {
+class LightSettingsSocketController extends Component<LightSettingsSocketControllerProps> {
 
   render() {
     return (
@@ -20,7 +20,7 @@ class DemoSocketController extends Component<DemoSocketControllerProps> {
         <SocketFormLoader
           {...this.props}
           render={props => (
-            <DemoSocketControllerForm {...props} />
+            <LightSettingsSocketControllerForm {...props} />
           )}
         />
       </SectionContent>
@@ -29,11 +29,11 @@ class DemoSocketController extends Component<DemoSocketControllerProps> {
 
 }
 
-export default socketController(DEMO_SETTINGS_WEBSOCKET_URL, 100, DemoSocketController);
+export default socketController(LIGHT_SETTINGS_WEBSOCKET_URL, 100, LightSettingsSocketController);
 
-type DemoSocketControllerFormProps = SocketFormProps<DemoSettings>;
+type LightSettingsSocketControllerFormProps = SocketFormProps<LightSettings>;
 
-function DemoSocketControllerForm(props: DemoSocketControllerFormProps) {
+function LightSettingsSocketControllerForm(props: LightSettingsSocketControllerFormProps) {
   const { data, saveData, setData } = props;
 
   const changeLedOn = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,7 +44,7 @@ function DemoSocketControllerForm(props: DemoSocketControllerFormProps) {
     <ValidatorForm onSubmit={saveData}>
       <Box bgcolor="primary.main" color="primary.contrastText" p={2} mt={2} mb={2}>
         <Typography variant="body1">
-          The switch below controls the LED via the WebSocket, its state will automatically update whenever the LED state changes.
+          The switch below controls the LED via the WebSocket. It will automatically update whenever the LED state changes.
         </Typography>
       </Box>
       <BlockFormControlLabel

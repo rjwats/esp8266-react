@@ -7,13 +7,13 @@ import SaveIcon from '@material-ui/icons/Save';
 import { ENDPOINT_ROOT } from '../api';
 import { restController, RestControllerProps, RestFormLoader, RestFormProps, FormActions, FormButton, SectionContent, BlockFormControlLabel } from '../components';
 
-import { DemoSettings } from './types';
+import { LightSettings } from './types';
 
-export const DEMO_SETTINGS_ENDPOINT = ENDPOINT_ROOT + "demoSettings";
+export const LIGHT_SETTINGS_ENDPOINT = ENDPOINT_ROOT + "lightSettings";
 
-type DemoRestControllerProps = RestControllerProps<DemoSettings>;
+type LightSettingsRestControllerProps = RestControllerProps<LightSettings>;
 
-class DemoRestController extends Component<DemoRestControllerProps> {
+class LightSettingsRestController extends Component<LightSettingsRestControllerProps> {
 
   componentDidMount() {
     this.props.loadData();
@@ -25,7 +25,7 @@ class DemoRestController extends Component<DemoRestControllerProps> {
         <RestFormLoader
           {...this.props}
           render={props => (
-            <DemoRestControllerForm {...props} />
+            <LightSettingsRestControllerForm {...props} />
           )}
         />
       </SectionContent>
@@ -34,11 +34,11 @@ class DemoRestController extends Component<DemoRestControllerProps> {
 
 }
 
-export default restController(DEMO_SETTINGS_ENDPOINT, DemoRestController);
+export default restController(LIGHT_SETTINGS_ENDPOINT, LightSettingsRestController);
 
-type DemoRestControllerFormProps = RestFormProps<DemoSettings>;
+type LightSettingsRestControllerFormProps = RestFormProps<LightSettings>;
 
-function DemoRestControllerForm(props: DemoRestControllerFormProps) {
+function LightSettingsRestControllerForm(props: LightSettingsRestControllerFormProps) {
   const { data, saveData, loadData, handleValueChange } = props;
   return (
     <ValidatorForm onSubmit={saveData}>
