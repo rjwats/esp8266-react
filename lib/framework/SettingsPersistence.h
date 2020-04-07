@@ -6,7 +6,7 @@
 #include <SettingsDeserializer.h>
 #include <FS.h>
 
-#define MAX_SETTINGS_SIZE 1024
+#define MAX_FILE_SIZE 1024
 
 /**
  * SettingsPersistance takes care of loading and saving settings when they change.
@@ -34,8 +34,8 @@ class SettingsPersistence {
     File settingsFile = _fs->open(_filePath, "r");
 
     if (settingsFile) {
-      if (settingsFile.size() <= MAX_SETTINGS_SIZE) {
-        DynamicJsonDocument jsonDocument = DynamicJsonDocument(MAX_SETTINGS_SIZE);
+      if (settingsFile.size() <= MAX_FILE_SIZE) {
+        DynamicJsonDocument jsonDocument = DynamicJsonDocument(MAX_FILE_SIZE);
         DeserializationError error = deserializeJson(jsonDocument, settingsFile);
         if (error == DeserializationError::Ok && jsonDocument.is<JsonObject>()) {
           readSettings(jsonDocument.as<JsonObject>());
@@ -53,7 +53,7 @@ class SettingsPersistence {
 
   bool writeToFS() {
     // create and populate a new json object
-    DynamicJsonDocument jsonDocument = DynamicJsonDocument(MAX_SETTINGS_SIZE);
+    DynamicJsonDocument jsonDocument = DynamicJsonDocument(MAX_FILE_SIZE);
     _settingsService->read(
         [&](T& settings) { _settingsSerializer->serialize(settings, jsonDocument.to<JsonObject>()); });
 
@@ -101,7 +101,7 @@ class SettingsPersistence {
   // We assume the readFromJsonObject supplies sensible defaults if an empty object
   // is supplied, this virtual function allows that to be changed.
   virtual void readDefaults() {
-    DynamicJsonDocument jsonDocument = DynamicJsonDocument(MAX_SETTINGS_SIZE);
+    DynamicJsonDocument jsonDocument = DynamicJsonDocument(MAX_FILE_SIZE);
     readSettings(jsonDocument.to<JsonObject>());
   }
 };

@@ -6,7 +6,7 @@
 #include <SettingsDeserializer.h>
 #include <AsyncMqttClient.h>
 
-#define MAX_SETTINGS_SIZE 1024
+#define MAX_MESSAGE_SIZE 1024
 #define SETTINGS_BROKER_ORIGIN_ID "broker"
 
 /**
@@ -70,7 +70,7 @@ class SettingsBroker {
   void publish() {
     if (_stateTopic.length() > 0 && _mqttClient->connected()) {
       // serialize to json doc
-      DynamicJsonDocument json(MAX_SETTINGS_SIZE);
+      DynamicJsonDocument json(MAX_MESSAGE_SIZE);
       _settingsService->read([&](T& settings) { _settingsSerializer->serialize(settings, json.to<JsonObject>()); });
 
       // serialize to string
@@ -94,7 +94,7 @@ class SettingsBroker {
     }
 
     // deserialize from string
-    DynamicJsonDocument json(MAX_SETTINGS_SIZE);
+    DynamicJsonDocument json(MAX_MESSAGE_SIZE);
     DeserializationError error = deserializeJson(json, payload, len);
     if (!error && json.is<JsonObject>()) {
       _settingsService->update(

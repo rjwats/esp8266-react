@@ -6,7 +6,7 @@
 #include <SettingsDeserializer.h>
 #include <ESPAsyncWebServer.h>
 
-#define MAX_SIMPLE_MSG_SIZE 1024
+#define MAX_SETTINGS_SOCKET_MSG_SIZE 1024
 
 #define SETTINGS_SOCKET_CLIENT_ID_MSG_SIZE 128
 #define SETTINGS_SOCKET_ORIGIN "socket"
@@ -67,7 +67,7 @@ class SettingsSocket {
       AwsFrameInfo* info = (AwsFrameInfo*)arg;
       if (info->final && info->index == 0 && info->len == len) {
         if (info->opcode == WS_TEXT) {
-          DynamicJsonDocument jsonDocument = DynamicJsonDocument(MAX_SIMPLE_MSG_SIZE);
+          DynamicJsonDocument jsonDocument = DynamicJsonDocument(MAX_SETTINGS_SOCKET_MSG_SIZE);
           DeserializationError error = deserializeJson(jsonDocument, (char*)data);
           if (!error && jsonDocument.is<JsonObject>()) {
             _settingsService->update(
@@ -104,7 +104,7 @@ class SettingsSocket {
    * simplifies the client and the server implementation but may not be sufficent for all use-cases.
    */
   void transmitData(AsyncWebSocketClient* client, String originId) {
-    DynamicJsonDocument jsonDocument = DynamicJsonDocument(MAX_SIMPLE_MSG_SIZE);
+    DynamicJsonDocument jsonDocument = DynamicJsonDocument(MAX_SETTINGS_SOCKET_MSG_SIZE);
     JsonObject root = jsonDocument.to<JsonObject>();
     root["type"] = "payload";
     root["origin_id"] = originId;

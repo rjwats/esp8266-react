@@ -11,7 +11,7 @@
 #include <SettingsSerializer.h>
 #include <SettingsDeserializer.h>
 
-#define MAX_SETTINGS_SIZE 1024
+#define MAX_CONTENT_LENGTH 1024
 #define SETTINGS_ENDPOINT_ORIGIN_ID "endpoint"
 
 template <class T>
@@ -37,7 +37,7 @@ class SettingsEndpoint {
                securityManager->wrapRequest(std::bind(&SettingsEndpoint::fetchSettings, this, std::placeholders::_1),
                                             authenticationPredicate));
     _updateHandler.setMethod(HTTP_POST);
-    _updateHandler.setMaxContentLength(MAX_SETTINGS_SIZE);
+    _updateHandler.setMaxContentLength(MAX_CONTENT_LENGTH);
     server->addHandler(&_updateHandler);
   }
 
@@ -53,7 +53,7 @@ class SettingsEndpoint {
                      std::bind(&SettingsEndpoint::updateSettings, this, std::placeholders::_1, std::placeholders::_2)) {
     server->on(servicePath.c_str(), HTTP_GET, std::bind(&SettingsEndpoint::fetchSettings, this, std::placeholders::_1));
     _updateHandler.setMethod(HTTP_POST);
-    _updateHandler.setMaxContentLength(MAX_SETTINGS_SIZE);
+    _updateHandler.setMaxContentLength(MAX_CONTENT_LENGTH);
     server->addHandler(&_updateHandler);
   }
 
@@ -64,7 +64,7 @@ class SettingsEndpoint {
   AsyncCallbackJsonWebHandler _updateHandler;
 
   void fetchSettings(AsyncWebServerRequest* request) {
-    AsyncJsonResponse* response = new AsyncJsonResponse(false, MAX_SETTINGS_SIZE);
+    AsyncJsonResponse* response = new AsyncJsonResponse(false, MAX_CONTENT_LENGTH);
     _settingsService->read(
         [&](T& settings) { _settingsSerializer->serialize(settings, response->getRoot().to<JsonObject>()); });
     response->setLength();
@@ -73,7 +73,7 @@ class SettingsEndpoint {
 
   void updateSettings(AsyncWebServerRequest* request, JsonVariant& json) {
     if (json.is<JsonObject>()) {
-      AsyncJsonResponse* response = new AsyncJsonResponse(false, MAX_SETTINGS_SIZE);
+      AsyncJsonResponse* response = new AsyncJsonResponse(false, MAX_CONTENT_LENGTH);
 
       // use callback to update the settings once the response is complete
       request->onDisconnect([this]() { _settingsService->callUpdateHandlers(SETTINGS_ENDPOINT_ORIGIN_ID); });

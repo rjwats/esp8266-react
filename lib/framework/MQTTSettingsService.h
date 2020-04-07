@@ -10,9 +10,6 @@
 #define MQTT_SETTINGS_FILE "/config/mqttSettings.json"
 #define MQTT_SETTINGS_SERVICE_PATH "/rest/mqttSettings"
 
-#define MAX_MQTT_STATUS_SIZE 1024
-#define MQTT_STATUS_SERVICE_PATH "/rest/mqttStatus"
-
 #define MQTT_SETTINGS_SERVICE_DEFAULT_ENABLED false
 #define MQTT_SETTINGS_SERVICE_DEFAULT_HOST "test.mosquitto.org"
 #define MQTT_SETTINGS_SERVICE_DEFAULT_PORT 1883
