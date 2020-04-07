@@ -1,14 +1,16 @@
 #include <APSettingsService.h>
 
-APSettingsService::APSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) :
-    AdminSettingsService(server, fs, securityManager, AP_SETTINGS_SERVICE_PATH, AP_SETTINGS_FILE) {
-}
+static APSettingsSerializer SERIALIZER;
+static APSettingsDeserializer DESERIALIZER;
 
-APSettingsService::~APSettingsService() {
+APSettingsService::APSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) :
+    _settingsEndpoint(&SERIALIZER, &DESERIALIZER, this, server, AP_SETTINGS_SERVICE_PATH, securityManager),
+    _settingsPersistence(&SERIALIZER, &DESERIALIZER, this, fs, AP_SETTINGS_FILE) {
+  addUpdateHandler([&](String originId) { reconfigureAP(); }, false);
 }
 
 void APSettingsService::begin() {
-  SettingsService::begin();
+  _settingsPersistence.readFromFS();
   reconfigureAP();
 }
 
@@ -67,28 +69,4 @@ void APSettingsService::handleDNS() {
   if (_dnsServer) {
     _dnsServer->processNextRequest();
   }
-}
-
-void APSettingsService::readFromJsonObject(JsonObject& root) {
-  _settings.provisionMode = root["provision_mode"] | AP_MODE_ALWAYS;
-  switch (_settings.provisionMode) {
-    case AP_MODE_ALWAYS:
-    case AP_MODE_DISCONNECTED:
-    case AP_MODE_NEVER:
-      break;
-    default:
-      _settings.provisionMode = AP_MODE_ALWAYS;
-  }
-  _settings.ssid = root["ssid"] | AP_DEFAULT_SSID;
-  _settings.password = root["password"] | AP_DEFAULT_PASSWORD;
-}
-
-void APSettingsService::writeToJsonObject(JsonObject& root) {
-  root["provision_mode"] = _settings.provisionMode;
-  root["ssid"] = _settings.ssid;
-  root["password"] = _settings.password;
-}
-
-void APSettingsService::onConfigUpdated() {
-  reconfigureAP();
 }

@@ -1,12 +1,18 @@
-#include <DemoProject.h>
 #include <ESP8266React.h>
+#include <LightBrokerSettingsService.h>
+#include <LightSettingsService.h>
 #include <FS.h>
 
 #define SERIAL_BAUD_RATE 115200
 
 AsyncWebServer server(80);
 ESP8266React esp8266React(&server, &SPIFFS);
-DemoProject demoProject = DemoProject(&server, &SPIFFS, esp8266React.getSecurityManager());
+LightBrokerSettingsService lightBrokerSettingsService =
+    LightBrokerSettingsService(&server, &SPIFFS, esp8266React.getSecurityManager());
+LightSettingsService lightSettingsService = LightSettingsService(&server,
+                                                                 esp8266React.getSecurityManager(),
+                                                                 esp8266React.getMQTTClient(),
+                                                                 &lightBrokerSettingsService);
 
 void setup() {
   // start serial and filesystem
@@ -22,8 +28,11 @@ void setup() {
   // start the framework and demo project
   esp8266React.begin();
 
-  // start the demo project
-  demoProject.begin();
+  // load the initial light settings
+  lightSettingsService.begin();
+
+  // start the light service
+  lightBrokerSettingsService.begin();
 
   // start the server
   server.begin();
@@ -32,7 +41,4 @@ void setup() {
 void loop() {
   // run the framework's loop function
   esp8266React.loop();
-
-  // run the demo project's loop function
-  demoProject.loop();
 }

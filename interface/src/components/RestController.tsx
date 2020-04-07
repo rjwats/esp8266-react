@@ -5,9 +5,8 @@ import { redirectingAuthorizedFetch } from '../authentication';
 
 export interface RestControllerProps<D> extends WithSnackbarProps {
   handleValueChange: (name: keyof D) => (event: React.ChangeEvent<HTMLInputElement>) => void;
-  handleSliderChange: (name: keyof D) => (event: React.ChangeEvent<{}>, value: number | number[]) => void;
 
-  setData: (data: D) => void;
+  setData: (data: D, callback?: () => void) => void;
   saveData: () => void;
   loadData: () => void;
 
@@ -16,13 +15,7 @@ export interface RestControllerProps<D> extends WithSnackbarProps {
   errorMessage?: string;
 }
 
-interface RestControllerState<D> {
-  data?: D;
-  loading: boolean;
-  errorMessage?: string;
-}
-
-const extractValue = (event: React.ChangeEvent<HTMLInputElement>) => {
+export const extractEventValue = (event: React.ChangeEvent<HTMLInputElement>) => {
   switch (event.target.type) {
     case "number":
       return event.target.valueAsNumber;
@@ -31,6 +24,12 @@ const extractValue = (event: React.ChangeEvent<HTMLInputElement>) => {
     default:
       return event.target.value
   }
+}
+
+interface RestControllerState<D> {
+  data?: D;
+  loading: boolean;
+  errorMessage?: string;
 }
 
 export function restController<D, P extends RestControllerProps<D>>(endpointUrl: string, RestController: React.ComponentType<P & RestControllerProps<D>>) {
@@ -43,12 +42,12 @@ export function restController<D, P extends RestControllerProps<D>>(endpointUrl:
         errorMessage: undefined
       };
 
-      setData = (data: D) => {
+      setData = (data: D, callback?: () => void) => {
         this.setState({
           data,
           loading: false,
           errorMessage: undefined
-        });
+        }, callback);
       }
 
       loadData = () => {
@@ -95,19 +94,13 @@ export function restController<D, P extends RestControllerProps<D>>(endpointUrl:
       }
 
       handleValueChange = (name: keyof D) => (event: React.ChangeEvent<HTMLInputElement>) => {
-        const data = { ...this.state.data!, [name]: extractValue(event) };
+        const data = { ...this.state.data!, [name]: extractEventValue(event) };
         this.setState({ data });
       }
-
-      handleSliderChange = (name: keyof D) => (event: React.ChangeEvent<{}>, value: number | number[]) => {
-        const data = { ...this.state.data!, [name]: value };
-        this.setState({ data });
-      };
 
       render() {
         return <RestController
           handleValueChange={this.handleValueChange}
-          handleSliderChange={this.handleSliderChange}
           setData={this.setData}
           saveData={this.saveData}
           loadData={this.loadData}

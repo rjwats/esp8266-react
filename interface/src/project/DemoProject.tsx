@@ -8,7 +8,9 @@ import { MenuAppBar } from '../components';
 import { AuthenticatedRoute } from '../authentication';
 
 import DemoInformation from './DemoInformation';
-import DemoController from './DemoController';
+import LightSettingsRestController from './LightSettingsRestController';
+import LightSettingsSocketController from './LightSettingsSocketController';
+import LightBrokerSettingsController from './LightBrokerSettingsController';
 
 class DemoProject extends Component<RouteComponentProps> {
 
@@ -20,12 +22,16 @@ class DemoProject extends Component<RouteComponentProps> {
     return (
       <MenuAppBar sectionTitle="Demo Project">
         <Tabs value={this.props.match.url} onChange={this.handleTabChange} variant="fullWidth">
-          <Tab value={`/${PROJECT_PATH}/demo/information`} label="Demo Information" />
-          <Tab value={`/${PROJECT_PATH}/demo/controller`} label="Demo Controller" />
+          <Tab value={`/${PROJECT_PATH}/demo/information`} label="Information" />
+          <Tab value={`/${PROJECT_PATH}/demo/rest`} label="REST Controller" />
+          <Tab value={`/${PROJECT_PATH}/demo/socket`} label="WebSocket Controller" />
+          <Tab value={`/${PROJECT_PATH}/demo/mqtt`} label="MQTT Controller" />
         </Tabs>
         <Switch>
           <AuthenticatedRoute exact path={`/${PROJECT_PATH}/demo/information`} component={DemoInformation} />
-          <AuthenticatedRoute exact path={`/${PROJECT_PATH}/demo/controller`} component={DemoController} />
+          <AuthenticatedRoute exact path={`/${PROJECT_PATH}/demo/rest`} component={LightSettingsRestController} />
+          <AuthenticatedRoute exact path={`/${PROJECT_PATH}/demo/socket`} component={LightSettingsSocketController} />
+          <AuthenticatedRoute exact path={`/${PROJECT_PATH}/demo/mqtt`} component={LightBrokerSettingsController} />
           <Redirect to={`/${PROJECT_PATH}/demo/information`} />
         </Switch>
       </MenuAppBar>
