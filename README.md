@@ -15,6 +15,7 @@ Provides many of the features required for IoT projects:
 * Configurable WiFi - Network scanner and WiFi configuration screen
 * Configurable Access Point - Can be continuous or automatically enabled when WiFi connection fails
 * Network Time - Synchronization with NTP
+* MQTT - Connection to an MQTT broker for automation and monitoring
 * Remote Firmware Updates - Enable secured OTA updates
 * Security - Protected RESTful endpoints and a secured user interface
 
@@ -154,11 +155,12 @@ The config files can be found in the ['data/config'](data/config) directory:
 
 File | Description
 ---- | -----------
-[apSettings.json](data/config/apSettings.json) | Access point settings
-[ntpSettings.json](data/config/ntpSettings.json) | NTP synchronization settings
-[otaSettings.json](data/config/otaSettings.json) | OTA update configuration
+[apSettings.json](data/config/apSettings.json)             | Access point settings
+[mqttSettings.json](data/config/mqttSettings.json)         | MQTT connection settings
+[ntpSettings.json](data/config/ntpSettings.json)           | NTP synchronization settings
+[otaSettings.json](data/config/otaSettings.json)           | OTA update configuration
 [securitySettings.json](data/config/securitySettings.json) | Security settings and user credentials
-[wifiSettings.json](data/config/wifiSettings.json) | WiFi connection settings
+[wifiSettings.json](data/config/wifiSettings.json)         | WiFi connection settings
 
 ### Access point settings
 
@@ -283,12 +285,11 @@ The framework's source is split up by feature, for example [WiFiScanner.h](lib/f
 
 The ['src/main.cpp'](src/main.cpp) file constructs the webserver and initializes the framework. You can add endpoints to the server here to support your IoT project. The main loop is also accessable so you can run your own code easily. 
 
-The following code creates the web server, esp8266React framework and the demo project instance:
+The following code creates the web server and esp8266React framework:
 
 ```cpp
 AsyncWebServer server(80);
 ESP8266React esp8266React(&server, &SPIFFS);
-DemoProject demoProject = DemoProject(&server, &SPIFFS, esp8266React.getSecurityManager());
 ```
 
 Now in the `setup()` function the initialization is performed:
@@ -308,23 +309,17 @@ void setup() {
   // start the framework and demo project
   esp8266React.begin();
 
-  // start the demo project
-  demoProject.begin();
-
   // start the server
   server.begin();
 }
 ```
 
-Finally the loop calls the framework's loop function to service the frameworks features. You can add your own code in here, as shown with the demo project:
+Finally the loop calls the framework's loop function to service the frameworks features.
 
 ```cpp
 void loop() {
   // run the framework's loop function
   esp8266React.loop();
-
-  // run the demo project's loop function
-  demoProject.loop();
 }
 ```
 
@@ -460,7 +455,7 @@ NONE_REQUIRED        | No authentication is required.
 IS_AUTHENTICATED     | Any authenticated principal is permitted.
 IS_ADMIN             | The authenticated principal must be an admin.
 
-You can use the security manager to wrap any web handler with an authentication predicate:
+You can use the security manager to wrap any request handler function with an authentication predicate:
 
 ```cpp
 server->on("/rest/someService", HTTP_GET, 
@@ -468,86 +463,9 @@ server->on("/rest/someService", HTTP_GET,
 );
 ```
 
-Alternatively you can extend [AdminSettingsService.h](lib/framework/AdminSettingsService.h) and optionally override `getAuthenticationPredicate()` to secure an endpoint.
-
-## Extending the framework
-
-It is recommend that you explore the framework code to gain a better understanding of how to use it's features. The framework provides APIs so you can add your own services or features or, if required, directly configure or observe changes to core framework features. Some of these capabilities are detailed below.
-
-### Adding a service with persistant settings
-
-The following code demonstrates how you might extend the framework with a feature which requires a username and password to be configured to drive an unspecified feature. 
-
-```cpp
-#include <SettingsService.h>
-
-class ExampleSettings {
- public:  
-    String username;
-    String password;
-};
-
-class ExampleSettingsService : public SettingsService<ExampleSettings> {
-
-  public:
-
-    ExampleSettingsService(AsyncWebServer* server, FS* fs)
-    : SettingsService(server, fs, "/exampleSettings", "/config/exampleSettings.json") {}
-
-    ~ExampleSettingsService(){}
-
-  protected:
-
-    void readFromJsonObject(JsonObject& root) {
-      _settings.username = root["username"] | "";
-      _settings.password = root["password"] | "";
-    }
-
-    void writeToJsonObject(JsonObject& root) {
-      root["username"] = _settings.username;
-      root["password"] = _settings.password;
-    }
-
-};
-```
-
-Now this can be constructed, added to the server, and started as such:
-
-```cpp
-ExampleSettingsService exampleSettingsService = ExampleSettingsService(&server, &SPIFFS);
-
-exampleSettingsService.begin();
-```
-
-There will now be a REST service exposed on "/exampleSettings" for reading and writing (GET/POST) the settings. Any modifications will be persisted in SPIFFS, in this case to "/config/exampleSettings.json"
-
-Sometimes you need to perform an action when the settings are updated, you can achieve this by overriding the onConfigUpdated() function which gets called every time the settings are updated. You can also perform an action when the service starts by overriding the begin() function, being sure to call SettingsService::begin(). You can also provide a "loop" function in order to allow your service class continuously perform an action, calling this from the main loop.
-
-```cpp
-
-void begin() {
-  // make sure we call super, so the settings get read!
-  SettingsService::begin();  
-  reconfigureTheService();
-}
-
-void onConfigUpdated() {
-  reconfigureTheService();
-}
-
-void reconfigureTheService() {
-  // do whatever is required to react to the new settings
-}
-
-void loop() {
-  // execute somthing as part of the main loop
-}
-
-```
-
 ### Accessing settings and services
 
-The framework supplies access to it's SettingsService instances and the SecurityManager via getter functions:
+The framework supplies access to various features via getter functions:
 
 SettingsService               | Description
 ---------------------------- | ----------------------------------------------
@@ -557,8 +475,13 @@ getWiFiSettingsService()     | Configures and manages the WiFi network connectio
 getAPSettingsService()       | Configures and manages the Access Point
 getNTPSettingsService()      | Configures and manages the network time
 getOTASettingsService()      | Configures and manages the Over-The-Air update feature
+getMQTTSettingsService()     | Configures and manages the MQTT connection
+getMQTTClient()              | Provides direct access to the MQTT client instance
 
-These can be used to observe changes to settings. They can also be used to fetch or update settings directly via objects, JSON strings and JsonObjects. Here are some examples of how you may use this.
+These can be used to observe changes to settings. They can also be used to fetch or update settings.
+
+------ TODO ----- 
+Fix documentation, provide serialization examples
 
 Inspect the current WiFi settings:
 
@@ -592,3 +515,4 @@ esp8266React.getWiFiSettingsService()->addUpdateHandler([]() {
 * [notistack](https://github.com/iamhosseindhv/notistack)
 * [ArduinoJson](https://github.com/bblanchon/ArduinoJson)
 * [ESPAsyncWebServer](https://github.com/me-no-dev/ESPAsyncWebServer)
+* [AsyncMqttClient](https://github.com/marvinroger/async-mqtt-client)
