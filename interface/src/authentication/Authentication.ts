@@ -61,3 +61,13 @@ export function redirectingAuthorizedFetch(url: RequestInfo, params?: RequestIni
     });
   });
 }
+
+export function addAccessTokenParameter(url: string) {
+  const accessToken = localStorage.getItem(ACCESS_TOKEN);
+  if (!accessToken) {
+    return url;
+  }
+  const parsedUrl = new URL(url);
+  parsedUrl.searchParams.set(ACCESS_TOKEN, accessToken);
+  return parsedUrl.toString();
+}

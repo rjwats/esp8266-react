@@ -12,7 +12,7 @@ LightSettingsService::LightSettingsService(AsyncWebServer* server,
                                            LightBrokerSettingsService* lightBrokerSettingsService) :
     _settingsEndpoint(&SERIALIZER, &DESERIALIZER, this, server, LIGHT_SETTINGS_ENDPOINT_PATH, securityManager),
     _settingsBroker(&HA_SERIALIZER, &HA_DESERIALIZER, this, mqttClient),
-    _settingsSocket(&SERIALIZER, &DESERIALIZER, this, server, LIGHT_SETTINGS_SOCKET_PATH),
+    _settingsSocket(&SERIALIZER, &DESERIALIZER, this, server, LIGHT_SETTINGS_SOCKET_PATH, securityManager),
     _mqttClient(mqttClient),
     _lightBrokerSettingsService(lightBrokerSettingsService) {
   // configure blink led to be output

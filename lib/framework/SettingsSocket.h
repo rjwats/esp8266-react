@@ -14,12 +14,36 @@
 
 /**
  * SettingsSocket is designed to provide WebSocket based communication for making and observing updates to settings.
- *
- * TODO - Security via a parameter, optional on construction to start!
  */
 template <class T>
 class SettingsSocket {
  public:
+  SettingsSocket(SettingsSerializer<T>* settingsSerializer,
+                 SettingsDeserializer<T>* settingsDeserializer,
+                 SettingsService<T>* settingsService,
+                 AsyncWebServer* server,
+                 char const* socketPath,
+                 SecurityManager* securityManager,
+                 AuthenticationPredicate authenticationPredicate = AuthenticationPredicates::IS_ADMIN) :
+      _settingsSerializer(settingsSerializer),
+      _settingsDeserializer(settingsDeserializer),
+      _settingsService(settingsService),
+      _server(server),
+      _webSocket(socketPath) {
+    _settingsService->addUpdateHandler([&](String originId) { transmitData(nullptr, originId); }, false);
+    _webSocket.setFilter(securityManager->filterRequest(authenticationPredicate));
+    _webSocket.onEvent(std::bind(&SettingsSocket::onWSEvent,
+                                 this,
+                                 std::placeholders::_1,
+                                 std::placeholders::_2,
+                                 std::placeholders::_3,
+                                 std::placeholders::_4,
+                                 std::placeholders::_5,
+                                 std::placeholders::_6));
+    _server->addHandler(&_webSocket);
+    _server->on(socketPath, HTTP_GET, std::bind(&SettingsSocket::forbidden, this, std::placeholders::_1));
+  }
+  
   SettingsSocket(SettingsSerializer<T>* settingsSerializer,
                  SettingsDeserializer<T>* settingsDeserializer,
                  SettingsService<T>* settingsService,
@@ -30,6 +54,7 @@ class SettingsSocket {
       _settingsService(settingsService),
       _server(server),
       _webSocket(socketPath) {
+    _settingsService->addUpdateHandler([&](String originId) { transmitData(nullptr, originId); }, false);
     _webSocket.onEvent(std::bind(&SettingsSocket::onWSEvent,
                                  this,
                                  std::placeholders::_1,
@@ -38,7 +63,6 @@ class SettingsSocket {
                                  std::placeholders::_4,
                                  std::placeholders::_5,
                                  std::placeholders::_6));
-    _settingsService->addUpdateHandler([&](String originId) { transmitData(nullptr, originId); }, false);
     _server->addHandler(&_webSocket);
   }
 
@@ -50,8 +74,15 @@ class SettingsSocket {
   AsyncWebSocket _webSocket;
 
   /**
-   * Responds to the WSEvent by sending the current settings to the clients when they connect and by applying the changes
-   * sent to the socket directly to the settings service.
+   * Renders a forbidden respnose to the client if they fail to connect.
+   */
+  void forbidden(AsyncWebServerRequest* request) {
+    request->send(403);
+  }
+
+  /**
+   * Responds to the WSEvent by sending the current settings to the clients when they connect and by applying the
+   * changes sent to the socket directly to the settings service.
    */
   void onWSEvent(AsyncWebSocket* server,
                  AsyncWebSocketClient* client,

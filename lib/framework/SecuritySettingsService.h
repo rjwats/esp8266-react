@@ -63,6 +63,7 @@ class SecuritySettingsService : public SettingsService<SecuritySettings>, public
   Authentication authenticate(String& username, String& password);
   Authentication authenticateRequest(AsyncWebServerRequest* request);
   String generateJWT(User* user);
+  ArRequestFilterFunction filterRequest(AuthenticationPredicate predicate);
   ArRequestHandlerFunction wrapRequest(ArRequestHandlerFunction onRequest, AuthenticationPredicate predicate);
   ArJsonRequestHandlerFunction wrapCallback(ArJsonRequestHandlerFunction callback, AuthenticationPredicate predicate);
 

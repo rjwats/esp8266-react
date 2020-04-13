@@ -3,6 +3,7 @@ import Sockette from 'sockette';
 import throttle from 'lodash/throttle';
 import { withSnackbar, WithSnackbarProps } from 'notistack';
 
+import { addAccessTokenParameter } from '../authentication';
 import { extractEventValue } from '.';
 
 export interface SocketControllerProps<D> extends WithSnackbarProps {
@@ -47,7 +48,7 @@ export function socketController<D, P extends SocketControllerProps<D>>(wsUrl: s
       constructor(props: Omit<P, keyof SocketControllerProps<D>> & WithSnackbarProps) {
         super(props);
         this.state = {
-          ws: new Sockette(wsUrl, {
+          ws: new Sockette(addAccessTokenParameter(wsUrl), {
             onmessage: this.onMessage,
             onopen: this.onOpen,
             onclose: this.onClose,

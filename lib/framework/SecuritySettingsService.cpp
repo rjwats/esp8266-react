@@ -22,6 +22,10 @@ Authentication SecuritySettingsService::authenticateRequest(AsyncWebServerReques
       value = value.substring(AUTHORIZATION_HEADER_PREFIX_LEN);
       return authenticateJWT(value);
     }
+  } else if (request->hasParam(ACCESS_TOKEN_PARAMATER)) {
+    AsyncWebParameter* tokenParamater = request->getParam(ACCESS_TOKEN_PARAMATER);
+    String value = tokenParamater->value();
+    return authenticateJWT(value);
   }
   return Authentication();
 }
@@ -71,6 +75,13 @@ String SecuritySettingsService::generateJWT(User* user) {
   JsonObject payload = jsonDocument.to<JsonObject>();
   populateJWTPayload(payload, user);
   return _jwtHandler.buildJWT(payload);
+}
+
+ArRequestFilterFunction SecuritySettingsService::filterRequest(AuthenticationPredicate predicate) {
+  return [this, predicate](AsyncWebServerRequest* request) {
+    Authentication authentication = authenticateRequest(request);
+    return predicate(authentication);
+  };
 }
 
 ArRequestHandlerFunction SecuritySettingsService::wrapRequest(ArRequestHandlerFunction onRequest,
