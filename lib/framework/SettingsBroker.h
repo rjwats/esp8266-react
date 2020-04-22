@@ -28,11 +28,15 @@ class SettingsBroker {
   SettingsBroker(SettingsSerializer<T>* settingsSerializer,
                  SettingsDeserializer<T>* settingsDeserializer,
                  SettingsService<T>* settingsService,
-                 AsyncMqttClient* mqttClient) :
+                 AsyncMqttClient* mqttClient,
+                 String setTopic = "",
+                 String stateTopic = "") :
       _settingsSerializer(settingsSerializer),
       _settingsDeserializer(settingsDeserializer),
       _settingsService(settingsService),
-      _mqttClient(mqttClient) {
+      _mqttClient(mqttClient),
+      _setTopic(setTopic),
+      _stateTopic(stateTopic) {
     _settingsService->addUpdateHandler([&](String originId) { publish(); }, false);
     _mqttClient->onConnect(std::bind(&SettingsBroker::configureMQTT, this));
     _mqttClient->onMessage(std::bind(&SettingsBroker::onMqttMessage,
@@ -98,7 +102,8 @@ class SettingsBroker {
     DeserializationError error = deserializeJson(json, payload, len);
     if (!error && json.is<JsonObject>()) {
       _settingsService->update(
-          [&](T& settings) { _settingsDeserializer->deserialize(settings, json.as<JsonObject>()); }, SETTINGS_BROKER_ORIGIN_ID);
+          [&](T& settings) { _settingsDeserializer->deserialize(settings, json.as<JsonObject>()); },
+          SETTINGS_BROKER_ORIGIN_ID);
     }
   }
 };

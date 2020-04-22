@@ -3,8 +3,16 @@
 static LightBrokerSettingsSerializer SERIALIZER;
 static LightBrokerSettingsDeserializer DESERIALIZER;
 
-LightBrokerSettingsService::LightBrokerSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) :
-    _settingsEndpoint(&SERIALIZER, &DESERIALIZER, this, server, LIGHT_BROKER_SETTINGS_PATH, securityManager),
+LightBrokerSettingsService::LightBrokerSettingsService(AsyncWebServer* server,
+                                                       FS* fs,
+                                                       SecurityManager* securityManager) :
+    _settingsEndpoint(&SERIALIZER,
+                      &DESERIALIZER,
+                      this,
+                      server,
+                      LIGHT_BROKER_SETTINGS_PATH,
+                      securityManager,
+                      AuthenticationPredicates::IS_AUTHENTICATED),
     _settingsPersistence(&SERIALIZER, &DESERIALIZER, this, fs, LIGHT_BROKER_SETTINGS_FILE) {
 }
 

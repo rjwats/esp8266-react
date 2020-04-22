@@ -415,12 +415,14 @@ static LightSettingsDeserializer DESERIALIZER;
 
 #### Endpoints
 
-The framework provides a [SettingsEndpoint.h](lib/framework/SettingsEndpoint.h) class which may be used to register GET and POST handlers to read and update the settings over HTTP. You may construct a SettingsEndpoint as a part of the SettingsService or separately if you prefer. The code below demonstrates how to extend the LightSettingsService class to provide an unsecured endpoint:
+The framework provides a [SettingsEndpoint.h](lib/framework/SettingsEndpoint.h) class which may be used to register GET and POST handlers to read and update the settings over HTTP. You may construct a SettingsEndpoint as a part of the SettingsService or separately if you prefer. 
+
+The code below demonstrates how to extend the LightSettingsService class to provide an unsecured endpoint:
 
 ```cpp
 class LightSettingsService : public SettingsService<LightSettings> {
  public:
-  LightSettingsService(AsyncWebServer* server, SecurityManager* securityManager) :
+  LightSettingsService(AsyncWebServer* server) :
       _settingsEndpoint(&SERIALIZER, &DESERIALIZER, this, server, "/rest/lightSettings") {
   }
 
@@ -429,27 +431,78 @@ class LightSettingsService : public SettingsService<LightSettings> {
 };
 ```
 
-Endpoint security is provided by authentication predicates which are [documented below](#security-features). A security manager and authentication predicate may be provided if an secure endpoint is required. The demo app shows how endpoints can be secured.
+Endpoint security is provided by authentication predicates which are [documented below](#security-features). The SecurityManager and authentication predicate may be provided if a secure endpoint is required. The demo project shows how endpoints can be secured.
 
 #### Persistence
 
-[SettingsPersistence.h](lib/framework/SettingsPersistence.h) allows you to save settings to the filesystem. SettingsPersistence automatically writes changes to the file system when settings are updated. This feature can be disabled by calling `disableAutomatic()` if manual control of persistence is required.
+[SettingsPersistence.h](lib/framework/SettingsPersistence.h) allows you to save settings to the filesystem. SettingsPersistence automatically writes changes to the file system when settings are updated. This feature can be disabled by calling `disableUpdateHandler()` if manual control of persistence is required.
 
-As with SettingsEndpoint you may elect to construct this as a part of a SettingsService class or separately. The code below demonstrates how to extend the LightSettingsService class to provide persistence:
+The code below demonstrates how to extend the LightSettingsService class to provide persistence:
 
 ```cpp
 class LightSettingsService : public SettingsService<LightSettings> {
  public:
-  LightSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) :
-      _settingsEndpoint(&SERIALIZER, &DESERIALIZER, this, server, "/rest/lightSettings"),
+  LightSettingsService(FS* fs) :
       _settingsPersistence(&SERIALIZER, &DESERIALIZER, this, fs, "/config/lightSettings.json") {
   }
 
  private:
-  SettingsEndpoint<LightSettings> _settingsEndpoint;
   SettingsPersistence<LightSettings> _settingsPersistence;
 };
 ```
+
+#### WebSockets
+
+[SettingsSocket.h](lib/framework/SettingsSocket.h) allows you to read and update settings over a WebSocket connection. SettingsSocket automatically pushes changes to all connected clients when settings are updated.
+
+The code below demonstrates how to extend the LightSettingsService class to provide an unsecured websocket:
+
+```cpp
+class LightSettingsService : public SettingsService<LightSettings> {
+ public:
+  LightSettingsService(AsyncWebServer* server) :
+      _settingsSocket(&SERIALIZER, &DESERIALIZER, this, server, "/ws/lightSettings"), {
+  }
+
+ private:
+  SettingsSocket<LightSettings> _settingsSocket;
+};
+```
+
+WebSocket security is provided by authentication predicates which are [documented below](#security-features). The SecurityManager and authentication predicate may be provided if a secure WebSocket is required. The demo project shows how WebSockets can be secured.
+
+#### MQTT
+
+The framework includes an MQTT client which can be configured via the UI. MQTT requirements will differ from project to project so the framework exposes the client for you to use as you see fit. The framework does however provide a utility to interface SettingsService to a pair of pub/sub (state/set) topics. This utility can be used to synchronize state with software such as Home Assistant.
+
+[SettingsBroker.h](lib/framework/SettingsBroker.h) allows you to read and update settings over a pair of MQTT topics. SettingsBroker automatically pushes changes to the pub topic and reads updates from the sub topic.
+
+The code below demonstrates how to extend the LightSettingsService class to interface with MQTT:
+
+```cpp
+class LightSettingsService : public SettingsService<LightSettings> {
+ public:
+  LightSettingsService(AsyncMqttClient* mqttClient) :
+    _settingsBroker(&SERIALIZER,
+                    &DESERIALIZER,
+                    this,
+                    mqttClient,
+                    "homeassistant/light/my_light/set",
+                    "homeassistant/light/my_light/state") {
+  }
+
+ private:
+  SettingsBroker<LightSettings> _settingsBroker;
+};
+```
+
+You can also re-configure the pub/sub topics at runtime as required:
+
+```cpp
+_settingsBroker.configureBroker("homeassistant/light/desk_lamp/set", "homeassistant/light/desk_lamp/state");
+```
+
+The demo project allows the user to modify the MQTT topics via the UI so they can be changed without re-flashing the firmware.
 
 ### Security features
 

@@ -27,7 +27,7 @@ class SettingsPersistence {
       _settingsService(settingsManager),
       _fs(fs),
       _filePath(filePath) {
-    enableAutomatic();
+    enableUpdateHandler();
   }
 
   void readFromFS() {
@@ -71,14 +71,14 @@ class SettingsPersistence {
     return true;
   }
 
-  void disableAutomatic() {
+  void disableUpdateHandler() {
     if (_updateHandlerId) {
       _settingsService->removeUpdateHandler(_updateHandlerId);
       _updateHandlerId = 0;
     }
   }
 
-  void enableAutomatic() {
+  void enableUpdateHandler() {
     if (!_updateHandlerId) {
       _updateHandlerId = _settingsService->addUpdateHandler([&](String originId) { writeToFS(); });
     }
