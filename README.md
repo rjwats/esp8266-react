@@ -109,7 +109,7 @@ platform = espressif32
 board = node32s
 ```
 
-This is largley left as an exersise for the reader as everyone's requirements will vary.
+This is left as an exersise for the reader as everyone's requirements will vary.
 
 ### Running the interface locally
 
@@ -325,15 +325,15 @@ void loop() {
 
 ### Developing with the framework
 
-The framework promotes a modular design and exposes features you may re-use to speed up the development of your project. Where possible it is recommended that you use the features the frameworks supplies. These are documented below.
+The framework promotes a modular design and exposes features you may re-use to speed up the development of your project. Where possible it is recommended that you use the features the frameworks supplies. These are documented in this section and a comprenensive example is provided by the demo project.
 
-The following diagram visualises how the framework's modular components fit together. They are described in detail below.
+The following diagram visualises how the framework's modular components fit together, each feature is described in detail below.
 
 ![framework diagram](/media/framework.png?raw=true "framework diagram")
 
 #### Settings service
 
-The [SettingsService.h](lib/framework/SettingsService.h) class is a responsible for managing settings and interfacing with code which wants to control or respond to changes in those settings. You can define a data class to hold settings then build a SettingsService instance to manage them:
+The [SettingsService.h](lib/framework/SettingsService.h) class is a responsible for managing settings and interfacing with code which wants to change or respond to changes in them. You can define a data class to hold settings then build a SettingsService instance to manage them:
 
 ```cpp
 class LightSettings {
@@ -346,7 +346,7 @@ class LightSettingsService : public SettingsService<LightSettings> {
 };
 ```
 
-You may listen for changes to settings by registering an update handler callback. It is possible to remove an update handler later if required. An "origin" pointer is passed to the update handler which may point to the client or object which made the update.
+You may listen for changes to settings by registering an update handler callback. It is possible to remove an update handler later if required.
 
 ```cpp
 // register an update handler
@@ -360,6 +360,14 @@ update_handler_id_t myUpdateHandler = lightSettingsService.addUpdateHandler(
 lightSettingsService.removeUpdateHandler(myUpdateHandler);
 ```
 
+An "originId" is passed to the update handler which may be used to identify the origin of the update. The default origin values the framework provides are:
+
+Origin            | Description
+----------------- | -----------
+endpoint          | An update over REST (SettingsEndpoint)
+broker            | An update sent over MQTT (SettingsBroker)
+socket:{clientId} | An update sent over WebSocket (SettingsSocket)
+
 SettingsService exposes a read function which you may use to safely read the settings. This function takes care of protecting against parallel access to the settings in multi-core enviornments such as the ESP32.
 
 ```cpp
@@ -368,12 +376,12 @@ lightSettingsService.read([&](LightSettings& settings) {
 });
 ```
 
-SettingsService also exposes an update function which allows the caller to update the settings. The update function takes care of calling the registered update handler callbacks once the update is complete.
+SettingsService also exposes an update function which allows the caller to update the settings with a callback. This approach automatically calls the registered update handlers when complete. The example below turns on the lights using the arbitrary origin "timer":
 
 ```cpp
 lightSettingsService.update([&](LightSettings& settings) {
   settings.on = true;  // turn on the lights!
-});
+}, "timer");
 ```
 
 #### Serialization
@@ -447,7 +455,7 @@ class LightSettingsService : public SettingsService<LightSettings> {
 
 The framework has security features to prevent unauthorized use of the device. This is driven by [SecurityManager.h](lib/framework/SecurityManager.h).
 
-On successful authentication, the /rest/signIn endpoint issues a JWT which is then sent using Bearer Authentication. The framework come with built in predicates for verifying a users access level. The built in AuthenticationPredicates can be found in [SecurityManager.h](lib/framework/SecurityManager.h):
+On successful authentication, the /rest/signIn endpoint issues a JWT which is then sent using Bearer Authentication. The framework come with built-in predicates for verifying a users access privileges. The built in AuthenticationPredicates can be found in [SecurityManager.h](lib/framework/SecurityManager.h) and are as follows:
 
 Predicate            | Description
 -------------------- | -----------
@@ -480,32 +488,32 @@ getMQTTClient()              | Provides direct access to the MQTT client instanc
 
 These can be used to observe changes to settings. They can also be used to fetch or update settings.
 
------- TODO ----- 
-Fix documentation, provide serialization examples
-
 Inspect the current WiFi settings:
 
 ```cpp
-WiFiSettings wifiSettings = esp8266React.getWiFiSettingsService()->fetch();
-Serial.print("The ssid is:");
-Serial.println(wifiSettings.ssid);
+esp8266React.getWiFiSettingsService()->read([&](WiFiSettings& settings) {
+  Serial.print("The ssid is:");
+  Serial.println(wifiSettings.ssid);
+});
 ```
 
-Configure the SSID and password:
+Configure the WiFi SSID and password manually:
 
 ```cpp
-WiFiSettings wifiSettings = esp8266React.getWiFiSettingsService()->fetch();
-wifiSettings.ssid = "MyNetworkSSID";
-wifiSettings.password = "MySuperSecretPassword";
-esp8266React.getWiFiSettingsService()->update(wifiSettings);
+esp8266React.getWiFiSettingsService()->update([&](WiFiSettings& settings) {
+  wifiSettings.ssid = "MyNetworkSSID";
+  wifiSettings.password = "MySuperSecretPassword";
+}, "myapp");
 ```
 
 Observe changes to the WiFiSettings:
 
 ```cpp
-esp8266React.getWiFiSettingsService()->addUpdateHandler([]() {
-   Serial.println("The WiFi Settings were updated!");
-});
+esp8266React.getWiFiSettingsService()->addUpdateHandler(
+  [&](String originId) {
+    Serial.println("The WiFi Settings were updated!");
+  }
+);
 ```
 
 ## Libraries Used

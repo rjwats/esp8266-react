@@ -43,7 +43,7 @@ class SettingsSocket {
     _server->addHandler(&_webSocket);
     _server->on(socketPath, HTTP_GET, std::bind(&SettingsSocket::forbidden, this, std::placeholders::_1));
   }
-  
+
   SettingsSocket(SettingsSerializer<T>* settingsSerializer,
                  SettingsDeserializer<T>* settingsDeserializer,
                  SettingsService<T>* settingsService,
