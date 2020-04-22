@@ -491,7 +491,7 @@ These can be used to observe changes to settings. They can also be used to fetch
 Inspect the current WiFi settings:
 
 ```cpp
-esp8266React.getWiFiSettingsService()->read([&](WiFiSettings& settings) {
+esp8266React.getWiFiSettingsService()->read([&](WiFiSettings& wifiSettings) {
   Serial.print("The ssid is:");
   Serial.println(wifiSettings.ssid);
 });
@@ -500,7 +500,7 @@ esp8266React.getWiFiSettingsService()->read([&](WiFiSettings& settings) {
 Configure the WiFi SSID and password manually:
 
 ```cpp
-esp8266React.getWiFiSettingsService()->update([&](WiFiSettings& settings) {
+esp8266React.getWiFiSettingsService()->update([&](WiFiSettings& wifiSettings) {
   wifiSettings.ssid = "MyNetworkSSID";
   wifiSettings.password = "MySuperSecretPassword";
 }, "myapp");
