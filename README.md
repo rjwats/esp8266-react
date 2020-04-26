@@ -98,7 +98,7 @@ You can configure the project to serve the interface from PROGMEM by uncommentin
 
 Be aware that this will consume ~150k of program space which can be especially problematic if you already have a large build artefact or if you have added large javascript dependencies to the interface. The ESP32 binaries are large already, so this will be a problem if you are using one of these devices and require this type of setup.
 
-A method for working around this issue can be to reduce the amount of space allocated to SPIFFS by configuring the device to use a differnt strategy partitioning. If you don't require SPIFFS other than for storing config one approach might be to configure a minimal SPIFFS partition.
+A method for working around this issue can be to reduce the amount of space allocated to SPIFFS by configuring the device to use differnt partitioning. If you don't require SPIFFS other than for storing config one approach might be to configure a minimal SPIFFS partition.
 
 For a ESP32 (4mb variant) there is a handy "min_spiffs.csv" partition table which can be enabled easily:
 
@@ -113,7 +113,7 @@ This is left as an exersise for the reader as everyone's requirements will vary.
 
 ### Running the interface locally
 
-You can run a local development server to allow you preview changes to the front end without the need to upload a file system image to the device after each change. 
+You can run a local development server to allow you preview changes to the front end without the need to upload a file system image to the device after each change.
 
 Change to the ['interface'](interface) directory with your bash shell (or Git Bash) and use the standard commands you would with any react app built with create-react-app:
 
@@ -132,11 +132,16 @@ npm start
 
 #### Changing the endpoint root
 
-The endpoint root path can be found in ['interface/.env.development'](interface/.env.development), defined as the environment variable 'REACT_APP_ENDPOINT_ROOT'. This needs to be the root URL of the device running the back end, for example:
+The interface has a development environment which is enabled when running the development server using `npm start`. The environment file can be found in ['interface/.env.development'](interface/.env.development) and contains the HTTP root URL and the WebSocket root URL:
 
-```js
-REACT_APP_ENDPOINT_ROOT=http://192.168.0.6/rest/
+```properties
+REACT_APP_HTTP_ROOT=http://192.168.0.99
+REACT_APP_WEB_SOCKET_ROOT=ws://192.168.0.99
 ```
+
+The `REACT_APP_HTTP_ROOT` and `REACT_APP_WEB_SOCKET_ROOT` properties can be modified to point a ESP device running the back end firmware.
+
+> **Note**: You must restart the development server for changes to the environment to become effective.
 
 #### Enabling CORS
 
@@ -254,7 +259,7 @@ You can replace the app icon is located at ['interface/public/app/icon.png'](int
 
 The app name displayed on the login page and on the menu bar can be modified by editing the REACT_APP_NAME property in ['interface/.env'](interface/.env)
 
-```js
+```properties
 REACT_APP_NAME=Funky IoT Project
 ```
 
