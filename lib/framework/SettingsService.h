@@ -41,7 +41,7 @@ class SettingsService {
 
   void removeUpdateHandler(update_handler_id_t id) {
     for (auto i = _settingsUpdateHandlers.begin(); i != _settingsUpdateHandlers.end();) {
-      if ((*i)._id == id) {
+      if ((*i)._allowRemove && (*i)._id == id) {
         i = _settingsUpdateHandlers.erase(i);
       } else {
         ++i;
@@ -49,7 +49,7 @@ class SettingsService {
     }
   }
 
-  void updateWithoutPropogation(std::function<void(T&)> callback) {
+  void updateWithoutPropagation(std::function<void(T&)> callback) {
     read(callback);
   }
 

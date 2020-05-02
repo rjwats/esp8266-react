@@ -79,7 +79,7 @@ class SettingsEndpoint {
       request->onDisconnect([this]() { _settingsService->callUpdateHandlers(SETTINGS_ENDPOINT_ORIGIN_ID); });
 
       // update the settings, deferring the call to the update handlers to when the response is complete
-      _settingsService->updateWithoutPropogation([&](T& settings) {
+      _settingsService->updateWithoutPropagation([&](T& settings) {
         _settingsDeserializer->deserialize(settings, json.as<JsonObject>());
         _settingsSerializer->serialize(settings, response->getRoot().as<JsonObject>());
       });

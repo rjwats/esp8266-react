@@ -98,7 +98,7 @@ You can configure the project to serve the interface from PROGMEM by uncommentin
 
 Be aware that this will consume ~150k of program space which can be especially problematic if you already have a large build artefact or if you have added large javascript dependencies to the interface. The ESP32 binaries are large already, so this will be a problem if you are using one of these devices and require this type of setup.
 
-A method for working around this issue can be to reduce the amount of space allocated to SPIFFS by configuring the device to use differnt partitioning. If you don't require SPIFFS other than for storing config one approach might be to configure a minimal SPIFFS partition.
+A method for working around this issue can be to reduce the amount of space allocated to SPIFFS by configuring the device to use different partitioning. If you don't require SPIFFS other than for storing config one approach might be to configure a minimal SPIFFS partition.
 
 For a ESP32 (4mb variant) there is a handy "min_spiffs.csv" partition table which can be enabled easily:
 
@@ -109,7 +109,7 @@ platform = espressif32
 board = node32s
 ```
 
-This is left as an exersise for the reader as everyone's requirements will vary.
+This is left as an exercise for the reader as everyone's requirements will vary.
 
 ### Running the interface locally
 
@@ -147,7 +147,7 @@ The `REACT_APP_HTTP_ROOT` and `REACT_APP_WEB_SOCKET_ROOT` properties can be modi
 
 You can enable CORS on the back end by uncommenting the -D ENABLE_CORS build flag in ['platformio.ini'](platformio.ini) then re-building and uploading the firmware to the device. The default settings assume you will be accessing the development server on the default port on [http://localhost:3000](http://localhost:3000) this can also be changed if required:
 
-```
+```properties
 -D ENABLE_CORS
 -D CORS_ORIGIN=\"http://localhost:3000\"
 ```
@@ -330,7 +330,7 @@ void loop() {
 
 ### Developing with the framework
 
-The framework promotes a modular design and exposes features you may re-use to speed up the development of your project. Where possible it is recommended that you use the features the frameworks supplies. These are documented in this section and a comprenensive example is provided by the demo project.
+The framework promotes a modular design and exposes features you may re-use to speed up the development of your project. Where possible it is recommended that you use the features the frameworks supplies. These are documented in this section and a comprehensive example is provided by the demo project.
 
 The following diagram visualises how the framework's modular components fit together, each feature is described in detail below.
 
@@ -391,7 +391,7 @@ lightSettingsService.update([&](LightSettings& settings) {
 
 #### Serialization
 
-When transmitting settings over HTTP, WebSockets or MQTT they must to be marshalled into a serialzable form. The framework uses ArduinoJson for serialization and provides the abstract classes [SettingsSerializer.h](lib/framework/SettingsSerializer.h) and [SettingsDeserializer.h](lib/framework/SettingsDeserializer.h) to facilitate the seriliaztion of settings:
+When transmitting settings over HTTP, WebSockets, or MQTT they must to be marshalled into a serializable form. The framework uses ArduinoJson for serialization and provides the abstract classes [SettingsSerializer.h](lib/framework/SettingsSerializer.h) and [SettingsDeserializer.h](lib/framework/SettingsDeserializer.h) to facilitate the serialization of settings:
 
 ```cpp
 class LightSettingsSerializer : public SettingsSerializer<LightSettings> {
@@ -411,7 +411,7 @@ class LightSettingsDeserializer : public SettingsDeserializer<LightSettings> {
 };
 ```
 
-It is recommended you make create singletons for your serialzers and that they are stateless:
+Unless you have more complicated requirements most serializers/deserializers are easiest to implement as stateless singletons:
 
 ```cpp
 static LightSettingsSerializer SERIALIZER;
@@ -513,7 +513,7 @@ The demo project allows the user to modify the MQTT topics via the UI so they ca
 
 The framework has security features to prevent unauthorized use of the device. This is driven by [SecurityManager.h](lib/framework/SecurityManager.h).
 
-On successful authentication, the /rest/signIn endpoint issues a JWT which is then sent using Bearer Authentication. The framework come with built-in predicates for verifying a users access privileges. The built in AuthenticationPredicates can be found in [SecurityManager.h](lib/framework/SecurityManager.h) and are as follows:
+On successful authentication, the /rest/signIn endpoint issues a [JSON Web Token (JWT)](https://jwt.io/) which is then sent using Bearer Authentication. The framework come with built-in predicates for verifying a users access privileges. The built in AuthenticationPredicates can be found in [SecurityManager.h](lib/framework/SecurityManager.h) and are as follows:
 
 Predicate            | Description
 -------------------- | -----------
