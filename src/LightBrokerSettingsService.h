@@ -5,6 +5,7 @@
 #include <SettingsBroker.h>
 #include <SettingsPersistence.h>
 #include <ESP8266React.h>
+#include <util.h>
 
 #define LIGHT_BROKER_SETTINGS_FILE "/config/brokerSettings.json"
 #define LIGHT_BROKER_SETTINGS_PATH "/rest/brokerSettings"
@@ -15,14 +16,6 @@ class LightBrokerSettings {
   String name;
   String uniqueId;
 };
-
-static String defaultDeviceValue(String prefix = "") {
-#ifdef ESP32
-  return prefix + String((unsigned long)ESP.getEfuseMac(), HEX);
-#elif defined(ESP8266)
-  return prefix + String(ESP.getChipId(), HEX);
-#endif
-}
 
 class LightBrokerSettingsSerializer : public SettingsSerializer<LightBrokerSettings> {
  public:

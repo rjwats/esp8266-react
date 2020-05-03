@@ -1,7 +1,16 @@
 #include <ESP8266React.h>
 #include <LightBrokerSettingsService.h>
 #include <LightSettingsService.h>
+#include <SensorSettingsService.h>
+#include <SensorStatusService.h>
 #include <FS.h>
+
+#include "Wire.h"
+#include "SPI.h"
+#include <DHT.h>
+
+#define DHTTYPE DHT22
+#define DHTPIN 4
 
 #define SERIAL_BAUD_RATE 115200
 
@@ -13,6 +22,13 @@ LightSettingsService lightSettingsService = LightSettingsService(&server,
                                                                  esp8266React.getSecurityManager(),
                                                                  esp8266React.getMQTTClient(),
                                                                  &lightBrokerSettingsService);
+
+SensorSettingsService sensorSettingsService =
+    SensorSettingsService(&server, &SPIFFS, esp8266React.getSecurityManager());
+SensorStatusService sensorStatusService = SensorStatusService(&server,
+                                                              esp8266React.getSecurityManager(),
+                                                              esp8266React.getMQTTClient(),
+                                                              &sensorSettingsService);
 
 void setup() {
   // start serial and filesystem
@@ -34,6 +50,12 @@ void setup() {
   // start the light service
   lightBrokerSettingsService.begin();
 
+  // load the initial sensor settings
+  sensorSettingsService.begin();
+
+    // start the sensor service
+  sensorStatusService.begin();
+
   // start the server
   server.begin();
 }
@@ -41,4 +63,7 @@ void setup() {
 void loop() {
   // run the framework's loop function
   esp8266React.loop();
+
+  // run the sensor status main loop
+  sensorStatusService.loop();
 }
