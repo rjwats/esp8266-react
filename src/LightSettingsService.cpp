@@ -1,25 +1,19 @@
 #include <LightSettingsService.h>
 
-static LightSettingsSerializer SERIALIZER;
-static LightSettingsDeserializer DESERIALIZER;
-
-static HomeAssistantSerializer HA_SERIALIZER;
-static HomeAssistantDeserializer HA_DESERIALIZER;
-
 LightSettingsService::LightSettingsService(AsyncWebServer* server,
                                            SecurityManager* securityManager,
                                            AsyncMqttClient* mqttClient,
                                            LightBrokerSettingsService* lightBrokerSettingsService) :
-    _settingsEndpoint(&SERIALIZER,
-                      &DESERIALIZER,
+    _settingsEndpoint(LightSettings::serialize,
+                      LightSettings::deserialize,
                       this,
                       server,
                       LIGHT_SETTINGS_ENDPOINT_PATH,
                       securityManager,
                       AuthenticationPredicates::IS_AUTHENTICATED),
-    _settingsBroker(&HA_SERIALIZER, &HA_DESERIALIZER, this, mqttClient),
-    _settingsSocket(&SERIALIZER,
-                    &DESERIALIZER,
+    _settingsBroker(LightSettings::haSerialize, LightSettings::haDeserialize, this, mqttClient),
+    _settingsSocket(LightSettings::serialize,
+                    LightSettings::deserialize,
                     this,
                     server,
                     LIGHT_SETTINGS_SOCKET_PATH,

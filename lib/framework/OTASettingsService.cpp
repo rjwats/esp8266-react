@@ -1,11 +1,8 @@
 #include <OTASettingsService.h>
 
-static OTASettingsSerializer SERIALIZER;
-static OTASettingsDeserializer DESERIALIZER;
-
 OTASettingsService::OTASettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) :
-    _settingsEndpoint(&SERIALIZER, &DESERIALIZER, this, server, OTA_SETTINGS_SERVICE_PATH, securityManager),
-    _settingsPersistence(&SERIALIZER, &DESERIALIZER, this, fs, OTA_SETTINGS_FILE) {
+    _settingsEndpoint(OTASettings::serialize, OTASettings::deserialize, this, server, OTA_SETTINGS_SERVICE_PATH, securityManager),
+    _settingsPersistence(OTASettings::serialize, OTASettings::deserialize, this, fs, OTA_SETTINGS_FILE) {
 #ifdef ESP32
   WiFi.onEvent(std::bind(&OTASettingsService::onStationModeGotIP, this, std::placeholders::_1, std::placeholders::_2),
                WiFiEvent_t::SYSTEM_EVENT_STA_GOT_IP);

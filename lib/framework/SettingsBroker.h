@@ -25,8 +25,8 @@
 template <class T>
 class SettingsBroker {
  public:
-  SettingsBroker(SettingsSerializer<T>* settingsSerializer,
-                 SettingsDeserializer<T>* settingsDeserializer,
+  SettingsBroker(SettingsSerializer<T> settingsSerializer,
+                 SettingsDeserializer<T> settingsDeserializer,
                  SettingsService<T>* settingsService,
                  AsyncMqttClient* mqttClient,
                  String setTopic = "",
@@ -64,8 +64,8 @@ class SettingsBroker {
   }
 
  private:
-  SettingsSerializer<T>* _settingsSerializer;
-  SettingsDeserializer<T>* _settingsDeserializer;
+  SettingsSerializer<T> _settingsSerializer;
+  SettingsDeserializer<T> _settingsDeserializer;
   SettingsService<T>* _settingsService;
   AsyncMqttClient* _mqttClient;
   String _setTopic;
@@ -75,7 +75,10 @@ class SettingsBroker {
     if (_stateTopic.length() > 0 && _mqttClient->connected()) {
       // serialize to json doc
       DynamicJsonDocument json(MAX_MESSAGE_SIZE);
-      _settingsService->read([&](T& settings) { _settingsSerializer->serialize(settings, json.to<JsonObject>()); });
+      _settingsService->read([&](T& settings) {
+        JsonObject jsonObject = json.to<JsonObject>();
+        _settingsSerializer(settings, jsonObject);
+      });
 
       // serialize to string
       String payload;
@@ -102,7 +105,10 @@ class SettingsBroker {
     DeserializationError error = deserializeJson(json, payload, len);
     if (!error && json.is<JsonObject>()) {
       _settingsService->update(
-          [&](T& settings) { _settingsDeserializer->deserialize(settings, json.as<JsonObject>()); },
+          [&](T& settings) {
+            JsonObject jsonObject = json.as<JsonObject>();
+            _settingsDeserializer(jsonObject, settings);
+          },
           SETTINGS_BROKER_ORIGIN_ID);
     }
   }

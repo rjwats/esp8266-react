@@ -23,11 +23,8 @@ class WiFiSettings {
   IPAddress subnetMask;
   IPAddress dnsIP1;
   IPAddress dnsIP2;
-};
 
-class WiFiSettingsSerializer : public SettingsSerializer<WiFiSettings> {
- public:
-  void serialize(WiFiSettings& settings, JsonObject root) {
+  static void serialize(WiFiSettings& settings, JsonObject& root) {
     // connection settings
     root["ssid"] = settings.ssid;
     root["password"] = settings.password;
@@ -41,11 +38,8 @@ class WiFiSettingsSerializer : public SettingsSerializer<WiFiSettings> {
     JsonUtils::writeIP(root, "dns_ip_1", settings.dnsIP1);
     JsonUtils::writeIP(root, "dns_ip_2", settings.dnsIP2);
   }
-};
 
-class WiFiSettingsDeserializer : public SettingsDeserializer<WiFiSettings> {
- public:
-  void deserialize(WiFiSettings& settings, JsonObject root) {
+  static void deserialize(JsonObject& root, WiFiSettings& settings) {
     settings.ssid = root["ssid"] | "";
     settings.password = root["password"] | "";
     settings.hostname = root["hostname"] | "";

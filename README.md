@@ -391,31 +391,26 @@ lightSettingsService.update([&](LightSettings& settings) {
 
 #### Serialization
 
-When transmitting settings over HTTP, WebSockets, or MQTT they must to be marshalled into a serializable form. The framework uses ArduinoJson for serialization and provides the abstract classes [SettingsSerializer.h](lib/framework/SettingsSerializer.h) and [SettingsDeserializer.h](lib/framework/SettingsDeserializer.h) to facilitate the serialization of settings:
+When transmitting settings over HTTP, WebSockets, or MQTT they must to be marshalled into a serializable form (JSON). The framework uses ArduinoJson for serialization and the functions defined in [SettingsSerializer.h](lib/framework/SettingsSerializer.h) and [SettingsDeserializer.h](lib/framework/SettingsDeserializer.h) facilitate this.
+
+The static functions below can be used to facilitate the serialization/deserialization of the example settings:
 
 ```cpp
-class LightSettingsSerializer : public SettingsSerializer<LightSettings> {
+class LightSettings {
  public:
-  void serialize(LightSettings& settings, JsonObject root) {
+  bool on = false;
+  uint8_t brightness = 255;
+  
+  static void serialize(LightSettings& settings, JsonObject& root) {
     root["on"] = settings.on;
     root["brightness"] = settings.brightness;
   }
-};
 
-class LightSettingsDeserializer : public SettingsDeserializer<LightSettings> {
- public:
-  void deserialize(LightSettings& settings, JsonObject root) {
+  static void deserialize(JsonObject& root, LightSettings& settings) {
     settings.on = root["on"] | false;
     settings.brightness = root["brightness"] | 255;
   }
 };
-```
-
-Unless you have more complicated requirements most serializers/deserializers are easiest to implement as stateless singletons:
-
-```cpp
-static LightSettingsSerializer SERIALIZER;
-static LightSettingsDeserializer DESERIALIZER;
 ```
 
 #### Endpoints
@@ -428,7 +423,7 @@ The code below demonstrates how to extend the LightSettingsService class to prov
 class LightSettingsService : public SettingsService<LightSettings> {
  public:
   LightSettingsService(AsyncWebServer* server) :
-      _settingsEndpoint(&SERIALIZER, &DESERIALIZER, this, server, "/rest/lightSettings") {
+      _settingsEndpoint(LightSettings::serialize, LightSettings::deserialize, this, server, "/rest/lightSettings") {
   }
 
  private:
@@ -448,7 +443,7 @@ The code below demonstrates how to extend the LightSettingsService class to prov
 class LightSettingsService : public SettingsService<LightSettings> {
  public:
   LightSettingsService(FS* fs) :
-      _settingsPersistence(&SERIALIZER, &DESERIALIZER, this, fs, "/config/lightSettings.json") {
+      _settingsPersistence(LightSettings::serialize, LightSettings::deserialize, this, fs, "/config/lightSettings.json") {
   }
 
  private:
@@ -466,7 +461,7 @@ The code below demonstrates how to extend the LightSettingsService class to prov
 class LightSettingsService : public SettingsService<LightSettings> {
  public:
   LightSettingsService(AsyncWebServer* server) :
-      _settingsSocket(&SERIALIZER, &DESERIALIZER, this, server, "/ws/lightSettings"), {
+      _settingsSocket(LightSettings::serialize, LightSettings::deserialize, this, server, "/ws/lightSettings"), {
   }
 
  private:
@@ -488,8 +483,8 @@ The code below demonstrates how to extend the LightSettingsService class to inte
 class LightSettingsService : public SettingsService<LightSettings> {
  public:
   LightSettingsService(AsyncMqttClient* mqttClient) :
-    _settingsBroker(&SERIALIZER,
-                    &DESERIALIZER,
+    _settingsBroker(LightSettings::serialize, 
+                    LightSettings::deserialize,
                     this,
                     mqttClient,
                     "homeassistant/light/my_light/set",

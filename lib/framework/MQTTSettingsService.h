@@ -20,6 +20,14 @@
 #define MQTT_SETTINGS_SERVICE_DEFAULT_CLEAN_SESSION true
 #define MQTT_SETTINGS_SERVICE_DEFAULT_MAX_TOPIC_LENGTH 128
 
+static String generateClientId() {
+#ifdef ESP32
+  return "esp32-" + String((unsigned long)ESP.getEfuseMac(), HEX);
+#elif defined(ESP8266)
+  return "esp8266-" + String(ESP.getChipId(), HEX);
+#endif
+}
+
 class MQTTSettings {
  public:
   // host and port - if enabled
@@ -38,19 +46,8 @@ class MQTTSettings {
   uint16_t keepAlive;
   bool cleanSession;
   uint16_t maxTopicLength;
-};
 
-static String generateClientId() {
-#ifdef ESP32
-  return "esp32-" + String((unsigned long)ESP.getEfuseMac(), HEX);
-#elif defined(ESP8266)
-  return "esp8266-" + String(ESP.getChipId(), HEX);
-#endif
-}
-
-class MQTTSettingsSerializer : public SettingsSerializer<MQTTSettings> {
- public:
-  void serialize(MQTTSettings& settings, JsonObject root) {
+  static void serialize(MQTTSettings& settings, JsonObject& root) {
     root["enabled"] = settings.enabled;
     root["host"] = settings.host;
     root["port"] = settings.port;
@@ -61,11 +58,8 @@ class MQTTSettingsSerializer : public SettingsSerializer<MQTTSettings> {
     root["clean_session"] = settings.cleanSession;
     root["max_topic_length"] = settings.maxTopicLength;
   }
-};
 
-class MQTTSettingsDeserializer : public SettingsDeserializer<MQTTSettings> {
- public:
-  void deserialize(MQTTSettings& settings, JsonObject root) {
+  static void deserialize(JsonObject& root, MQTTSettings& settings) {
     settings.enabled = root["enabled"] | MQTT_SETTINGS_SERVICE_DEFAULT_ENABLED;
     settings.host = root["host"] | MQTT_SETTINGS_SERVICE_DEFAULT_HOST;
     settings.port = root["port"] | MQTT_SETTINGS_SERVICE_DEFAULT_PORT;

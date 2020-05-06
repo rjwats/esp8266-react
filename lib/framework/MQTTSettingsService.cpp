@@ -1,11 +1,13 @@
 #include <MQTTSettingsService.h>
 
-static MQTTSettingsSerializer SERIALIZER;
-static MQTTSettingsDeserializer DESERIALIZER;
-
 MQTTSettingsService::MQTTSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) :
-    _settingsEndpoint(&SERIALIZER, &DESERIALIZER, this, server, MQTT_SETTINGS_SERVICE_PATH, securityManager),
-    _settingsPersistence(&SERIALIZER, &DESERIALIZER, this, fs, MQTT_SETTINGS_FILE) {
+    _settingsEndpoint(MQTTSettings::serialize,
+                      MQTTSettings::deserialize,
+                      this,
+                      server,
+                      MQTT_SETTINGS_SERVICE_PATH,
+                      securityManager),
+    _settingsPersistence(MQTTSettings::serialize, MQTTSettings::deserialize, this, fs, MQTT_SETTINGS_FILE) {
 #ifdef ESP32
   WiFi.onEvent(
       std::bind(&MQTTSettingsService::onStationModeDisconnected, this, std::placeholders::_1, std::placeholders::_2),

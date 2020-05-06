@@ -15,11 +15,8 @@ class SecuritySettings {
  public:
   String jwtSecret;
   std::list<User> users;
-};
 
-class SecuritySettingsSerializer : public SettingsSerializer<SecuritySettings> {
- public:
-  void serialize(SecuritySettings& settings, JsonObject root) {
+  static void serialize(SecuritySettings& settings, JsonObject& root) {
     // secret
     root["jwt_secret"] = settings.jwtSecret;
 
@@ -32,11 +29,8 @@ class SecuritySettingsSerializer : public SettingsSerializer<SecuritySettings> {
       userRoot["admin"] = user.admin;
     }
   }
-};
 
-class SecuritySettingsDeserializer : public SettingsDeserializer<SecuritySettings> {
- public:
-  void deserialize(SecuritySettings& settings, JsonObject root) {
+  static void deserialize(JsonObject& root, SecuritySettings& settings) {
     // secret
     settings.jwtSecret = root["jwt_secret"] | DEFAULT_JWT_SECRET;
 

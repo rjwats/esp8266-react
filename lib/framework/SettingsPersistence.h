@@ -17,8 +17,8 @@
 template <class T>
 class SettingsPersistence {
  public:
-  SettingsPersistence(SettingsSerializer<T>* settingsSerializer,
-                      SettingsDeserializer<T>* settingsDeserializer,
+  SettingsPersistence(SettingsSerializer<T> settingsSerializer,
+                      SettingsDeserializer<T> settingsDeserializer,
                       SettingsService<T>* settingsManager,
                       FS* fs,
                       char const* filePath) :
@@ -54,8 +54,10 @@ class SettingsPersistence {
   bool writeToFS() {
     // create and populate a new json object
     DynamicJsonDocument jsonDocument = DynamicJsonDocument(MAX_FILE_SIZE);
-    _settingsService->read(
-        [&](T& settings) { _settingsSerializer->serialize(settings, jsonDocument.to<JsonObject>()); });
+    _settingsService->read([&](T& settings) {
+      JsonObject jsonObject = jsonDocument.to<JsonObject>();
+      _settingsSerializer(settings, jsonObject);
+    });
 
     // serialize it to filesystem
     File settingsFile = _fs->open(_filePath, "w");
@@ -85,8 +87,8 @@ class SettingsPersistence {
   }
 
  private:
-  SettingsSerializer<T>* _settingsSerializer;
-  SettingsDeserializer<T>* _settingsDeserializer;
+  SettingsSerializer<T> _settingsSerializer;
+  SettingsDeserializer<T> _settingsDeserializer;
   SettingsService<T>* _settingsService;
   FS* _fs;
   char const* _filePath;
@@ -94,7 +96,7 @@ class SettingsPersistence {
 
   // read the settings, but do not call propogate
   void readSettings(JsonObject root) {
-    _settingsService->read([&](T& settings) { _settingsDeserializer->deserialize(settings, root); });
+    _settingsService->read([&](T& settings) { _settingsDeserializer(root, settings); });
   }
 
  protected:

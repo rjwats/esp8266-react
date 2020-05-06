@@ -4,9 +4,6 @@
 #include <ArduinoJson.h>
 
 template <class T>
-class SettingsSerializer {
- public:
-  virtual void serialize(T& settings, JsonObject root) = 0;
-};
+using SettingsSerializer = void (*)(T& settings, JsonObject& root);
 
 #endif  // end SettingsSerializer

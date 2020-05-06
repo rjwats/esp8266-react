@@ -18,8 +18,8 @@
 template <class T>
 class SettingsSocket {
  public:
-  SettingsSocket(SettingsSerializer<T>* settingsSerializer,
-                 SettingsDeserializer<T>* settingsDeserializer,
+  SettingsSocket(SettingsSerializer<T> settingsSerializer,
+                 SettingsDeserializer<T> settingsDeserializer,
                  SettingsService<T>* settingsService,
                  AsyncWebServer* server,
                  char const* socketPath,
@@ -44,8 +44,8 @@ class SettingsSocket {
     _server->on(socketPath, HTTP_GET, std::bind(&SettingsSocket::forbidden, this, std::placeholders::_1));
   }
 
-  SettingsSocket(SettingsSerializer<T>* settingsSerializer,
-                 SettingsDeserializer<T>* settingsDeserializer,
+  SettingsSocket(SettingsSerializer<T> settingsSerializer,
+                 SettingsDeserializer<T> settingsDeserializer,
                  SettingsService<T>* settingsService,
                  AsyncWebServer* server,
                  char const* socketPath) :
@@ -67,8 +67,8 @@ class SettingsSocket {
   }
 
  private:
-  SettingsSerializer<T>* _settingsSerializer;
-  SettingsDeserializer<T>* _settingsDeserializer;
+  SettingsSerializer<T> _settingsSerializer;
+  SettingsDeserializer<T> _settingsDeserializer;
   SettingsService<T>* _settingsService;
   AsyncWebServer* _server;
   AsyncWebSocket _webSocket;
@@ -102,7 +102,10 @@ class SettingsSocket {
           DeserializationError error = deserializeJson(jsonDocument, (char*)data);
           if (!error && jsonDocument.is<JsonObject>()) {
             _settingsService->update(
-                [&](T& settings) { _settingsDeserializer->deserialize(settings, jsonDocument.as<JsonObject>()); },
+                [&](T& settings) {
+                  JsonObject jsonObject = jsonDocument.as<JsonObject>();
+                  _settingsDeserializer(jsonObject, settings);
+                },
                 clientId(client));
           }
         }
@@ -140,7 +143,7 @@ class SettingsSocket {
     root["type"] = "payload";
     root["origin_id"] = originId;
     JsonObject payload = root.createNestedObject("payload");
-    _settingsService->read([&](T& settings) { _settingsSerializer->serialize(settings, payload); });
+    _settingsService->read([&](T& settings) { _settingsSerializer(settings, payload); });
 
     size_t len = measureJson(jsonDocument);
     AsyncWebSocketMessageBuffer* buffer = _webSocket.makeBuffer(len);

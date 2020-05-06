@@ -26,21 +26,15 @@ class NTPSettings {
   String tzLabel;
   String tzFormat;
   String server;
-};
 
-class NTPSettingsSerializer : public SettingsSerializer<NTPSettings> {
- public:
-  void serialize(NTPSettings& settings, JsonObject root) {
+  static void serialize(NTPSettings& settings, JsonObject& root) {
     root["enabled"] = settings.enabled;
     root["server"] = settings.server;
     root["tz_label"] = settings.tzLabel;
     root["tz_format"] = settings.tzFormat;
   }
-};
 
-class NTPSettingsDeserializer : public SettingsDeserializer<NTPSettings> {
- public:
-  void deserialize(NTPSettings& settings, JsonObject root) {
+  static void deserialize(JsonObject& root, NTPSettings& settings) {
     settings.enabled = root["enabled"] | NTP_SETTINGS_SERVICE_DEFAULT_ENABLED;
     settings.server = root["server"] | NTP_SETTINGS_SERVICE_DEFAULT_SERVER;
     settings.tzLabel = root["tz_label"] | NTP_SETTINGS_SERVICE_DEFAULT_TIME_ZONE_LABEL;

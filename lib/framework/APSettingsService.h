@@ -26,20 +26,14 @@ class APSettings {
   uint8_t provisionMode;
   String ssid;
   String password;
-};
 
-class APSettingsSerializer : public SettingsSerializer<APSettings> {
- public:
-  void serialize(APSettings& settings, JsonObject root) {
+  static void serialize(APSettings& settings, JsonObject& root) {
     root["provision_mode"] = settings.provisionMode;
     root["ssid"] = settings.ssid;
     root["password"] = settings.password;
   }
-};
 
-class APSettingsDeserializer : public SettingsDeserializer<APSettings> {
- public:
-  void deserialize(APSettings& settings, JsonObject root) {
+  static void deserialize(JsonObject& root, APSettings& settings) {
     settings.provisionMode = root["provision_mode"] | AP_MODE_ALWAYS;
     switch (settings.provisionMode) {
       case AP_MODE_ALWAYS:

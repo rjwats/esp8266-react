@@ -26,20 +26,14 @@ class OTASettings {
   bool enabled;
   int port;
   String password;
-};
 
-class OTASettingsSerializer : public SettingsSerializer<OTASettings> {
- public:
-  void serialize(OTASettings& settings, JsonObject root) {
+  static void serialize(OTASettings& settings, JsonObject& root) {
     root["enabled"] = settings.enabled;
     root["port"] = settings.port;
     root["password"] = settings.password;
   }
-};
 
-class OTASettingsDeserializer : public SettingsDeserializer<OTASettings> {
- public:
-  void deserialize(OTASettings& settings, JsonObject root) {
+  static void deserialize(JsonObject& root, OTASettings& settings) {
     settings.enabled = root["enabled"] | DEFAULT_OTA_ENABLED;
     settings.port = root["port"] | DEFAULT_OTA_PORT;
     settings.password = root["password"] | DEFAULT_OTA_PASSWORD;

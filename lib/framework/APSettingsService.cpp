@@ -1,11 +1,13 @@
 #include <APSettingsService.h>
 
-static APSettingsSerializer SERIALIZER;
-static APSettingsDeserializer DESERIALIZER;
-
 APSettingsService::APSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) :
-    _settingsEndpoint(&SERIALIZER, &DESERIALIZER, this, server, AP_SETTINGS_SERVICE_PATH, securityManager),
-    _settingsPersistence(&SERIALIZER, &DESERIALIZER, this, fs, AP_SETTINGS_FILE) {
+    _settingsEndpoint(APSettings::serialize,
+                      APSettings::deserialize,
+                      this,
+                      server,
+                      AP_SETTINGS_SERVICE_PATH,
+                      securityManager),
+    _settingsPersistence(APSettings::serialize, APSettings::deserialize, this, fs, AP_SETTINGS_FILE) {
   addUpdateHandler([&](String originId) { reconfigureAP(); }, false);
 }
 

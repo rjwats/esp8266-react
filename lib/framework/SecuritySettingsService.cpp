@@ -1,11 +1,13 @@
 #include <SecuritySettingsService.h>
 
-static SecuritySettingsSerializer SERIALIZER;
-static SecuritySettingsDeserializer DESERIALIZER;
-
 SecuritySettingsService::SecuritySettingsService(AsyncWebServer* server, FS* fs) :
-    _settingsEndpoint(&SERIALIZER, &DESERIALIZER, this, server, SECURITY_SETTINGS_PATH, this),
-    _settingsPersistence(&SERIALIZER, &DESERIALIZER, this, fs, SECURITY_SETTINGS_FILE) {
+    _settingsEndpoint(SecuritySettings::serialize,
+                      SecuritySettings::deserialize,
+                      this,
+                      server,
+                      SECURITY_SETTINGS_PATH,
+                      this),
+    _settingsPersistence(SecuritySettings::serialize, SecuritySettings::deserialize, this, fs, SECURITY_SETTINGS_FILE) {
   addUpdateHandler([&](String originId) { configureJWTHandler(); }, false);
 }
 

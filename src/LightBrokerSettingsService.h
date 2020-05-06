@@ -9,13 +9,6 @@
 #define LIGHT_BROKER_SETTINGS_FILE "/config/brokerSettings.json"
 #define LIGHT_BROKER_SETTINGS_PATH "/rest/brokerSettings"
 
-class LightBrokerSettings {
- public:
-  String mqttPath;
-  String name;
-  String uniqueId;
-};
-
 static String defaultDeviceValue(String prefix = "") {
 #ifdef ESP32
   return prefix + String((unsigned long)ESP.getEfuseMac(), HEX);
@@ -24,18 +17,19 @@ static String defaultDeviceValue(String prefix = "") {
 #endif
 }
 
-class LightBrokerSettingsSerializer : public SettingsSerializer<LightBrokerSettings> {
+class LightBrokerSettings {
  public:
-  void serialize(LightBrokerSettings& settings, JsonObject root) {
+  String mqttPath;
+  String name;
+  String uniqueId;
+
+  static void serialize(LightBrokerSettings& settings, JsonObject& root) {
     root["mqtt_path"] = settings.mqttPath;
     root["name"] = settings.name;
     root["unique_id"] = settings.uniqueId;
   }
-};
 
-class LightBrokerSettingsDeserializer : public SettingsDeserializer<LightBrokerSettings> {
- public:
-  void deserialize(LightBrokerSettings& settings, JsonObject root) {
+  static void deserialize(JsonObject& root, LightBrokerSettings& settings) {
     settings.mqttPath = root["mqtt_path"] | defaultDeviceValue("homeassistant/light/");
     settings.name = root["name"] | defaultDeviceValue("light-");
     settings.uniqueId = root["unique_id"] | defaultDeviceValue("light-");

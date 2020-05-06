@@ -4,9 +4,7 @@
 #include <ArduinoJson.h>
 
 template <class T>
-class SettingsDeserializer {
- public:
-  virtual void deserialize(T& settings, JsonObject root) = 0;
-};
+using SettingsDeserializer = void (*)(JsonObject& root, T& settings);
+
 
 #endif  // end SettingsDeserializer

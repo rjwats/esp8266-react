@@ -17,8 +17,8 @@
 template <class T>
 class SettingsEndpoint {
  public:
-  SettingsEndpoint(SettingsSerializer<T>* settingsSerializer,
-                   SettingsDeserializer<T>* settingsDeserializer,
+  SettingsEndpoint(SettingsSerializer<T> settingsSerializer,
+                   SettingsDeserializer<T> settingsDeserializer,
                    SettingsService<T>* settingsManager,
                    AsyncWebServer* server,
                    const String& servicePath,
@@ -41,8 +41,8 @@ class SettingsEndpoint {
     server->addHandler(&_updateHandler);
   }
 
-  SettingsEndpoint(SettingsSerializer<T>* settingsSerializer,
-                   SettingsDeserializer<T>* settingsDeserializer,
+  SettingsEndpoint(SettingsSerializer<T> settingsSerializer,
+                   SettingsDeserializer<T> settingsDeserializer,
                    SettingsService<T>* settingsManager,
                    AsyncWebServer* server,
                    const String& servicePath) :
@@ -58,15 +58,17 @@ class SettingsEndpoint {
   }
 
  protected:
-  SettingsSerializer<T>* _settingsSerializer;
-  SettingsDeserializer<T>* _settingsDeserializer;
+  SettingsSerializer<T> _settingsSerializer;
+  SettingsDeserializer<T> _settingsDeserializer;
   SettingsService<T>* _settingsService;
   AsyncCallbackJsonWebHandler _updateHandler;
 
   void fetchSettings(AsyncWebServerRequest* request) {
     AsyncJsonResponse* response = new AsyncJsonResponse(false, MAX_CONTENT_LENGTH);
-    _settingsService->read(
-        [&](T& settings) { _settingsSerializer->serialize(settings, response->getRoot().to<JsonObject>()); });
+    _settingsService->read([&](T& settings) {
+      JsonObject jsonObject = response->getRoot().to<JsonObject>();
+      _settingsSerializer(settings, jsonObject);
+    });
     response->setLength();
     request->send(response);
   }
@@ -80,8 +82,10 @@ class SettingsEndpoint {
 
       // update the settings, deferring the call to the update handlers to when the response is complete
       _settingsService->updateWithoutPropagation([&](T& settings) {
-        _settingsDeserializer->deserialize(settings, json.as<JsonObject>());
-        _settingsSerializer->serialize(settings, response->getRoot().as<JsonObject>());
+        JsonObject jsonObject = json.as<JsonObject>();
+        _settingsDeserializer(jsonObject, settings);
+        jsonObject = response->getRoot().to<JsonObject>();
+        _settingsSerializer(settings, jsonObject);
       });
 
       // write the response to the client
