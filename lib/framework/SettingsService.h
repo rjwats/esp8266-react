@@ -2,6 +2,8 @@
 #define SettingsService_h
 
 #include <Arduino.h>
+#include <SettingsDeserializer.h>
+#include <SettingsSerializer.h>
 
 #include <list>
 #include <functional>
@@ -55,7 +57,23 @@ class SettingsService {
   }
 
   void updateWithoutPropagation(std::function<void(T&)> callback) {
-    read(callback);
+#ifdef ESP32
+    xSemaphoreTakeRecursive(_updateMutex, portMAX_DELAY);
+#endif
+    callback(_settings);
+#ifdef ESP32
+    xSemaphoreGiveRecursive(_updateMutex);
+#endif
+  }
+
+  void updateWithoutPropagation(JsonObject& jsonObject, SettingsDeserializer<T> deserializer) {
+#ifdef ESP32
+    xSemaphoreTakeRecursive(_updateMutex, portMAX_DELAY);
+#endif
+    deserializer(jsonObject, _settings);
+#ifdef ESP32
+    xSemaphoreGiveRecursive(_updateMutex);
+#endif
   }
 
   void update(std::function<void(T&)> callback, String originId) {
@@ -69,11 +87,32 @@ class SettingsService {
 #endif
   }
 
+  void update(JsonObject& jsonObject, SettingsDeserializer<T> deserializer, String originId) {
+#ifdef ESP32
+    xSemaphoreTakeRecursive(_updateMutex, portMAX_DELAY);
+#endif
+    deserializer(jsonObject, _settings);
+    callUpdateHandlers(originId);
+#ifdef ESP32
+    xSemaphoreGiveRecursive(_updateMutex);
+#endif
+  }
+
   void read(std::function<void(T&)> callback) {
 #ifdef ESP32
     xSemaphoreTakeRecursive(_updateMutex, portMAX_DELAY);
 #endif
     callback(_settings);
+#ifdef ESP32
+    xSemaphoreGiveRecursive(_updateMutex);
+#endif
+  }
+
+  void read(JsonObject& jsonObject, SettingsSerializer<T> serializer) {
+#ifdef ESP32
+    xSemaphoreTakeRecursive(_updateMutex, portMAX_DELAY);
+#endif
+    serializer(_settings, jsonObject);
 #ifdef ESP32
     xSemaphoreGiveRecursive(_updateMutex);
 #endif

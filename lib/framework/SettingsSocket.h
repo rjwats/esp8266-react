@@ -101,12 +101,8 @@ class SettingsSocket {
           DynamicJsonDocument jsonDocument = DynamicJsonDocument(MAX_SETTINGS_SOCKET_MSG_SIZE);
           DeserializationError error = deserializeJson(jsonDocument, (char*)data);
           if (!error && jsonDocument.is<JsonObject>()) {
-            _settingsService->update(
-                [&](T& settings) {
-                  JsonObject jsonObject = jsonDocument.as<JsonObject>();
-                  _settingsDeserializer(jsonObject, settings);
-                },
-                clientId(client));
+            JsonObject jsonObject = jsonDocument.as<JsonObject>();
+            _settingsService->update(jsonObject, _settingsDeserializer, clientId(client));
           }
         }
       }
@@ -143,7 +139,7 @@ class SettingsSocket {
     root["type"] = "payload";
     root["origin_id"] = originId;
     JsonObject payload = root.createNestedObject("payload");
-    _settingsService->read([&](T& settings) { _settingsSerializer(settings, payload); });
+    _settingsService->read(payload, _settingsSerializer);
 
     size_t len = measureJson(jsonDocument);
     AsyncWebSocketMessageBuffer* buffer = _webSocket.makeBuffer(len);

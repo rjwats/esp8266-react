@@ -65,10 +65,9 @@ class SettingsEndpoint {
 
   void fetchSettings(AsyncWebServerRequest* request) {
     AsyncJsonResponse* response = new AsyncJsonResponse(false, MAX_CONTENT_LENGTH);
-    _settingsService->read([&](T& settings) {
-      JsonObject jsonObject = response->getRoot().to<JsonObject>();
-      _settingsSerializer(settings, jsonObject);
-    });
+    JsonObject jsonObject = response->getRoot().to<JsonObject>();
+    _settingsService->read(jsonObject, _settingsSerializer);
+
     response->setLength();
     request->send(response);
   }

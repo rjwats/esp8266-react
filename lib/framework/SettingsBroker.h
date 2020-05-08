@@ -75,10 +75,8 @@ class SettingsBroker {
     if (_stateTopic.length() > 0 && _mqttClient->connected()) {
       // serialize to json doc
       DynamicJsonDocument json(MAX_MESSAGE_SIZE);
-      _settingsService->read([&](T& settings) {
-        JsonObject jsonObject = json.to<JsonObject>();
-        _settingsSerializer(settings, jsonObject);
-      });
+      JsonObject jsonObject = json.to<JsonObject>();
+      _settingsService->read(jsonObject, _settingsSerializer);
 
       // serialize to string
       String payload;
@@ -104,12 +102,8 @@ class SettingsBroker {
     DynamicJsonDocument json(MAX_MESSAGE_SIZE);
     DeserializationError error = deserializeJson(json, payload, len);
     if (!error && json.is<JsonObject>()) {
-      _settingsService->update(
-          [&](T& settings) {
-            JsonObject jsonObject = json.as<JsonObject>();
-            _settingsDeserializer(jsonObject, settings);
-          },
-          SETTINGS_BROKER_ORIGIN_ID);
+      JsonObject jsonObject = json.as<JsonObject>();
+      _settingsService->update(jsonObject, _settingsDeserializer, SETTINGS_BROKER_ORIGIN_ID);
     }
   }
 };

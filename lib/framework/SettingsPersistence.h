@@ -38,7 +38,7 @@ class SettingsPersistence {
         DynamicJsonDocument jsonDocument = DynamicJsonDocument(MAX_FILE_SIZE);
         DeserializationError error = deserializeJson(jsonDocument, settingsFile);
         if (error == DeserializationError::Ok && jsonDocument.is<JsonObject>()) {
-          readSettings(jsonDocument.as<JsonObject>());
+          updateSettings(jsonDocument.as<JsonObject>());
           settingsFile.close();
           return;
         }
@@ -48,16 +48,14 @@ class SettingsPersistence {
 
     // If we reach here we have not been successful in loading the config,
     // hard-coded emergency defaults are now applied.
-    readDefaults();
+    applyDefaults();
   }
 
   bool writeToFS() {
     // create and populate a new json object
     DynamicJsonDocument jsonDocument = DynamicJsonDocument(MAX_FILE_SIZE);
-    _settingsService->read([&](T& settings) {
-      JsonObject jsonObject = jsonDocument.to<JsonObject>();
-      _settingsSerializer(settings, jsonObject);
-    });
+    JsonObject jsonObject = jsonDocument.to<JsonObject>();
+    _settingsService->read(jsonObject, _settingsSerializer);
 
     // serialize it to filesystem
     File settingsFile = _fs->open(_filePath, "w");
@@ -94,17 +92,17 @@ class SettingsPersistence {
   char const* _filePath;
   update_handler_id_t _updateHandlerId = 0;
 
-  // read the settings, but do not call propogate
-  void readSettings(JsonObject root) {
-    _settingsService->read([&](T& settings) { _settingsDeserializer(root, settings); });
+  // update the settings, but do not call propogate
+  void updateSettings(JsonObject root) {
+    _settingsService->updateWithoutPropagation(root, _settingsDeserializer);
   }
 
  protected:
-  // We assume the readFromJsonObject supplies sensible defaults if an empty object
+  // We assume the deserializer supplies sensible defaults if an empty object
   // is supplied, this virtual function allows that to be changed.
-  virtual void readDefaults() {
+  virtual void applyDefaults() {
     DynamicJsonDocument jsonDocument = DynamicJsonDocument(MAX_FILE_SIZE);
-    readSettings(jsonDocument.to<JsonObject>());
+    updateSettings(jsonDocument.to<JsonObject>());
   }
 };
 
