@@ -413,6 +413,22 @@ class LightSettings {
 };
 ```
 
+For convenience, the SettingsService class provides overloads of its `update` and `read` functions which utilize these functions.
+
+Copy the settings to a JsonObject using a serializer:
+
+```cpp
+JsonObject jsonObject = jsonDocument.to<JsonObject>();
+lightSettingsService->read(jsonObject, serializer);
+```
+
+Update the settings from a JsonObject using a deserializer:
+
+```cpp
+JsonObject jsonObject = jsonDocument.as<JsonObject>();
+lightSettingsService->update(jsonObject, deserializer, "timer");
+```
+
 #### Endpoints
 
 The framework provides a [SettingsEndpoint.h](lib/framework/SettingsEndpoint.h) class which may be used to register GET and POST handlers to read and update the settings over HTTP. You may construct a SettingsEndpoint as a part of the SettingsService or separately if you prefer. 
