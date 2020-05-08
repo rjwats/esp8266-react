@@ -25,8 +25,13 @@ typedef struct SettingsUpdateHandlerInfo {
 template <class T>
 class SettingsService {
  public:
+  template <typename... Args>
 #ifdef ESP32
-  SettingsService() : _updateMutex(xSemaphoreCreateRecursiveMutex()) {
+  SettingsService(Args&&... args) :
+      _settings(std::forward<Args>(args)...), _updateMutex(xSemaphoreCreateRecursiveMutex()) {
+  }
+#else
+  SettingsService(Args&&... args) : _settings(std::forward<Args>(args)...) {
   }
 #endif
 
