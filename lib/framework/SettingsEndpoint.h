@@ -19,14 +19,14 @@ class SettingsEndpoint {
  public:
   SettingsEndpoint(SettingsSerializer<T> settingsSerializer,
                    SettingsDeserializer<T> settingsDeserializer,
-                   SettingsService<T>* settingsManager,
+                   SettingsService<T>* settingsService,
                    AsyncWebServer* server,
                    const String& servicePath,
                    SecurityManager* securityManager,
                    AuthenticationPredicate authenticationPredicate = AuthenticationPredicates::IS_ADMIN) :
       _settingsSerializer(settingsSerializer),
       _settingsDeserializer(settingsDeserializer),
-      _settingsService(settingsManager),
+      _settingsService(settingsService),
       _updateHandler(
           servicePath,
           securityManager->wrapCallback(
@@ -43,12 +43,12 @@ class SettingsEndpoint {
 
   SettingsEndpoint(SettingsSerializer<T> settingsSerializer,
                    SettingsDeserializer<T> settingsDeserializer,
-                   SettingsService<T>* settingsManager,
+                   SettingsService<T>* settingsService,
                    AsyncWebServer* server,
                    const String& servicePath) :
       _settingsSerializer(settingsSerializer),
       _settingsDeserializer(settingsDeserializer),
-      _settingsService(settingsManager),
+      _settingsService(settingsService),
       _updateHandler(servicePath,
                      std::bind(&SettingsEndpoint::updateSettings, this, std::placeholders::_1, std::placeholders::_2)) {
     server->on(servicePath.c_str(), HTTP_GET, std::bind(&SettingsEndpoint::fetchSettings, this, std::placeholders::_1));

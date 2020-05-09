@@ -19,12 +19,12 @@ class SettingsPersistence {
  public:
   SettingsPersistence(SettingsSerializer<T> settingsSerializer,
                       SettingsDeserializer<T> settingsDeserializer,
-                      SettingsService<T>* settingsManager,
+                      SettingsService<T>* settingsService,
                       FS* fs,
                       char const* filePath) :
       _settingsSerializer(settingsSerializer),
       _settingsDeserializer(settingsDeserializer),
-      _settingsService(settingsManager),
+      _settingsService(settingsService),
       _fs(fs),
       _filePath(filePath) {
     enableUpdateHandler();
