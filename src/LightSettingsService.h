@@ -2,9 +2,10 @@
 #define LightSettingsService_h
 
 #include <LightBrokerSettingsService.h>
-#include <SettingsEndpoint.h>
-#include <SettingsBroker.h>
-#include <SettingsSocket.h>
+
+#include <HttpEndpoint.h>
+#include <MqttPubSub.h>
+#include <WebSocketTxRx.h>
 #include <ESP8266React.h>
 
 #define BLINK_LED 2
@@ -58,9 +59,9 @@ class LightSettingsService : public SettingsService<LightSettings> {
   void begin();
 
  private:
-  SettingsEndpoint<LightSettings> _settingsEndpoint;
-  SettingsBroker<LightSettings> _settingsBroker;
-  SettingsSocket<LightSettings> _settingsSocket;
+  HttpEndpoint<LightSettings> _httpEndpoint;
+  MqttPubSub<LightSettings> _mqttPubSub;
+  WebSocketTxRx<LightSettings> _webSocket;
   AsyncMqttClient* _mqttClient;
   LightBrokerSettingsService* _lightBrokerSettingsService;
 

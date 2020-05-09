@@ -1,9 +1,8 @@
 #ifndef LightBrokerSettingsService_h
 #define LightBrokerSettingsService_h
 
-#include <SettingsEndpoint.h>
-#include <SettingsBroker.h>
-#include <SettingsPersistence.h>
+#include <HttpEndpoint.h>
+#include <FSPersistence.h>
 #include <ESP8266React.h>
 
 #define LIGHT_BROKER_SETTINGS_FILE "/config/brokerSettings.json"
@@ -42,8 +41,8 @@ class LightBrokerSettingsService : public SettingsService<LightBrokerSettings> {
   void begin();
 
  private:
-  SettingsEndpoint<LightBrokerSettings> _settingsEndpoint;
-  SettingsPersistence<LightBrokerSettings> _settingsPersistence;
+  HttpEndpoint<LightBrokerSettings> _httpEndpoint;
+  FSPersistence<LightBrokerSettings> _fsPersistence;
 };
 
 #endif  // end LightBrokerSettingsService_h
