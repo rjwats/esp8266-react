@@ -92,6 +92,13 @@ class MQTTSettingsService : public SettingsService<MQTTSettings> {
   SettingsEndpoint<MQTTSettings> _settingsEndpoint;
   SettingsPersistence<MQTTSettings> _settingsPersistence;
 
+  // Pointers to hold retained copies of the mqtt client connection strings.
+  // Required as AsyncMqttClient holds refrences to the supplied connection strings.
+  char* _retainedHost = nullptr;
+  char* _retainedClientId = nullptr;
+  char* _retainedUsername = nullptr;
+  char* _retainedPassword = nullptr;
+
   AsyncMqttClient _mqttClient;
   bool _reconfigureMqtt;
   unsigned long _disconnectedAt;
@@ -112,6 +119,7 @@ class MQTTSettingsService : public SettingsService<MQTTSettings> {
   void onMqttConnect(bool sessionPresent);
   void onMqttDisconnect(AsyncMqttClientDisconnectReason reason);
   void configureMQTT();
+
 };
 
 #endif  // end MQTTSettingsService_h
