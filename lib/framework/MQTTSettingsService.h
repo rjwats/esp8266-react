@@ -97,7 +97,6 @@ class MQTTSettingsService : public SettingsService<MQTTSettings> {
   unsigned long _disconnectedAt;
 
   // connection status
-  bool _connected;
   AsyncMqttClientDisconnectReason _disconnectReason;
 
 #ifdef ESP32

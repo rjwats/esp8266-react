@@ -48,7 +48,7 @@ bool MQTTSettingsService::isEnabled() {
 }
 
 bool MQTTSettingsService::isConnected() {
-  return _connected;
+  return _mqttClient.connected();
 }
 
 const char* MQTTSettingsService::getClientId() {
@@ -67,13 +67,11 @@ void MQTTSettingsService::onMqttConnect(bool sessionPresent) {
   Serial.print("Connected to MQTT, ");
   Serial.print(sessionPresent ? "with" : "without");
   Serial.println(" persistent session");
-  _connected = true;
 }
 
 void MQTTSettingsService::onMqttDisconnect(AsyncMqttClientDisconnectReason reason) {
   Serial.print("Disconnected from MQTT reason: ");
   Serial.println((uint8_t)reason);
-  _connected = false;
   _disconnectReason = reason;
   _disconnectedAt = millis();
 }
