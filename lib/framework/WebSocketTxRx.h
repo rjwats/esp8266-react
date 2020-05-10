@@ -1,7 +1,7 @@
 #ifndef WebSocketTxRx_h
 #define WebSocketTxRx_h
 
-#include <SettingsService.h>
+#include <StatefulService.h>
 #include <JsonSerializer.h>
 #include <JsonDeserializer.h>
 #include <ESPAsyncWebServer.h>
@@ -15,16 +15,16 @@
 template <class T>
 class WebSocketConnector {
  protected:
-  SettingsService<T>* _settingsService;
+  StatefulService<T>* _statefulService;
   AsyncWebServer* _server;
   AsyncWebSocket _webSocket;
 
-  WebSocketConnector(SettingsService<T>* settingsService,
+  WebSocketConnector(StatefulService<T>* statefulService,
                      AsyncWebServer* server,
                      char const* socketPath,
                      SecurityManager* securityManager,
                      AuthenticationPredicate authenticationPredicate = AuthenticationPredicates::IS_ADMIN) :
-      _settingsService(settingsService), _server(server), _webSocket(socketPath) {
+      _statefulService(statefulService), _server(server), _webSocket(socketPath) {
     _webSocket.setFilter(securityManager->filterRequest(authenticationPredicate));
     _webSocket.onEvent(std::bind(&WebSocketConnector::onWSEvent,
                                  this,
@@ -38,8 +38,8 @@ class WebSocketConnector {
     _server->on(socketPath, HTTP_GET, std::bind(&WebSocketConnector::forbidden, this, std::placeholders::_1));
   }
 
-  WebSocketConnector(SettingsService<T>* settingsService, AsyncWebServer* server, char const* socketPath) :
-      _settingsService(settingsService), _server(server), _webSocket(socketPath) {
+  WebSocketConnector(StatefulService<T>* statefulService, AsyncWebServer* server, char const* socketPath) :
+      _statefulService(statefulService), _server(server), _webSocket(socketPath) {
     _webSocket.onEvent(std::bind(&WebSocketConnector::onWSEvent,
                                  this,
                                  std::placeholders::_1,
@@ -72,23 +72,23 @@ template <class T>
 class WebSocketTx : virtual public WebSocketConnector<T> {
  public:
   WebSocketTx(JsonSerializer<T> jsonSerializer,
-              SettingsService<T>* settingsService,
+              StatefulService<T>* statefulService,
               AsyncWebServer* server,
               char const* socketPath,
               SecurityManager* securityManager,
               AuthenticationPredicate authenticationPredicate = AuthenticationPredicates::IS_ADMIN) :
-      WebSocketConnector<T>(settingsService, server, socketPath, securityManager, authenticationPredicate),
+      WebSocketConnector<T>(statefulService, server, socketPath, securityManager, authenticationPredicate),
       _jsonSerializer(jsonSerializer) {
-    WebSocketConnector<T>::_settingsService->addUpdateHandler([&](String originId) { transmitData(nullptr, originId); },
+    WebSocketConnector<T>::_statefulService->addUpdateHandler([&](String originId) { transmitData(nullptr, originId); },
                                                               false);
   }
 
   WebSocketTx(JsonSerializer<T> jsonSerializer,
-              SettingsService<T>* settingsService,
+              StatefulService<T>* statefulService,
               AsyncWebServer* server,
               char const* socketPath) :
-      WebSocketConnector<T>(settingsService, server, socketPath), _jsonSerializer(jsonSerializer) {
-    WebSocketConnector<T>::_settingsService->addUpdateHandler([&](String originId) { transmitData(nullptr, originId); },
+      WebSocketConnector<T>(statefulService, server, socketPath), _jsonSerializer(jsonSerializer) {
+    WebSocketConnector<T>::_statefulService->addUpdateHandler([&](String originId) { transmitData(nullptr, originId); },
                                                               false);
   }
 
@@ -135,7 +135,7 @@ class WebSocketTx : virtual public WebSocketConnector<T> {
     root["type"] = "payload";
     root["origin_id"] = originId;
     JsonObject payload = root.createNestedObject("payload");
-    WebSocketConnector<T>::_settingsService->read(payload, _jsonSerializer);
+    WebSocketConnector<T>::_statefulService->read(payload, _jsonSerializer);
 
     size_t len = measureJson(jsonDocument);
     AsyncWebSocketMessageBuffer* buffer = WebSocketConnector<T>::_webSocket.makeBuffer(len);
@@ -154,20 +154,20 @@ template <class T>
 class WebSocketRx : virtual public WebSocketConnector<T> {
  public:
   WebSocketRx(JsonDeserializer<T> jsonDeserializer,
-              SettingsService<T>* settingsService,
+              StatefulService<T>* statefulService,
               AsyncWebServer* server,
               char const* socketPath,
               SecurityManager* securityManager,
               AuthenticationPredicate authenticationPredicate = AuthenticationPredicates::IS_ADMIN) :
-      WebSocketConnector<T>(settingsService, server, socketPath, securityManager, authenticationPredicate),
+      WebSocketConnector<T>(statefulService, server, socketPath, securityManager, authenticationPredicate),
       _jsonDeserializer(jsonDeserializer) {
   }
 
   WebSocketRx(JsonDeserializer<T> jsonDeserializer,
-              SettingsService<T>* settingsService,
+              StatefulService<T>* statefulService,
               AsyncWebServer* server,
               char const* socketPath) :
-      WebSocketConnector<T>(settingsService, server, socketPath), _jsonDeserializer(jsonDeserializer) {
+      WebSocketConnector<T>(statefulService, server, socketPath), _jsonDeserializer(jsonDeserializer) {
   }
 
  protected:
@@ -185,7 +185,7 @@ class WebSocketRx : virtual public WebSocketConnector<T> {
           DeserializationError error = deserializeJson(jsonDocument, (char*)data);
           if (!error && jsonDocument.is<JsonObject>()) {
             JsonObject jsonObject = jsonDocument.as<JsonObject>();
-            WebSocketConnector<T>::_settingsService->update(
+            WebSocketConnector<T>::_statefulService->update(
                 jsonObject, _jsonDeserializer, WebSocketConnector<T>::clientId(client));
           }
         }
@@ -202,29 +202,24 @@ class WebSocketTxRx : public WebSocketTx<T>, public WebSocketRx<T> {
  public:
   WebSocketTxRx(JsonSerializer<T> jsonSerializer,
                 JsonDeserializer<T> jsonDeserializer,
-                SettingsService<T>* settingsService,
+                StatefulService<T>* statefulService,
                 AsyncWebServer* server,
                 char const* socketPath,
                 SecurityManager* securityManager,
                 AuthenticationPredicate authenticationPredicate = AuthenticationPredicates::IS_ADMIN) :
-      WebSocketConnector<T>(settingsService, server, socketPath, securityManager, authenticationPredicate),
-      WebSocketTx<T>(jsonSerializer, settingsService, server, socketPath, securityManager, authenticationPredicate),
-      WebSocketRx<T>(jsonDeserializer,
-                     settingsService,
-                     server,
-                     socketPath,
-                     securityManager,
-                     authenticationPredicate) {
+      WebSocketConnector<T>(statefulService, server, socketPath, securityManager, authenticationPredicate),
+      WebSocketTx<T>(jsonSerializer, statefulService, server, socketPath, securityManager, authenticationPredicate),
+      WebSocketRx<T>(jsonDeserializer, statefulService, server, socketPath, securityManager, authenticationPredicate) {
   }
 
   WebSocketTxRx(JsonSerializer<T> jsonSerializer,
                 JsonDeserializer<T> jsonDeserializer,
-                SettingsService<T>* settingsService,
+                StatefulService<T>* statefulService,
                 AsyncWebServer* server,
                 char const* socketPath) :
-      WebSocketConnector<T>(settingsService, server, socketPath),
-      WebSocketTx<T>(jsonSerializer, settingsService, server, socketPath),
-      WebSocketRx<T>(jsonDeserializer, settingsService, server, socketPath) {
+      WebSocketConnector<T>(statefulService, server, socketPath),
+      WebSocketTx<T>(jsonSerializer, statefulService, server, socketPath),
+      WebSocketRx<T>(jsonDeserializer, statefulService, server, socketPath) {
   }
 
  protected:

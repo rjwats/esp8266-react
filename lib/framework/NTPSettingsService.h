@@ -42,7 +42,7 @@ class NTPSettings {
   }
 };
 
-class NTPSettingsService : public SettingsService<NTPSettings> {
+class NTPSettingsService : public StatefulService<NTPSettings> {
  public:
   NTPSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
 

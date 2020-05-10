@@ -6,5 +6,4 @@
 template <class T>
 using JsonDeserializer = void (*)(JsonObject& root, T& settings);
 
-
 #endif  // end JsonDeserializer

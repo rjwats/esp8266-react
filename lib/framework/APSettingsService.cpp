@@ -2,11 +2,11 @@
 
 APSettingsService::APSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) :
     _httpEndpoint(APSettings::serialize,
-                      APSettings::deserialize,
-                      this,
-                      server,
-                      AP_SETTINGS_SERVICE_PATH,
-                      securityManager),
+                  APSettings::deserialize,
+                  this,
+                  server,
+                  AP_SETTINGS_SERVICE_PATH,
+                  securityManager),
     _fsPersistence(APSettings::serialize, APSettings::deserialize, this, fs, AP_SETTINGS_FILE) {
   addUpdateHandler([&](String originId) { reconfigureAP(); }, false);
 }
@@ -32,8 +32,8 @@ void APSettingsService::loop() {
 
 void APSettingsService::manageAP() {
   WiFiMode_t currentWiFiMode = WiFi.getMode();
-  if (_settings.provisionMode == AP_MODE_ALWAYS ||
-      (_settings.provisionMode == AP_MODE_DISCONNECTED && WiFi.status() != WL_CONNECTED)) {
+  if (_state.provisionMode == AP_MODE_ALWAYS ||
+      (_state.provisionMode == AP_MODE_DISCONNECTED && WiFi.status() != WL_CONNECTED)) {
     if (currentWiFiMode == WIFI_OFF || currentWiFiMode == WIFI_STA) {
       startAP();
     }
@@ -46,7 +46,7 @@ void APSettingsService::manageAP() {
 
 void APSettingsService::startAP() {
   Serial.println("Starting software access point");
-  WiFi.softAP(_settings.ssid.c_str(), _settings.password.c_str());
+  WiFi.softAP(_state.ssid.c_str(), _state.password.c_str());
   if (!_dnsServer) {
     IPAddress apIp = WiFi.softAPIP();
     Serial.print("Starting captive portal on ");

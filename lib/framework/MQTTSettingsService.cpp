@@ -22,11 +22,11 @@ static char* retainCstr(const char* cstr, char** ptr) {
 
 MQTTSettingsService::MQTTSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) :
     _httpEndpoint(MQTTSettings::serialize,
-                      MQTTSettings::deserialize,
-                      this,
-                      server,
-                      MQTT_SETTINGS_SERVICE_PATH,
-                      securityManager),
+                  MQTTSettings::deserialize,
+                  this,
+                  server,
+                  MQTT_SETTINGS_SERVICE_PATH,
+                  securityManager),
     _fsPersistence(MQTTSettings::serialize, MQTTSettings::deserialize, this, fs, MQTT_SETTINGS_FILE) {
 #ifdef ESP32
   WiFi.onEvent(
@@ -64,7 +64,7 @@ void MQTTSettingsService::loop() {
 }
 
 bool MQTTSettingsService::isEnabled() {
-  return _settings.enabled;
+  return _state.enabled;
 }
 
 bool MQTTSettingsService::isConnected() {
@@ -103,28 +103,28 @@ void MQTTSettingsService::onConfigUpdated() {
 
 #ifdef ESP32
 void MQTTSettingsService::onStationModeGotIP(WiFiEvent_t event, WiFiEventInfo_t info) {
-  if (_settings.enabled) {
+  if (_state.enabled) {
     Serial.println("WiFi connection dropped, starting MQTT client.");
     onConfigUpdated();
   }
 }
 
 void MQTTSettingsService::onStationModeDisconnected(WiFiEvent_t event, WiFiEventInfo_t info) {
-  if (_settings.enabled) {
+  if (_state.enabled) {
     Serial.println("WiFi connection dropped, stopping MQTT client.");
     onConfigUpdated();
   }
 }
 #elif defined(ESP8266)
 void MQTTSettingsService::onStationModeGotIP(const WiFiEventStationModeGotIP& event) {
-  if (_settings.enabled) {
+  if (_state.enabled) {
     Serial.println("WiFi connection dropped, starting MQTT client.");
     onConfigUpdated();
   }
 }
 
 void MQTTSettingsService::onStationModeDisconnected(const WiFiEventStationModeDisconnected& event) {
-  if (_settings.enabled) {
+  if (_state.enabled) {
     Serial.println("WiFi connection dropped, stopping MQTT client.");
     onConfigUpdated();
   }
@@ -136,20 +136,20 @@ void MQTTSettingsService::configureMQTT() {
   _mqttClient.disconnect();
 
   // only connect if WiFi is connected and MQTT is enabled
-  if (_settings.enabled && WiFi.isConnected()) {
+  if (_state.enabled && WiFi.isConnected()) {
     Serial.println("Connecting to MQTT...");
-    _mqttClient.setServer(retainCstr(_settings.host.c_str(), &_retainedHost), _settings.port);
-    if (_settings.username.length() > 0) {
+    _mqttClient.setServer(retainCstr(_state.host.c_str(), &_retainedHost), _state.port);
+    if (_state.username.length() > 0) {
       _mqttClient.setCredentials(
-          retainCstr(_settings.username.c_str(), &_retainedUsername),
-          retainCstr(_settings.password.length() > 0 ? _settings.password.c_str() : nullptr, &_retainedPassword));
+          retainCstr(_state.username.c_str(), &_retainedUsername),
+          retainCstr(_state.password.length() > 0 ? _state.password.c_str() : nullptr, &_retainedPassword));
     } else {
       _mqttClient.setCredentials(retainCstr(nullptr, &_retainedUsername), retainCstr(nullptr, &_retainedPassword));
     }
-    _mqttClient.setClientId(retainCstr(_settings.clientId.c_str(), &_retainedClientId));
-    _mqttClient.setKeepAlive(_settings.keepAlive);
-    _mqttClient.setCleanSession(_settings.cleanSession);
-    _mqttClient.setMaxTopicLength(_settings.maxTopicLength);
+    _mqttClient.setClientId(retainCstr(_state.clientId.c_str(), &_retainedClientId));
+    _mqttClient.setKeepAlive(_state.keepAlive);
+    _mqttClient.setCleanSession(_state.cleanSession);
+    _mqttClient.setMaxTopicLength(_state.maxTopicLength);
     _mqttClient.connect();
   }
 }

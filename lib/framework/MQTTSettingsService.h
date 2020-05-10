@@ -1,6 +1,7 @@
 #ifndef MQTTSettingsService_h
 #define MQTTSettingsService_h
 
+#include <StatefulService.h>
 #include <HttpEndpoint.h>
 #include <FSPersistence.h>
 #include <AsyncMqttClient.h>
@@ -72,7 +73,7 @@ class MQTTSettings {
   }
 };
 
-class MQTTSettingsService : public SettingsService<MQTTSettings> {
+class MQTTSettingsService : public StatefulService<MQTTSettings> {
  public:
   MQTTSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
   ~MQTTSettingsService();
@@ -119,7 +120,6 @@ class MQTTSettingsService : public SettingsService<MQTTSettings> {
   void onMqttConnect(bool sessionPresent);
   void onMqttDisconnect(AsyncMqttClientDisconnectReason reason);
   void configureMQTT();
-
 };
 
 #endif  // end MQTTSettingsService_h

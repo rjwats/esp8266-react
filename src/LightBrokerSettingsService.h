@@ -3,7 +3,6 @@
 
 #include <HttpEndpoint.h>
 #include <FSPersistence.h>
-#include <ESP8266React.h>
 
 #define LIGHT_BROKER_SETTINGS_FILE "/config/brokerSettings.json"
 #define LIGHT_BROKER_SETTINGS_PATH "/rest/brokerSettings"
@@ -35,7 +34,7 @@ class LightBrokerSettings {
   }
 };
 
-class LightBrokerSettingsService : public SettingsService<LightBrokerSettings> {
+class LightBrokerSettingsService : public StatefulService<LightBrokerSettings> {
  public:
   LightBrokerSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
   void begin();

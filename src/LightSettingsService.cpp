@@ -35,12 +35,12 @@ LightSettingsService::LightSettingsService(AsyncWebServer* server,
 }
 
 void LightSettingsService::begin() {
-  _settings.ledOn = DEFAULT_LED_STATE;
+  _state.ledOn = DEFAULT_LED_STATE;
   onConfigUpdated();
 }
 
 void LightSettingsService::onConfigUpdated() {
-  digitalWrite(BLINK_LED, _settings.ledOn ? LED_ON : LED_OFF);
+  digitalWrite(BLINK_LED, _state.ledOn ? LED_ON : LED_OFF);
 }
 
 void LightSettingsService::registerConfig() {

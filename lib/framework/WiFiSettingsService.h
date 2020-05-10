@@ -1,6 +1,7 @@
 #ifndef WiFiSettingsService_h
 #define WiFiSettingsService_h
 
+#include <StatefulService.h>
 #include <FSPersistence.h>
 #include <HttpEndpoint.h>
 #include <JsonUtils.h>
@@ -68,7 +69,7 @@ class WiFiSettings {
   }
 };
 
-class WiFiSettingsService : public SettingsService<WiFiSettings> {
+class WiFiSettingsService : public StatefulService<WiFiSettings> {
  public:
   WiFiSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
 

@@ -40,7 +40,7 @@ class OTASettings {
   }
 };
 
-class OTASettingsService : public SettingsService<OTASettings> {
+class OTASettingsService : public StatefulService<OTASettings> {
  public:
   OTASettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
 

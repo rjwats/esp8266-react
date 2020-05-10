@@ -1,7 +1,7 @@
 #ifndef FSPersistence_h
 #define FSPersistence_h
 
-#include <SettingsService.h>
+#include <StatefulService.h>
 #include <JsonSerializer.h>
 #include <JsonDeserializer.h>
 #include <FS.h>
@@ -12,13 +12,13 @@ template <class T>
 class FSPersistence {
  public:
   FSPersistence(JsonSerializer<T> jsonSerializer,
-                      JsonDeserializer<T> jsonDeserializer,
-                      SettingsService<T>* settingsService,
-                      FS* fs,
-                      char const* filePath) :
+                JsonDeserializer<T> jsonDeserializer,
+                StatefulService<T>* statefulService,
+                FS* fs,
+                char const* filePath) :
       _jsonSerializer(jsonSerializer),
       _jsonDeserializer(jsonDeserializer),
-      _settingsService(settingsService),
+      _statefulService(statefulService),
       _fs(fs),
       _filePath(filePath) {
     enableUpdateHandler();
@@ -49,7 +49,7 @@ class FSPersistence {
     // create and populate a new json object
     DynamicJsonDocument jsonDocument = DynamicJsonDocument(MAX_FILE_SIZE);
     JsonObject jsonObject = jsonDocument.to<JsonObject>();
-    _settingsService->read(jsonObject, _jsonSerializer);
+    _statefulService->read(jsonObject, _jsonSerializer);
 
     // serialize it to filesystem
     File settingsFile = _fs->open(_filePath, "w");
@@ -67,28 +67,28 @@ class FSPersistence {
 
   void disableUpdateHandler() {
     if (_updateHandlerId) {
-      _settingsService->removeUpdateHandler(_updateHandlerId);
+      _statefulService->removeUpdateHandler(_updateHandlerId);
       _updateHandlerId = 0;
     }
   }
 
   void enableUpdateHandler() {
     if (!_updateHandlerId) {
-      _updateHandlerId = _settingsService->addUpdateHandler([&](String originId) { writeToFS(); });
+      _updateHandlerId = _statefulService->addUpdateHandler([&](String originId) { writeToFS(); });
     }
   }
 
  private:
   JsonSerializer<T> _jsonSerializer;
   JsonDeserializer<T> _jsonDeserializer;
-  SettingsService<T>* _settingsService;
+  StatefulService<T>* _statefulService;
   FS* _fs;
   char const* _filePath;
   update_handler_id_t _updateHandlerId = 0;
 
   // update the settings, but do not call propogate
   void updateSettings(JsonObject root) {
-    _settingsService->updateWithoutPropagation(root, _jsonDeserializer);
+    _statefulService->updateWithoutPropagation(root, _jsonDeserializer);
   }
 
  protected:

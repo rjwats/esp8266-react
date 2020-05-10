@@ -47,7 +47,7 @@ class SecuritySettings {
   }
 };
 
-class SecuritySettingsService : public SettingsService<SecuritySettings>, public SecurityManager {
+class SecuritySettingsService : public StatefulService<SecuritySettings>, public SecurityManager {
  public:
   SecuritySettingsService(AsyncWebServer* server, FS* fs);
 

@@ -48,7 +48,7 @@ class APSettings {
   }
 };
 
-class APSettingsService : public SettingsService<APSettings> {
+class APSettingsService : public StatefulService<APSettings> {
  public:
   APSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
 

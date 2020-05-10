@@ -43,27 +43,27 @@ class ESP8266React {
     return &_securitySettingsService;
   }
 
-  SettingsService<SecuritySettings>* getSecuritySettingsService() {
+  StatefulService<SecuritySettings>* getSecuritySettingsService() {
     return &_securitySettingsService;
   }
 
-  SettingsService<WiFiSettings>* getWiFiSettingsService() {
+  StatefulService<WiFiSettings>* getWiFiSettingsService() {
     return &_wifiSettingsService;
   }
 
-  SettingsService<APSettings>* getAPSettingsService() {
+  StatefulService<APSettings>* getAPSettingsService() {
     return &_apSettingsService;
   }
 
-  SettingsService<NTPSettings>* getNTPSettingsService() {
+  StatefulService<NTPSettings>* getNTPSettingsService() {
     return &_ntpSettingsService;
   }
 
-  SettingsService<OTASettings>* getOTASettingsService() {
+  StatefulService<OTASettings>* getOTASettingsService() {
     return &_otaSettingsService;
   }
 
-  SettingsService<MQTTSettings>* getMQTTSettingsService() {
+  StatefulService<MQTTSettings>* getMQTTSettingsService() {
     return &_mqttSettingsService;
   }
 

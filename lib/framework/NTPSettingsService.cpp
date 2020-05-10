@@ -2,11 +2,11 @@
 
 NTPSettingsService::NTPSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) :
     _httpEndpoint(NTPSettings::serialize,
-                      NTPSettings::deserialize,
-                      this,
-                      server,
-                      NTP_SETTINGS_SERVICE_PATH,
-                      securityManager),
+                  NTPSettings::deserialize,
+                  this,
+                  server,
+                  NTP_SETTINGS_SERVICE_PATH,
+                  securityManager),
     _fsPersistence(NTPSettings::serialize, NTPSettings::deserialize, this, fs, NTP_SETTINGS_FILE) {
 #ifdef ESP32
   WiFi.onEvent(
@@ -51,12 +51,12 @@ void NTPSettingsService::onStationModeDisconnected(const WiFiEventStationModeDis
 #endif
 
 void NTPSettingsService::configureNTP() {
-  if (WiFi.isConnected() && _settings.enabled) {
+  if (WiFi.isConnected() && _state.enabled) {
     Serial.println("Starting NTP...");
 #ifdef ESP32
-    configTzTime(_settings.tzFormat.c_str(), _settings.server.c_str());
+    configTzTime(_state.tzFormat.c_str(), _state.server.c_str());
 #elif defined(ESP8266)
-    configTime(_settings.tzFormat.c_str(), _settings.server.c_str());
+    configTime(_state.tzFormat.c_str(), _state.server.c_str());
 #endif
   } else {
     sntp_stop();
