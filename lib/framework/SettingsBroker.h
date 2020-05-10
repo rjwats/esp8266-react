@@ -10,11 +10,9 @@
 #define SETTINGS_BROKER_ORIGIN_ID "broker"
 
 /**
- * SettingsBroker is designed to operate with Home Assistant and takes care of observing state change requests over MQTT
- * and acting on them.
+ * SettingsBroker is designed to operate on a pair of pub/sub topics.
  *
- * The broker listens to changes on a "set" topic and publish it's state on a "state" topic. It also has
- * an optional config topic which can be used for home assistant's auto discovery feature if required.
+ * The broker listens to changes on a "set" topic and publish its state on a "state" topic.
  *
  * Settings are automatically published to the state topic when a connection to the broker is established or when
  * settings are updated.
