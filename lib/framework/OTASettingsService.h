@@ -1,8 +1,8 @@
 #ifndef OTASettingsService_h
 #define OTASettingsService_h
 
-#include <SettingsEndpoint.h>
-#include <SettingsPersistence.h>
+#include <HttpEndpoint.h>
+#include <FSPersistence.h>
 
 #ifdef ESP32
 #include <ESPmDNS.h>
@@ -48,8 +48,8 @@ class OTASettingsService : public SettingsService<OTASettings> {
   void loop();
 
  private:
-  SettingsEndpoint<OTASettings> _settingsEndpoint;
-  SettingsPersistence<OTASettings> _settingsPersistence;
+  HttpEndpoint<OTASettings> _httpEndpoint;
+  FSPersistence<OTASettings> _fsPersistence;
   ArduinoOTAClass* _arduinoOTA;
 
   void configureArduinoOTA();

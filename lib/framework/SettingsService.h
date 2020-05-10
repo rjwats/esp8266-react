@@ -2,8 +2,8 @@
 #define SettingsService_h
 
 #include <Arduino.h>
-#include <SettingsDeserializer.h>
-#include <SettingsSerializer.h>
+#include <JsonDeserializer.h>
+#include <JsonSerializer.h>
 
 #include <list>
 #include <functional>
@@ -66,7 +66,7 @@ class SettingsService {
 #endif
   }
 
-  void updateWithoutPropagation(JsonObject& jsonObject, SettingsDeserializer<T> deserializer) {
+  void updateWithoutPropagation(JsonObject& jsonObject, JsonDeserializer<T> deserializer) {
 #ifdef ESP32
     xSemaphoreTakeRecursive(_updateMutex, portMAX_DELAY);
 #endif
@@ -87,7 +87,7 @@ class SettingsService {
 #endif
   }
 
-  void update(JsonObject& jsonObject, SettingsDeserializer<T> deserializer, String originId) {
+  void update(JsonObject& jsonObject, JsonDeserializer<T> deserializer, String originId) {
 #ifdef ESP32
     xSemaphoreTakeRecursive(_updateMutex, portMAX_DELAY);
 #endif
@@ -108,7 +108,7 @@ class SettingsService {
 #endif
   }
 
-  void read(JsonObject& jsonObject, SettingsSerializer<T> serializer) {
+  void read(JsonObject& jsonObject, JsonSerializer<T> serializer) {
 #ifdef ESP32
     xSemaphoreTakeRecursive(_updateMutex, portMAX_DELAY);
 #endif

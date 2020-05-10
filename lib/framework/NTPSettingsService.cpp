@@ -1,13 +1,13 @@
 #include <NTPSettingsService.h>
 
 NTPSettingsService::NTPSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) :
-    _settingsEndpoint(NTPSettings::serialize,
+    _httpEndpoint(NTPSettings::serialize,
                       NTPSettings::deserialize,
                       this,
                       server,
                       NTP_SETTINGS_SERVICE_PATH,
                       securityManager),
-    _settingsPersistence(NTPSettings::serialize, NTPSettings::deserialize, this, fs, NTP_SETTINGS_FILE) {
+    _fsPersistence(NTPSettings::serialize, NTPSettings::deserialize, this, fs, NTP_SETTINGS_FILE) {
 #ifdef ESP32
   WiFi.onEvent(
       std::bind(&NTPSettingsService::onStationModeDisconnected, this, std::placeholders::_1, std::placeholders::_2),
@@ -24,7 +24,7 @@ NTPSettingsService::NTPSettingsService(AsyncWebServer* server, FS* fs, SecurityM
 }
 
 void NTPSettingsService::begin() {
-  _settingsPersistence.readFromFS();
+  _fsPersistence.readFromFS();
   configureNTP();
 }
 

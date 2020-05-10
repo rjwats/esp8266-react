@@ -1,8 +1,8 @@
 #ifndef NTPSettingsService_h
 #define NTPSettingsService_h
 
-#include <SettingsEndpoint.h>
-#include <SettingsPersistence.h>
+#include <HttpEndpoint.h>
+#include <FSPersistence.h>
 
 #include <time.h>
 #ifdef ESP32
@@ -49,8 +49,8 @@ class NTPSettingsService : public SettingsService<NTPSettings> {
   void begin();
 
  private:
-  SettingsEndpoint<NTPSettings> _settingsEndpoint;
-  SettingsPersistence<NTPSettings> _settingsPersistence;
+  HttpEndpoint<NTPSettings> _httpEndpoint;
+  FSPersistence<NTPSettings> _fsPersistence;
 
 #ifdef ESP32
   void onStationModeGotIP(WiFiEvent_t event, WiFiEventInfo_t info);

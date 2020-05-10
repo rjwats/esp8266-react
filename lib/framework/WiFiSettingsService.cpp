@@ -1,13 +1,13 @@
 #include <WiFiSettingsService.h>
 
 WiFiSettingsService::WiFiSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) :
-    _settingsEndpoint(WiFiSettings::serialize,
+    _httpEndpoint(WiFiSettings::serialize,
                       WiFiSettings::deserialize,
                       this,
                       server,
                       WIFI_SETTINGS_SERVICE_PATH,
                       securityManager),
-    _settingsPersistence(WiFiSettings::serialize, WiFiSettings::deserialize, this, fs, WIFI_SETTINGS_FILE) {
+    _fsPersistence(WiFiSettings::serialize, WiFiSettings::deserialize, this, fs, WIFI_SETTINGS_FILE) {
   // We want the device to come up in opmode=0 (WIFI_OFF), when erasing the flash this is not the default.
   // If needed, we save opmode=0 before disabling persistence so the device boots with WiFi disabled in the future.
   if (WiFi.getMode() != WIFI_OFF) {
@@ -35,7 +35,7 @@ WiFiSettingsService::WiFiSettingsService(AsyncWebServer* server, FS* fs, Securit
 }
 
 void WiFiSettingsService::begin() {
-  _settingsPersistence.readFromFS();
+  _fsPersistence.readFromFS();
   reconfigureWiFiConnection();
 }
 

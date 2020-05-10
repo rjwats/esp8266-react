@@ -367,11 +367,11 @@ lightSettingsService.removeUpdateHandler(myUpdateHandler);
 
 An "originId" is passed to the update handler which may be used to identify the origin of the update. The default origin values the framework provides are:
 
-Origin            | Description
------------------ | -----------
-endpoint          | An update over REST (SettingsEndpoint)
-broker            | An update sent over MQTT (SettingsBroker)
-socket:{clientId} | An update sent over WebSocket (SettingsSocket)
+Origin                | Description
+--------------------- | -----------
+http                  | An update sent over REST (HttpEndpoint)
+mqtt                  | An update sent over MQTT (MqttPubSub)
+websocket:{clientId}  | An update sent over WebSocket (WebSocketRxTx)
 
 SettingsService exposes a read function which you may use to safely read the settings. This function takes care of protecting against parallel access to the settings in multi-core enviornments such as the ESP32.
 
@@ -391,7 +391,7 @@ lightSettingsService.update([&](LightSettings& settings) {
 
 #### Serialization
 
-When transmitting settings over HTTP, WebSockets, or MQTT they must to be marshalled into a serializable form (JSON). The framework uses ArduinoJson for serialization and the functions defined in [SettingsSerializer.h](lib/framework/SettingsSerializer.h) and [SettingsDeserializer.h](lib/framework/SettingsDeserializer.h) facilitate this.
+When transmitting settings over HTTP, WebSockets, or MQTT they must to be marshalled into a serializable form (JSON). The framework uses ArduinoJson for serialization and the functions defined in [JsonSerializer.h](lib/framework/JsonSerializer.h) and [JsonDeserializer.h](lib/framework/JsonDeserializer.h) facilitate this.
 
 The static functions below can be used to facilitate the serialization/deserialization of the example settings:
 
@@ -431,7 +431,7 @@ lightSettingsService->update(jsonObject, deserializer, "timer");
 
 #### Endpoints
 
-The framework provides a [SettingsEndpoint.h](lib/framework/SettingsEndpoint.h) class which may be used to register GET and POST handlers to read and update the settings over HTTP. You may construct a SettingsEndpoint as a part of the SettingsService or separately if you prefer. 
+The framework provides a [HttpEndpoint.h](lib/framework/HttpEndpoint.h) class which may be used to register GET and POST handlers to read and update the settings over HTTP. You may construct a HttpEndpoint as a part of the SettingsService or separately if you prefer. 
 
 The code below demonstrates how to extend the LightSettingsService class to provide an unsecured endpoint:
 
@@ -439,11 +439,11 @@ The code below demonstrates how to extend the LightSettingsService class to prov
 class LightSettingsService : public SettingsService<LightSettings> {
  public:
   LightSettingsService(AsyncWebServer* server) :
-      _settingsEndpoint(LightSettings::serialize, LightSettings::deserialize, this, server, "/rest/lightSettings") {
+      _httpEndpoint(LightSettings::serialize, LightSettings::deserialize, this, server, "/rest/lightSettings") {
   }
 
  private:
-  SettingsEndpoint<LightSettings> _settingsEndpoint;
+  HttpEndpoint<LightSettings> _httpEndpoint;
 };
 ```
 
@@ -451,7 +451,7 @@ Endpoint security is provided by authentication predicates which are [documented
 
 #### Persistence
 
-[SettingsPersistence.h](lib/framework/SettingsPersistence.h) allows you to save settings to the filesystem. SettingsPersistence automatically writes changes to the file system when settings are updated. This feature can be disabled by calling `disableUpdateHandler()` if manual control of persistence is required.
+[FSPersistence.h](lib/framework/FSPersistence.h) allows you to save settings to the filesystem. FSPersistence automatically writes changes to the file system when settings are updated. This feature can be disabled by calling `disableUpdateHandler()` if manual control of persistence is required.
 
 The code below demonstrates how to extend the LightSettingsService class to provide persistence:
 
@@ -459,11 +459,11 @@ The code below demonstrates how to extend the LightSettingsService class to prov
 class LightSettingsService : public SettingsService<LightSettings> {
  public:
   LightSettingsService(FS* fs) :
-      _settingsPersistence(LightSettings::serialize, LightSettings::deserialize, this, fs, "/config/lightSettings.json") {
+      _fsPersistence(LightSettings::serialize, LightSettings::deserialize, this, fs, "/config/lightSettings.json") {
   }
 
  private:
-  SettingsPersistence<LightSettings> _settingsPersistence;
+  FSPersistence<LightSettings> _fsPersistence;
 };
 ```
 

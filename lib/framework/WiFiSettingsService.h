@@ -1,8 +1,8 @@
 #ifndef WiFiSettingsService_h
 #define WiFiSettingsService_h
 
-#include <SettingsPersistence.h>
-#include <SettingsEndpoint.h>
+#include <FSPersistence.h>
+#include <HttpEndpoint.h>
 #include <JsonUtils.h>
 
 #define WIFI_SETTINGS_FILE "/config/wifiSettings.json"
@@ -76,8 +76,8 @@ class WiFiSettingsService : public SettingsService<WiFiSettings> {
   void loop();
 
  private:
-  SettingsEndpoint<WiFiSettings> _settingsEndpoint;
-  SettingsPersistence<WiFiSettings> _settingsPersistence;
+  HttpEndpoint<WiFiSettings> _httpEndpoint;
+  FSPersistence<WiFiSettings> _fsPersistence;
   unsigned long _lastConnectionAttempt;
 
 #ifdef ESP32

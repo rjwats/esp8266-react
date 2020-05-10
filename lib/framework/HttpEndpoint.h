@@ -8,8 +8,8 @@
 
 #include <SecurityManager.h>
 #include <SettingsService.h>
-#include <SettingsSerializer.h>
-#include <SettingsDeserializer.h>
+#include <JsonSerializer.h>
+#include <JsonDeserializer.h>
 
 #define MAX_CONTENT_LENGTH 1024
 #define HTTP_ENDPOINT_ORIGIN_ID "http"
@@ -17,35 +17,35 @@
 template <class T>
 class HttpGetEndpoint {
  public:
-  HttpGetEndpoint(SettingsSerializer<T> settingsSerializer,
+  HttpGetEndpoint(JsonSerializer<T> jsonSerializer,
                   SettingsService<T>* settingsService,
                   AsyncWebServer* server,
                   const String& servicePath,
                   SecurityManager* securityManager,
                   AuthenticationPredicate authenticationPredicate = AuthenticationPredicates::IS_ADMIN) :
-      _settingsSerializer(settingsSerializer), _settingsService(settingsService) {
+      _jsonSerializer(jsonSerializer), _settingsService(settingsService) {
     server->on(servicePath.c_str(),
                HTTP_GET,
                securityManager->wrapRequest(std::bind(&HttpGetEndpoint::fetchSettings, this, std::placeholders::_1),
                                             authenticationPredicate));
   }
 
-  HttpGetEndpoint(SettingsSerializer<T> settingsSerializer,
+  HttpGetEndpoint(JsonSerializer<T> jsonSerializer,
                   SettingsService<T>* settingsService,
                   AsyncWebServer* server,
                   const String& servicePath) :
-      _settingsSerializer(settingsSerializer), _settingsService(settingsService) {
+      _jsonSerializer(jsonSerializer), _settingsService(settingsService) {
     server->on(servicePath.c_str(), HTTP_GET, std::bind(&HttpGetEndpoint::fetchSettings, this, std::placeholders::_1));
   }
 
  protected:
-  SettingsSerializer<T> _settingsSerializer;
+  JsonSerializer<T> _jsonSerializer;
   SettingsService<T>* _settingsService;
 
   void fetchSettings(AsyncWebServerRequest* request) {
     AsyncJsonResponse* response = new AsyncJsonResponse(false, MAX_CONTENT_LENGTH);
     JsonObject jsonObject = response->getRoot().to<JsonObject>();
-    _settingsService->read(jsonObject, _settingsSerializer);
+    _settingsService->read(jsonObject, _jsonSerializer);
 
     response->setLength();
     request->send(response);
@@ -55,15 +55,15 @@ class HttpGetEndpoint {
 template <class T>
 class HttpPostEndpoint {
  public:
-  HttpPostEndpoint(SettingsSerializer<T> settingsSerializer,
-                   SettingsDeserializer<T> settingsDeserializer,
+  HttpPostEndpoint(JsonSerializer<T> jsonSerializer,
+                   JsonDeserializer<T> jsonDeserializer,
                    SettingsService<T>* settingsService,
                    AsyncWebServer* server,
                    const String& servicePath,
                    SecurityManager* securityManager,
                    AuthenticationPredicate authenticationPredicate = AuthenticationPredicates::IS_ADMIN) :
-      _settingsSerializer(settingsSerializer),
-      _settingsDeserializer(settingsDeserializer),
+      _jsonSerializer(jsonSerializer),
+      _jsonDeserializer(jsonDeserializer),
       _settingsService(settingsService),
       _updateHandler(
           servicePath,
@@ -75,13 +75,13 @@ class HttpPostEndpoint {
     server->addHandler(&_updateHandler);
   }
 
-  HttpPostEndpoint(SettingsSerializer<T> settingsSerializer,
-                   SettingsDeserializer<T> settingsDeserializer,
+  HttpPostEndpoint(JsonSerializer<T> jsonSerializer,
+                   JsonDeserializer<T> jsonDeserializer,
                    SettingsService<T>* settingsService,
                    AsyncWebServer* server,
                    const String& servicePath) :
-      _settingsSerializer(settingsSerializer),
-      _settingsDeserializer(settingsDeserializer),
+      _jsonSerializer(jsonSerializer),
+      _jsonDeserializer(jsonDeserializer),
       _settingsService(settingsService),
       _updateHandler(servicePath,
                      std::bind(&HttpPostEndpoint::updateSettings, this, std::placeholders::_1, std::placeholders::_2)) {
@@ -91,15 +91,15 @@ class HttpPostEndpoint {
   }
 
  protected:
-  SettingsSerializer<T> _settingsSerializer;
-  SettingsDeserializer<T> _settingsDeserializer;
+  JsonSerializer<T> _jsonSerializer;
+  JsonDeserializer<T> _jsonDeserializer;
   SettingsService<T>* _settingsService;
   AsyncCallbackJsonWebHandler _updateHandler;
 
   void fetchSettings(AsyncWebServerRequest* request) {
     AsyncJsonResponse* response = new AsyncJsonResponse(false, MAX_CONTENT_LENGTH);
     JsonObject jsonObject = response->getRoot().to<JsonObject>();
-    _settingsService->read(jsonObject, _settingsSerializer);
+    _settingsService->read(jsonObject, _jsonSerializer);
 
     response->setLength();
     request->send(response);
@@ -115,9 +115,9 @@ class HttpPostEndpoint {
       // update the settings, deferring the call to the update handlers to when the response is complete
       _settingsService->updateWithoutPropagation([&](T& settings) {
         JsonObject jsonObject = json.as<JsonObject>();
-        _settingsDeserializer(jsonObject, settings);
+        _jsonDeserializer(jsonObject, settings);
         jsonObject = response->getRoot().to<JsonObject>();
-        _settingsSerializer(settings, jsonObject);
+        _jsonSerializer(settings, jsonObject);
       });
 
       // write the response to the client
@@ -132,21 +132,21 @@ class HttpPostEndpoint {
 template <class T>
 class HttpEndpoint : public HttpGetEndpoint<T>, public HttpPostEndpoint<T> {
  public:
-  HttpEndpoint(SettingsSerializer<T> settingsSerializer,
-               SettingsDeserializer<T> settingsDeserializer,
+  HttpEndpoint(JsonSerializer<T> jsonSerializer,
+               JsonDeserializer<T> jsonDeserializer,
                SettingsService<T>* settingsService,
                AsyncWebServer* server,
                const String& servicePath,
                SecurityManager* securityManager,
                AuthenticationPredicate authenticationPredicate = AuthenticationPredicates::IS_ADMIN) :
-      HttpGetEndpoint<T>(settingsSerializer,
+      HttpGetEndpoint<T>(jsonSerializer,
                          settingsService,
                          server,
                          servicePath,
                          securityManager,
                          authenticationPredicate),
-      HttpPostEndpoint<T>(settingsSerializer,
-                          settingsDeserializer,
+      HttpPostEndpoint<T>(jsonSerializer,
+                          jsonDeserializer,
                           settingsService,
                           server,
                           servicePath,
@@ -154,13 +154,13 @@ class HttpEndpoint : public HttpGetEndpoint<T>, public HttpPostEndpoint<T> {
                           authenticationPredicate) {
   }
 
-  HttpEndpoint(SettingsSerializer<T> settingsSerializer,
-               SettingsDeserializer<T> settingsDeserializer,
+  HttpEndpoint(JsonSerializer<T> jsonSerializer,
+               JsonDeserializer<T> jsonDeserializer,
                SettingsService<T>* settingsService,
                AsyncWebServer* server,
                const String& servicePath) :
-      HttpGetEndpoint<T>(settingsSerializer, settingsService, server, servicePath),
-      HttpPostEndpoint<T>(settingsSerializer, settingsDeserializer, settingsService, server, servicePath) {
+      HttpGetEndpoint<T>(jsonSerializer, settingsService, server, servicePath),
+      HttpPostEndpoint<T>(jsonSerializer, jsonDeserializer, settingsService, server, servicePath) {
   }
 };
 

@@ -2,8 +2,8 @@
 #define FSPersistence_h
 
 #include <SettingsService.h>
-#include <SettingsSerializer.h>
-#include <SettingsDeserializer.h>
+#include <JsonSerializer.h>
+#include <JsonDeserializer.h>
 #include <FS.h>
 
 #define MAX_FILE_SIZE 1024
@@ -11,13 +11,13 @@
 template <class T>
 class FSPersistence {
  public:
-  FSPersistence(SettingsSerializer<T> settingsSerializer,
-                      SettingsDeserializer<T> settingsDeserializer,
+  FSPersistence(JsonSerializer<T> jsonSerializer,
+                      JsonDeserializer<T> jsonDeserializer,
                       SettingsService<T>* settingsService,
                       FS* fs,
                       char const* filePath) :
-      _settingsSerializer(settingsSerializer),
-      _settingsDeserializer(settingsDeserializer),
+      _jsonSerializer(jsonSerializer),
+      _jsonDeserializer(jsonDeserializer),
       _settingsService(settingsService),
       _fs(fs),
       _filePath(filePath) {
@@ -49,7 +49,7 @@ class FSPersistence {
     // create and populate a new json object
     DynamicJsonDocument jsonDocument = DynamicJsonDocument(MAX_FILE_SIZE);
     JsonObject jsonObject = jsonDocument.to<JsonObject>();
-    _settingsService->read(jsonObject, _settingsSerializer);
+    _settingsService->read(jsonObject, _jsonSerializer);
 
     // serialize it to filesystem
     File settingsFile = _fs->open(_filePath, "w");
@@ -79,8 +79,8 @@ class FSPersistence {
   }
 
  private:
-  SettingsSerializer<T> _settingsSerializer;
-  SettingsDeserializer<T> _settingsDeserializer;
+  JsonSerializer<T> _jsonSerializer;
+  JsonDeserializer<T> _jsonDeserializer;
   SettingsService<T>* _settingsService;
   FS* _fs;
   char const* _filePath;
@@ -88,7 +88,7 @@ class FSPersistence {
 
   // update the settings, but do not call propogate
   void updateSettings(JsonObject root) {
-    _settingsService->updateWithoutPropagation(root, _settingsDeserializer);
+    _settingsService->updateWithoutPropagation(root, _jsonDeserializer);
   }
 
  protected:

@@ -2,8 +2,8 @@
 #define SecuritySettingsService_h
 
 #include <SecurityManager.h>
-#include <SettingsEndpoint.h>
-#include <SettingsPersistence.h>
+#include <HttpEndpoint.h>
+#include <FSPersistence.h>
 
 #define DEFAULT_ADMIN_USERNAME "admin"
 #define DEFAULT_GUEST_USERNAME "guest"
@@ -62,8 +62,8 @@ class SecuritySettingsService : public SettingsService<SecuritySettings>, public
   ArJsonRequestHandlerFunction wrapCallback(ArJsonRequestHandlerFunction callback, AuthenticationPredicate predicate);
 
  private:
-  SettingsEndpoint<SecuritySettings> _settingsEndpoint;
-  SettingsPersistence<SecuritySettings> _settingsPersistence;
+  HttpEndpoint<SecuritySettings> _httpEndpoint;
+  FSPersistence<SecuritySettings> _fsPersistence;
   ArduinoJsonJWT _jwtHandler = ArduinoJsonJWT(DEFAULT_JWT_SECRET);
 
   void configureJWTHandler();

@@ -21,13 +21,13 @@ static char* retainCstr(const char* cstr, char** ptr) {
 }
 
 MQTTSettingsService::MQTTSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) :
-    _settingsEndpoint(MQTTSettings::serialize,
+    _httpEndpoint(MQTTSettings::serialize,
                       MQTTSettings::deserialize,
                       this,
                       server,
                       MQTT_SETTINGS_SERVICE_PATH,
                       securityManager),
-    _settingsPersistence(MQTTSettings::serialize, MQTTSettings::deserialize, this, fs, MQTT_SETTINGS_FILE) {
+    _fsPersistence(MQTTSettings::serialize, MQTTSettings::deserialize, this, fs, MQTT_SETTINGS_FILE) {
 #ifdef ESP32
   WiFi.onEvent(
       std::bind(&MQTTSettingsService::onStationModeDisconnected, this, std::placeholders::_1, std::placeholders::_2),
@@ -49,7 +49,7 @@ MQTTSettingsService::~MQTTSettingsService() {
 }
 
 void MQTTSettingsService::begin() {
-  _settingsPersistence.readFromFS();
+  _fsPersistence.readFromFS();
 }
 
 void MQTTSettingsService::loop() {

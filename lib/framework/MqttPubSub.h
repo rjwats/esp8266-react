@@ -2,8 +2,8 @@
 #define MqttPubSub_h
 
 #include <SettingsService.h>
-#include <SettingsSerializer.h>
-#include <SettingsDeserializer.h>
+#include <JsonSerializer.h>
+#include <JsonDeserializer.h>
 #include <AsyncMqttClient.h>
 
 #define MAX_MESSAGE_SIZE 1024
@@ -26,11 +26,11 @@ class MqttConnector {
 template <class T>
 class MqttPub : virtual public MqttConnector<T> {
  public:
-  MqttPub(SettingsSerializer<T> settingsSerializer,
+  MqttPub(JsonSerializer<T> jsonSerializer,
           SettingsService<T>* settingsService,
           AsyncMqttClient* mqttClient,
           String pubTopic = "") :
-      MqttConnector<T>(settingsService, mqttClient), _settingsSerializer(settingsSerializer), _pubTopic(pubTopic) {
+      MqttConnector<T>(settingsService, mqttClient), _jsonSerializer(jsonSerializer), _pubTopic(pubTopic) {
     MqttConnector<T>::_settingsService->addUpdateHandler([&](String originId) { publish(); }, false);
   }
 
@@ -45,7 +45,7 @@ class MqttPub : virtual public MqttConnector<T> {
   }
 
  private:
-  SettingsSerializer<T> _settingsSerializer;
+  JsonSerializer<T> _jsonSerializer;
   String _pubTopic;
 
   void publish() {
@@ -53,7 +53,7 @@ class MqttPub : virtual public MqttConnector<T> {
       // serialize to json doc
       DynamicJsonDocument json(MAX_MESSAGE_SIZE);
       JsonObject jsonObject = json.to<JsonObject>();
-      MqttConnector<T>::_settingsService->read(jsonObject, _settingsSerializer);
+      MqttConnector<T>::_settingsService->read(jsonObject, _jsonSerializer);
 
       // serialize to string
       String payload;
@@ -68,11 +68,11 @@ class MqttPub : virtual public MqttConnector<T> {
 template <class T>
 class MqttSub : virtual public MqttConnector<T> {
  public:
-  MqttSub(SettingsDeserializer<T> settingsDeserializer,
+  MqttSub(JsonDeserializer<T> jsonDeserializer,
           SettingsService<T>* settingsService,
           AsyncMqttClient* mqttClient,
           String subTopic = "") :
-      MqttConnector<T>(settingsService, mqttClient), _settingsDeserializer(settingsDeserializer), _subTopic(subTopic) {
+      MqttConnector<T>(settingsService, mqttClient), _jsonDeserializer(jsonDeserializer), _subTopic(subTopic) {
     MqttConnector<T>::_mqttClient->onMessage(std::bind(&MqttSub::onMqttMessage,
                                                        this,
                                                        std::placeholders::_1,
@@ -101,7 +101,7 @@ class MqttSub : virtual public MqttConnector<T> {
   }
 
  private:
-  SettingsDeserializer<T> _settingsDeserializer;
+  JsonDeserializer<T> _jsonDeserializer;
   String _subTopic;
 
   void subscribe() {
@@ -126,7 +126,7 @@ class MqttSub : virtual public MqttConnector<T> {
     DeserializationError error = deserializeJson(json, payload, len);
     if (!error && json.is<JsonObject>()) {
       JsonObject jsonObject = json.as<JsonObject>();
-      MqttConnector<T>::_settingsService->update(jsonObject, _settingsDeserializer, MQTT_ORIGIN_ID);
+      MqttConnector<T>::_settingsService->update(jsonObject, _jsonDeserializer, MQTT_ORIGIN_ID);
     }
   }
 };
@@ -134,15 +134,15 @@ class MqttSub : virtual public MqttConnector<T> {
 template <class T>
 class MqttPubSub : public MqttPub<T>, public MqttSub<T> {
  public:
-  MqttPubSub(SettingsSerializer<T> settingsSerializer,
-             SettingsDeserializer<T> settingsDeserializer,
+  MqttPubSub(JsonSerializer<T> jsonSerializer,
+             JsonDeserializer<T> jsonDeserializer,
              SettingsService<T>* settingsService,
              AsyncMqttClient* mqttClient,
              String pubTopic = "",
              String subTopic = "") :
       MqttConnector<T>(settingsService, mqttClient),
-      MqttPub<T>(settingsSerializer, settingsService, mqttClient, pubTopic = ""),
-      MqttSub<T>(settingsDeserializer, settingsService, mqttClient, subTopic = "") {
+      MqttPub<T>(jsonSerializer, settingsService, mqttClient, pubTopic = ""),
+      MqttSub<T>(jsonDeserializer, settingsService, mqttClient, subTopic = "") {
   }
 
  public:
