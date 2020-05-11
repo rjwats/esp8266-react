@@ -1,18 +1,18 @@
 #include <SecuritySettingsService.h>
 
 SecuritySettingsService::SecuritySettingsService(AsyncWebServer* server, FS* fs) :
-    _settingsEndpoint(SecuritySettings::serialize,
-                      SecuritySettings::deserialize,
-                      this,
-                      server,
-                      SECURITY_SETTINGS_PATH,
-                      this),
-    _settingsPersistence(SecuritySettings::serialize, SecuritySettings::deserialize, this, fs, SECURITY_SETTINGS_FILE) {
+    _httpEndpoint(SecuritySettings::serialize,
+                  SecuritySettings::deserialize,
+                  this,
+                  server,
+                  SECURITY_SETTINGS_PATH,
+                  this),
+    _fsPersistence(SecuritySettings::serialize, SecuritySettings::deserialize, this, fs, SECURITY_SETTINGS_FILE) {
   addUpdateHandler([&](String originId) { configureJWTHandler(); }, false);
 }
 
 void SecuritySettingsService::begin() {
-  _settingsPersistence.readFromFS();
+  _fsPersistence.readFromFS();
   configureJWTHandler();
 }
 
@@ -33,7 +33,7 @@ Authentication SecuritySettingsService::authenticateRequest(AsyncWebServerReques
 }
 
 void SecuritySettingsService::configureJWTHandler() {
-  _jwtHandler.setSecret(_settings.jwtSecret);
+  _jwtHandler.setSecret(_state.jwtSecret);
 }
 
 Authentication SecuritySettingsService::authenticateJWT(String& jwt) {
@@ -42,7 +42,7 @@ Authentication SecuritySettingsService::authenticateJWT(String& jwt) {
   if (payloadDocument.is<JsonObject>()) {
     JsonObject parsedPayload = payloadDocument.as<JsonObject>();
     String username = parsedPayload["username"];
-    for (User _user : _settings.users) {
+    for (User _user : _state.users) {
       if (_user.username == username && validatePayload(parsedPayload, &_user)) {
         return Authentication(_user);
       }
@@ -52,7 +52,7 @@ Authentication SecuritySettingsService::authenticateJWT(String& jwt) {
 }
 
 Authentication SecuritySettingsService::authenticate(String& username, String& password) {
-  for (User _user : _settings.users) {
+  for (User _user : _state.users) {
     if (_user.username == username && _user.password == password) {
       return Authentication(_user);
     }

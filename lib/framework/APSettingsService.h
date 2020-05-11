@@ -1,8 +1,8 @@
 #ifndef APSettingsConfig_h
 #define APSettingsConfig_h
 
-#include <SettingsEndpoint.h>
-#include <SettingsPersistence.h>
+#include <HttpEndpoint.h>
+#include <FSPersistence.h>
 
 #include <DNSServer.h>
 #include <IPAddress.h>
@@ -48,7 +48,7 @@ class APSettings {
   }
 };
 
-class APSettingsService : public SettingsService<APSettings> {
+class APSettingsService : public StatefulService<APSettings> {
  public:
   APSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
 
@@ -56,8 +56,8 @@ class APSettingsService : public SettingsService<APSettings> {
   void loop();
 
  private:
-  SettingsEndpoint<APSettings> _settingsEndpoint;
-  SettingsPersistence<APSettings> _settingsPersistence;
+  HttpEndpoint<APSettings> _httpEndpoint;
+  FSPersistence<APSettings> _fsPersistence;
 
   // for the mangement delay loop
   unsigned long _lastManaged;

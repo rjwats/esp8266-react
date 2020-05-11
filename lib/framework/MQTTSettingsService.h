@@ -1,8 +1,9 @@
 #ifndef MQTTSettingsService_h
 #define MQTTSettingsService_h
 
-#include <SettingsEndpoint.h>
-#include <SettingsPersistence.h>
+#include <StatefulService.h>
+#include <HttpEndpoint.h>
+#include <FSPersistence.h>
 #include <AsyncMqttClient.h>
 
 #define MQTT_RECONNECTION_DELAY 5000
@@ -72,7 +73,7 @@ class MQTTSettings {
   }
 };
 
-class MQTTSettingsService : public SettingsService<MQTTSettings> {
+class MQTTSettingsService : public StatefulService<MQTTSettings> {
  public:
   MQTTSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
   ~MQTTSettingsService();
@@ -89,8 +90,8 @@ class MQTTSettingsService : public SettingsService<MQTTSettings> {
   void onConfigUpdated();
 
  private:
-  SettingsEndpoint<MQTTSettings> _settingsEndpoint;
-  SettingsPersistence<MQTTSettings> _settingsPersistence;
+  HttpEndpoint<MQTTSettings> _httpEndpoint;
+  FSPersistence<MQTTSettings> _fsPersistence;
 
   // Pointers to hold retained copies of the mqtt client connection strings.
   // Required as AsyncMqttClient holds refrences to the supplied connection strings.
@@ -119,7 +120,6 @@ class MQTTSettingsService : public SettingsService<MQTTSettings> {
   void onMqttConnect(bool sessionPresent);
   void onMqttDisconnect(AsyncMqttClientDisconnectReason reason);
   void configureMQTT();
-
 };
 
 #endif  // end MQTTSettingsService_h

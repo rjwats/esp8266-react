@@ -4,21 +4,21 @@ LightSettingsService::LightSettingsService(AsyncWebServer* server,
                                            SecurityManager* securityManager,
                                            AsyncMqttClient* mqttClient,
                                            LightBrokerSettingsService* lightBrokerSettingsService) :
-    _settingsEndpoint(LightSettings::serialize,
-                      LightSettings::deserialize,
-                      this,
-                      server,
-                      LIGHT_SETTINGS_ENDPOINT_PATH,
-                      securityManager,
-                      AuthenticationPredicates::IS_AUTHENTICATED),
-    _settingsBroker(LightSettings::haSerialize, LightSettings::haDeserialize, this, mqttClient),
-    _settingsSocket(LightSettings::serialize,
-                    LightSettings::deserialize,
-                    this,
-                    server,
-                    LIGHT_SETTINGS_SOCKET_PATH,
-                    securityManager,
-                    AuthenticationPredicates::IS_AUTHENTICATED),
+    _httpEndpoint(LightSettings::serialize,
+                  LightSettings::deserialize,
+                  this,
+                  server,
+                  LIGHT_SETTINGS_ENDPOINT_PATH,
+                  securityManager,
+                  AuthenticationPredicates::IS_AUTHENTICATED),
+    _mqttPubSub(LightSettings::haSerialize, LightSettings::haDeserialize, this, mqttClient),
+    _webSocket(LightSettings::serialize,
+               LightSettings::deserialize,
+               this,
+               server,
+               LIGHT_SETTINGS_SOCKET_PATH,
+               securityManager,
+               AuthenticationPredicates::IS_AUTHENTICATED),
     _mqttClient(mqttClient),
     _lightBrokerSettingsService(lightBrokerSettingsService) {
   // configure blink led to be output
@@ -35,12 +35,12 @@ LightSettingsService::LightSettingsService(AsyncWebServer* server,
 }
 
 void LightSettingsService::begin() {
-  _settings.ledOn = DEFAULT_LED_STATE;
+  _state.ledOn = DEFAULT_LED_STATE;
   onConfigUpdated();
 }
 
 void LightSettingsService::onConfigUpdated() {
-  digitalWrite(BLINK_LED, _settings.ledOn ? LED_ON : LED_OFF);
+  digitalWrite(BLINK_LED, _state.ledOn ? LED_ON : LED_OFF);
 }
 
 void LightSettingsService::registerConfig() {
@@ -69,5 +69,5 @@ void LightSettingsService::registerConfig() {
   serializeJson(doc, payload);
   _mqttClient->publish(configTopic.c_str(), 0, false, payload.c_str());
 
-  _settingsBroker.configureBroker(setTopic, stateTopic);
+  _mqttPubSub.configureTopics(stateTopic, setTopic);
 }

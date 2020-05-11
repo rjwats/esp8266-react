@@ -2,10 +2,10 @@
 #define LightSettingsService_h
 
 #include <LightBrokerSettingsService.h>
-#include <SettingsEndpoint.h>
-#include <SettingsBroker.h>
-#include <SettingsSocket.h>
-#include <ESP8266React.h>
+
+#include <HttpEndpoint.h>
+#include <MqttPubSub.h>
+#include <WebSocketTxRx.h>
 
 #define BLINK_LED 2
 #define PRINT_DELAY 5000
@@ -49,7 +49,7 @@ class LightSettings {
   }
 };
 
-class LightSettingsService : public SettingsService<LightSettings> {
+class LightSettingsService : public StatefulService<LightSettings> {
  public:
   LightSettingsService(AsyncWebServer* server,
                        SecurityManager* securityManager,
@@ -58,9 +58,9 @@ class LightSettingsService : public SettingsService<LightSettings> {
   void begin();
 
  private:
-  SettingsEndpoint<LightSettings> _settingsEndpoint;
-  SettingsBroker<LightSettings> _settingsBroker;
-  SettingsSocket<LightSettings> _settingsSocket;
+  HttpEndpoint<LightSettings> _httpEndpoint;
+  MqttPubSub<LightSettings> _mqttPubSub;
+  WebSocketTxRx<LightSettings> _webSocket;
   AsyncMqttClient* _mqttClient;
   LightBrokerSettingsService* _lightBrokerSettingsService;
 

@@ -1,10 +1,8 @@
 #ifndef LightBrokerSettingsService_h
 #define LightBrokerSettingsService_h
 
-#include <SettingsEndpoint.h>
-#include <SettingsBroker.h>
-#include <SettingsPersistence.h>
-#include <ESP8266React.h>
+#include <HttpEndpoint.h>
+#include <FSPersistence.h>
 
 #define LIGHT_BROKER_SETTINGS_FILE "/config/brokerSettings.json"
 #define LIGHT_BROKER_SETTINGS_PATH "/rest/brokerSettings"
@@ -36,14 +34,14 @@ class LightBrokerSettings {
   }
 };
 
-class LightBrokerSettingsService : public SettingsService<LightBrokerSettings> {
+class LightBrokerSettingsService : public StatefulService<LightBrokerSettings> {
  public:
   LightBrokerSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
   void begin();
 
  private:
-  SettingsEndpoint<LightBrokerSettings> _settingsEndpoint;
-  SettingsPersistence<LightBrokerSettings> _settingsPersistence;
+  HttpEndpoint<LightBrokerSettings> _httpEndpoint;
+  FSPersistence<LightBrokerSettings> _fsPersistence;
 };
 
 #endif  // end LightBrokerSettingsService_h

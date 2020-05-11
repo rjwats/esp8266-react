@@ -1,30 +1,24 @@
-#ifndef SettingsPersistence_h
-#define SettingsPersistence_h
+#ifndef FSPersistence_h
+#define FSPersistence_h
 
-#include <SettingsService.h>
-#include <SettingsSerializer.h>
-#include <SettingsDeserializer.h>
+#include <StatefulService.h>
+#include <JsonSerializer.h>
+#include <JsonDeserializer.h>
 #include <FS.h>
 
 #define MAX_FILE_SIZE 1024
 
-/**
- * SettingsPersistance takes care of loading and saving settings when they change.
- *
- * SettingsPersistence automatically registers writeToFS as an update handler with the settings manager
- * when constructed, saving any updates to the file system.
- */
 template <class T>
-class SettingsPersistence {
+class FSPersistence {
  public:
-  SettingsPersistence(SettingsSerializer<T> settingsSerializer,
-                      SettingsDeserializer<T> settingsDeserializer,
-                      SettingsService<T>* settingsService,
-                      FS* fs,
-                      char const* filePath) :
-      _settingsSerializer(settingsSerializer),
-      _settingsDeserializer(settingsDeserializer),
-      _settingsService(settingsService),
+  FSPersistence(JsonSerializer<T> jsonSerializer,
+                JsonDeserializer<T> jsonDeserializer,
+                StatefulService<T>* statefulService,
+                FS* fs,
+                char const* filePath) :
+      _jsonSerializer(jsonSerializer),
+      _jsonDeserializer(jsonDeserializer),
+      _statefulService(statefulService),
       _fs(fs),
       _filePath(filePath) {
     enableUpdateHandler();
@@ -55,7 +49,7 @@ class SettingsPersistence {
     // create and populate a new json object
     DynamicJsonDocument jsonDocument = DynamicJsonDocument(MAX_FILE_SIZE);
     JsonObject jsonObject = jsonDocument.to<JsonObject>();
-    _settingsService->read(jsonObject, _settingsSerializer);
+    _statefulService->read(jsonObject, _jsonSerializer);
 
     // serialize it to filesystem
     File settingsFile = _fs->open(_filePath, "w");
@@ -73,28 +67,28 @@ class SettingsPersistence {
 
   void disableUpdateHandler() {
     if (_updateHandlerId) {
-      _settingsService->removeUpdateHandler(_updateHandlerId);
+      _statefulService->removeUpdateHandler(_updateHandlerId);
       _updateHandlerId = 0;
     }
   }
 
   void enableUpdateHandler() {
     if (!_updateHandlerId) {
-      _updateHandlerId = _settingsService->addUpdateHandler([&](String originId) { writeToFS(); });
+      _updateHandlerId = _statefulService->addUpdateHandler([&](String originId) { writeToFS(); });
     }
   }
 
  private:
-  SettingsSerializer<T> _settingsSerializer;
-  SettingsDeserializer<T> _settingsDeserializer;
-  SettingsService<T>* _settingsService;
+  JsonSerializer<T> _jsonSerializer;
+  JsonDeserializer<T> _jsonDeserializer;
+  StatefulService<T>* _statefulService;
   FS* _fs;
   char const* _filePath;
   update_handler_id_t _updateHandlerId = 0;
 
   // update the settings, but do not call propogate
   void updateSettings(JsonObject root) {
-    _settingsService->updateWithoutPropagation(root, _settingsDeserializer);
+    _statefulService->updateWithoutPropagation(root, _jsonDeserializer);
   }
 
  protected:
@@ -106,4 +100,4 @@ class SettingsPersistence {
   }
 };
 
-#endif  // end SettingsPersistence
+#endif  // end FSPersistence

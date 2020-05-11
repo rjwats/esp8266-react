@@ -1,13 +1,13 @@
 #include <WiFiSettingsService.h>
 
 WiFiSettingsService::WiFiSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) :
-    _settingsEndpoint(WiFiSettings::serialize,
-                      WiFiSettings::deserialize,
-                      this,
-                      server,
-                      WIFI_SETTINGS_SERVICE_PATH,
-                      securityManager),
-    _settingsPersistence(WiFiSettings::serialize, WiFiSettings::deserialize, this, fs, WIFI_SETTINGS_FILE) {
+    _httpEndpoint(WiFiSettings::serialize,
+                  WiFiSettings::deserialize,
+                  this,
+                  server,
+                  WIFI_SETTINGS_SERVICE_PATH,
+                  securityManager),
+    _fsPersistence(WiFiSettings::serialize, WiFiSettings::deserialize, this, fs, WIFI_SETTINGS_FILE) {
   // We want the device to come up in opmode=0 (WIFI_OFF), when erasing the flash this is not the default.
   // If needed, we save opmode=0 before disabling persistence so the device boots with WiFi disabled in the future.
   if (WiFi.getMode() != WIFI_OFF) {
@@ -35,7 +35,7 @@ WiFiSettingsService::WiFiSettingsService(AsyncWebServer* server, FS* fs, Securit
 }
 
 void WiFiSettingsService::begin() {
-  _settingsPersistence.readFromFS();
+  _fsPersistence.readFromFS();
   reconfigureWiFiConnection();
 }
 
@@ -63,27 +63,27 @@ void WiFiSettingsService::loop() {
 
 void WiFiSettingsService::manageSTA() {
   // Abort if already connected, or if we have no SSID
-  if (WiFi.isConnected() || _settings.ssid.length() == 0) {
+  if (WiFi.isConnected() || _state.ssid.length() == 0) {
     return;
   }
   // Connect or reconnect as required
   if ((WiFi.getMode() & WIFI_STA) == 0) {
     Serial.println("Connecting to WiFi.");
-    if (_settings.staticIPConfig) {
+    if (_state.staticIPConfig) {
       // configure for static IP
-      WiFi.config(_settings.localIP, _settings.gatewayIP, _settings.subnetMask, _settings.dnsIP1, _settings.dnsIP2);
+      WiFi.config(_state.localIP, _state.gatewayIP, _state.subnetMask, _state.dnsIP1, _state.dnsIP2);
     } else {
       // configure for DHCP
 #ifdef ESP32
       WiFi.config(INADDR_NONE, INADDR_NONE, INADDR_NONE);
-      WiFi.setHostname(_settings.hostname.c_str());
+      WiFi.setHostname(_state.hostname.c_str());
 #elif defined(ESP8266)
       WiFi.config(INADDR_ANY, INADDR_ANY, INADDR_ANY);
-      WiFi.hostname(_settings.hostname);
+      WiFi.hostname(_state.hostname);
 #endif
     }
     // attempt to connect to the network
-    WiFi.begin(_settings.ssid.c_str(), _settings.password.c_str());
+    WiFi.begin(_state.ssid.c_str(), _state.password.c_str());
   }
 }
 

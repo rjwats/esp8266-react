@@ -1,8 +1,13 @@
 #include <OTASettingsService.h>
 
 OTASettingsService::OTASettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) :
-    _settingsEndpoint(OTASettings::serialize, OTASettings::deserialize, this, server, OTA_SETTINGS_SERVICE_PATH, securityManager),
-    _settingsPersistence(OTASettings::serialize, OTASettings::deserialize, this, fs, OTA_SETTINGS_FILE) {
+    _httpEndpoint(OTASettings::serialize,
+                  OTASettings::deserialize,
+                  this,
+                  server,
+                  OTA_SETTINGS_SERVICE_PATH,
+                  securityManager),
+    _fsPersistence(OTASettings::serialize, OTASettings::deserialize, this, fs, OTA_SETTINGS_FILE) {
 #ifdef ESP32
   WiFi.onEvent(std::bind(&OTASettingsService::onStationModeGotIP, this, std::placeholders::_1, std::placeholders::_2),
                WiFiEvent_t::SYSTEM_EVENT_STA_GOT_IP);
@@ -14,12 +19,12 @@ OTASettingsService::OTASettingsService(AsyncWebServer* server, FS* fs, SecurityM
 }
 
 void OTASettingsService::begin() {
-  _settingsPersistence.readFromFS();
+  _fsPersistence.readFromFS();
   configureArduinoOTA();
 }
 
 void OTASettingsService::loop() {
-  if (_settings.enabled && _arduinoOTA) {
+  if (_state.enabled && _arduinoOTA) {
     _arduinoOTA->handle();
   }
 }
@@ -32,11 +37,11 @@ void OTASettingsService::configureArduinoOTA() {
     delete _arduinoOTA;
     _arduinoOTA = nullptr;
   }
-  if (_settings.enabled) {
+  if (_state.enabled) {
     Serial.println("Starting OTA Update Service...");
     _arduinoOTA = new ArduinoOTAClass;
-    _arduinoOTA->setPort(_settings.port);
-    _arduinoOTA->setPassword(_settings.password.c_str());
+    _arduinoOTA->setPort(_state.port);
+    _arduinoOTA->setPassword(_state.password.c_str());
     _arduinoOTA->onStart([]() { Serial.println("Starting"); });
     _arduinoOTA->onEnd([]() { Serial.println("\nEnd"); });
     _arduinoOTA->onProgress([](unsigned int progress, unsigned int total) {
