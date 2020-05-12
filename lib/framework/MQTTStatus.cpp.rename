@@ -1,16 +1,16 @@
-#include <MQTTStatus.h>
+#include <MqttStatus.h>
 
-MQTTStatus::MQTTStatus(AsyncWebServer* server,
-                       MQTTSettingsService* mqttSettingsService,
+MqttStatus::MqttStatus(AsyncWebServer* server,
+                       MqttSettingsService* mqttSettingsService,
                        SecurityManager* securityManager) :
     _mqttSettingsService(mqttSettingsService) {
   server->on(MQTT_STATUS_SERVICE_PATH,
              HTTP_GET,
-             securityManager->wrapRequest(std::bind(&MQTTStatus::mqttStatus, this, std::placeholders::_1),
+             securityManager->wrapRequest(std::bind(&MqttStatus::mqttStatus, this, std::placeholders::_1),
                                           AuthenticationPredicates::IS_AUTHENTICATED));
 }
 
-void MQTTStatus::mqttStatus(AsyncWebServerRequest* request) {
+void MqttStatus::mqttStatus(AsyncWebServerRequest* request) {
   AsyncJsonResponse* response = new AsyncJsonResponse(false, MAX_MQTT_STATUS_SIZE);
   JsonObject root = response->getRoot();
 

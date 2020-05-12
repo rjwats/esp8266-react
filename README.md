@@ -552,7 +552,7 @@ getWiFiSettingsService()     | Configures and manages the WiFi network connectio
 getAPSettingsService()       | Configures and manages the Access Point
 getNTPSettingsService()      | Configures and manages the network time
 getOTASettingsService()      | Configures and manages the Over-The-Air update feature
-getMQTTSettingsService()     | Configures and manages the MQTT connection
+getMqttSettingsService()     | Configures and manages the MQTT connection
 getMQTTClient()              | Provides direct access to the MQTT client instance
 
 These can be used to observe changes to settings. They can also be used to fetch or update settings.

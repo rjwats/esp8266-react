@@ -8,12 +8,12 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import ReportIcon from '@material-ui/icons/Report';
 
 import { RestFormProps, FormActions, FormButton, HighlightAvatar } from '../components';
-import { mqttStatusHighlight, mqttStatus, disconnectReason } from './MQTTStatus';
-import { MQTTStatus } from './types';
+import { mqttStatusHighlight, mqttStatus, disconnectReason } from './MqttStatus';
+import { MqttStatus } from './types';
 
-type MQTTStatusFormProps = RestFormProps<MQTTStatus> & WithTheme;
+type MqttStatusFormProps = RestFormProps<MqttStatus> & WithTheme;
 
-class MQTTStatusForm extends Component<MQTTStatusFormProps> {
+class MqttStatusForm extends Component<MqttStatusFormProps> {
 
   renderConnectionStatus() {
     const { data } = this.props
@@ -80,4 +80,4 @@ class MQTTStatusForm extends Component<MQTTStatusFormProps> {
 
 }
 
-export default withTheme(MQTTStatusForm);
+export default withTheme(MqttStatusForm);

@@ -1,4 +1,4 @@
-export enum MQTTDisconnectReason {
+export enum MqttDisconnectReason {
   TCP_DISCONNECTED = 0,
   MQTT_UNACCEPTABLE_PROTOCOL_VERSION = 1,
   MQTT_IDENTIFIER_REJECTED = 2,
@@ -9,14 +9,14 @@ export enum MQTTDisconnectReason {
   TLS_BAD_FINGERPRINT = 7
 }
 
-export interface MQTTStatus {
+export interface MqttStatus {
   enabled: boolean;
   connected: boolean;
   client_id: string;
-  disconnect_reason: MQTTDisconnectReason;
+  disconnect_reason: MqttDisconnectReason;
 }
 
-export interface MQTTSettings {
+export interface MqttSettings {
   enabled: boolean;
   host: string;
   port: number;

@@ -7,11 +7,11 @@ import SaveIcon from '@material-ui/icons/Save';
 import { RestFormProps, FormActions, FormButton, BlockFormControlLabel, PasswordValidator } from '../components';
 import { isIP, isHostname, or } from '../validators';
 
-import { MQTTSettings } from './types';
+import { MqttSettings } from './types';
 
-type MQTTSettingsFormProps = RestFormProps<MQTTSettings>;
+type MqttSettingsFormProps = RestFormProps<MqttSettings>;
 
-class MQTTSettingsForm extends React.Component<MQTTSettingsFormProps> {
+class MqttSettingsForm extends React.Component<MqttSettingsFormProps> {
 
   componentDidMount() {
     ValidatorForm.addValidationRule('isIPOrHostname', or(isIP, isHostname));
@@ -128,4 +128,4 @@ class MQTTSettingsForm extends React.Component<MQTTSettingsFormProps> {
   }
 }
 
-export default MQTTSettingsForm;
+export default MqttSettingsForm;

@@ -1,4 +1,4 @@
-#include <MQTTSettingsService.h>
+#include <MqttSettingsService.h>
 
 /**
  * Retains a copy of the cstr provided in the pointer provided using dynamic allocation.
@@ -20,39 +20,39 @@ static char* retainCstr(const char* cstr, char** ptr) {
   return *ptr;
 }
 
-MQTTSettingsService::MQTTSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) :
-    _httpEndpoint(MQTTSettings::serialize,
-                  MQTTSettings::deserialize,
+MqttSettingsService::MqttSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) :
+    _httpEndpoint(MqttSettings::serialize,
+                  MqttSettings::deserialize,
                   this,
                   server,
                   MQTT_SETTINGS_SERVICE_PATH,
                   securityManager),
-    _fsPersistence(MQTTSettings::serialize, MQTTSettings::deserialize, this, fs, MQTT_SETTINGS_FILE) {
+    _fsPersistence(MqttSettings::serialize, MqttSettings::deserialize, this, fs, MQTT_SETTINGS_FILE) {
 #ifdef ESP32
   WiFi.onEvent(
-      std::bind(&MQTTSettingsService::onStationModeDisconnected, this, std::placeholders::_1, std::placeholders::_2),
+      std::bind(&MqttSettingsService::onStationModeDisconnected, this, std::placeholders::_1, std::placeholders::_2),
       WiFiEvent_t::SYSTEM_EVENT_STA_DISCONNECTED);
-  WiFi.onEvent(std::bind(&MQTTSettingsService::onStationModeGotIP, this, std::placeholders::_1, std::placeholders::_2),
+  WiFi.onEvent(std::bind(&MqttSettingsService::onStationModeGotIP, this, std::placeholders::_1, std::placeholders::_2),
                WiFiEvent_t::SYSTEM_EVENT_STA_GOT_IP);
 #elif defined(ESP8266)
   _onStationModeDisconnectedHandler = WiFi.onStationModeDisconnected(
-      std::bind(&MQTTSettingsService::onStationModeDisconnected, this, std::placeholders::_1));
+      std::bind(&MqttSettingsService::onStationModeDisconnected, this, std::placeholders::_1));
   _onStationModeGotIPHandler =
-      WiFi.onStationModeGotIP(std::bind(&MQTTSettingsService::onStationModeGotIP, this, std::placeholders::_1));
+      WiFi.onStationModeGotIP(std::bind(&MqttSettingsService::onStationModeGotIP, this, std::placeholders::_1));
 #endif
-  _mqttClient.onConnect(std::bind(&MQTTSettingsService::onMqttConnect, this, std::placeholders::_1));
-  _mqttClient.onDisconnect(std::bind(&MQTTSettingsService::onMqttDisconnect, this, std::placeholders::_1));
+  _mqttClient.onConnect(std::bind(&MqttSettingsService::onMqttConnect, this, std::placeholders::_1));
+  _mqttClient.onDisconnect(std::bind(&MqttSettingsService::onMqttDisconnect, this, std::placeholders::_1));
   addUpdateHandler([&](String originId) { onConfigUpdated(); }, false);
 }
 
-MQTTSettingsService::~MQTTSettingsService() {
+MqttSettingsService::~MqttSettingsService() {
 }
 
-void MQTTSettingsService::begin() {
+void MqttSettingsService::begin() {
   _fsPersistence.readFromFS();
 }
 
-void MQTTSettingsService::loop() {
+void MqttSettingsService::loop() {
   if (_reconfigureMqtt || (_disconnectedAt && (unsigned long)(millis() - _disconnectedAt) >= MQTT_RECONNECTION_DELAY)) {
     // reconfigure MQTT client
     configureMQTT();
@@ -63,67 +63,67 @@ void MQTTSettingsService::loop() {
   }
 }
 
-bool MQTTSettingsService::isEnabled() {
+bool MqttSettingsService::isEnabled() {
   return _state.enabled;
 }
 
-bool MQTTSettingsService::isConnected() {
+bool MqttSettingsService::isConnected() {
   return _mqttClient.connected();
 }
 
-const char* MQTTSettingsService::getClientId() {
+const char* MqttSettingsService::getClientId() {
   return _mqttClient.getClientId();
 }
 
-AsyncMqttClientDisconnectReason MQTTSettingsService::getDisconnectReason() {
+AsyncMqttClientDisconnectReason MqttSettingsService::getDisconnectReason() {
   return _disconnectReason;
 }
 
-AsyncMqttClient* MQTTSettingsService::getMqttClient() {
+AsyncMqttClient* MqttSettingsService::getMqttClient() {
   return &_mqttClient;
 }
 
-void MQTTSettingsService::onMqttConnect(bool sessionPresent) {
+void MqttSettingsService::onMqttConnect(bool sessionPresent) {
   Serial.print("Connected to MQTT, ");
   Serial.print(sessionPresent ? "with" : "without");
   Serial.println(" persistent session");
 }
 
-void MQTTSettingsService::onMqttDisconnect(AsyncMqttClientDisconnectReason reason) {
+void MqttSettingsService::onMqttDisconnect(AsyncMqttClientDisconnectReason reason) {
   Serial.print("Disconnected from MQTT reason: ");
   Serial.println((uint8_t)reason);
   _disconnectReason = reason;
   _disconnectedAt = millis();
 }
 
-void MQTTSettingsService::onConfigUpdated() {
+void MqttSettingsService::onConfigUpdated() {
   _reconfigureMqtt = true;
   _disconnectedAt = 0;
 }
 
 #ifdef ESP32
-void MQTTSettingsService::onStationModeGotIP(WiFiEvent_t event, WiFiEventInfo_t info) {
+void MqttSettingsService::onStationModeGotIP(WiFiEvent_t event, WiFiEventInfo_t info) {
   if (_state.enabled) {
     Serial.println("WiFi connection dropped, starting MQTT client.");
     onConfigUpdated();
   }
 }
 
-void MQTTSettingsService::onStationModeDisconnected(WiFiEvent_t event, WiFiEventInfo_t info) {
+void MqttSettingsService::onStationModeDisconnected(WiFiEvent_t event, WiFiEventInfo_t info) {
   if (_state.enabled) {
     Serial.println("WiFi connection dropped, stopping MQTT client.");
     onConfigUpdated();
   }
 }
 #elif defined(ESP8266)
-void MQTTSettingsService::onStationModeGotIP(const WiFiEventStationModeGotIP& event) {
+void MqttSettingsService::onStationModeGotIP(const WiFiEventStationModeGotIP& event) {
   if (_state.enabled) {
     Serial.println("WiFi connection dropped, starting MQTT client.");
     onConfigUpdated();
   }
 }
 
-void MQTTSettingsService::onStationModeDisconnected(const WiFiEventStationModeDisconnected& event) {
+void MqttSettingsService::onStationModeDisconnected(const WiFiEventStationModeDisconnected& event) {
   if (_state.enabled) {
     Serial.println("WiFi connection dropped, stopping MQTT client.");
     onConfigUpdated();
@@ -131,7 +131,7 @@ void MQTTSettingsService::onStationModeDisconnected(const WiFiEventStationModeDi
 }
 #endif
 
-void MQTTSettingsService::configureMQTT() {
+void MqttSettingsService::configureMQTT() {
   // disconnect if currently connected
   _mqttClient.disconnect();
 

@@ -1,5 +1,5 @@
-#ifndef MQTTSettingsService_h
-#define MQTTSettingsService_h
+#ifndef MqttSettingsService_h
+#define MqttSettingsService_h
 
 #include <StatefulService.h>
 #include <HttpEndpoint.h>
@@ -29,7 +29,7 @@ static String generateClientId() {
 #endif
 }
 
-class MQTTSettings {
+class MqttSettings {
  public:
   // host and port - if enabled
   bool enabled;
@@ -48,7 +48,7 @@ class MQTTSettings {
   bool cleanSession;
   uint16_t maxTopicLength;
 
-  static void serialize(MQTTSettings& settings, JsonObject& root) {
+  static void serialize(MqttSettings& settings, JsonObject& root) {
     root["enabled"] = settings.enabled;
     root["host"] = settings.host;
     root["port"] = settings.port;
@@ -60,7 +60,7 @@ class MQTTSettings {
     root["max_topic_length"] = settings.maxTopicLength;
   }
 
-  static void deserialize(JsonObject& root, MQTTSettings& settings) {
+  static void deserialize(JsonObject& root, MqttSettings& settings) {
     settings.enabled = root["enabled"] | MQTT_SETTINGS_SERVICE_DEFAULT_ENABLED;
     settings.host = root["host"] | MQTT_SETTINGS_SERVICE_DEFAULT_HOST;
     settings.port = root["port"] | MQTT_SETTINGS_SERVICE_DEFAULT_PORT;
@@ -73,10 +73,10 @@ class MQTTSettings {
   }
 };
 
-class MQTTSettingsService : public StatefulService<MQTTSettings> {
+class MqttSettingsService : public StatefulService<MqttSettings> {
  public:
-  MQTTSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
-  ~MQTTSettingsService();
+  MqttSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
+  ~MqttSettingsService();
 
   void begin();
   void loop();
@@ -90,8 +90,8 @@ class MQTTSettingsService : public StatefulService<MQTTSettings> {
   void onConfigUpdated();
 
  private:
-  HttpEndpoint<MQTTSettings> _httpEndpoint;
-  FSPersistence<MQTTSettings> _fsPersistence;
+  HttpEndpoint<MqttSettings> _httpEndpoint;
+  FSPersistence<MqttSettings> _fsPersistence;
 
   // Pointers to hold retained copies of the mqtt client connection strings.
   // Required as AsyncMqttClient holds refrences to the supplied connection strings.
@@ -122,4 +122,4 @@ class MQTTSettingsService : public StatefulService<MQTTSettings> {
   void configureMQTT();
 };
 
-#endif  // end MQTTSettingsService_h
+#endif  // end MqttSettingsService_h

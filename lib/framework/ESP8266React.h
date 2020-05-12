@@ -16,8 +16,8 @@
 #include <APSettingsService.h>
 #include <APStatus.h>
 #include <AuthenticationService.h>
-#include <MQTTSettingsService.h>
-#include <MQTTStatus.h>
+#include <MqttSettingsService.h>
+#include <MqttStatus.h>
 #include <NTPSettingsService.h>
 #include <NTPStatus.h>
 #include <OTASettingsService.h>
@@ -63,7 +63,7 @@ class ESP8266React {
     return &_otaSettingsService;
   }
 
-  StatefulService<MQTTSettings>* getMQTTSettingsService() {
+  StatefulService<MqttSettings>* getMqttSettingsService() {
     return &_mqttSettingsService;
   }
 
@@ -77,7 +77,7 @@ class ESP8266React {
   APSettingsService _apSettingsService;
   NTPSettingsService _ntpSettingsService;
   OTASettingsService _otaSettingsService;
-  MQTTSettingsService _mqttSettingsService;
+  MqttSettingsService _mqttSettingsService;
   RestartService _restartService;
 
   AuthenticationService _authenticationService;
@@ -86,7 +86,7 @@ class ESP8266React {
   WiFiStatus _wifiStatus;
   NTPStatus _ntpStatus;
   APStatus _apStatus;
-  MQTTStatus _mqttStatus;
+  MqttStatus _mqttStatus;
   SystemStatus _systemStatus;
 };
 

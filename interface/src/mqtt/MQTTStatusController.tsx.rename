@@ -3,12 +3,12 @@ import React, { Component } from 'react';
 import {restController, RestControllerProps, RestFormLoader, SectionContent } from '../components';
 import { MQTT_STATUS_ENDPOINT } from '../api';
 
-import MQTTStatusForm from './MQTTStatusForm';
-import { MQTTStatus } from './types';
+import MqttStatusForm from './MqttStatusForm';
+import { MqttStatus } from './types';
 
-type MQTTStatusControllerProps = RestControllerProps<MQTTStatus>;
+type MqttStatusControllerProps = RestControllerProps<MqttStatus>;
 
-class MQTTStatusController extends Component<MQTTStatusControllerProps> {
+class MqttStatusController extends Component<MqttStatusControllerProps> {
 
   componentDidMount() {
     this.props.loadData();
@@ -19,11 +19,11 @@ class MQTTStatusController extends Component<MQTTStatusControllerProps> {
       <SectionContent title="MQTT Status">
         <RestFormLoader
           {...this.props}
-          render={formProps => <MQTTStatusForm {...formProps} />}
+          render={formProps => <MqttStatusForm {...formProps} />}
         />
       </SectionContent>
     )
   }
 }
 
-export default restController(MQTT_STATUS_ENDPOINT, MQTTStatusController);
+export default restController(MQTT_STATUS_ENDPOINT, MqttStatusController);

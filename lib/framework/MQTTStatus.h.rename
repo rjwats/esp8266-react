@@ -1,5 +1,5 @@
-#ifndef MQTTStatus_h
-#define MQTTStatus_h
+#ifndef MqttStatus_h
+#define MqttStatus_h
 
 #ifdef ESP32
 #include <WiFi.h>
@@ -9,7 +9,7 @@
 #include <ESPAsyncTCP.h>
 #endif
 
-#include <MQTTSettingsService.h>
+#include <MqttSettingsService.h>
 #include <ArduinoJson.h>
 #include <AsyncJson.h>
 #include <ESPAsyncWebServer.h>
@@ -18,14 +18,14 @@
 #define MAX_MQTT_STATUS_SIZE 1024
 #define MQTT_STATUS_SERVICE_PATH "/rest/mqttStatus"
 
-class MQTTStatus {
+class MqttStatus {
  public:
-  MQTTStatus(AsyncWebServer* server, MQTTSettingsService* mqttSettingsService, SecurityManager* securityManager);
+  MqttStatus(AsyncWebServer* server, MqttSettingsService* mqttSettingsService, SecurityManager* securityManager);
 
  private:
-  MQTTSettingsService* _mqttSettingsService;
+  MqttSettingsService* _mqttSettingsService;
 
   void mqttStatus(AsyncWebServerRequest* request);
 };
 
-#endif  // end MQTTStatus_h
+#endif  // end MqttStatus_h

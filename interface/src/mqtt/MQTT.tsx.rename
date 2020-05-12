@@ -5,8 +5,8 @@ import { Tabs, Tab } from '@material-ui/core';
 
 import { AuthenticatedContextProps, withAuthenticatedContext, AuthenticatedRoute } from '../authentication';
 import { MenuAppBar } from '../components';
-import MQTTStatusController from './MQTTStatusController';
-import MQTTSettingsController from './MQTTSettingsController';
+import MqttStatusController from './MqttStatusController';
+import MqttSettingsController from './MqttSettingsController';
 
 type MQTTProps = AuthenticatedContextProps & RouteComponentProps;
 
@@ -25,8 +25,8 @@ class MQTT extends Component<MQTTProps> {
           <Tab value="/mqtt/settings" label="MQTT Settings" disabled={!authenticatedContext.me.admin} />
         </Tabs>
         <Switch>
-          <AuthenticatedRoute exact path="/mqtt/status" component={MQTTStatusController} />
-          <AuthenticatedRoute exact path="/mqtt/settings" component={MQTTSettingsController} />
+          <AuthenticatedRoute exact path="/mqtt/status" component={MqttStatusController} />
+          <AuthenticatedRoute exact path="/mqtt/settings" component={MqttSettingsController} />
           <Redirect to="/mqtt/status" />
         </Switch>
       </MenuAppBar>

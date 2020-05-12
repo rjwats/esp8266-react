@@ -3,12 +3,12 @@ import React, { Component } from 'react';
 import {restController, RestControllerProps, RestFormLoader, SectionContent } from '../components';
 import { MQTT_SETTINGS_ENDPOINT } from '../api';
 
-import MQTTSettingsForm from './MQTTSettingsForm';
-import { MQTTSettings } from './types';
+import MqttSettingsForm from './MqttSettingsForm';
+import { MqttSettings } from './types';
 
-type MQTTSettingsControllerProps = RestControllerProps<MQTTSettings>;
+type MqttSettingsControllerProps = RestControllerProps<MqttSettings>;
 
-class MQTTSettingsController extends Component<MQTTSettingsControllerProps> {
+class MqttSettingsController extends Component<MqttSettingsControllerProps> {
 
   componentDidMount() {
     this.props.loadData();
@@ -19,7 +19,7 @@ class MQTTSettingsController extends Component<MQTTSettingsControllerProps> {
       <SectionContent title="MQTT Settings" titleGutter>
         <RestFormLoader
           {...this.props}
-          render={formProps => <MQTTSettingsForm {...formProps} />}
+          render={formProps => <MqttSettingsForm {...formProps} />}
         />
       </SectionContent>
     )
@@ -27,4 +27,4 @@ class MQTTSettingsController extends Component<MQTTSettingsControllerProps> {
 
 }
 
-export default restController(MQTT_SETTINGS_ENDPOINT, MQTTSettingsController);
+export default restController(MQTT_SETTINGS_ENDPOINT, MqttSettingsController);
