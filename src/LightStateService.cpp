@@ -1,49 +1,49 @@
-#include <LightSettingsService.h>
+#include <LightStateService.h>
 
-LightSettingsService::LightSettingsService(AsyncWebServer* server,
-                                           SecurityManager* securityManager,
-                                           AsyncMqttClient* mqttClient,
-                                           LightBrokerSettingsService* lightBrokerSettingsService) :
-    _httpEndpoint(LightSettings::serialize,
-                  LightSettings::deserialize,
+LightStateService::LightStateService(AsyncWebServer* server,
+                                     SecurityManager* securityManager,
+                                     AsyncMqttClient* mqttClient,
+                                     LightMqttSettingsService* lightMqttSettingsService) :
+    _httpEndpoint(LightState::serialize,
+                  LightState::deserialize,
                   this,
                   server,
                   LIGHT_SETTINGS_ENDPOINT_PATH,
                   securityManager,
                   AuthenticationPredicates::IS_AUTHENTICATED),
-    _mqttPubSub(LightSettings::haSerialize, LightSettings::haDeserialize, this, mqttClient),
-    _webSocket(LightSettings::serialize,
-               LightSettings::deserialize,
+    _mqttPubSub(LightState::haSerialize, LightState::haDeserialize, this, mqttClient),
+    _webSocket(LightState::serialize,
+               LightState::deserialize,
                this,
                server,
                LIGHT_SETTINGS_SOCKET_PATH,
                securityManager,
                AuthenticationPredicates::IS_AUTHENTICATED),
     _mqttClient(mqttClient),
-    _lightBrokerSettingsService(lightBrokerSettingsService) {
+    _lightMqttSettingsService(lightMqttSettingsService) {
   // configure blink led to be output
   pinMode(BLINK_LED, OUTPUT);
 
   // configure MQTT callback
-  _mqttClient->onConnect(std::bind(&LightSettingsService::registerConfig, this));
+  _mqttClient->onConnect(std::bind(&LightStateService::registerConfig, this));
 
   // configure update handler for when the light settings change
-  _lightBrokerSettingsService->addUpdateHandler([&](String originId) { registerConfig(); }, false);
+  _lightMqttSettingsService->addUpdateHandler([&](String originId) { registerConfig(); }, false);
 
   // configure settings service update handler to update LED state
   addUpdateHandler([&](String originId) { onConfigUpdated(); }, false);
 }
 
-void LightSettingsService::begin() {
+void LightStateService::begin() {
   _state.ledOn = DEFAULT_LED_STATE;
   onConfigUpdated();
 }
 
-void LightSettingsService::onConfigUpdated() {
+void LightStateService::onConfigUpdated() {
   digitalWrite(BLINK_LED, _state.ledOn ? LED_ON : LED_OFF);
 }
 
-void LightSettingsService::registerConfig() {
+void LightStateService::registerConfig() {
   if (!_mqttClient->connected()) {
     return;
   }
@@ -52,7 +52,7 @@ void LightSettingsService::registerConfig() {
   String stateTopic;
 
   DynamicJsonDocument doc(256);
-  _lightBrokerSettingsService->read([&](LightBrokerSettings& settings) {
+  _lightMqttSettingsService->read([&](LightMqttSettings& settings) {
     configTopic = settings.mqttPath + "/config";
     setTopic = settings.mqttPath + "/set";
     stateTopic = settings.mqttPath + "/state";

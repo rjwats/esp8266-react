@@ -7,13 +7,13 @@ import SaveIcon from '@material-ui/icons/Save';
 import { ENDPOINT_ROOT } from '../api';
 import { restController, RestControllerProps, RestFormLoader, RestFormProps, FormActions, FormButton, SectionContent } from '../components';
 
-import { LightBrokerSettings } from './types';
+import { LightMqttSettings } from './types';
 
 export const LIGHT_BROKER_SETTINGS_ENDPOINT = ENDPOINT_ROOT + "brokerSettings";
 
-type LightBrokerSettingsControllerProps = RestControllerProps<LightBrokerSettings>;
+type LightMqttSettingsControllerProps = RestControllerProps<LightMqttSettings>;
 
-class LightBrokerSettingsController extends Component<LightBrokerSettingsControllerProps> {
+class LightMqttSettingsController extends Component<LightMqttSettingsControllerProps> {
 
   componentDidMount() {
     this.props.loadData();
@@ -25,7 +25,7 @@ class LightBrokerSettingsController extends Component<LightBrokerSettingsControl
         <RestFormLoader
           {...this.props}
           render={props => (
-            <LightBrokerSettingsControllerForm {...props} />
+            <LightMqttSettingsControllerForm {...props} />
           )}
         />
       </SectionContent>
@@ -34,11 +34,11 @@ class LightBrokerSettingsController extends Component<LightBrokerSettingsControl
 
 }
 
-export default restController(LIGHT_BROKER_SETTINGS_ENDPOINT, LightBrokerSettingsController);
+export default restController(LIGHT_BROKER_SETTINGS_ENDPOINT, LightMqttSettingsController);
 
-type LightBrokerSettingsControllerFormProps = RestFormProps<LightBrokerSettings>;
+type LightMqttSettingsControllerFormProps = RestFormProps<LightMqttSettings>;
 
-function LightBrokerSettingsControllerForm(props: LightBrokerSettingsControllerFormProps) {
+function LightMqttSettingsControllerForm(props: LightMqttSettingsControllerFormProps) {
   const { data, saveData, loadData, handleValueChange } = props;
   return (
     <ValidatorForm onSubmit={saveData}>

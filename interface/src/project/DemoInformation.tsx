@@ -65,7 +65,7 @@ class DemoInformation extends Component {
             </TableRow>
             <TableRow>
               <TableCell>
-                LightSettingsRestController.tsx
+                LightStateRestController.tsx
               </TableCell>
               <TableCell>
                 A form which lets the user control the LED over a REST service.
@@ -73,7 +73,7 @@ class DemoInformation extends Component {
             </TableRow>
             <TableRow>
               <TableCell>
-                LightSettingsSocketController.tsx
+                LightStateSocketController.tsx
               </TableCell>
               <TableCell>
                 A form which lets the user control and monitor the status of the LED over WebSockets.
@@ -81,7 +81,7 @@ class DemoInformation extends Component {
             </TableRow>
             <TableRow>
               <TableCell>
-                LightBrokerSettingsController.tsx
+                LightMqttSettingsController.tsx
               </TableCell>
               <TableCell>
                 A form which lets the user change the MQTT settings for MQTT based control of the LED.

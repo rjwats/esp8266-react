@@ -1,7 +1,7 @@
-#ifndef LightSettingsService_h
-#define LightSettingsService_h
+#ifndef LightStateService_h
+#define LightStateService_h
 
-#include <LightBrokerSettingsService.h>
+#include <LightMqttSettingsService.h>
 
 #include <HttpEndpoint.h>
 #include <MqttPubSub.h>
@@ -27,42 +27,42 @@
 #define LIGHT_SETTINGS_ENDPOINT_PATH "/rest/lightSettings"
 #define LIGHT_SETTINGS_SOCKET_PATH "/ws/lightSettings"
 
-class LightSettings {
+class LightState {
  public:
   bool ledOn;
 
-  static void serialize(LightSettings& settings, JsonObject& root) {
+  static void serialize(LightState& settings, JsonObject& root) {
     root["led_on"] = settings.ledOn;
   }
 
-  static void deserialize(JsonObject& root, LightSettings& settings) {
+  static void deserialize(JsonObject& root, LightState& settings) {
     settings.ledOn = root["led_on"] | DEFAULT_LED_STATE;
   }
 
-  static void haSerialize(LightSettings& settings, JsonObject& root) {
+  static void haSerialize(LightState& settings, JsonObject& root) {
     root["state"] = settings.ledOn ? ON_STATE : OFF_STATE;
   }
 
-  static void haDeserialize(JsonObject& root, LightSettings& settings) {
+  static void haDeserialize(JsonObject& root, LightState& settings) {
     String state = root["state"];
     settings.ledOn = strcmp(ON_STATE, state.c_str()) ? false : true;
   }
 };
 
-class LightSettingsService : public StatefulService<LightSettings> {
+class LightStateService : public StatefulService<LightState> {
  public:
-  LightSettingsService(AsyncWebServer* server,
-                       SecurityManager* securityManager,
-                       AsyncMqttClient* mqttClient,
-                       LightBrokerSettingsService* lightBrokerSettingsService);
+  LightStateService(AsyncWebServer* server,
+                    SecurityManager* securityManager,
+                    AsyncMqttClient* mqttClient,
+                    LightMqttSettingsService* lightMqttSettingsService);
   void begin();
 
  private:
-  HttpEndpoint<LightSettings> _httpEndpoint;
-  MqttPubSub<LightSettings> _mqttPubSub;
-  WebSocketTxRx<LightSettings> _webSocket;
+  HttpEndpoint<LightState> _httpEndpoint;
+  MqttPubSub<LightState> _mqttPubSub;
+  WebSocketTxRx<LightState> _webSocket;
   AsyncMqttClient* _mqttClient;
-  LightBrokerSettingsService* _lightBrokerSettingsService;
+  LightMqttSettingsService* _lightMqttSettingsService;
 
   void registerConfig();
   void onConfigUpdated();

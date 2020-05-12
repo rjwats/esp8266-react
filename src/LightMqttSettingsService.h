@@ -1,5 +1,5 @@
-#ifndef LightBrokerSettingsService_h
-#define LightBrokerSettingsService_h
+#ifndef LightMqttSettingsService_h
+#define LightMqttSettingsService_h
 
 #include <HttpEndpoint.h>
 #include <FSPersistence.h>
@@ -15,33 +15,33 @@ static String defaultDeviceValue(String prefix = "") {
 #endif
 }
 
-class LightBrokerSettings {
+class LightMqttSettings {
  public:
   String mqttPath;
   String name;
   String uniqueId;
 
-  static void serialize(LightBrokerSettings& settings, JsonObject& root) {
+  static void serialize(LightMqttSettings& settings, JsonObject& root) {
     root["mqtt_path"] = settings.mqttPath;
     root["name"] = settings.name;
     root["unique_id"] = settings.uniqueId;
   }
 
-  static void deserialize(JsonObject& root, LightBrokerSettings& settings) {
+  static void deserialize(JsonObject& root, LightMqttSettings& settings) {
     settings.mqttPath = root["mqtt_path"] | defaultDeviceValue("homeassistant/light/");
     settings.name = root["name"] | defaultDeviceValue("light-");
     settings.uniqueId = root["unique_id"] | defaultDeviceValue("light-");
   }
 };
 
-class LightBrokerSettingsService : public StatefulService<LightBrokerSettings> {
+class LightMqttSettingsService : public StatefulService<LightMqttSettings> {
  public:
-  LightBrokerSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
+  LightMqttSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
   void begin();
 
  private:
-  HttpEndpoint<LightBrokerSettings> _httpEndpoint;
-  FSPersistence<LightBrokerSettings> _fsPersistence;
+  HttpEndpoint<LightMqttSettings> _httpEndpoint;
+  FSPersistence<LightMqttSettings> _fsPersistence;
 };
 
-#endif  // end LightBrokerSettingsService_h
+#endif  // end LightMqttSettingsService_h

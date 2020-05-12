@@ -341,13 +341,13 @@ The following diagram visualises how the framework's modular components fit toge
 The [SettingsService.h](lib/framework/SettingsService.h) class is a responsible for managing settings and interfacing with code which wants to change or respond to changes in them. You can define a data class to hold settings then build a SettingsService instance to manage them:
 
 ```cpp
-class LightSettings {
+class LightState {
  public:
   bool on = false;
   uint8_t brightness = 255;
 };
 
-class LightSettingsService : public SettingsService<LightSettings> {
+class LightStateService : public SettingsService<LightState> {
 };
 ```
 
@@ -355,14 +355,14 @@ You may listen for changes to settings by registering an update handler callback
 
 ```cpp
 // register an update handler
-update_handler_id_t myUpdateHandler = lightSettingsService.addUpdateHandler(
+update_handler_id_t myUpdateHandler = lightStateService.addUpdateHandler(
   [&](String originId) {
     Serial.println("The light settings have been updated"); 
   }
 );
 
 // remove the update handler
-lightSettingsService.removeUpdateHandler(myUpdateHandler);
+lightStateService.removeUpdateHandler(myUpdateHandler);
 ```
 
 An "originId" is passed to the update handler which may be used to identify the origin of the update. The default origin values the framework provides are:
@@ -376,7 +376,7 @@ websocket:{clientId}  | An update sent over WebSocket (WebSocketRxTx)
 SettingsService exposes a read function which you may use to safely read the settings. This function takes care of protecting against parallel access to the settings in multi-core enviornments such as the ESP32.
 
 ```cpp
-lightSettingsService.read([&](LightSettings& settings) {
+lightStateService.read([&](LightState& settings) {
   digitalWrite(LED_PIN, settings.on ? HIGH : LOW)
 });
 ```
@@ -384,7 +384,7 @@ lightSettingsService.read([&](LightSettings& settings) {
 SettingsService also exposes an update function which allows the caller to update the settings with a callback. This approach automatically calls the registered update handlers when complete. The example below turns on the lights using the arbitrary origin "timer":
 
 ```cpp
-lightSettingsService.update([&](LightSettings& settings) {
+lightStateService.update([&](LightState& settings) {
   settings.on = true;  // turn on the lights!
 }, "timer");
 ```
@@ -396,17 +396,17 @@ When transmitting settings over HTTP, WebSockets, or MQTT they must to be marsha
 The static functions below can be used to facilitate the serialization/deserialization of the example settings:
 
 ```cpp
-class LightSettings {
+class LightState {
  public:
   bool on = false;
   uint8_t brightness = 255;
   
-  static void serialize(LightSettings& settings, JsonObject& root) {
+  static void serialize(LightState& settings, JsonObject& root) {
     root["on"] = settings.on;
     root["brightness"] = settings.brightness;
   }
 
-  static void deserialize(JsonObject& root, LightSettings& settings) {
+  static void deserialize(JsonObject& root, LightState& settings) {
     settings.on = root["on"] | false;
     settings.brightness = root["brightness"] | 255;
   }
@@ -419,31 +419,31 @@ Copy the settings to a JsonObject using a serializer:
 
 ```cpp
 JsonObject jsonObject = jsonDocument.to<JsonObject>();
-lightSettingsService->read(jsonObject, serializer);
+lightStateService->read(jsonObject, serializer);
 ```
 
 Update the settings from a JsonObject using a deserializer:
 
 ```cpp
 JsonObject jsonObject = jsonDocument.as<JsonObject>();
-lightSettingsService->update(jsonObject, deserializer, "timer");
+lightStateService->update(jsonObject, deserializer, "timer");
 ```
 
 #### Endpoints
 
 The framework provides a [HttpEndpoint.h](lib/framework/HttpEndpoint.h) class which may be used to register GET and POST handlers to read and update the settings over HTTP. You may construct a HttpEndpoint as a part of the SettingsService or separately if you prefer. 
 
-The code below demonstrates how to extend the LightSettingsService class to provide an unsecured endpoint:
+The code below demonstrates how to extend the LightStateService class to provide an unsecured endpoint:
 
 ```cpp
-class LightSettingsService : public SettingsService<LightSettings> {
+class LightStateService : public SettingsService<LightState> {
  public:
-  LightSettingsService(AsyncWebServer* server) :
-      _httpEndpoint(LightSettings::serialize, LightSettings::deserialize, this, server, "/rest/lightSettings") {
+  LightStateService(AsyncWebServer* server) :
+      _httpEndpoint(LightState::serialize, LightState::deserialize, this, server, "/rest/lightSettings") {
   }
 
  private:
-  HttpEndpoint<LightSettings> _httpEndpoint;
+  HttpEndpoint<LightState> _httpEndpoint;
 };
 ```
 
@@ -453,17 +453,17 @@ Endpoint security is provided by authentication predicates which are [documented
 
 [FSPersistence.h](lib/framework/FSPersistence.h) allows you to save settings to the filesystem. FSPersistence automatically writes changes to the file system when settings are updated. This feature can be disabled by calling `disableUpdateHandler()` if manual control of persistence is required.
 
-The code below demonstrates how to extend the LightSettingsService class to provide persistence:
+The code below demonstrates how to extend the LightStateService class to provide persistence:
 
 ```cpp
-class LightSettingsService : public SettingsService<LightSettings> {
+class LightStateService : public SettingsService<LightState> {
  public:
-  LightSettingsService(FS* fs) :
-      _fsPersistence(LightSettings::serialize, LightSettings::deserialize, this, fs, "/config/lightSettings.json") {
+  LightStateService(FS* fs) :
+      _fsPersistence(LightState::serialize, LightState::deserialize, this, fs, "/config/lightSettings.json") {
   }
 
  private:
-  FSPersistence<LightSettings> _fsPersistence;
+  FSPersistence<LightState> _fsPersistence;
 };
 ```
 
@@ -471,17 +471,17 @@ class LightSettingsService : public SettingsService<LightSettings> {
 
 [SettingsSocket.h](lib/framework/SettingsSocket.h) allows you to read and update settings over a WebSocket connection. SettingsSocket automatically pushes changes to all connected clients when settings are updated.
 
-The code below demonstrates how to extend the LightSettingsService class to provide an unsecured websocket:
+The code below demonstrates how to extend the LightStateService class to provide an unsecured websocket:
 
 ```cpp
-class LightSettingsService : public SettingsService<LightSettings> {
+class LightStateService : public SettingsService<LightState> {
  public:
-  LightSettingsService(AsyncWebServer* server) :
-      _settingsSocket(LightSettings::serialize, LightSettings::deserialize, this, server, "/ws/lightSettings"), {
+  LightStateService(AsyncWebServer* server) :
+      _settingsSocket(LightState::serialize, LightState::deserialize, this, server, "/ws/lightSettings"), {
   }
 
  private:
-  SettingsSocket<LightSettings> _settingsSocket;
+  SettingsSocket<LightState> _settingsSocket;
 };
 ```
 
@@ -493,14 +493,14 @@ The framework includes an MQTT client which can be configured via the UI. MQTT r
 
 [SettingsBroker.h](lib/framework/SettingsBroker.h) allows you to read and update settings over a pair of MQTT topics. SettingsBroker automatically pushes changes to the pub topic and reads updates from the sub topic.
 
-The code below demonstrates how to extend the LightSettingsService class to interface with MQTT:
+The code below demonstrates how to extend the LightStateService class to interface with MQTT:
 
 ```cpp
-class LightSettingsService : public SettingsService<LightSettings> {
+class LightStateService : public SettingsService<LightState> {
  public:
-  LightSettingsService(AsyncMqttClient* mqttClient) :
-    _settingsBroker(LightSettings::serialize, 
-                    LightSettings::deserialize,
+  LightStateService(AsyncMqttClient* mqttClient) :
+    _settingsBroker(LightState::serialize, 
+                    LightState::deserialize,
                     this,
                     mqttClient,
                     "homeassistant/light/my_light/set",
@@ -508,7 +508,7 @@ class LightSettingsService : public SettingsService<LightSettings> {
   }
 
  private:
-  SettingsBroker<LightSettings> _settingsBroker;
+  SettingsBroker<LightState> _settingsBroker;
 };
 ```
 

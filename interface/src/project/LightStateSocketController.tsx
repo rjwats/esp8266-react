@@ -6,13 +6,13 @@ import { WEB_SOCKET_ROOT } from '../api';
 import { SocketControllerProps, SocketFormLoader, SocketFormProps, socketController } from '../components';
 import { SectionContent, BlockFormControlLabel } from '../components';
 
-import { LightSettings } from './types';
+import { LightState } from './types';
 
 export const LIGHT_SETTINGS_WEBSOCKET_URL = WEB_SOCKET_ROOT + "lightSettings";
 
-type LightSettingsSocketControllerProps = SocketControllerProps<LightSettings>;
+type LightStateSocketControllerProps = SocketControllerProps<LightState>;
 
-class LightSettingsSocketController extends Component<LightSettingsSocketControllerProps> {
+class LightStateSocketController extends Component<LightStateSocketControllerProps> {
 
   render() {
     return (
@@ -20,7 +20,7 @@ class LightSettingsSocketController extends Component<LightSettingsSocketControl
         <SocketFormLoader
           {...this.props}
           render={props => (
-            <LightSettingsSocketControllerForm {...props} />
+            <LightStateSocketControllerForm {...props} />
           )}
         />
       </SectionContent>
@@ -29,11 +29,11 @@ class LightSettingsSocketController extends Component<LightSettingsSocketControl
 
 }
 
-export default socketController(LIGHT_SETTINGS_WEBSOCKET_URL, 100, LightSettingsSocketController);
+export default socketController(LIGHT_SETTINGS_WEBSOCKET_URL, 100, LightStateSocketController);
 
-type LightSettingsSocketControllerFormProps = SocketFormProps<LightSettings>;
+type LightStateSocketControllerFormProps = SocketFormProps<LightState>;
 
-function LightSettingsSocketControllerForm(props: LightSettingsSocketControllerFormProps) {
+function LightStateSocketControllerForm(props: LightStateSocketControllerFormProps) {
   const { data, saveData, setData } = props;
 
   const changeLedOn = (event: React.ChangeEvent<HTMLInputElement>) => {

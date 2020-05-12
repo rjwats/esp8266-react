@@ -8,9 +8,9 @@ import { MenuAppBar } from '../components';
 import { AuthenticatedRoute } from '../authentication';
 
 import DemoInformation from './DemoInformation';
-import LightSettingsRestController from './LightSettingsRestController';
-import LightSettingsSocketController from './LightSettingsSocketController';
-import LightBrokerSettingsController from './LightBrokerSettingsController';
+import LightStateRestController from './LightStateRestController';
+import LightStateSocketController from './LightStateSocketController';
+import LightMqttSettingsController from './LightMqttSettingsController';
 
 class DemoProject extends Component<RouteComponentProps> {
 
@@ -29,9 +29,9 @@ class DemoProject extends Component<RouteComponentProps> {
         </Tabs>
         <Switch>
           <AuthenticatedRoute exact path={`/${PROJECT_PATH}/demo/information`} component={DemoInformation} />
-          <AuthenticatedRoute exact path={`/${PROJECT_PATH}/demo/rest`} component={LightSettingsRestController} />
-          <AuthenticatedRoute exact path={`/${PROJECT_PATH}/demo/socket`} component={LightSettingsSocketController} />
-          <AuthenticatedRoute exact path={`/${PROJECT_PATH}/demo/mqtt`} component={LightBrokerSettingsController} />
+          <AuthenticatedRoute exact path={`/${PROJECT_PATH}/demo/rest`} component={LightStateRestController} />
+          <AuthenticatedRoute exact path={`/${PROJECT_PATH}/demo/socket`} component={LightStateSocketController} />
+          <AuthenticatedRoute exact path={`/${PROJECT_PATH}/demo/mqtt`} component={LightMqttSettingsController} />
           <Redirect to={`/${PROJECT_PATH}/demo/information`} />
         </Switch>
       </MenuAppBar>
