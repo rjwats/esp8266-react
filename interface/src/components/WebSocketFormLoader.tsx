@@ -3,7 +3,7 @@ import React from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { LinearProgress, Typography } from '@material-ui/core';
 
-import { SocketControllerProps } from '.';
+import { WebSocketControllerProps } from '.';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -17,13 +17,13 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export type SocketFormProps<D> = Omit<SocketControllerProps<D>, "connected"> & { data: D };
+export type WebSocketFormProps<D> = Omit<WebSocketControllerProps<D>, "connected"> & { data: D };
 
-interface SocketFormLoaderProps<D> extends SocketControllerProps<D> {
-  render: (props: SocketFormProps<D>) => JSX.Element;
+interface WebSocketFormLoaderProps<D> extends WebSocketControllerProps<D> {
+  render: (props: WebSocketFormProps<D>) => JSX.Element;
 }
 
-export default function SocketFormLoader<D>(props: SocketFormLoaderProps<D>) {
+export default function WebSocketFormLoader<D>(props: WebSocketFormLoaderProps<D>) {
   const { connected, render, data, ...rest } = props;
   const classes = useStyles();
   if (!connected || !data) {

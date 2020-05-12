@@ -6,10 +6,10 @@ export { default as MenuAppBar } from './MenuAppBar';
 export { default as PasswordValidator } from './PasswordValidator';
 export { default as RestFormLoader } from './RestFormLoader';
 export { default as SectionContent } from './SectionContent';
-export { default as SocketFormLoader } from './SocketFormLoader';
+export { default as WebSocketFormLoader } from './WebSocketFormLoader';
 
 export * from './RestFormLoader';
 export * from './RestController';
 
-export * from './SocketFormLoader';
-export * from './SocketController';
+export * from './WebSocketFormLoader';
+export * from './WebSocketController';

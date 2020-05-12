@@ -3,24 +3,24 @@ import { ValidatorForm } from 'react-material-ui-form-validator';
 
 import { Typography, Box, Switch } from '@material-ui/core';
 import { WEB_SOCKET_ROOT } from '../api';
-import { SocketControllerProps, SocketFormLoader, SocketFormProps, socketController } from '../components';
+import { WebSocketControllerProps, WebSocketFormLoader, WebSocketFormProps, webSocketController } from '../components';
 import { SectionContent, BlockFormControlLabel } from '../components';
 
 import { LightState } from './types';
 
 export const LIGHT_SETTINGS_WEBSOCKET_URL = WEB_SOCKET_ROOT + "lightSettings";
 
-type LightStateSocketControllerProps = SocketControllerProps<LightState>;
+type LightStateWebSocketControllerProps = WebSocketControllerProps<LightState>;
 
-class LightStateSocketController extends Component<LightStateSocketControllerProps> {
+class LightStateWebSocketController extends Component<LightStateWebSocketControllerProps> {
 
   render() {
     return (
       <SectionContent title='WebSocket Controller' titleGutter>
-        <SocketFormLoader
+        <WebSocketFormLoader
           {...this.props}
           render={props => (
-            <LightStateSocketControllerForm {...props} />
+            <LightStateWebSocketControllerForm {...props} />
           )}
         />
       </SectionContent>
@@ -29,11 +29,11 @@ class LightStateSocketController extends Component<LightStateSocketControllerPro
 
 }
 
-export default socketController(LIGHT_SETTINGS_WEBSOCKET_URL, 100, LightStateSocketController);
+export default webSocketController(LIGHT_SETTINGS_WEBSOCKET_URL, 100, LightStateWebSocketController);
 
-type LightStateSocketControllerFormProps = SocketFormProps<LightState>;
+type LightStateWebSocketControllerFormProps = WebSocketFormProps<LightState>;
 
-function LightStateSocketControllerForm(props: LightStateSocketControllerFormProps) {
+function LightStateWebSocketControllerForm(props: LightStateWebSocketControllerFormProps) {
   const { data, saveData, setData } = props;
 
   const changeLedOn = (event: React.ChangeEvent<HTMLInputElement>) => {

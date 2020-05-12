@@ -73,7 +73,7 @@ class DemoInformation extends Component {
             </TableRow>
             <TableRow>
               <TableCell>
-                LightStateSocketController.tsx
+                LightStateWebSocketController.tsx
               </TableCell>
               <TableCell>
                 A form which lets the user control and monitor the status of the LED over WebSockets.

@@ -9,7 +9,7 @@ import { AuthenticatedRoute } from '../authentication';
 
 import DemoInformation from './DemoInformation';
 import LightStateRestController from './LightStateRestController';
-import LightStateSocketController from './LightStateSocketController';
+import LightStateWebSocketController from './LightStateWebSocketController';
 import LightMqttSettingsController from './LightMqttSettingsController';
 
 class DemoProject extends Component<RouteComponentProps> {
@@ -30,7 +30,7 @@ class DemoProject extends Component<RouteComponentProps> {
         <Switch>
           <AuthenticatedRoute exact path={`/${PROJECT_PATH}/demo/information`} component={DemoInformation} />
           <AuthenticatedRoute exact path={`/${PROJECT_PATH}/demo/rest`} component={LightStateRestController} />
-          <AuthenticatedRoute exact path={`/${PROJECT_PATH}/demo/socket`} component={LightStateSocketController} />
+          <AuthenticatedRoute exact path={`/${PROJECT_PATH}/demo/socket`} component={LightStateWebSocketController} />
           <AuthenticatedRoute exact path={`/${PROJECT_PATH}/demo/mqtt`} component={LightMqttSettingsController} />
           <Redirect to={`/${PROJECT_PATH}/demo/information`} />
         </Switch>

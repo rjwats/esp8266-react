@@ -6,7 +6,7 @@ import { withSnackbar, WithSnackbarProps } from 'notistack';
 import { addAccessTokenParameter } from '../authentication';
 import { extractEventValue } from '.';
 
-export interface SocketControllerProps<D> extends WithSnackbarProps {
+export interface WebSocketControllerProps<D> extends WithSnackbarProps {
   handleValueChange: (name: keyof D) => (event: React.ChangeEvent<HTMLInputElement>) => void;
 
   setData: (data: D, callback?: () => void) => void;
@@ -17,35 +17,35 @@ export interface SocketControllerProps<D> extends WithSnackbarProps {
   data?: D;
 }
 
-interface SocketControllerState<D> {
+interface WebSocketControllerState<D> {
   ws: Sockette;
   connected: boolean;
   clientId?: string;
   data?: D;
 }
 
-enum SocketMessageType {
+enum WebSocketMessageType {
   ID = "id",
   PAYLOAD = "payload"
 }
 
-interface SocketIdMessage {
-  type: typeof SocketMessageType.ID;
+interface WebSocketIdMessage {
+  type: typeof WebSocketMessageType.ID;
   id: string;
 }
 
-interface SocketPayloadMessage<D> {
-  type: typeof SocketMessageType.PAYLOAD;
+interface WebSocketPayloadMessage<D> {
+  type: typeof WebSocketMessageType.PAYLOAD;
   origin_id: string;
   payload: D;
 }
 
-export type SocketMessage<D> = SocketIdMessage | SocketPayloadMessage<D>;
+export type WebSocketMessage<D> = WebSocketIdMessage | WebSocketPayloadMessage<D>;
 
-export function socketController<D, P extends SocketControllerProps<D>>(wsUrl: string, wsThrottle: number, SocketController: React.ComponentType<P & SocketControllerProps<D>>) {
+export function webSocketController<D, P extends WebSocketControllerProps<D>>(wsUrl: string, wsThrottle: number, WebSocketController: React.ComponentType<P & WebSocketControllerProps<D>>) {
   return withSnackbar(
-    class extends React.Component<Omit<P, keyof SocketControllerProps<D>> & WithSnackbarProps, SocketControllerState<D>> {
-      constructor(props: Omit<P, keyof SocketControllerProps<D>> & WithSnackbarProps) {
+    class extends React.Component<Omit<P, keyof WebSocketControllerProps<D>> & WithSnackbarProps, WebSocketControllerState<D>> {
+      constructor(props: Omit<P, keyof WebSocketControllerProps<D>> & WithSnackbarProps) {
         super(props);
         this.state = {
           ws: new Sockette(addAccessTokenParameter(wsUrl), {
@@ -64,20 +64,20 @@ export function socketController<D, P extends SocketControllerProps<D>>(wsUrl: s
       onMessage = (event: MessageEvent) => {
         const rawData = event.data;
         if (typeof rawData === 'string' || rawData instanceof String) {
-          this.handleMessage(JSON.parse(rawData as string) as SocketMessage<D>);
+          this.handleMessage(JSON.parse(rawData as string) as WebSocketMessage<D>);
         }
       }
 
-      handleMessage = (socketMessage: SocketMessage<D>) => {
-        switch (socketMessage.type) {
-          case SocketMessageType.ID:
-            this.setState({ clientId: socketMessage.id });
+      handleMessage = (message: WebSocketMessage<D>) => {
+        switch (message.type) {
+          case WebSocketMessageType.ID:
+            this.setState({ clientId: message.id });
             break;
-          case SocketMessageType.PAYLOAD:
+          case WebSocketMessageType.PAYLOAD:
             const { clientId, data } = this.state;
-            if (clientId && (!data || clientId !== socketMessage.origin_id)) {
+            if (clientId && (!data || clientId !== message.origin_id)) {
               this.setState(
-                { data: socketMessage.payload }
+                { data: message.payload }
               );
             }
             break;
@@ -118,7 +118,7 @@ export function socketController<D, P extends SocketControllerProps<D>>(wsUrl: s
       }
 
       render() {
-        return <SocketController
+        return <WebSocketController
           handleValueChange={this.handleValueChange}
           setData={this.setData}
           saveData={this.saveData}
