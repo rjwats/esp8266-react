@@ -11,7 +11,7 @@ LightBrokerSettingsService lightBrokerSettingsService =
     LightBrokerSettingsService(&server, &SPIFFS, esp8266React.getSecurityManager());
 LightSettingsService lightSettingsService = LightSettingsService(&server,
                                                                  esp8266React.getSecurityManager(),
-                                                                 esp8266React.getMQTTClient(),
+                                                                 esp8266React.getMqttClient(),
                                                                  &lightBrokerSettingsService);
 
 void setup() {

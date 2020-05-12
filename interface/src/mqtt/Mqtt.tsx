@@ -8,9 +8,9 @@ import { MenuAppBar } from '../components';
 import MqttStatusController from './MqttStatusController';
 import MqttSettingsController from './MqttSettingsController';
 
-type MQTTProps = AuthenticatedContextProps & RouteComponentProps;
+type MqttProps = AuthenticatedContextProps & RouteComponentProps;
 
-class MQTT extends Component<MQTTProps> {
+class Mqtt extends Component<MqttProps> {
 
   handleTabChange = (event: React.ChangeEvent<{}>, path: string) => {
     this.props.history.push(path);
@@ -34,4 +34,4 @@ class MQTT extends Component<MQTTProps> {
   }
 }
 
-export default withAuthenticatedContext(MQTT);
+export default withAuthenticatedContext(Mqtt);

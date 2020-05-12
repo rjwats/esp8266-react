@@ -119,7 +119,7 @@ class MqttSettingsService : public StatefulService<MqttSettings> {
 
   void onMqttConnect(bool sessionPresent);
   void onMqttDisconnect(AsyncMqttClientDisconnectReason reason);
-  void configureMQTT();
+  void configureMqtt();
 };
 
 #endif  // end MqttSettingsService_h

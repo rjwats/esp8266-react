@@ -15,7 +15,7 @@ import Security from './security/Security';
 import System from './system/System';
 
 import { PROJECT_PATH } from './api';
-import MQTT from './mqtt/MQTT';
+import Mqtt from './mqtt/Mqtt';
 
 class AppRouting extends Component {
 
@@ -32,7 +32,7 @@ class AppRouting extends Component {
           <AuthenticatedRoute exact path="/wifi/*" component={WiFiConnection} />         
           <AuthenticatedRoute exact path="/ap/*" component={AccessPoint} />
           <AuthenticatedRoute exact path="/ntp/*" component={NetworkTime} />
-          <AuthenticatedRoute exact path="/mqtt/*" component={MQTT} />
+          <AuthenticatedRoute exact path="/mqtt/*" component={Mqtt} />
           <AuthenticatedRoute exact path="/security/*" component={Security} /> 
           <AuthenticatedRoute exact path="/system/*" component={System} />          
           <Redirect to="/" />

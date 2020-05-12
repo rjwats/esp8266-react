@@ -55,7 +55,7 @@ void MqttSettingsService::begin() {
 void MqttSettingsService::loop() {
   if (_reconfigureMqtt || (_disconnectedAt && (unsigned long)(millis() - _disconnectedAt) >= MQTT_RECONNECTION_DELAY)) {
     // reconfigure MQTT client
-    configureMQTT();
+    configureMqtt();
 
     // clear the reconnection flags
     _reconfigureMqtt = false;
@@ -131,7 +131,7 @@ void MqttSettingsService::onStationModeDisconnected(const WiFiEventStationModeDi
 }
 #endif
 
-void MqttSettingsService::configureMQTT() {
+void MqttSettingsService::configureMqtt() {
   // disconnect if currently connected
   _mqttClient.disconnect();
 
