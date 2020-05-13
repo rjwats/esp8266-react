@@ -335,9 +335,9 @@ The following diagram visualises how the framework's modular components fit toge
 
 ![framework diagram](/media/framework.png?raw=true "framework diagram")
 
-#### Settings service
+#### Stateful service
 
-The [SettingsService.h](lib/framework/SettingsService.h) class is a responsible for managing settings and interfacing with code which wants to change or respond to changes in them. You can define a data class to hold settings then build a SettingsService instance to manage them:
+The [StatefulService.h](lib/framework/StatefulService.h) class is a responsible for managing state and interfacing with code which wants to change or respond to changes in that state. You can define a data class to hold some state, then build a StatefulService class to manage its state:
 
 ```cpp
 class LightState {
@@ -346,17 +346,17 @@ class LightState {
   uint8_t brightness = 255;
 };
 
-class LightStateService : public SettingsService<LightState> {
+class LightStateService : public StatefulService<LightState> {
 };
 ```
 
-You may listen for changes to settings by registering an update handler callback. It is possible to remove an update handler later if required.
+You may listen for changes to state by registering an update handler callback. It is possible to remove an update handler later if required.
 
 ```cpp
 // register an update handler
 update_handler_id_t myUpdateHandler = lightStateService.addUpdateHandler(
   [&](String originId) {
-    Serial.println("The light settings have been updated"); 
+    Serial.println("The light's state has been updated"); 
   }
 );
 
@@ -372,27 +372,27 @@ http                  | An update sent over REST (HttpEndpoint)
 mqtt                  | An update sent over MQTT (MqttPubSub)
 websocket:{clientId}  | An update sent over WebSocket (WebSocketRxTx)
 
-SettingsService exposes a read function which you may use to safely read the settings. This function takes care of protecting against parallel access to the settings in multi-core enviornments such as the ESP32.
+StatefulService exposes a read function which you may use to safely read the state. This function takes care of protecting against parallel access to the state in multi-core enviornments such as the ESP32.
 
 ```cpp
-lightStateService.read([&](LightState& settings) {
-  digitalWrite(LED_PIN, settings.on ? HIGH : LOW)
+lightStateService.read([&](LightState& state) {
+  digitalWrite(LED_PIN, state.on ? HIGH : LOW); // apply the state update to the LED_PIN
 });
 ```
 
-SettingsService also exposes an update function which allows the caller to update the settings with a callback. This approach automatically calls the registered update handlers when complete. The example below turns on the lights using the arbitrary origin "timer":
+StatefulService also exposes an update function which allows the caller to update the state with a callback. This approach automatically calls the registered update handlers when complete. The example below turns on the lights using the arbitrary origin "timer":
 
 ```cpp
-lightStateService.update([&](LightState& settings) {
-  settings.on = true;  // turn on the lights!
+lightStateService.update([&](LightState& state) {
+  state.on = true;  // turn on the lights!
 }, "timer");
 ```
 
 #### Serialization
 
-When transmitting settings over HTTP, WebSockets, or MQTT they must to be marshalled into a serializable form (JSON). The framework uses ArduinoJson for serialization and the functions defined in [JsonSerializer.h](lib/framework/JsonSerializer.h) and [JsonDeserializer.h](lib/framework/JsonDeserializer.h) facilitate this.
+When transmitting state over HTTP, WebSockets, or MQTT it must to be marshalled into a serializable form (JSON). The framework uses ArduinoJson for serialization and the functions defined in [JsonSerializer.h](lib/framework/JsonSerializer.h) and [JsonDeserializer.h](lib/framework/JsonDeserializer.h) facilitate this.
 
-The static functions below can be used to facilitate the serialization/deserialization of the example settings:
+The static functions below can be used to facilitate the serialization/deserialization of the light state:
 
 ```cpp
 class LightState {
@@ -400,28 +400,28 @@ class LightState {
   bool on = false;
   uint8_t brightness = 255;
   
-  static void serialize(LightState& settings, JsonObject& root) {
-    root["on"] = settings.on;
-    root["brightness"] = settings.brightness;
+  static void serialize(LightState& state, JsonObject& root) {
+    root["on"] = state.on;
+    root["brightness"] = state.brightness;
   }
 
-  static void deserialize(JsonObject& root, LightState& settings) {
-    settings.on = root["on"] | false;
-    settings.brightness = root["brightness"] | 255;
+  static void deserialize(JsonObject& root, LightState& state) {
+    state.on = root["on"] | false;
+    state.brightness = root["brightness"] | 255;
   }
 };
 ```
 
-For convenience, the SettingsService class provides overloads of its `update` and `read` functions which utilize these functions.
+For convenience, the StatefulService class provides overloads of its `update` and `read` functions which utilize these functions.
 
-Copy the settings to a JsonObject using a serializer:
+Copy the state to a JsonObject using a serializer:
 
 ```cpp
 JsonObject jsonObject = jsonDocument.to<JsonObject>();
 lightStateService->read(jsonObject, serializer);
 ```
 
-Update the settings from a JsonObject using a deserializer:
+Update the state from a JsonObject using a deserializer:
 
 ```cpp
 JsonObject jsonObject = jsonDocument.as<JsonObject>();
@@ -430,15 +430,15 @@ lightStateService->update(jsonObject, deserializer, "timer");
 
 #### Endpoints
 
-The framework provides a [HttpEndpoint.h](lib/framework/HttpEndpoint.h) class which may be used to register GET and POST handlers to read and update the settings over HTTP. You may construct a HttpEndpoint as a part of the SettingsService or separately if you prefer. 
+The framework provides an [HttpEndpoint.h](lib/framework/HttpEndpoint.h) class which may be used to register GET and POST handlers to read and update the state over HTTP. You may construct an HttpEndpoint as a part of the StatefulService or separately if you prefer. 
 
 The code below demonstrates how to extend the LightStateService class to provide an unsecured endpoint:
 
 ```cpp
-class LightStateService : public SettingsService<LightState> {
+class LightStateService : public StatefulService<LightState> {
  public:
   LightStateService(AsyncWebServer* server) :
-      _httpEndpoint(LightState::serialize, LightState::deserialize, this, server, "/rest/lightSettings") {
+      _httpEndpoint(LightState::serialize, LightState::deserialize, this, server, "/rest/lightState") {
   }
 
  private:
@@ -450,15 +450,15 @@ Endpoint security is provided by authentication predicates which are [documented
 
 #### Persistence
 
-[FSPersistence.h](lib/framework/FSPersistence.h) allows you to save settings to the filesystem. FSPersistence automatically writes changes to the file system when settings are updated. This feature can be disabled by calling `disableUpdateHandler()` if manual control of persistence is required.
+[FSPersistence.h](lib/framework/FSPersistence.h) allows you to save state to the filesystem. FSPersistence automatically writes changes to the file system when state is updated. This feature can be disabled by calling `disableUpdateHandler()` if manual control of persistence is required.
 
 The code below demonstrates how to extend the LightStateService class to provide persistence:
 
 ```cpp
-class LightStateService : public SettingsService<LightState> {
+class LightStateService : public StatefulService<LightState> {
  public:
   LightStateService(FS* fs) :
-      _fsPersistence(LightState::serialize, LightState::deserialize, this, fs, "/config/lightSettings.json") {
+      _fsPersistence(LightState::serialize, LightState::deserialize, this, fs, "/config/lightState.json") {
   }
 
  private:
@@ -468,19 +468,19 @@ class LightStateService : public SettingsService<LightState> {
 
 #### WebSockets
 
-[SettingsSocket.h](lib/framework/SettingsSocket.h) allows you to read and update settings over a WebSocket connection. SettingsSocket automatically pushes changes to all connected clients when settings are updated.
+[WebSocketTxRx.h](lib/framework/WebSocketTxRx.h) allows you to read and update state over a WebSocket connection. WebSocketTxRx automatically pushes changes to all connected clients when state is updated.
 
-The code below demonstrates how to extend the LightStateService class to provide an unsecured websocket:
+The code below demonstrates how to extend the LightStateService class to provide an unsecured WebSocket:
 
 ```cpp
-class LightStateService : public SettingsService<LightState> {
+class LightStateService : public StatefulService<LightState> {
  public:
   LightStateService(AsyncWebServer* server) :
-      _settingsSocket(LightState::serialize, LightState::deserialize, this, server, "/ws/lightSettings"), {
+      _webSocket(LightState::serialize, LightState::deserialize, this, server, "/ws/lightState"), {
   }
 
  private:
-  SettingsSocket<LightState> _settingsSocket;
+  WebSocketTxRx<LightState> _webSocket;
 };
 ```
 
@@ -488,17 +488,17 @@ WebSocket security is provided by authentication predicates which are [documente
 
 #### MQTT
 
-The framework includes an MQTT client which can be configured via the UI. MQTT requirements will differ from project to project so the framework exposes the client for you to use as you see fit. The framework does however provide a utility to interface SettingsService to a pair of pub/sub (state/set) topics. This utility can be used to synchronize state with software such as Home Assistant.
+The framework includes an MQTT client which can be configured via the UI. MQTT requirements will differ from project to project so the framework exposes the client for you to use as you see fit. The framework does however provide a utility to interface StatefulService to a pair of pub/sub (state/set) topics. This utility can be used to synchronize state with software such as Home Assistant.
 
-[SettingsBroker.h](lib/framework/SettingsBroker.h) allows you to read and update settings over a pair of MQTT topics. SettingsBroker automatically pushes changes to the pub topic and reads updates from the sub topic.
+[MqttPubSub.h](lib/framework/MqttPubSub.h) allows you to publish and subscribe to synchronize state over a pair of MQTT topics. MqttPubSub automatically pushes changes to the "pub" topic and reads updates from the "sub" topic.
 
 The code below demonstrates how to extend the LightStateService class to interface with MQTT:
 
 ```cpp
-class LightStateService : public SettingsService<LightState> {
+class LightStateService : public StatefulService<LightState> {
  public:
   LightStateService(AsyncMqttClient* mqttClient) :
-    _settingsBroker(LightState::serialize, 
+    _mqttPubSub(LightState::serialize, 
                     LightState::deserialize,
                     this,
                     mqttClient,
@@ -507,14 +507,14 @@ class LightStateService : public SettingsService<LightState> {
   }
 
  private:
-  SettingsBroker<LightState> _settingsBroker;
+  MqttPubSub<LightState> _mqttPubSub;
 };
 ```
 
-You can also re-configure the pub/sub topics at runtime as required:
+You can re-configure the pub/sub topics at runtime as required:
 
 ```cpp
-_settingsBroker.configureBroker("homeassistant/light/desk_lamp/set", "homeassistant/light/desk_lamp/state");
+_mqttPubSub.configureBroker("homeassistant/light/desk_lamp/set", "homeassistant/light/desk_lamp/state");
 ```
 
 The demo project allows the user to modify the MQTT topics via the UI so they can be changed without re-flashing the firmware.
@@ -543,7 +543,7 @@ server->on("/rest/someService", HTTP_GET,
 
 The framework supplies access to various features via getter functions:
 
-SettingsService               | Description
+SettingsService              | Description
 ---------------------------- | ----------------------------------------------
 getSecurityManager()         | The security manager - detailed above
 getSecuritySettingsService() | Configures the users and other security settings
@@ -554,7 +554,7 @@ getOTASettingsService()      | Configures and manages the Over-The-Air update fe
 getMqttSettingsService()     | Configures and manages the MQTT connection
 getMqttClient()              | Provides direct access to the MQTT client instance
 
-These can be used to observe changes to settings. They can also be used to fetch or update settings.
+The core features use the [StatefulService.h](lib/framework/StatefulService.h) class and can therefore you can change settings or observe changes to settings through the read/update API.
 
 Inspect the current WiFi settings:
 
