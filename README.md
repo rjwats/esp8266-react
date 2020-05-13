@@ -19,7 +19,7 @@ Provides many of the features required for IoT projects:
 * Remote Firmware Updates - Enable secured OTA updates
 * Security - Protected RESTful endpoints and a secured user interface
 
-The back end is provided by a set of RESTful endpoints and the React based front end is responsive and scales well to various screen sizes.
+The back end is provided by a set of RESTful endpoints and the responsive React based front end is built using [Material-UI](https://material-ui.com/).
 
 The front end has the prerequisite manifest file and icon, so it can be added to the home screen of a mobile device if required.
 
@@ -38,13 +38,14 @@ Pull the project and open it in PlatformIO. PlatformIO should download the ESP82
 
 The project structure is as follows:
 
-Resource | Description
----- | -----------
-[data/](data) | The file system image directory
-[interface/](interface) | React based front end
-[src/](src) | The main.cpp and demo project to get you started
+Resource                         | Description
+-------------------------------- | ----------------------------------------------------------------------
+[data/](data)                    | The file system image directory
+[interface/](interface)          | React based front end
+[lib/framework/](lib/framework)  | C++ back end for the ESP8266/ESP32 device
+[src/](src)                      | The main.cpp and demo project to get you started
+[scripts/](scripts)              | Scripts that build the React interface as part of the platformio build
 [platformio.ini](platformio.ini) | PlatformIO project configuration file
-[lib/framework/](lib/framework) | C++ back end for the ESP8266 device
 
 ### Building the firmware
 
@@ -76,13 +77,29 @@ platformio run -t upload
 
 ### Building & uploading the interface
 
-The interface has been configured with create-react-app and react-app-rewired so the build can customized for the target device. The large artefacts are gzipped and source maps and service worker are excluded from the production build. This reduces the production build to around ~200k, which easily fits on the device.
+The interface has been configured with create-react-app and react-app-rewired so the build can customized for the target device. The large artefacts are gzipped and source maps and service worker are excluded from the production build. This reduces the production build to around ~150k, which easily fits on the device.
 
-The interface will be automatically built by PlatformIO before it builds the firmware. The project can be configured to serve the interface from either SPIFFS or PROGMEM as your project requires. The default configuration is to serve the content from SPIFFS which requires an additional upload step which is documented below.
+The interface will be automatically built by PlatformIO before it builds the firmware. The project can be configured to serve the interface from either PROGMEM or SPIFFS as your project requires. The default configuration is to serve the content from PROGMEM, serving from SPIFFS requires an additional upload step which is documented below.
+
+#### Serving the interface from PROGMEM
+
+By default, the project is configured to serve the interface from PROGMEM. This can be disabled by removing the -D PROGMEM_WWW build flag in ['platformio.ini'](platformio.ini) and re-building the firmware. If this your desired approach you must manually [upload the file system image](#uploading-the-file-system-image) to the device.
+
+The interface will consume ~150k of program space which can be problematic if you already have a large binary artefact or if you have added large dependencies to the interface. The ESP32 binaries are fairly large in there simplest form so the addition of the interface resources requires us to use special partitioning for the ESP32.
+
+When building using the "node32s" profile, the project uses the custom [min_spiffs.csv](https://github.com/espressif/arduino-esp32/blob/master/tools/partitions/min_spiffs.csv) partitioning mode. You may want to disable this if you are manually uploading the file system image:
+
+
+```yaml
+[env:node32s]
+board_build.partitions = min_spiffs.csv
+platform = espressif32
+board = node32s
+```
 
 #### Uploading the file system image
 
-If service content from SPIFFS (default), build the project first. Then the compiled interface may be uploaded to the device by pressing the "Upload File System image" button:
+If service content from SPIFFS, disable the PROGMEM_WWW build flag and build the project. The compiled interface will be copied to [data/](data) by the build process and may now be uploaded to the device by pressing the "Upload File System image" button:
 
 ![uploadfs](/media/uploadfs.png?raw=true "uploadfs")
 
@@ -92,28 +109,9 @@ Alternatively run the 'uploadfs' target:
 platformio run -t uploadfs
 ```
 
-#### Serving the interface from PROGMEM
-
-You can configure the project to serve the interface from PROGMEM by uncommenting the -D PROGMEM_WWW build flag in ['platformio.ini'](platformio.ini) then re-building and uploading the firmware to the device. 
-
-Be aware that this will consume ~150k of program space which can be especially problematic if you already have a large build artefact or if you have added large javascript dependencies to the interface. The ESP32 binaries are large already, so this will be a problem if you are using one of these devices and require this type of setup.
-
-A method for working around this issue can be to reduce the amount of space allocated to SPIFFS by configuring the device to use different partitioning. If you don't require SPIFFS other than for storing config one approach might be to configure a minimal SPIFFS partition.
-
-For a ESP32 (4mb variant) there is a handy "min_spiffs.csv" partition table which can be enabled easily:
-
-```yaml
-[env:node32s]
-board_build.partitions = min_spiffs.csv
-platform = espressif32
-board = node32s
-```
-
-This is left as an exercise for the reader as everyone's requirements will vary.
-
 ### Running the interface locally
 
-You can run a local development server to allow you preview changes to the front end without the need to upload a file system image to the device after each change.
+You can run a development server locally to allow you preview changes to the front end without the need to upload a file system image to the device after each change. 
 
 Change to the ['interface'](interface) directory with your bash shell (or Git Bash) and use the standard commands you would with any react app built with create-react-app:
 
@@ -127,8 +125,7 @@ Install the npm dependencies, if required and start the development server:
 npm install
 npm start
 ```
-
-> **Note**: To run the interface locally you may need to modify the endpoint root path and enable CORS.
+> **Tip**: You can (optionally) speed up the build by commenting out the call to build_interface.py under "extra scripts" during local development. This will prevent the npm process from building the production release every time the firmware is compiled significantly decreasing the build time.
 
 #### Changing the endpoint root
 
@@ -141,7 +138,7 @@ REACT_APP_WEB_SOCKET_ROOT=ws://192.168.0.99
 
 The `REACT_APP_HTTP_ROOT` and `REACT_APP_WEB_SOCKET_ROOT` properties can be modified to point a ESP device running the back end firmware.
 
-> **Note**: You must restart the development server for changes to the environment to become effective.
+> **Tip**: You must restart the development server for changes to the environment file to come into effect.
 
 #### Enabling CORS
 
@@ -152,7 +149,7 @@ You can enable CORS on the back end by uncommenting the -D ENABLE_CORS build fla
 -D CORS_ORIGIN=\"http://localhost:3000\"
 ```
 
-## Device Configuration
+## Device configuration & default settings
 
 The SPIFFS image (in the ['data'](data) folder) contains a JSON settings file for each of the configurable features. 
 
@@ -167,7 +164,9 @@ File | Description
 [securitySettings.json](data/config/securitySettings.json) | Security settings and user credentials
 [wifiSettings.json](data/config/wifiSettings.json)         | WiFi connection settings
 
-### Access point settings
+These files can be pre-loaded with default configuration and [uploaded to the device](#uploading-the-file-system-image) if required. There are sensible defaults provided by the firmware, so this is optional.
+
+### Default access point settings
 
 The default settings configure the device to bring up an access point on start up which can be used to configure the device:
 
@@ -183,7 +182,7 @@ Username | Password
 admin    | admin
 guest    | guest
 
-It is recommended that you change the JWT secret and user credentials from their defaults protect your device. You can do this in the user interface, or by modifying [securitySettings.json](data/config/securitySettings.json) before uploading the file system image. 
+It is recommended that you change the JWT secret and user credentials from their defaults protect your device. You can do this in the user interface, or by modifying [securitySettings.json](data/config/securitySettings.json) before [uploading the file system image](#uploading-the-file-system-image). 
 
 ## Building for different devices
 
@@ -588,7 +587,7 @@ esp8266React.getWiFiSettingsService()->addUpdateHandler(
 ## Libraries Used
 
 * [React](https://reactjs.org/)
-* [Material-UI](https://material-ui-next.com/)
+* [Material-UI](https://material-ui.com/)
 * [notistack](https://github.com/iamhosseindhv/notistack)
 * [ArduinoJson](https://github.com/bblanchon/ArduinoJson)
 * [ESPAsyncWebServer](https://github.com/me-no-dev/ESPAsyncWebServer)
