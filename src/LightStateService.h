@@ -24,8 +24,8 @@
 #define LED_OFF 0x1
 #endif
 
-#define LIGHT_SETTINGS_ENDPOINT_PATH "/rest/lightSettings"
-#define LIGHT_SETTINGS_SOCKET_PATH "/ws/lightSettings"
+#define LIGHT_SETTINGS_ENDPOINT_PATH "/rest/lightState"
+#define LIGHT_SETTINGS_SOCKET_PATH "/ws/lightState"
 
 class LightState {
  public:

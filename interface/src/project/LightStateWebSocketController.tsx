@@ -8,7 +8,7 @@ import { SectionContent, BlockFormControlLabel } from '../components';
 
 import { LightState } from './types';
 
-export const LIGHT_SETTINGS_WEBSOCKET_URL = WEB_SOCKET_ROOT + "lightSettings";
+export const LIGHT_SETTINGS_WEBSOCKET_URL = WEB_SOCKET_ROOT + "lightState";
 
 type LightStateWebSocketControllerProps = WebSocketControllerProps<LightState>;
 

@@ -9,7 +9,7 @@ import { restController, RestControllerProps, RestFormLoader, RestFormProps, For
 
 import { LightState } from './types';
 
-export const LIGHT_SETTINGS_ENDPOINT = ENDPOINT_ROOT + "lightSettings";
+export const LIGHT_SETTINGS_ENDPOINT = ENDPOINT_ROOT + "lightState";
 
 type LightStateRestControllerProps = RestControllerProps<LightState>;
 
