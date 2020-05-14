@@ -1,14 +1,18 @@
 #include <APSettingsService.h>
 
 APSettingsService::APSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) :
-    AdminSettingsService(server, fs, securityManager, AP_SETTINGS_SERVICE_PATH, AP_SETTINGS_FILE) {
-}
-
-APSettingsService::~APSettingsService() {
+    _httpEndpoint(APSettings::serialize,
+                  APSettings::deserialize,
+                  this,
+                  server,
+                  AP_SETTINGS_SERVICE_PATH,
+                  securityManager),
+    _fsPersistence(APSettings::serialize, APSettings::deserialize, this, fs, AP_SETTINGS_FILE) {
+  addUpdateHandler([&](String originId) { reconfigureAP(); }, false);
 }
 
 void APSettingsService::begin() {
-  SettingsService::begin();
+  _fsPersistence.readFromFS();
   reconfigureAP();
 }
 
@@ -28,8 +32,8 @@ void APSettingsService::loop() {
 
 void APSettingsService::manageAP() {
   WiFiMode_t currentWiFiMode = WiFi.getMode();
-  if (_settings.provisionMode == AP_MODE_ALWAYS ||
-      (_settings.provisionMode == AP_MODE_DISCONNECTED && WiFi.status() != WL_CONNECTED)) {
+  if (_state.provisionMode == AP_MODE_ALWAYS ||
+      (_state.provisionMode == AP_MODE_DISCONNECTED && WiFi.status() != WL_CONNECTED)) {
     if (currentWiFiMode == WIFI_OFF || currentWiFiMode == WIFI_STA) {
       startAP();
     }
@@ -42,7 +46,7 @@ void APSettingsService::manageAP() {
 
 void APSettingsService::startAP() {
   Serial.println("Starting software access point");
-  WiFi.softAP(_settings.ssid.c_str(), _settings.password.c_str());
+  WiFi.softAP(_state.ssid.c_str(), _state.password.c_str());
   if (!_dnsServer) {
     IPAddress apIp = WiFi.softAPIP();
     Serial.print("Starting captive portal on ");
@@ -67,28 +71,4 @@ void APSettingsService::handleDNS() {
   if (_dnsServer) {
     _dnsServer->processNextRequest();
   }
-}
-
-void APSettingsService::readFromJsonObject(JsonObject& root) {
-  _settings.provisionMode = root["provision_mode"] | AP_MODE_ALWAYS;
-  switch (_settings.provisionMode) {
-    case AP_MODE_ALWAYS:
-    case AP_MODE_DISCONNECTED:
-    case AP_MODE_NEVER:
-      break;
-    default:
-      _settings.provisionMode = AP_MODE_ALWAYS;
-  }
-  _settings.ssid = root["ssid"] | AP_DEFAULT_SSID;
-  _settings.password = root["password"] | AP_DEFAULT_PASSWORD;
-}
-
-void APSettingsService::writeToJsonObject(JsonObject& root) {
-  root["provision_mode"] = _settings.provisionMode;
-  root["ssid"] = _settings.ssid;
-  root["password"] = _settings.password;
-}
-
-void APSettingsService::onConfigUpdated() {
-  reconfigureAP();
 }

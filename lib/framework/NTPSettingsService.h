@@ -1,7 +1,8 @@
 #ifndef NTPSettingsService_h
 #define NTPSettingsService_h
 
-#include <AdminSettingsService.h>
+#include <HttpEndpoint.h>
+#include <FSPersistence.h>
 
 #include <time.h>
 #ifdef ESP32
@@ -16,10 +17,6 @@
 #define NTP_SETTINGS_SERVICE_DEFAULT_TIME_ZONE_FORMAT "GMT0BST,M3.5.0/1,M10.5.0"
 #define NTP_SETTINGS_SERVICE_DEFAULT_SERVER "time.google.com"
 
-// min poll delay of 60 secs, max 1 day
-#define NTP_SETTINGS_MIN_INTERVAL 60
-#define NTP_SETTINGS_MAX_INTERVAL 86400
-
 #define NTP_SETTINGS_FILE "/config/ntpSettings.json"
 #define NTP_SETTINGS_SERVICE_PATH "/rest/ntpSettings"
 
@@ -29,22 +26,31 @@ class NTPSettings {
   String tzLabel;
   String tzFormat;
   String server;
+
+  static void serialize(NTPSettings& settings, JsonObject& root) {
+    root["enabled"] = settings.enabled;
+    root["server"] = settings.server;
+    root["tz_label"] = settings.tzLabel;
+    root["tz_format"] = settings.tzFormat;
+  }
+
+  static void deserialize(JsonObject& root, NTPSettings& settings) {
+    settings.enabled = root["enabled"] | NTP_SETTINGS_SERVICE_DEFAULT_ENABLED;
+    settings.server = root["server"] | NTP_SETTINGS_SERVICE_DEFAULT_SERVER;
+    settings.tzLabel = root["tz_label"] | NTP_SETTINGS_SERVICE_DEFAULT_TIME_ZONE_LABEL;
+    settings.tzFormat = root["tz_format"] | NTP_SETTINGS_SERVICE_DEFAULT_TIME_ZONE_FORMAT;
+  }
 };
 
-class NTPSettingsService : public AdminSettingsService<NTPSettings> {
+class NTPSettingsService : public StatefulService<NTPSettings> {
  public:
   NTPSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
-  ~NTPSettingsService();
 
-  void loop();
-
- protected:
-  void readFromJsonObject(JsonObject& root);
-  void writeToJsonObject(JsonObject& root);
-  void onConfigUpdated();
+  void begin();
 
  private:
-  bool _reconfigureNTP = false;
+  HttpEndpoint<NTPSettings> _httpEndpoint;
+  FSPersistence<NTPSettings> _fsPersistence;
 
 #ifdef ESP32
   void onStationModeGotIP(WiFiEvent_t event, WiFiEventInfo_t info);
@@ -56,7 +62,6 @@ class NTPSettingsService : public AdminSettingsService<NTPSettings> {
   void onStationModeGotIP(const WiFiEventStationModeGotIP& event);
   void onStationModeDisconnected(const WiFiEventStationModeDisconnected& event);
 #endif
-
   void configureNTP();
 };
 

@@ -65,10 +65,26 @@ class DemoInformation extends Component {
             </TableRow>
             <TableRow>
               <TableCell>
-                DemoController.tsx
+                LightStateRestController.tsx
               </TableCell>
               <TableCell>
-                The demo controller tab, to control the built-in LED.
+                A form which lets the user control the LED over a REST service.
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>
+                LightStateWebSocketController.tsx
+              </TableCell>
+              <TableCell>
+                A form which lets the user control and monitor the status of the LED over WebSockets.
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>
+                LightMqttSettingsController.tsx
+              </TableCell>
+              <TableCell>
+                A form which lets the user change the MQTT settings for MQTT based control of the LED.
               </TableCell>
             </TableRow>
           </TableBody>

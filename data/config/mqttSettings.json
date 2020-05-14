@@ -1,0 +1,11 @@
+{
+  "enabled": false,
+  "host": "test.mosquitto.org",
+  "port": 1883,
+  "authenticated": false,
+  "username": "mqttuser",
+  "password": "mqttpassword",
+  "keepAlive": 16,
+  "cleanSession": true,
+  "maxTopicLength": 128
+}

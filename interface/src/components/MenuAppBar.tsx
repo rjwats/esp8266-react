@@ -13,6 +13,7 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import SettingsInputAntennaIcon from '@material-ui/icons/SettingsInputAntenna';
+import DeviceHubIcon from '@material-ui/icons/DeviceHub';
 import LockIcon from '@material-ui/icons/Lock';
 import MenuIcon from '@material-ui/icons/Menu';
 
@@ -136,6 +137,12 @@ class MenuAppBar extends React.Component<MenuAppBarProps, MenuAppBarState> {
             </ListItemIcon>
             <ListItemText primary="Network Time" />
           </ListItem>
+          <ListItem to='/mqtt/' selected={path.startsWith('/mqtt/')} button component={Link}>
+            <ListItemIcon>
+              <DeviceHubIcon />
+            </ListItemIcon>
+            <ListItemText primary="MQTT" />
+          </ListItem>          
           <ListItem to='/security/' selected={path.startsWith('/security/')} button component={Link} disabled={!authenticatedContext.me.admin}>
             <ListItemIcon>
               <LockIcon />

@@ -15,10 +15,11 @@ Provides many of the features required for IoT projects:
 * Configurable WiFi - Network scanner and WiFi configuration screen
 * Configurable Access Point - Can be continuous or automatically enabled when WiFi connection fails
 * Network Time - Synchronization with NTP
+* MQTT - Connection to an MQTT broker for automation and monitoring
 * Remote Firmware Updates - Enable secured OTA updates
 * Security - Protected RESTful endpoints and a secured user interface
 
-The back end is provided by a set of RESTful endpoints and the React based front end is responsive and scales well to various screen sizes.
+The back end is provided by a set of RESTful endpoints and the responsive React based front end is built using [Material-UI](https://material-ui.com/).
 
 The front end has the prerequisite manifest file and icon, so it can be added to the home screen of a mobile device if required.
 
@@ -37,13 +38,14 @@ Pull the project and open it in PlatformIO. PlatformIO should download the ESP82
 
 The project structure is as follows:
 
-Resource | Description
----- | -----------
-[data/](data) | The file system image directory
-[interface/](interface) | React based front end
-[src/](src) | The main.cpp and demo project to get you started
+Resource                         | Description
+-------------------------------- | ----------------------------------------------------------------------
+[data/](data)                    | The file system image directory
+[interface/](interface)          | React based front end
+[lib/framework/](lib/framework)  | C++ back end for the ESP8266/ESP32 device
+[src/](src)                      | The main.cpp and demo project to get you started
+[scripts/](scripts)              | Scripts that build the React interface as part of the platformio build
 [platformio.ini](platformio.ini) | PlatformIO project configuration file
-[lib/framework/](lib/framework) | C++ back end for the ESP8266 device
 
 ### Building the firmware
 
@@ -75,13 +77,29 @@ platformio run -t upload
 
 ### Building & uploading the interface
 
-The interface has been configured with create-react-app and react-app-rewired so the build can customized for the target device. The large artefacts are gzipped and source maps and service worker are excluded from the production build. This reduces the production build to around ~200k, which easily fits on the device.
+The interface has been configured with create-react-app and react-app-rewired so the build can customized for the target device. The large artefacts are gzipped and source maps and service worker are excluded from the production build. This reduces the production build to around ~150k, which easily fits on the device.
 
-The interface will be automatically built by PlatformIO before it builds the firmware. The project can be configured to serve the interface from either SPIFFS or PROGMEM as your project requires. The default configuration is to serve the content from SPIFFS which requires an additional upload step which is documented below.
+The interface will be automatically built by PlatformIO before it builds the firmware. The project can be configured to serve the interface from either PROGMEM or SPIFFS as your project requires. The default configuration is to serve the content from PROGMEM, serving from SPIFFS requires an additional upload step which is documented below.
+
+#### Serving the interface from PROGMEM
+
+By default, the project is configured to serve the interface from PROGMEM. This can be disabled by removing the -D PROGMEM_WWW build flag in ['platformio.ini'](platformio.ini) and re-building the firmware. If this your desired approach you must manually [upload the file system image](#uploading-the-file-system-image) to the device.
+
+The interface will consume ~150k of program space which can be problematic if you already have a large binary artefact or if you have added large dependencies to the interface. The ESP32 binaries are fairly large in there simplest form so the addition of the interface resources requires us to use special partitioning for the ESP32.
+
+When building using the "node32s" profile, the project uses the custom [min_spiffs.csv](https://github.com/espressif/arduino-esp32/blob/master/tools/partitions/min_spiffs.csv) partitioning mode. You may want to disable this if you are manually uploading the file system image:
+
+
+```yaml
+[env:node32s]
+board_build.partitions = min_spiffs.csv
+platform = espressif32
+board = node32s
+```
 
 #### Uploading the file system image
 
-If service content from SPIFFS (default), build the project first. Then the compiled interface may be uploaded to the device by pressing the "Upload File System image" button:
+If service content from SPIFFS, disable the PROGMEM_WWW build flag and build the project. The compiled interface will be copied to [data/](data) by the build process and may now be uploaded to the device by pressing the "Upload File System image" button:
 
 ![uploadfs](/media/uploadfs.png?raw=true "uploadfs")
 
@@ -91,28 +109,9 @@ Alternatively run the 'uploadfs' target:
 platformio run -t uploadfs
 ```
 
-#### Serving the interface from PROGMEM
-
-You can configure the project to serve the interface from PROGMEM by uncommenting the -D PROGMEM_WWW build flag in ['platformio.ini'](platformio.ini) then re-building and uploading the firmware to the device. 
-
-Be aware that this will consume ~150k of program space which can be especially problematic if you already have a large build artefact or if you have added large javascript dependencies to the interface. The ESP32 binaries are large already, so this will be a problem if you are using one of these devices and require this type of setup.
-
-A method for working around this issue can be to reduce the amount of space allocated to SPIFFS by configuring the device to use a differnt strategy partitioning. If you don't require SPIFFS other than for storing config one approach might be to configure a minimal SPIFFS partition.
-
-For a ESP32 (4mb variant) there is a handy "min_spiffs.csv" partition table which can be enabled easily:
-
-```yaml
-[env:node32s]
-board_build.partitions = min_spiffs.csv
-platform = espressif32
-board = node32s
-```
-
-This is largley left as an exersise for the reader as everyone's requirements will vary.
-
 ### Running the interface locally
 
-You can run a local development server to allow you preview changes to the front end without the need to upload a file system image to the device after each change. 
+You can run a development server locally to allow you preview changes to the front end without the need to upload a file system image to the device after each change. 
 
 Change to the ['interface'](interface) directory with your bash shell (or Git Bash) and use the standard commands you would with any react app built with create-react-app:
 
@@ -126,27 +125,31 @@ Install the npm dependencies, if required and start the development server:
 npm install
 npm start
 ```
-
-> **Note**: To run the interface locally you may need to modify the endpoint root path and enable CORS.
+> **Tip**: You can (optionally) speed up the build by commenting out the call to build_interface.py under "extra scripts" during local development. This will prevent the npm process from building the production release every time the firmware is compiled significantly decreasing the build time.
 
 #### Changing the endpoint root
 
-The endpoint root path can be found in ['interface/.env.development'](interface/.env.development), defined as the environment variable 'REACT_APP_ENDPOINT_ROOT'. This needs to be the root URL of the device running the back end, for example:
+The interface has a development environment which is enabled when running the development server using `npm start`. The environment file can be found in ['interface/.env.development'](interface/.env.development) and contains the HTTP root URL and the WebSocket root URL:
 
-```js
-REACT_APP_ENDPOINT_ROOT=http://192.168.0.6/rest/
+```properties
+REACT_APP_HTTP_ROOT=http://192.168.0.99
+REACT_APP_WEB_SOCKET_ROOT=ws://192.168.0.99
 ```
+
+The `REACT_APP_HTTP_ROOT` and `REACT_APP_WEB_SOCKET_ROOT` properties can be modified to point a ESP device running the back end firmware.
+
+> **Tip**: You must restart the development server for changes to the environment file to come into effect.
 
 #### Enabling CORS
 
 You can enable CORS on the back end by uncommenting the -D ENABLE_CORS build flag in ['platformio.ini'](platformio.ini) then re-building and uploading the firmware to the device. The default settings assume you will be accessing the development server on the default port on [http://localhost:3000](http://localhost:3000) this can also be changed if required:
 
-```
+```properties
 -D ENABLE_CORS
 -D CORS_ORIGIN=\"http://localhost:3000\"
 ```
 
-## Device Configuration
+## Device configuration & default settings
 
 The SPIFFS image (in the ['data'](data) folder) contains a JSON settings file for each of the configurable features. 
 
@@ -154,13 +157,16 @@ The config files can be found in the ['data/config'](data/config) directory:
 
 File | Description
 ---- | -----------
-[apSettings.json](data/config/apSettings.json) | Access point settings
-[ntpSettings.json](data/config/ntpSettings.json) | NTP synchronization settings
-[otaSettings.json](data/config/otaSettings.json) | OTA update configuration
+[apSettings.json](data/config/apSettings.json)             | Access point settings
+[mqttSettings.json](data/config/mqttSettings.json)         | MQTT connection settings
+[ntpSettings.json](data/config/ntpSettings.json)           | NTP synchronization settings
+[otaSettings.json](data/config/otaSettings.json)           | OTA update configuration
 [securitySettings.json](data/config/securitySettings.json) | Security settings and user credentials
-[wifiSettings.json](data/config/wifiSettings.json) | WiFi connection settings
+[wifiSettings.json](data/config/wifiSettings.json)         | WiFi connection settings
 
-### Access point settings
+These files can be pre-loaded with default configuration and [uploaded to the device](#uploading-the-file-system-image) if required. There are sensible defaults provided by the firmware, so this is optional.
+
+### Default access point settings
 
 The default settings configure the device to bring up an access point on start up which can be used to configure the device:
 
@@ -176,7 +182,7 @@ Username | Password
 admin    | admin
 guest    | guest
 
-It is recommended that you change the JWT secret and user credentials from their defaults protect your device. You can do this in the user interface, or by modifying [securitySettings.json](data/config/securitySettings.json) before uploading the file system image. 
+It is recommended that you change the JWT secret and user credentials from their defaults protect your device. You can do this in the user interface, or by modifying [securitySettings.json](data/config/securitySettings.json) before [uploading the file system image](#uploading-the-file-system-image). 
 
 ## Building for different devices
 
@@ -252,7 +258,7 @@ You can replace the app icon is located at ['interface/public/app/icon.png'](int
 
 The app name displayed on the login page and on the menu bar can be modified by editing the REACT_APP_NAME property in ['interface/.env'](interface/.env)
 
-```js
+```properties
 REACT_APP_NAME=Funky IoT Project
 ```
 
@@ -273,7 +279,7 @@ There is also a manifest file which contains the app name to use when adding the
 }
 ```
 
-## Back end overview
+## Back end
 
 The back end is a set of REST endpoints hosted by a [ESPAsyncWebServer](https://github.com/me-no-dev/ESPAsyncWebServer) instance. The ['lib/framework'](lib/framework) directory contains the majority of the back end code. The framework contains of a number of useful utility classes which you can use when extending it. The project also comes with a demo project to give you some help getting started. 
 
@@ -283,12 +289,11 @@ The framework's source is split up by feature, for example [WiFiScanner.h](lib/f
 
 The ['src/main.cpp'](src/main.cpp) file constructs the webserver and initializes the framework. You can add endpoints to the server here to support your IoT project. The main loop is also accessable so you can run your own code easily. 
 
-The following code creates the web server, esp8266React framework and the demo project instance:
+The following code creates the web server and esp8266React framework:
 
 ```cpp
 AsyncWebServer server(80);
 ESP8266React esp8266React(&server, &SPIFFS);
-DemoProject demoProject = DemoProject(&server, &SPIFFS, esp8266React.getSecurityManager());
 ```
 
 Now in the `setup()` function the initialization is performed:
@@ -308,43 +313,217 @@ void setup() {
   // start the framework and demo project
   esp8266React.begin();
 
-  // start the demo project
-  demoProject.begin();
-
   // start the server
   server.begin();
 }
 ```
 
-Finally the loop calls the framework's loop function to service the frameworks features. You can add your own code in here, as shown with the demo project:
+Finally the loop calls the framework's loop function to service the frameworks features.
 
 ```cpp
 void loop() {
   // run the framework's loop function
   esp8266React.loop();
-
-  // run the demo project's loop function
-  demoProject.loop();
 }
 ```
 
-### Adding endpoints
+### Developing with the framework
 
-There are some simple classes that support adding configurable services/features to the device:
+The framework promotes a modular design and exposes features you may re-use to speed up the development of your project. Where possible it is recommended that you use the features the frameworks supplies. These are documented in this section and a comprehensive example is provided by the demo project.
 
-Class | Description
------ | -----------
-[SimpleService.h](lib/framework/SimpleService.h) | Exposes an endpoint to read and write settings as JSON. Extend this class and implement the functions which serialize the settings to/from JSON.
-[SettingsService.h](lib/framework/SettingsService.h) | As above, however this class also handles persisting the settings as JSON to the file system.
-[AdminSettingsService.h](lib/framework/AdminSettingsService.h) | Extends SettingsService to secure the endpoint to administrators only, the authentication predicate can be overridden if required.
+The following diagram visualises how the framework's modular components fit together, each feature is described in detail below.
 
-The demo project shows how these can be used, explore the framework classes for more examples.
+![framework diagram](/media/framework.png?raw=true "framework diagram")
+
+#### Stateful service
+
+The [StatefulService.h](lib/framework/StatefulService.h) class is a responsible for managing state and interfacing with code which wants to change or respond to changes in that state. You can define a data class to hold some state, then build a StatefulService class to manage its state:
+
+```cpp
+class LightState {
+ public:
+  bool on = false;
+  uint8_t brightness = 255;
+};
+
+class LightStateService : public StatefulService<LightState> {
+};
+```
+
+You may listen for changes to state by registering an update handler callback. It is possible to remove an update handler later if required.
+
+```cpp
+// register an update handler
+update_handler_id_t myUpdateHandler = lightStateService.addUpdateHandler(
+  [&](String originId) {
+    Serial.println("The light's state has been updated"); 
+  }
+);
+
+// remove the update handler
+lightStateService.removeUpdateHandler(myUpdateHandler);
+```
+
+An "originId" is passed to the update handler which may be used to identify the origin of the update. The default origin values the framework provides are:
+
+Origin                | Description
+--------------------- | -----------
+http                  | An update sent over REST (HttpEndpoint)
+mqtt                  | An update sent over MQTT (MqttPubSub)
+websocket:{clientId}  | An update sent over WebSocket (WebSocketRxTx)
+
+StatefulService exposes a read function which you may use to safely read the state. This function takes care of protecting against parallel access to the state in multi-core enviornments such as the ESP32.
+
+```cpp
+lightStateService.read([&](LightState& state) {
+  digitalWrite(LED_PIN, state.on ? HIGH : LOW); // apply the state update to the LED_PIN
+});
+```
+
+StatefulService also exposes an update function which allows the caller to update the state with a callback. This approach automatically calls the registered update handlers when complete. The example below turns on the lights using the arbitrary origin "timer":
+
+```cpp
+lightStateService.update([&](LightState& state) {
+  state.on = true;  // turn on the lights!
+}, "timer");
+```
+
+#### Serialization
+
+When transmitting state over HTTP, WebSockets, or MQTT it must to be marshalled into a serializable form (JSON). The framework uses ArduinoJson for serialization and the functions defined in [JsonSerializer.h](lib/framework/JsonSerializer.h) and [JsonDeserializer.h](lib/framework/JsonDeserializer.h) facilitate this.
+
+The static functions below can be used to facilitate the serialization/deserialization of the light state:
+
+```cpp
+class LightState {
+ public:
+  bool on = false;
+  uint8_t brightness = 255;
+  
+  static void serialize(LightState& state, JsonObject& root) {
+    root["on"] = state.on;
+    root["brightness"] = state.brightness;
+  }
+
+  static void deserialize(JsonObject& root, LightState& state) {
+    state.on = root["on"] | false;
+    state.brightness = root["brightness"] | 255;
+  }
+};
+```
+
+For convenience, the StatefulService class provides overloads of its `update` and `read` functions which utilize these functions.
+
+Copy the state to a JsonObject using a serializer:
+
+```cpp
+JsonObject jsonObject = jsonDocument.to<JsonObject>();
+lightStateService->read(jsonObject, serializer);
+```
+
+Update the state from a JsonObject using a deserializer:
+
+```cpp
+JsonObject jsonObject = jsonDocument.as<JsonObject>();
+lightStateService->update(jsonObject, deserializer, "timer");
+```
+
+#### Endpoints
+
+The framework provides an [HttpEndpoint.h](lib/framework/HttpEndpoint.h) class which may be used to register GET and POST handlers to read and update the state over HTTP. You may construct an HttpEndpoint as a part of the StatefulService or separately if you prefer. 
+
+The code below demonstrates how to extend the LightStateService class to provide an unsecured endpoint:
+
+```cpp
+class LightStateService : public StatefulService<LightState> {
+ public:
+  LightStateService(AsyncWebServer* server) :
+      _httpEndpoint(LightState::serialize, LightState::deserialize, this, server, "/rest/lightState") {
+  }
+
+ private:
+  HttpEndpoint<LightState> _httpEndpoint;
+};
+```
+
+Endpoint security is provided by authentication predicates which are [documented below](#security-features). The SecurityManager and authentication predicate may be provided if a secure endpoint is required. The demo project shows how endpoints can be secured.
+
+#### Persistence
+
+[FSPersistence.h](lib/framework/FSPersistence.h) allows you to save state to the filesystem. FSPersistence automatically writes changes to the file system when state is updated. This feature can be disabled by calling `disableUpdateHandler()` if manual control of persistence is required.
+
+The code below demonstrates how to extend the LightStateService class to provide persistence:
+
+```cpp
+class LightStateService : public StatefulService<LightState> {
+ public:
+  LightStateService(FS* fs) :
+      _fsPersistence(LightState::serialize, LightState::deserialize, this, fs, "/config/lightState.json") {
+  }
+
+ private:
+  FSPersistence<LightState> _fsPersistence;
+};
+```
+
+#### WebSockets
+
+[WebSocketTxRx.h](lib/framework/WebSocketTxRx.h) allows you to read and update state over a WebSocket connection. WebSocketTxRx automatically pushes changes to all connected clients when state is updated.
+
+The code below demonstrates how to extend the LightStateService class to provide an unsecured WebSocket:
+
+```cpp
+class LightStateService : public StatefulService<LightState> {
+ public:
+  LightStateService(AsyncWebServer* server) :
+      _webSocket(LightState::serialize, LightState::deserialize, this, server, "/ws/lightState"), {
+  }
+
+ private:
+  WebSocketTxRx<LightState> _webSocket;
+};
+```
+
+WebSocket security is provided by authentication predicates which are [documented below](#security-features). The SecurityManager and authentication predicate may be provided if a secure WebSocket is required. The demo project shows how WebSockets can be secured.
+
+#### MQTT
+
+The framework includes an MQTT client which can be configured via the UI. MQTT requirements will differ from project to project so the framework exposes the client for you to use as you see fit. The framework does however provide a utility to interface StatefulService to a pair of pub/sub (state/set) topics. This utility can be used to synchronize state with software such as Home Assistant.
+
+[MqttPubSub.h](lib/framework/MqttPubSub.h) allows you to publish and subscribe to synchronize state over a pair of MQTT topics. MqttPubSub automatically pushes changes to the "pub" topic and reads updates from the "sub" topic.
+
+The code below demonstrates how to extend the LightStateService class to interface with MQTT:
+
+```cpp
+class LightStateService : public StatefulService<LightState> {
+ public:
+  LightStateService(AsyncMqttClient* mqttClient) :
+    _mqttPubSub(LightState::serialize, 
+                    LightState::deserialize,
+                    this,
+                    mqttClient,
+                    "homeassistant/light/my_light/set",
+                    "homeassistant/light/my_light/state") {
+  }
+
+ private:
+  MqttPubSub<LightState> _mqttPubSub;
+};
+```
+
+You can re-configure the pub/sub topics at runtime as required:
+
+```cpp
+_mqttPubSub.configureBroker("homeassistant/light/desk_lamp/set", "homeassistant/light/desk_lamp/state");
+```
+
+The demo project allows the user to modify the MQTT topics via the UI so they can be changed without re-flashing the firmware.
 
 ### Security features
 
 The framework has security features to prevent unauthorized use of the device. This is driven by [SecurityManager.h](lib/framework/SecurityManager.h).
 
-On successful authentication, the /rest/signIn endpoint issues a JWT which is then sent using Bearer Authentication. The framework come with built in predicates for verifying a users access level. The built in AuthenticationPredicates can be found in [SecurityManager.h](lib/framework/SecurityManager.h):
+On successful authentication, the /rest/signIn endpoint issues a [JSON Web Token (JWT)](https://jwt.io/) which is then sent using Bearer Authentication. The framework come with built-in predicates for verifying a users access privileges. The built in AuthenticationPredicates can be found in [SecurityManager.h](lib/framework/SecurityManager.h) and are as follows:
 
 Predicate            | Description
 -------------------- | -----------
@@ -352,7 +531,7 @@ NONE_REQUIRED        | No authentication is required.
 IS_AUTHENTICATED     | Any authenticated principal is permitted.
 IS_ADMIN             | The authenticated principal must be an admin.
 
-You can use the security manager to wrap any web handler with an authentication predicate:
+You can use the security manager to wrap any request handler function with an authentication predicate:
 
 ```cpp
 server->on("/rest/someService", HTTP_GET, 
@@ -360,88 +539,11 @@ server->on("/rest/someService", HTTP_GET,
 );
 ```
 
-Alternatively you can extend [AdminSettingsService.h](lib/framework/AdminSettingsService.h) and optionally override `getAuthenticationPredicate()` to secure an endpoint.
-
-## Extending the framework
-
-It is recommend that you explore the framework code to gain a better understanding of how to use it's features. The framework provides APIs so you can add your own services or features or, if required, directly configure or observe changes to core framework features. Some of these capabilities are detailed below.
-
-### Adding a service with persistant settings
-
-The following code demonstrates how you might extend the framework with a feature which requires a username and password to be configured to drive an unspecified feature. 
-
-```cpp
-#include <SettingsService.h>
-
-class ExampleSettings {
- public:  
-    String username;
-    String password;
-};
-
-class ExampleSettingsService : public SettingsService<ExampleSettings> {
-
-  public:
-
-    ExampleSettingsService(AsyncWebServer* server, FS* fs)
-    : SettingsService(server, fs, "/exampleSettings", "/config/exampleSettings.json") {}
-
-    ~ExampleSettingsService(){}
-
-  protected:
-
-    void readFromJsonObject(JsonObject& root) {
-      _settings.username = root["username"] | "";
-      _settings.password = root["password"] | "";
-    }
-
-    void writeToJsonObject(JsonObject& root) {
-      root["username"] = _settings.username;
-      root["password"] = _settings.password;
-    }
-
-};
-```
-
-Now this can be constructed, added to the server, and started as such:
-
-```cpp
-ExampleSettingsService exampleSettingsService = ExampleSettingsService(&server, &SPIFFS);
-
-exampleSettingsService.begin();
-```
-
-There will now be a REST service exposed on "/exampleSettings" for reading and writing (GET/POST) the settings. Any modifications will be persisted in SPIFFS, in this case to "/config/exampleSettings.json"
-
-Sometimes you need to perform an action when the settings are updated, you can achieve this by overriding the onConfigUpdated() function which gets called every time the settings are updated. You can also perform an action when the service starts by overriding the begin() function, being sure to call SettingsService::begin(). You can also provide a "loop" function in order to allow your service class continuously perform an action, calling this from the main loop.
-
-```cpp
-
-void begin() {
-  // make sure we call super, so the settings get read!
-  SettingsService::begin();  
-  reconfigureTheService();
-}
-
-void onConfigUpdated() {
-  reconfigureTheService();
-}
-
-void reconfigureTheService() {
-  // do whatever is required to react to the new settings
-}
-
-void loop() {
-  // execute somthing as part of the main loop
-}
-
-```
-
 ### Accessing settings and services
 
-The framework supplies access to it's SettingsService instances and the SecurityManager via getter functions:
+The framework supplies access to various features via getter functions:
 
-SettingsService               | Description
+SettingsService              | Description
 ---------------------------- | ----------------------------------------------
 getSecurityManager()         | The security manager - detailed above
 getSecuritySettingsService() | Configures the users and other security settings
@@ -449,38 +551,44 @@ getWiFiSettingsService()     | Configures and manages the WiFi network connectio
 getAPSettingsService()       | Configures and manages the Access Point
 getNTPSettingsService()      | Configures and manages the network time
 getOTASettingsService()      | Configures and manages the Over-The-Air update feature
+getMqttSettingsService()     | Configures and manages the MQTT connection
+getMqttClient()              | Provides direct access to the MQTT client instance
 
-These can be used to observe changes to settings. They can also be used to fetch or update settings directly via objects, JSON strings and JsonObjects. Here are some examples of how you may use this.
+The core features use the [StatefulService.h](lib/framework/StatefulService.h) class and can therefore you can change settings or observe changes to settings through the read/update API.
 
 Inspect the current WiFi settings:
 
 ```cpp
-WiFiSettings wifiSettings = esp8266React.getWiFiSettingsService()->fetch();
-Serial.print("The ssid is:");
-Serial.println(wifiSettings.ssid);
+esp8266React.getWiFiSettingsService()->read([&](WiFiSettings& wifiSettings) {
+  Serial.print("The ssid is:");
+  Serial.println(wifiSettings.ssid);
+});
 ```
 
-Configure the SSID and password:
+Configure the WiFi SSID and password manually:
 
 ```cpp
-WiFiSettings wifiSettings = esp8266React.getWiFiSettingsService()->fetch();
-wifiSettings.ssid = "MyNetworkSSID";
-wifiSettings.password = "MySuperSecretPassword";
-esp8266React.getWiFiSettingsService()->update(wifiSettings);
+esp8266React.getWiFiSettingsService()->update([&](WiFiSettings& wifiSettings) {
+  wifiSettings.ssid = "MyNetworkSSID";
+  wifiSettings.password = "MySuperSecretPassword";
+}, "myapp");
 ```
 
 Observe changes to the WiFiSettings:
 
 ```cpp
-esp8266React.getWiFiSettingsService()->addUpdateHandler([]() {
-   Serial.println("The WiFi Settings were updated!");
-});
+esp8266React.getWiFiSettingsService()->addUpdateHandler(
+  [&](String originId) {
+    Serial.println("The WiFi Settings were updated!");
+  }
+);
 ```
 
 ## Libraries Used
 
 * [React](https://reactjs.org/)
-* [Material-UI](https://material-ui-next.com/)
+* [Material-UI](https://material-ui.com/)
 * [notistack](https://github.com/iamhosseindhv/notistack)
 * [ArduinoJson](https://github.com/bblanchon/ArduinoJson)
 * [ESPAsyncWebServer](https://github.com/me-no-dev/ESPAsyncWebServer)
+* [AsyncMqttClient](https://github.com/marvinroger/async-mqtt-client)

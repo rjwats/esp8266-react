@@ -1,7 +1,9 @@
 #ifndef APSettingsConfig_h
 #define APSettingsConfig_h
 
-#include <AdminSettingsService.h>
+#include <HttpEndpoint.h>
+#include <FSPersistence.h>
+
 #include <DNSServer.h>
 #include <IPAddress.h>
 
@@ -24,22 +26,39 @@ class APSettings {
   uint8_t provisionMode;
   String ssid;
   String password;
+
+  static void serialize(APSettings& settings, JsonObject& root) {
+    root["provision_mode"] = settings.provisionMode;
+    root["ssid"] = settings.ssid;
+    root["password"] = settings.password;
+  }
+
+  static void deserialize(JsonObject& root, APSettings& settings) {
+    settings.provisionMode = root["provision_mode"] | AP_MODE_ALWAYS;
+    switch (settings.provisionMode) {
+      case AP_MODE_ALWAYS:
+      case AP_MODE_DISCONNECTED:
+      case AP_MODE_NEVER:
+        break;
+      default:
+        settings.provisionMode = AP_MODE_ALWAYS;
+    }
+    settings.ssid = root["ssid"] | AP_DEFAULT_SSID;
+    settings.password = root["password"] | AP_DEFAULT_PASSWORD;
+  }
 };
 
-class APSettingsService : public AdminSettingsService<APSettings> {
+class APSettingsService : public StatefulService<APSettings> {
  public:
   APSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
-  ~APSettingsService();
 
   void begin();
   void loop();
 
- protected:
-  void readFromJsonObject(JsonObject& root);
-  void writeToJsonObject(JsonObject& root);
-  void onConfigUpdated();
-
  private:
+  HttpEndpoint<APSettings> _httpEndpoint;
+  FSPersistence<APSettings> _fsPersistence;
+
   // for the mangement delay loop
   unsigned long _lastManaged;
 

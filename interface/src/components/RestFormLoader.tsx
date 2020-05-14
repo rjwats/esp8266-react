@@ -2,7 +2,8 @@ import React from 'react';
 
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { Button, LinearProgress, Typography } from '@material-ui/core';
-import { RestControllerProps } from './RestController';
+
+import { RestControllerProps } from '.';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
