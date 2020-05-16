@@ -8,10 +8,10 @@ export const LOGIN_PATHNAME = 'loginPathname';
 export const LOGIN_SEARCH = 'loginSearch';
 
 /**
- * Android WebView might not have local storage enabled. Use session storage then.
+ * Fallback to sessionStorage if localStorage is absent. WebView may not have local storage enabled.
  */
 export function getStorage() {
-  return localStorage ? localStorage : sessionStorage;
+  return localStorage || sessionStorage;
 }
 
 export function storeLoginRedirect(location?: H.Location) {
