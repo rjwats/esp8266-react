@@ -115,6 +115,10 @@ class SignInPage extends Component<SignInPageProps, SignInPageState> {
               value={username}
               onChange={this.updateInputElement}
               margin="normal"
+              inputProps={{
+                autocapitalize: "none",
+                autocorrect: "off",
+              }}
             />
             <PasswordValidator
               disabled={processing}
