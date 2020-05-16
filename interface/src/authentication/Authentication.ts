@@ -7,21 +7,28 @@ export const ACCESS_TOKEN = 'access_token';
 export const LOGIN_PATHNAME = 'loginPathname';
 export const LOGIN_SEARCH = 'loginSearch';
 
+/**
+ * Fallback to sessionStorage if localStorage is absent. WebView may not have local storage enabled.
+ */
+export function getStorage() {
+  return localStorage || sessionStorage;
+}
+
 export function storeLoginRedirect(location?: H.Location) {
   if (location) {
-    localStorage.setItem(LOGIN_PATHNAME, location.pathname);
-    localStorage.setItem(LOGIN_SEARCH, location.search);
+    getStorage().setItem(LOGIN_PATHNAME, location.pathname);
+    getStorage().setItem(LOGIN_SEARCH, location.search);
   }
 }
 
 export function clearLoginRedirect() {
-  localStorage.removeItem(LOGIN_PATHNAME);
-  localStorage.removeItem(LOGIN_SEARCH);
+  getStorage().removeItem(LOGIN_PATHNAME);
+  getStorage().removeItem(LOGIN_SEARCH);
 }
 
 export function fetchLoginRedirect(): H.LocationDescriptorObject {
-  const loginPathname = localStorage.getItem(LOGIN_PATHNAME);
-  const loginSearch = localStorage.getItem(LOGIN_SEARCH);
+  const loginPathname = getStorage().getItem(LOGIN_PATHNAME);
+  const loginSearch = getStorage().getItem(LOGIN_SEARCH);
   clearLoginRedirect();
   return {
     pathname: loginPathname || `/${PROJECT_PATH}/`,
@@ -33,7 +40,7 @@ export function fetchLoginRedirect(): H.LocationDescriptorObject {
  * Wraps the normal fetch routene with one with provides the access token if present.
  */
 export function authorizedFetch(url: RequestInfo, params?: RequestInit): Promise<Response> {
-  const accessToken = localStorage.getItem(ACCESS_TOKEN);
+  const accessToken = getStorage().getItem(ACCESS_TOKEN);
   if (accessToken) {
     params = params || {};
     params.credentials = 'include';
@@ -63,7 +70,7 @@ export function redirectingAuthorizedFetch(url: RequestInfo, params?: RequestIni
 }
 
 export function addAccessTokenParameter(url: string) {
-  const accessToken = localStorage.getItem(ACCESS_TOKEN);
+  const accessToken = getStorage().getItem(ACCESS_TOKEN);
   if (!accessToken) {
     return url;
   }

@@ -8,7 +8,7 @@ import { withStyles, Theme, createStyles, WithStyles } from '@material-ui/core/s
 
 import history from '../history'
 import { VERIFY_AUTHORIZATION_ENDPOINT } from '../api';
-import { ACCESS_TOKEN, authorizedFetch } from './Authentication';
+import { ACCESS_TOKEN, authorizedFetch, getStorage } from './Authentication';
 import { AuthenticationContext, Me } from './AuthenticationContext';
 
 export const decodeMeJWT = (accessToken: string): Me => jwtDecode(accessToken);
@@ -81,7 +81,7 @@ class AuthenticationWrapper extends React.Component<AuthenticationWrapperProps, 
   }
 
   refresh = () => {
-    const accessToken = localStorage.getItem(ACCESS_TOKEN)
+    const accessToken = getStorage().getItem(ACCESS_TOKEN)
     if (accessToken) {
       authorizedFetch(VERIFY_AUTHORIZATION_ENDPOINT)
         .then(response => {
@@ -100,7 +100,7 @@ class AuthenticationWrapper extends React.Component<AuthenticationWrapperProps, 
 
   signIn = (accessToken: string) => {
     try {
-      localStorage.setItem(ACCESS_TOKEN, accessToken);
+      getStorage().setItem(ACCESS_TOKEN, accessToken);
       const me: Me = decodeMeJWT(accessToken);
       this.setState({ context: { ...this.state.context, me } });
       this.props.enqueueSnackbar(`Logged in as ${me.username}`, { variant: 'success' });
@@ -111,7 +111,7 @@ class AuthenticationWrapper extends React.Component<AuthenticationWrapperProps, 
   }
 
   signOut = () => {
-    localStorage.removeItem(ACCESS_TOKEN);
+    getStorage().removeItem(ACCESS_TOKEN);
     this.setState({
       context: {
         ...this.state.context,

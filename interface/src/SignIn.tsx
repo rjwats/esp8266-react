@@ -39,17 +39,17 @@ const styles = (theme: Theme) => createStyles({
   }
 });
 
-type SignInPageProps = WithSnackbarProps & WithStyles<typeof styles> & AuthenticationContextProps;
+type SignInProps = WithSnackbarProps & WithStyles<typeof styles> & AuthenticationContextProps;
 
-interface SignInPageState {
+interface SignInState {
   username: string,
   password: string,
   processing: boolean
 }
 
-class SignInPage extends Component<SignInPageProps, SignInPageState> {
+class SignIn extends Component<SignInProps, SignInState> {
 
-  constructor(props: SignInPageProps) {
+  constructor(props: SignInProps) {
     super(props);
     this.state = {
       username: '',
@@ -115,6 +115,10 @@ class SignInPage extends Component<SignInPageProps, SignInPageState> {
               value={username}
               onChange={this.updateInputElement}
               margin="normal"
+              inputProps={{
+                autoCapitalize: "none",
+                autoCorrect: "off",
+              }}
             />
             <PasswordValidator
               disabled={processing}
@@ -140,4 +144,4 @@ class SignInPage extends Component<SignInPageProps, SignInPageState> {
 
 }
 
-export default withAuthenticationContext(withSnackbar(withStyles(styles)(SignInPage)));
+export default withAuthenticationContext(withSnackbar(withStyles(styles)(SignIn)));

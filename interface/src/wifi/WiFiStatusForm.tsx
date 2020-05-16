@@ -79,7 +79,7 @@ class WiFiStatusForm extends Component<WiFiStatusFormProps> {
                   <SettingsInputComponentIcon />
                 </Avatar>
               </ListItemAvatar>
-              <ListItemText primary="Gateway IP" secondary={data.gateway_ip ? data.gateway_ip : "none"} />
+              <ListItemText primary="Gateway IP" secondary={data.gateway_ip || "none"} />
             </ListItem>
             <Divider variant="inset" component="li" />
             <ListItem>
