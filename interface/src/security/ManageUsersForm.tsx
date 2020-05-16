@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import { ValidatorForm } from 'react-material-ui-form-validator';
 
-import { Table, TableBody, TableCell, TableHead, TableFooter, TableRow } from '@material-ui/core';
+import { Table, TableBody, TableCell, TableHead, TableFooter, TableRow, withWidth, WithWidthProps, isWidthDown } from '@material-ui/core';
 import { Box, Button, Typography, } from '@material-ui/core';
 
 import EditIcon from '@material-ui/icons/Edit';
@@ -28,7 +28,7 @@ function compareUsers(a: User, b: User) {
   return 0;
 }
 
-type ManageUsersFormProps = RestFormProps<SecuritySettings> & AuthenticatedContextProps;
+type ManageUsersFormProps = RestFormProps<SecuritySettings> & AuthenticatedContextProps & WithWidthProps;
 
 type ManageUsersFormState = {
   creating: boolean;
@@ -106,12 +106,12 @@ class ManageUsersForm extends React.Component<ManageUsersFormProps, ManageUsersF
   }
 
   render() {
-    const { data, loadData } = this.props;
+    const { width, data, loadData } = this.props;
     const { user, creating } = this.state;
     return (
       <Fragment>
         <ValidatorForm onSubmit={this.onSubmit}>
-          <Table size="small">
+          <Table size="small" padding={isWidthDown('xs', width!) ? "checkbox" : "default"}>
             <TableHead>
               <TableRow>
                 <TableCell>Username</TableCell>
@@ -141,12 +141,12 @@ class ManageUsersForm extends React.Component<ManageUsersFormProps, ManageUsersF
                 </TableRow>
               ))}
             </TableBody>
-            <TableFooter>
+            <TableFooter >
               <TableRow>
                 <TableCell colSpan={2} />
-                <TableCell align="center">
+                <TableCell align="center" padding="default">
                   <Button startIcon={<PersonAddIcon />} variant="contained" color="secondary" onClick={this.createUser}>
-                    Add User
+                    Add
                   </Button>
                 </TableCell>
               </TableRow>
@@ -188,4 +188,4 @@ class ManageUsersForm extends React.Component<ManageUsersFormProps, ManageUsersF
 
 }
 
-export default withAuthenticatedContext(ManageUsersForm);
+export default withAuthenticatedContext(withWidth()(ManageUsersForm));
