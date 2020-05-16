@@ -111,7 +111,7 @@ class AuthenticationWrapper extends React.Component<AuthenticationWrapperProps, 
   }
 
   signOut = () => {
-    localStorage.removeItem(ACCESS_TOKEN);
+    getStorage().removeItem(ACCESS_TOKEN);
     this.setState({
       context: {
         ...this.state.context,
