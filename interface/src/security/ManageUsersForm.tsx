@@ -111,7 +111,7 @@ class ManageUsersForm extends React.Component<ManageUsersFormProps, ManageUsersF
     return (
       <Fragment>
         <ValidatorForm onSubmit={this.onSubmit}>
-          <Table size="small" padding={isWidthDown('xs', width!) ? "checkbox" : "default"}>
+          <Table size="small" padding={isWidthDown('xs', width!) ? "none" : "default"}>
             <TableHead>
               <TableRow>
                 <TableCell>Username</TableCell>
