@@ -51,7 +51,7 @@ Authentication SecuritySettingsService::authenticateJWT(String& jwt) {
   return Authentication();
 }
 
-Authentication SecuritySettingsService::authenticate(String& username, String& password) {
+Authentication SecuritySettingsService::authenticate(const String& username, const String& password) {
   for (User _user : _state.users) {
     if (_user.username == username && _user.password == password) {
       return Authentication(_user);
