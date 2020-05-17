@@ -20,9 +20,10 @@ class MqttConnector {
     _mqttClient->onConnect(std::bind(&MqttConnector::onConnect, this));
   }
 
-  inline AsyncMqttClient* mqttClient() { return _mqttClient; }
-
   virtual void onConnect() = 0;
+
+public:
+  inline AsyncMqttClient* mqttClient() const { return _mqttClient; }
 };
 
 template <class T>
