@@ -33,7 +33,7 @@ class FSPersistence {
         DeserializationError error = deserializeJson(jsonDocument, settingsFile);
         if (error == DeserializationError::Ok && jsonDocument.is<JsonObject>()) {
           JsonObject jsonObject = jsonDocument.as<JsonObject>();
-          _statefulService->updateWithoutPropagation(root, _jsonDeserializer);
+          _statefulService->updateWithoutPropagation(jsonObject, _jsonDeserializer);
           settingsFile.close();
           return;
         }
@@ -93,7 +93,7 @@ class FSPersistence {
   virtual void applyDefaults() {
     DynamicJsonDocument jsonDocument = DynamicJsonDocument(MAX_FILE_SIZE);
     JsonObject jsonObject = jsonDocument.as<JsonObject>();
-    _statefulService->updateWithoutPropagation(root, _jsonDeserializer);
+    _statefulService->updateWithoutPropagation(jsonObject, _jsonDeserializer);
   }
 };
 
