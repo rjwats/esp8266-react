@@ -21,6 +21,9 @@ class MqttConnector {
   }
 
   virtual void onConnect() = 0;
+
+public:
+  inline AsyncMqttClient* getMqttClient() const { return _mqttClient; }
 };
 
 template <class T>
@@ -141,8 +144,8 @@ class MqttPubSub : public MqttPub<T>, public MqttSub<T> {
              String pubTopic = "",
              String subTopic = "") :
       MqttConnector<T>(statefulService, mqttClient),
-      MqttPub<T>(jsonSerializer, statefulService, mqttClient, pubTopic = ""),
-      MqttSub<T>(jsonDeserializer, statefulService, mqttClient, subTopic = "") {
+      MqttPub<T>(jsonSerializer, statefulService, mqttClient, pubTopic),
+      MqttSub<T>(jsonDeserializer, statefulService, mqttClient, subTopic) {
   }
 
  public:
