@@ -32,7 +32,8 @@ class FSPersistence {
         DynamicJsonDocument jsonDocument = DynamicJsonDocument(MAX_FILE_SIZE);
         DeserializationError error = deserializeJson(jsonDocument, settingsFile);
         if (error == DeserializationError::Ok && jsonDocument.is<JsonObject>()) {
-          updateSettings(jsonDocument.as<JsonObject>());
+          JsonObject jsonObject = jsonDocument.as<JsonObject>();
+          _statefulService->updateWithoutPropagation(root, _jsonDeserializer);
           settingsFile.close();
           return;
         }
@@ -86,17 +87,13 @@ class FSPersistence {
   char const* _filePath;
   update_handler_id_t _updateHandlerId = 0;
 
-  // update the settings, but do not call propogate
-  void updateSettings(JsonObject root) {
-    _statefulService->updateWithoutPropagation(root, _jsonDeserializer);
-  }
-
  protected:
   // We assume the deserializer supplies sensible defaults if an empty object
   // is supplied, this virtual function allows that to be changed.
   virtual void applyDefaults() {
     DynamicJsonDocument jsonDocument = DynamicJsonDocument(MAX_FILE_SIZE);
-    updateSettings(jsonDocument.to<JsonObject>());
+    JsonObject jsonObject = jsonDocument.as<JsonObject>();
+    _statefulService->updateWithoutPropagation(root, _jsonDeserializer);
   }
 };
 
