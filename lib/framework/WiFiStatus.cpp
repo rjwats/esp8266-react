@@ -18,35 +18,35 @@ WiFiStatus::WiFiStatus(AsyncWebServer* server, SecurityManager* securityManager)
 
 #ifdef ESP32
 void WiFiStatus::onStationModeConnected(WiFiEvent_t event, WiFiEventInfo_t info) {
-  Serial.println("WiFi Connected.");
+  Serial.println(F("WiFi Connected."));
 }
 
 void WiFiStatus::onStationModeDisconnected(WiFiEvent_t event, WiFiEventInfo_t info) {
-  Serial.print("WiFi Disconnected. Reason code=");
+  Serial.print(F("WiFi Disconnected. Reason code="));
   Serial.println(info.disconnected.reason);
 }
 
 void WiFiStatus::onStationModeGotIP(WiFiEvent_t event, WiFiEventInfo_t info) {
-  Serial.print("WiFi Got IP. localIP=");
+  Serial.print(F("WiFi Got IP. localIP="));
   Serial.print(WiFi.localIP().toString());
-  Serial.print(", hostName=");
+  Serial.print(F(", hostName="));
   Serial.println(WiFi.getHostname());
 }
 #elif defined(ESP8266)
 void WiFiStatus::onStationModeConnected(const WiFiEventStationModeConnected& event) {
-  Serial.print("WiFi Connected. SSID=");
+  Serial.print(F("WiFi Connected. SSID="));
   Serial.println(event.ssid);
 }
 
 void WiFiStatus::onStationModeDisconnected(const WiFiEventStationModeDisconnected& event) {
-  Serial.print("WiFi Disconnected. Reason code=");
+  Serial.print(F("WiFi Disconnected. Reason code="));
   Serial.println(event.reason);
 }
 
 void WiFiStatus::onStationModeGotIP(const WiFiEventStationModeGotIP& event) {
-  Serial.print("WiFi Got IP. localIP=");
+  Serial.print(F("WiFi Got IP. localIP="));
   Serial.print(event.ip);
-  Serial.print(", hostName=");
+  Serial.print(F(", hostName="));
   Serial.println(WiFi.hostname());
 }
 #endif
