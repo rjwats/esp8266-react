@@ -23,7 +23,7 @@ class MqttConnector {
   virtual void onConnect() = 0;
 
 public:
-  inline AsyncMqttClient* mqttClient() const { return _mqttClient; }
+  inline AsyncMqttClient* getMqttClient() const { return _mqttClient; }
 };
 
 template <class T>
