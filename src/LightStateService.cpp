@@ -48,14 +48,14 @@ void LightStateService::registerConfig() {
     return;
   }
   String configTopic;
-  String setTopic;
-  String stateTopic;
+  String subTopic;
+  String pubTopic;
 
   DynamicJsonDocument doc(256);
   _lightMqttSettingsService->read([&](LightMqttSettings& settings) {
     configTopic = settings.mqttPath + "/config";
-    setTopic = settings.mqttPath + "/set";
-    stateTopic = settings.mqttPath + "/state";
+    subTopic = settings.mqttPath + "/set";
+    pubTopic = settings.mqttPath + "/state";
     doc["~"] = settings.mqttPath;
     doc["name"] = settings.name;
     doc["unique_id"] = settings.uniqueId;
@@ -69,5 +69,5 @@ void LightStateService::registerConfig() {
   serializeJson(doc, payload);
   _mqttClient->publish(configTopic.c_str(), 0, false, payload.c_str());
 
-  _mqttPubSub.configureTopics(stateTopic, setTopic);
+  _mqttPubSub.configureTopics(pubTopic, subTopic);
 }
