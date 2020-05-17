@@ -4,12 +4,12 @@
 
 class JsonUtils {
  public:
-  static void readIP(JsonObject& root, String key, IPAddress& _ip) {
+  static void readIP(JsonObject& root, const String& key, IPAddress& _ip) {
     if (!root[key].is<String>() || !_ip.fromString(root[key].as<String>())) {
       _ip = INADDR_NONE;
     }
   }
-  static void writeIP(JsonObject& root, String key, IPAddress& _ip) {
+  static void writeIP(JsonObject& root, const String& key, IPAddress& _ip) {
     if (_ip != INADDR_NONE) {
       root[key] = _ip.toString();
     }
