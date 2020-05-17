@@ -15,7 +15,7 @@ OTASettingsService::OTASettingsService(AsyncWebServer* server, FS* fs, SecurityM
   _onStationModeGotIPHandler =
       WiFi.onStationModeGotIP(std::bind(&OTASettingsService::onStationModeGotIP, this, std::placeholders::_1));
 #endif
-  addUpdateHandler([&](String originId) { configureArduinoOTA(); }, false);
+  addUpdateHandler([&](const String& originId) { configureArduinoOTA(); }, false);
 }
 
 void OTASettingsService::begin() {

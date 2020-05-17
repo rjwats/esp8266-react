@@ -8,7 +8,7 @@ SecuritySettingsService::SecuritySettingsService(AsyncWebServer* server, FS* fs)
                   SECURITY_SETTINGS_PATH,
                   this),
     _fsPersistence(SecuritySettings::serialize, SecuritySettings::deserialize, this, fs, SECURITY_SETTINGS_FILE) {
-  addUpdateHandler([&](String originId) { configureJWTHandler(); }, false);
+  addUpdateHandler([&](const String& originId) { configureJWTHandler(); }, false);
 }
 
 void SecuritySettingsService::begin() {

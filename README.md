@@ -355,7 +355,7 @@ You may listen for changes to state by registering an update handler callback. I
 ```cpp
 // register an update handler
 update_handler_id_t myUpdateHandler = lightStateService.addUpdateHandler(
-  [&](String originId) {
+  [&](const String& originId) {
     Serial.println("The light's state has been updated"); 
   }
 );
@@ -578,7 +578,7 @@ Observe changes to the WiFiSettings:
 
 ```cpp
 esp8266React.getWiFiSettingsService()->addUpdateHandler(
-  [&](String originId) {
+  [&](const String& originId) {
     Serial.println("The WiFi Settings were updated!");
   }
 );

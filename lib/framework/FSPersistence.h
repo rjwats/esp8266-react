@@ -74,7 +74,7 @@ class FSPersistence {
 
   void enableUpdateHandler() {
     if (!_updateHandlerId) {
-      _updateHandlerId = _statefulService->addUpdateHandler([&](String originId) { writeToFS(); });
+      _updateHandlerId = _statefulService->addUpdateHandler([&](const String& originId) { writeToFS(); });
     }
   }
 

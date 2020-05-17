@@ -28,10 +28,10 @@ LightStateService::LightStateService(AsyncWebServer* server,
   _mqttClient->onConnect(std::bind(&LightStateService::registerConfig, this));
 
   // configure update handler for when the light settings change
-  _lightMqttSettingsService->addUpdateHandler([&](String originId) { registerConfig(); }, false);
+  _lightMqttSettingsService->addUpdateHandler([&](const String& originId) { registerConfig(); }, false);
 
   // configure settings service update handler to update LED state
-  addUpdateHandler([&](String originId) { onConfigUpdated(); }, false);
+  addUpdateHandler([&](const String& originId) { onConfigUpdated(); }, false);
 }
 
 void LightStateService::begin() {

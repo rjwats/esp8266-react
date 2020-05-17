@@ -42,7 +42,7 @@ MqttSettingsService::MqttSettingsService(AsyncWebServer* server, FS* fs, Securit
 #endif
   _mqttClient.onConnect(std::bind(&MqttSettingsService::onMqttConnect, this, std::placeholders::_1));
   _mqttClient.onDisconnect(std::bind(&MqttSettingsService::onMqttDisconnect, this, std::placeholders::_1));
-  addUpdateHandler([&](String originId) { onConfigUpdated(); }, false);
+  addUpdateHandler([&](const String& originId) { onConfigUpdated(); }, false);
 }
 
 MqttSettingsService::~MqttSettingsService() {

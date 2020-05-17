@@ -31,7 +31,7 @@ class MqttPub : virtual public MqttConnector<T> {
           AsyncMqttClient* mqttClient,
           String pubTopic = "") :
       MqttConnector<T>(statefulService, mqttClient), _jsonSerializer(jsonSerializer), _pubTopic(pubTopic) {
-    MqttConnector<T>::_statefulService->addUpdateHandler([&](String originId) { publish(); }, false);
+    MqttConnector<T>::_statefulService->addUpdateHandler([&](const String& originId) { publish(); }, false);
   }
 
   void setPubTopic(String pubTopic) {
