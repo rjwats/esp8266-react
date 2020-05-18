@@ -2,8 +2,7 @@
 
 using namespace std::placeholders;
 
-FactoryResetService::FactoryResetService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) :
-    fs(fs) {
+FactoryResetService::FactoryResetService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) : fs(fs) {
   server->on(FACTORY_RESET_SERVICE_PATH,
              HTTP_POST,
              securityManager->wrapRequest(std::bind(&FactoryResetService::handle, this, _1),
@@ -15,20 +14,21 @@ void FactoryResetService::handle(AsyncWebServerRequest* request) {
   request->send(200);
 }
 
+/**
+ * Delete function assumes that all files are stored flat within the config directory
+ */
 void FactoryResetService::factoryReset() {
-  WiFi.disconnect(true);
 #ifdef ESP32
-  fs->rmdir("/config");
-#elif defined(ESP8266)
-  Dir configDirectory = fs->openDir("/config");
-  while (configDirectory.next()) {
-      fs->remove(configDirectory.fileName());
+  File root = fs->open(FS_CONFIG_DIRECTORY);
+  File file;
+  while (file = root.openNextFile()) {
+    fs->remove(file.name());
   }
-#endif  
-  delay(200);
-#ifdef ESP32
-    ESP.restart();
 #elif defined(ESP8266)
-    ESP.reset();
+  Dir configDirectory = fs->openDir(FS_CONFIG_DIRECTORY);
+  while (configDirectory.next()) {
+    fs->remove(configDirectory.fileName());
+  }
 #endif
+  ESP.restart();
 }
