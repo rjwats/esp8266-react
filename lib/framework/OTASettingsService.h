@@ -13,7 +13,6 @@
 #include <ArduinoOTA.h>
 #include <WiFiUdp.h>
 
-// Emergency defaults
 #ifndef FACTORY_OTA_PORT
   #define FACTORY_OTA_PORT 8266
 #endif

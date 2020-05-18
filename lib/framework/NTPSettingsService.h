@@ -11,21 +11,20 @@
 #include <sntp.h>
 #endif
 
-// default time zone
-#ifndef NTP_SETTINGS_SERVICE_FACTORY_ENABLED
-  #define NTP_SETTINGS_SERVICE_FACTORY_ENABLED true
+#ifndef FACTORY_NTP_ENABLED
+  #define FACTORY_NTP_ENABLED true
 #endif
 
-#ifndef NTP_SETTINGS_SERVICE_FACTORY_TIME_ZONE_LABEL
-  #define NTP_SETTINGS_SERVICE_FACTORY_TIME_ZONE_LABEL "Europe/London"
+#ifndef FACTORY_NTP_TIME_ZONE_LABEL
+  #define FACTORY_NTP_TIME_ZONE_LABEL "Europe/London"
 #endif
 
-#ifndef NTP_SETTINGS_SERVICE_FACTORY_TIME_ZONE_FORMAT
-  #define NTP_SETTINGS_SERVICE_FACTORY_TIME_ZONE_FORMAT "GMT0BST,M3.5.0/1,M10.5.0"
+#ifndef FACTORY_NTP_TIME_ZONE_FORMAT
+  #define FACTORY_NTP_TIME_ZONE_FORMAT "GMT0BST,M3.5.0/1,M10.5.0"
 #endif
 
-#ifndef NTP_SETTINGS_SERVICE_FACTORY_SERVER
-  #define NTP_SETTINGS_SERVICE_FACTORY_SERVER "time.google.com"
+#ifndef FACTORY_NTP_SERVER
+  #define FACTORY_NTP_SERVER "time.google.com"
 #endif
 
 #define NTP_SETTINGS_FILE "/config/ntpSettings.json"
@@ -46,10 +45,10 @@ class NTPSettings {
   }
 
   static void deserialize(JsonObject& root, NTPSettings& settings) {
-    settings.enabled = root["enabled"] | NTP_SETTINGS_SERVICE_FACTORY_ENABLED;
-    settings.server = root["server"] | NTP_SETTINGS_SERVICE_FACTORY_SERVER;
-    settings.tzLabel = root["tz_label"] | NTP_SETTINGS_SERVICE_FACTORY_TIME_ZONE_LABEL;
-    settings.tzFormat = root["tz_format"] | NTP_SETTINGS_SERVICE_FACTORY_TIME_ZONE_FORMAT;
+    settings.enabled = root["enabled"] | FACTORY_NTP_ENABLED;
+    settings.server = root["server"] | FACTORY_NTP_SERVER;
+    settings.tzLabel = root["tz_label"] | FACTORY_NTP_TIME_ZONE_LABEL;
+    settings.tzFormat = root["tz_format"] | FACTORY_NTP_TIME_ZONE_FORMAT;
   }
 };
 
