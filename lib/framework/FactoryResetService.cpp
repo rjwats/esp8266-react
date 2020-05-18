@@ -17,10 +17,14 @@ void FactoryResetService::handle(AsyncWebServerRequest* request) {
 
 void FactoryResetService::performFactoryReset() {
   WiFi.disconnect(true);
+#ifdef ESP32
+  fs->rmdir("/config");
+#elif defined(ESP8266)
   Dir configDirectory = fs->openDir("/config");
   while (configDirectory.next()) {
       fs->remove(configDirectory.fileName());
   }
+#endif  
   delay(200);
   ESP.restart();
 }
