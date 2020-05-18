@@ -17,8 +17,10 @@ void FactoryResetService::handle(AsyncWebServerRequest* request) {
 
 void FactoryResetService::performFactoryReset() {
   WiFi.disconnect(true);
-  bool result = fs->remove("/config");
-  Serial.printf("remove configs: %d\n", result);
+  Dir configDirectory = fs->openDir("/config");
+  while (configDirectory.next()) {
+      fs->remove(configDirectory.fileName());
+  }
   delay(200);
   ESP.restart();
 }

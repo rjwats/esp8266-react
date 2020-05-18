@@ -161,7 +161,7 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
         </DialogContent>
         <DialogActions>
           <Button startIcon={<SettingsBackupRestoreIcon />} variant="contained" onClick={this.onFactoryResetConfirmed} disabled={this.state.processing} className={classes.factoryResetButton} autoFocus>
-            Confirm
+            Factory Reset
           </Button>
           <Button variant="contained" onClick={this.onFactoryResetRejected} color="secondary">
             Cancel
@@ -184,7 +184,7 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
     redirectingAuthorizedFetch(FACTORY_RESET_ENDPOINT, { method: 'POST' })
       .then(response => {
         if (response.status === 200) {
-          this.props.enqueueSnackbar("Factory reset is in process. It is good idea to close the browser window.", { variant: 'info' });
+          this.props.enqueueSnackbar("Factory reset is in process. It is good idea to close browser window.", { variant: 'warning' });
           this.setState({ processing: false, confirmFactoryReset: false });
         } else {
           throw Error("Invalid status code: " + response.status);
