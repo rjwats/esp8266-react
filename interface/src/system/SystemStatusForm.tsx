@@ -1,33 +1,47 @@
 import React, { Component, Fragment } from 'react';
 
 import { Avatar, Button, Divider, Dialog, DialogTitle, DialogContent, DialogActions } from '@material-ui/core';
-import { List, ListItem, ListItemAvatar, ListItemText } from '@material-ui/core';
+import { List, ListItem, ListItemAvatar, ListItemText, Typography } from '@material-ui/core';
 
 import DevicesIcon from '@material-ui/icons/Devices';
 import MemoryIcon from '@material-ui/icons/Memory';
 import ShowChartIcon from '@material-ui/icons/ShowChart';
 import SdStorageIcon from '@material-ui/icons/SdStorage';
 import DataUsageIcon from '@material-ui/icons/DataUsage';
-import AutorenewIcon from '@material-ui/icons/Autorenew';
+import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import SettingsBackupRestoreIcon from '@material-ui/icons/SettingsBackupRestore';
+import { withStyles, createStyles, Theme, WithStyles } from '@material-ui/core/styles';
 
 import { redirectingAuthorizedFetch } from '../authentication';
 import { RestFormProps, FormButton, FormActions } from '../components';
-import { RESTART_ENDPOINT } from '../api';
+import { FACTORY_RESET_ENDPOINT, RESTART_ENDPOINT } from '../api';
 
 import { SystemStatus } from './types';
 
+const styles = (theme: Theme) => createStyles({
+  factoryResetButton: {
+    float: "right",
+    backgroundColor: theme.palette.error.light,
+    '&:hover': {
+      backgroundColor: theme.palette.error.dark,
+    }
+  },
+});
+
 interface SystemStatusFormState {
   confirmRestart: boolean;
+  confirmFactoryReset: boolean;
   processing: boolean;
 }
 
-type SystemStatusFormProps = RestFormProps<SystemStatus>;
+type SystemStatusFormProps = RestFormProps<SystemStatus> & WithStyles<typeof styles>;
 
 class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusFormState> {
 
   state: SystemStatusFormState = {
     confirmRestart: false,
+    confirmFactoryReset: false,
     processing: false
   }
 
@@ -95,7 +109,7 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
           Are you sure you want to restart the device?
         </DialogContent>
         <DialogActions>
-          <Button startIcon={<AutorenewIcon />} variant="contained" onClick={this.onRestartConfirmed} disabled={this.state.processing} color="primary" autoFocus>
+          <Button startIcon={<PowerSettingsNewIcon />} variant="contained" onClick={this.onRestartConfirmed} disabled={this.state.processing} color="primary" autoFocus>
             Restart
           </Button>
           <Button variant="contained" onClick={this.onRestartRejected} color="secondary">
@@ -131,7 +145,59 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
       });
   }
 
+  renderFactoryResetDialog() {
+    const { classes } = this.props;
+    return (
+      <Dialog
+        open={this.state.confirmFactoryReset}
+        onClose={this.onFactoryResetRejected}
+      >
+        <DialogTitle>Confirm Factory Reset</DialogTitle>
+        <DialogContent dividers>
+          All configurations will be reset to default. Device will reboot. <br/>
+          This action irreversible and can not be canceled after it is confirmed. <br/>
+          After reset is completed you will be able to connect to the device and set all settings from scratch. <br/>
+          <Typography color="error">Are you sure you want to perform factory reset?</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button startIcon={<SettingsBackupRestoreIcon />} variant="contained" onClick={this.onFactoryResetConfirmed} disabled={this.state.processing} className={classes.factoryResetButton} autoFocus>
+            Confirm
+          </Button>
+          <Button variant="contained" onClick={this.onFactoryResetRejected} color="secondary">
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
+    )
+  }
+
+  onFactoryReset = () => {
+    this.setState({ confirmFactoryReset: true });
+  }
+
+  onFactoryResetRejected = () => {
+    this.setState({ confirmFactoryReset: false });
+  }
+
+  onFactoryResetConfirmed = () => {
+    this.setState({ processing: true });
+    redirectingAuthorizedFetch(FACTORY_RESET_ENDPOINT, { method: 'POST' })
+      .then(response => {
+        if (response.status === 200) {
+          this.props.enqueueSnackbar("Factory reset is in process. It is good idea to close the browser window.", { variant: 'info' });
+          this.setState({ processing: false, confirmFactoryReset: false });
+        } else {
+          throw Error("Invalid status code: " + response.status);
+        }
+      })
+      .catch(error => {
+        this.props.enqueueSnackbar(error.message || "Problem factory resetting device", { variant: 'error' });
+        this.setState({ processing: false, confirmRestart: false });
+      });
+  }
+
   render() {
+    const { classes } = this.props;
     return (
       <Fragment>
         <List>
@@ -141,15 +207,19 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
           <FormButton startIcon={<RefreshIcon />} variant="contained" color="secondary" onClick={this.props.loadData}>
             Refresh
           </FormButton>
-          <FormButton startIcon={<AutorenewIcon />} variant="contained" color="primary" onClick={this.onRestart}>
+          <FormButton startIcon={<PowerSettingsNewIcon />} variant="contained" color="primary" onClick={this.onRestart}>
             Restart
           </FormButton>
+          <FormButton startIcon={<SettingsBackupRestoreIcon />} variant="contained" className={classes.factoryResetButton} onClick={this.onFactoryReset}>
+            Factory reset
+          </FormButton>          
         </FormActions>
         {this.renderRestartDialog()}
+        {this.renderFactoryResetDialog()}
       </Fragment>
     );
   }
 
 }
 
-export default SystemStatusForm;
+export default withStyles(styles)(SystemStatusForm);
