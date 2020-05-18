@@ -6,7 +6,7 @@
 #include <AsyncJson.h>
 #include <list>
 
-#define DEFAULT_JWT_SECRET "esp8266-react"
+#define FACTORY_JWT_SECRET "esp8266-react"
 
 #define ACCESS_TOKEN_PARAMATER "access_token"
 

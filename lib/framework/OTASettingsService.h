@@ -14,16 +14,16 @@
 #include <WiFiUdp.h>
 
 // Emergency defaults
-#ifndef DEFAULT_OTA_PORT
-  #define DEFAULT_OTA_PORT 8266
+#ifndef FACTORY_OTA_PORT
+  #define FACTORY_OTA_PORT 8266
 #endif
 
-#ifndef DEFAULT_OTA_PASSWORD
-  #define DEFAULT_OTA_PASSWORD "esp-react"
+#ifndef FACTORY_OTA_PASSWORD
+  #define FACTORY_OTA_PASSWORD "esp-react"
 #endif
 
-#ifndef DEFAULT_OTA_ENABLED
-  #define DEFAULT_OTA_ENABLED true
+#ifndef FACTORY_OTA_ENABLED
+  #define FACTORY_OTA_ENABLED true
 #endif
 
 #define OTA_SETTINGS_FILE "/config/otaSettings.json"
@@ -42,9 +42,9 @@ class OTASettings {
   }
 
   static void deserialize(JsonObject& root, OTASettings& settings) {
-    settings.enabled = root["enabled"] | DEFAULT_OTA_ENABLED;
-    settings.port = root["port"] | DEFAULT_OTA_PORT;
-    settings.password = root["password"] | DEFAULT_OTA_PASSWORD;
+    settings.enabled = root["enabled"] | FACTORY_OTA_ENABLED;
+    settings.port = root["port"] | FACTORY_OTA_PORT;
+    settings.password = root["password"] | FACTORY_OTA_PASSWORD;
   }
 };
 

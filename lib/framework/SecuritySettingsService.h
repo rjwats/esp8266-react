@@ -5,12 +5,12 @@
 #include <HttpEndpoint.h>
 #include <FSPersistence.h>
 
-#ifndef DEFAULT_ADMIN_USERNAME
-  #define DEFAULT_ADMIN_USERNAME "admin"
+#ifndef FACTORY_ADMIN_USERNAME
+  #define FACTORY_ADMIN_USERNAME "admin"
 #endif
 
-#ifndef DEFAULT_GUEST_USERNAME
-  #define DEFAULT_GUEST_USERNAME "guest"
+#ifndef FACTORY_GUEST_USERNAME
+  #define FACTORY_GUEST_USERNAME "guest"
 #endif
 
 #define SECURITY_SETTINGS_FILE "/config/securitySettings.json"
@@ -37,7 +37,7 @@ class SecuritySettings {
 
   static void deserialize(JsonObject& root, SecuritySettings& settings) {
     // secret
-    settings.jwtSecret = root["jwt_secret"] | DEFAULT_JWT_SECRET;
+    settings.jwtSecret = root["jwt_secret"] | FACTORY_JWT_SECRET;
 
     // users
     settings.users.clear();
@@ -46,8 +46,8 @@ class SecuritySettings {
         settings.users.push_back(User(user["username"], user["password"], user["admin"]));
       }
     } else {
-      settings.users.push_back(User(DEFAULT_ADMIN_USERNAME, DEFAULT_ADMIN_USERNAME, true));
-      settings.users.push_back(User(DEFAULT_GUEST_USERNAME, DEFAULT_GUEST_USERNAME, false));
+      settings.users.push_back(User(FACTORY_ADMIN_USERNAME, FACTORY_ADMIN_USERNAME, true));
+      settings.users.push_back(User(FACTORY_GUEST_USERNAME, FACTORY_GUEST_USERNAME, false));
     }
   }
 };
@@ -69,7 +69,7 @@ class SecuritySettingsService : public StatefulService<SecuritySettings>, public
  private:
   HttpEndpoint<SecuritySettings> _httpEndpoint;
   FSPersistence<SecuritySettings> _fsPersistence;
-  ArduinoJsonJWT _jwtHandler = ArduinoJsonJWT(DEFAULT_JWT_SECRET);
+  ArduinoJsonJWT _jwtHandler = ArduinoJsonJWT(FACTORY_JWT_SECRET);
 
   void configureJWTHandler();
 

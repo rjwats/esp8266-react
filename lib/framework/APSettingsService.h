@@ -15,12 +15,12 @@
 
 #define DNS_PORT 53
 
-#ifndef AP_DEFAULT_SSID
-  #define AP_DEFAULT_SSID "ESP8266-React"
+#ifndef FACTORY_AP_SSID
+  #define FACTORY_AP_SSID "ESP8266-React"
 #endif
 
-#ifndef AP_DEFAULT_PASSWORD
-  #define AP_DEFAULT_PASSWORD "esp-react"
+#ifndef FACTORY_AP_PASSWORD
+  #define FACTORY_AP_PASSWORD "esp-react"
 #endif
 
 #define AP_SETTINGS_FILE "/config/apSettings.json"
@@ -48,8 +48,8 @@ class APSettings {
       default:
         settings.provisionMode = AP_MODE_ALWAYS;
     }
-    settings.ssid = root["ssid"] | AP_DEFAULT_SSID;
-    settings.password = root["password"] | AP_DEFAULT_PASSWORD;
+    settings.ssid = root["ssid"] | FACTORY_AP_SSID;
+    settings.password = root["password"] | FACTORY_AP_PASSWORD;
   }
 };
 

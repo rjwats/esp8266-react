@@ -12,14 +12,14 @@
 #include <ESPAsyncWebServer.h>
 #include <SecurityManager.h>
 
-#define FACTORY_RESET_SERVICE_PATH "/rest/factory"
+#define FACTORY_RESET_SERVICE_PATH "/rest/factoryReset"
 
 class FactoryResetService {
   FS* fs;
 public:
   FactoryResetService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
 
-  void performFactoryReset();
+  void factoryReset();
 
 private:
   void handle(AsyncWebServerRequest* request);

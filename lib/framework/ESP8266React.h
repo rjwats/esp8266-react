@@ -72,8 +72,8 @@ class ESP8266React {
     return _mqttSettingsService.getMqttClient();
   }
 
-  void performFactoryReset() {
-    _factoryResetService.performFactoryReset();
+  void factoryReset() {
+    _factoryResetService.factoryReset();
   }
 
  private:

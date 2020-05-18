@@ -11,11 +11,11 @@ FactoryResetService::FactoryResetService(AsyncWebServer* server, FS* fs, Securit
 }
 
 void FactoryResetService::handle(AsyncWebServerRequest* request) {
-  request->onDisconnect(std::bind(&FactoryResetService::performFactoryReset, this));
+  request->onDisconnect(std::bind(&FactoryResetService::factoryReset, this));
   request->send(200);
 }
 
-void FactoryResetService::performFactoryReset() {
+void FactoryResetService::factoryReset() {
   WiFi.disconnect(true);
 #ifdef ESP32
   fs->rmdir("/config");
@@ -26,5 +26,9 @@ void FactoryResetService::performFactoryReset() {
   }
 #endif  
   delay(200);
-  ESP.restart();
+#ifdef ESP32
+    ESP.restart();
+#elif defined(ESP8266)
+    ESP.reset();
+#endif
 }
