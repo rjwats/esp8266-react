@@ -14,9 +14,17 @@
 #include <WiFiUdp.h>
 
 // Emergency defaults
-#define DEFAULT_OTA_PORT 8266
-#define DEFAULT_OTA_PASSWORD "esp-react"
-#define DEFAULT_OTA_ENABLED true
+#ifndef DEFAULT_OTA_PORT
+  #define DEFAULT_OTA_PORT 8266
+#endif
+
+#ifndef DEFAULT_OTA_PASSWORD
+  #define DEFAULT_OTA_PASSWORD "esp-react"
+#endif
+
+#ifndef DEFAULT_OTA_ENABLED
+  #define DEFAULT_OTA_ENABLED true
+#endif
 
 #define OTA_SETTINGS_FILE "/config/otaSettings.json"
 #define OTA_SETTINGS_SERVICE_PATH "/rest/otaSettings"

@@ -5,8 +5,13 @@
 #include <HttpEndpoint.h>
 #include <FSPersistence.h>
 
-#define DEFAULT_ADMIN_USERNAME "admin"
-#define DEFAULT_GUEST_USERNAME "guest"
+#ifndef DEFAULT_ADMIN_USERNAME
+  #define DEFAULT_ADMIN_USERNAME "admin"
+#endif
+
+#ifndef DEFAULT_GUEST_USERNAME
+  #define DEFAULT_GUEST_USERNAME "guest"
+#endif
 
 #define SECURITY_SETTINGS_FILE "/config/securitySettings.json"
 #define SECURITY_SETTINGS_PATH "/rest/securitySettings"

@@ -15,8 +15,13 @@
 
 #define DNS_PORT 53
 
-#define AP_DEFAULT_SSID "ESP8266-React"
-#define AP_DEFAULT_PASSWORD "esp-react"
+#ifndef AP_DEFAULT_SSID
+  #define AP_DEFAULT_SSID "ESP8266-React"
+#endif
+
+#ifndef AP_DEFAULT_PASSWORD
+  #define AP_DEFAULT_PASSWORD "esp-react"
+#endif
 
 #define AP_SETTINGS_FILE "/config/apSettings.json"
 #define AP_SETTINGS_SERVICE_PATH "/rest/apSettings"
