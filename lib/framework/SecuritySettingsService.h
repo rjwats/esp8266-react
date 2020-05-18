@@ -9,8 +9,16 @@
   #define FACTORY_ADMIN_USERNAME "admin"
 #endif
 
+#ifndef FACTORY_ADMIN_PASSWORD
+  #define FACTORY_ADMIN_PASSWORD "admin"
+#endif
+
 #ifndef FACTORY_GUEST_USERNAME
   #define FACTORY_GUEST_USERNAME "guest"
+#endif
+
+#ifndef FACTORY_GUEST_PASSWORD
+  #define FACTORY_GUEST_PASSWORD "guest"
 #endif
 
 #define SECURITY_SETTINGS_FILE "/config/securitySettings.json"
@@ -46,8 +54,8 @@ class SecuritySettings {
         settings.users.push_back(User(user["username"], user["password"], user["admin"]));
       }
     } else {
-      settings.users.push_back(User(FACTORY_ADMIN_USERNAME, FACTORY_ADMIN_USERNAME, true));
-      settings.users.push_back(User(FACTORY_GUEST_USERNAME, FACTORY_GUEST_USERNAME, false));
+      settings.users.push_back(User(FACTORY_ADMIN_USERNAME, FACTORY_ADMIN_PASSWORD, true));
+      settings.users.push_back(User(FACTORY_GUEST_USERNAME, FACTORY_GUEST_PASSWORD, false));
     }
   }
 };
