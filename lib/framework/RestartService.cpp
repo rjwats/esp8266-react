@@ -8,12 +8,6 @@ RestartService::RestartService(AsyncWebServer* server, SecurityManager* security
 }
 
 void RestartService::restart(AsyncWebServerRequest* request) {
-  request->onDisconnect([]() {
-#ifdef ESP32
-    ESP.restart();
-#elif defined(ESP8266)
-    ESP.reset();
-#endif
-  });
+  request->onDisconnect([]() { ESP.restart(); });
   request->send(200);
 }

@@ -10,6 +10,18 @@
 #define WIFI_SETTINGS_SERVICE_PATH "/rest/wifiSettings"
 #define WIFI_RECONNECTION_DELAY 1000 * 30
 
+#ifndef FACTORY_WIFI_SSID
+#define FACTORY_WIFI_SSID ""
+#endif
+
+#ifndef FACTORY_WIFI_PASSWORD
+#define FACTORY_WIFI_PASSWORD ""
+#endif
+
+#ifndef FACTORY_WIFI_HOSTNAME
+#define FACTORY_WIFI_HOSTNAME ""
+#endif
+
 class WiFiSettings {
  public:
   // core wifi configuration
@@ -41,9 +53,9 @@ class WiFiSettings {
   }
 
   static void deserialize(JsonObject& root, WiFiSettings& settings) {
-    settings.ssid = root["ssid"] | "";
-    settings.password = root["password"] | "";
-    settings.hostname = root["hostname"] | "";
+    settings.ssid = root["ssid"] | FACTORY_WIFI_SSID;
+    settings.password = root["password"] | FACTORY_WIFI_PASSWORD;
+    settings.hostname = root["hostname"] | FACTORY_WIFI_HOSTNAME;
     settings.staticIPConfig = root["static_ip_config"] | false;
 
     // extended settings
