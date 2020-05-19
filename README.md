@@ -151,7 +151,7 @@ You can enable CORS on the back end by uncommenting the -D ENABLE_CORS build fla
 
 ## Factory settings
 
-The firmware has built-in factory settings which act as default values for the various configurable services where settings are save on the file system. These settings can be overridden using the build flags defined in [factory_settings.ini](factory_settings.ini).
+The firmware has built-in factory settings which act as default values for the various configurable services where settings are not saved on the file system. These settings can be overridden using the build flags defined in [factory_settings.ini](factory_settings.ini).
 
 Customize the settings as you see fit, for example you might configure your home WiFi network as the factory default:
 
@@ -192,7 +192,8 @@ Changing factory time zone setting is a common requirement. This requires a litt
 
 If not overridden with a build flag, the firmware will use the device ID to generate factory defaults for settings such as the JWT secret and MQTT client ID. 
 
-Random values are generally better defaults for these settings, so it is recommended you leave these flags undefined.
+> **Tip**: Random values are generally better defaults for these settings, so it is recommended you leave these flags undefined.
+
 
 ## Building for different devices
 
