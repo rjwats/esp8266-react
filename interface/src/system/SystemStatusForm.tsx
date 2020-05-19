@@ -12,7 +12,7 @@ import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import SettingsBackupRestoreIcon from '@material-ui/icons/SettingsBackupRestore';
 
-import { redirectingAuthorizedFetch, AuthenticatedContextProps } from '../authentication';
+import { redirectingAuthorizedFetch, AuthenticatedContextProps, withAuthenticatedContext } from '../authentication';
 import { RestFormProps, FormButton, ErrorButton } from '../components';
 import { FACTORY_RESET_ENDPOINT, RESTART_ENDPOINT } from '../api';
 
