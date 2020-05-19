@@ -11,15 +11,15 @@
 #define WIFI_RECONNECTION_DELAY 1000 * 30
 
 #ifndef FACTORY_WIFI_SSID
-  #define FACTORY_WIFI_SSID ""
+#define FACTORY_WIFI_SSID ""
 #endif
 
 #ifndef FACTORY_WIFI_PASSWORD
-  #define FACTORY_WIFI_PASSWORD ""
+#define FACTORY_WIFI_PASSWORD ""
 #endif
 
 #ifndef FACTORY_WIFI_HOSTNAME
-  #define FACTORY_WIFI_HOSTNAME ""
+#define FACTORY_WIFI_HOSTNAME ""
 #endif
 
 class WiFiSettings {

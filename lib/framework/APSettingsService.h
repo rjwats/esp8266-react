@@ -16,15 +16,15 @@
 #define DNS_PORT 53
 
 #ifndef FACTORY_AP_SSID
-  #define FACTORY_AP_SSID "ESP8266-React"
+#define FACTORY_AP_SSID "ESP8266-React"
 #endif
 
 #ifndef FACTORY_AP_PASSWORD
-  #define FACTORY_AP_PASSWORD "esp-react"
+#define FACTORY_AP_PASSWORD "esp-react"
 #endif
 
 #ifndef FACTORY_AP_PROVISION_MODE
-  #define FACTORY_AP_PROVISION_MODE AP_MODE_DISCONNECTED
+#define FACTORY_AP_PROVISION_MODE AP_MODE_DISCONNECTED
 #endif
 
 #define AP_SETTINGS_FILE "/config/apSettings.json"

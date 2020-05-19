@@ -6,19 +6,19 @@
 #include <FSPersistence.h>
 
 #ifndef FACTORY_ADMIN_USERNAME
-  #define FACTORY_ADMIN_USERNAME "admin"
+#define FACTORY_ADMIN_USERNAME "admin"
 #endif
 
 #ifndef FACTORY_ADMIN_PASSWORD
-  #define FACTORY_ADMIN_PASSWORD "admin"
+#define FACTORY_ADMIN_PASSWORD "admin"
 #endif
 
 #ifndef FACTORY_GUEST_USERNAME
-  #define FACTORY_GUEST_USERNAME "guest"
+#define FACTORY_GUEST_USERNAME "guest"
 #endif
 
 #ifndef FACTORY_GUEST_PASSWORD
-  #define FACTORY_GUEST_PASSWORD "guest"
+#define FACTORY_GUEST_PASSWORD "guest"
 #endif
 
 #define SECURITY_SETTINGS_FILE "/config/securitySettings.json"

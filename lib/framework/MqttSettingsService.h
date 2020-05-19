@@ -5,6 +5,7 @@
 #include <HttpEndpoint.h>
 #include <FSPersistence.h>
 #include <AsyncMqttClient.h>
+#include <ESPUtils.h>
 
 #define MQTT_RECONNECTION_DELAY 5000
 
@@ -12,46 +13,46 @@
 #define MQTT_SETTINGS_SERVICE_PATH "/rest/mqttSettings"
 
 #ifndef FACTORY_MQTT_ENABLED
-  #define FACTORY_MQTT_ENABLED false
+#define FACTORY_MQTT_ENABLED false
 #endif
 
 #ifndef FACTORY_MQTT_HOST
-  #define FACTORY_MQTT_HOST "test.mosquitto.org"
+#define FACTORY_MQTT_HOST "test.mosquitto.org"
 #endif
 
 #ifndef FACTORY_MQTT_PORT
-  #define FACTORY_MQTT_PORT 1883
+#define FACTORY_MQTT_PORT 1883
 #endif
 
 #ifndef FACTORY_MQTT_USERNAME
-  #define FACTORY_MQTT_USERNAME ""
+#define FACTORY_MQTT_USERNAME ""
 #endif
 
 #ifndef FACTORY_MQTT_PASSWORD
-  #define FACTORY_MQTT_PASSWORD ""
+#define FACTORY_MQTT_PASSWORD ""
 #endif
 
 #ifndef FACTORY_MQTT_CLIENT_ID
-  #define FACTORY_MQTT_CLIENT_ID generateClientId()
+#define FACTORY_MQTT_CLIENT_ID generateClientId()
 #endif
 
 #ifndef FACTORY_MQTT_KEEP_ALIVE
-  #define FACTORY_MQTT_KEEP_ALIVE 16
+#define FACTORY_MQTT_KEEP_ALIVE 16
 #endif
 
 #ifndef FACTORY_MQTT_CLEAN_SESSION
-  #define FACTORY_MQTT_CLEAN_SESSION true
+#define FACTORY_MQTT_CLEAN_SESSION true
 #endif
 
 #ifndef FACTORY_MQTT_MAX_TOPIC_LENGTH
-  #define FACTORY_MQTT_MAX_TOPIC_LENGTH 128
+#define FACTORY_MQTT_MAX_TOPIC_LENGTH 128
 #endif
 
 static String generateClientId() {
 #ifdef ESP32
-  return "esp32-" + String((unsigned long)ESP.getEfuseMac(), HEX);
+  return ESPUtils::defaultDeviceValue("esp32-");
 #elif defined(ESP8266)
-  return "esp8266-" + String(ESP.getChipId(), HEX);
+  return ESPUtils::defaultDeviceValue("esp8266-");
 #endif
 }
 

@@ -14,15 +14,15 @@
 #include <WiFiUdp.h>
 
 #ifndef FACTORY_OTA_PORT
-  #define FACTORY_OTA_PORT 8266
+#define FACTORY_OTA_PORT 8266
 #endif
 
 #ifndef FACTORY_OTA_PASSWORD
-  #define FACTORY_OTA_PASSWORD "esp-react"
+#define FACTORY_OTA_PASSWORD "esp-react"
 #endif
 
 #ifndef FACTORY_OTA_ENABLED
-  #define FACTORY_OTA_ENABLED true
+#define FACTORY_OTA_ENABLED true
 #endif
 
 #define OTA_SETTINGS_FILE "/config/otaSettings.json"

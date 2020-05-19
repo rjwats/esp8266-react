@@ -17,13 +17,14 @@
 
 class FactoryResetService {
   FS* fs;
-public:
+
+ public:
   FactoryResetService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
 
   void factoryReset();
 
-private:
-  void handle(AsyncWebServerRequest* request);
+ private:
+  void handleRequest(AsyncWebServerRequest* request);
 };
 
 #endif  // end FactoryResetService_h

@@ -1,3 +1,6 @@
+#ifndef JsonUtils_h
+#define JsonUtils_h
+
 #include <Arduino.h>
 #include <IPAddress.h>
 #include <ArduinoJson.h>
@@ -15,3 +18,5 @@ class JsonUtils {
     }
   }
 };
+
+#endif  // end JsonUtils
