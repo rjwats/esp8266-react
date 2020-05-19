@@ -23,6 +23,10 @@
   #define FACTORY_AP_PASSWORD "esp-react"
 #endif
 
+#ifndef FACTORY_AP_PROVISION_MODE
+  #define FACTORY_AP_PROVISION_MODE AP_MODE_DISCONNECTED
+#endif
+
 #define AP_SETTINGS_FILE "/config/apSettings.json"
 #define AP_SETTINGS_SERVICE_PATH "/rest/apSettings"
 
@@ -39,7 +43,7 @@ class APSettings {
   }
 
   static void deserialize(JsonObject& root, APSettings& settings) {
-    settings.provisionMode = root["provision_mode"] | AP_MODE_ALWAYS;
+    settings.provisionMode = root["provision_mode"] | FACTORY_AP_PROVISION_MODE;
     switch (settings.provisionMode) {
       case AP_MODE_ALWAYS:
       case AP_MODE_DISCONNECTED:
