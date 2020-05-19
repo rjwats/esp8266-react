@@ -11,6 +11,7 @@
 
 #include <ESPAsyncWebServer.h>
 #include <SecurityManager.h>
+#include <FS.h>
 
 #define FS_CONFIG_DIRECTORY "/config"
 #define FACTORY_RESET_SERVICE_PATH "/rest/factoryReset"

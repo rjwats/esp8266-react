@@ -12,7 +12,7 @@ import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import SettingsBackupRestoreIcon from '@material-ui/icons/SettingsBackupRestore';
 
-import { redirectingAuthorizedFetch } from '../authentication';
+import { redirectingAuthorizedFetch, AuthenticatedContextProps } from '../authentication';
 import { RestFormProps, FormButton, ErrorButton } from '../components';
 import { FACTORY_RESET_ENDPOINT, RESTART_ENDPOINT } from '../api';
 
@@ -24,7 +24,7 @@ interface SystemStatusFormState {
   processing: boolean;
 }
 
-type SystemStatusFormProps = RestFormProps<SystemStatus>;
+type SystemStatusFormProps = AuthenticatedContextProps & RestFormProps<SystemStatus>;
 
 class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusFormState> {
 
@@ -182,6 +182,7 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
   }
 
   render() {
+    const me = this.props.authenticatedContext.me;
     return (
       <Fragment>
         <List>
@@ -193,14 +194,16 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
               Refresh
             </FormButton>
           </Box>
-          <Box flexWrap="none" padding={1} whiteSpace="nowrap">
-            <FormButton startIcon={<PowerSettingsNewIcon />} variant="contained" color="primary" onClick={this.onRestart}>
-              Restart
-            </FormButton>
-            <ErrorButton startIcon={<SettingsBackupRestoreIcon />} variant="contained" onClick={this.onFactoryReset}>
-              Factory reset
-            </ErrorButton>
-          </Box>
+          {me.admin &&
+            <Box flexWrap="none" padding={1} whiteSpace="nowrap">
+              <FormButton startIcon={<PowerSettingsNewIcon />} variant="contained" color="primary" onClick={this.onRestart}>
+                Restart
+              </FormButton>
+              <ErrorButton startIcon={<SettingsBackupRestoreIcon />} variant="contained" onClick={this.onFactoryReset}>
+                Factory reset
+              </ErrorButton>
+            </Box>
+          }
         </Box>
         {this.renderRestartDialog()}
         {this.renderFactoryResetDialog()}
@@ -210,4 +213,4 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
 
 }
 
-export default SystemStatusForm;
+export default withAuthenticatedContext(SystemStatusForm);

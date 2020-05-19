@@ -194,7 +194,6 @@ If not overridden with a build flag, the firmware will use the device ID to gene
 
 > **Tip**: Random values are generally better defaults for these settings, so it is recommended you leave these flags undefined.
 
-
 ## Building for different devices
 
 This project supports ESP8266 and ESP32 platforms. To support OTA programming, enough free space to upload the new sketch and file system image will be required. It is recommended that a board with at least 2mb of flash is used.

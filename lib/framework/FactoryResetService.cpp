@@ -15,7 +15,7 @@ void FactoryResetService::handleRequest(AsyncWebServerRequest* request) {
 }
 
 /**
- * Delete function assumes that all files are stored flat within the config directory
+ * Delete function assumes that all files are stored flat, within the config directory
  */
 void FactoryResetService::factoryReset() {
 #ifdef ESP32
