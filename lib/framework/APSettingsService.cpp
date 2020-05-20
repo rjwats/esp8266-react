@@ -7,7 +7,9 @@ APSettingsService::APSettingsService(AsyncWebServer* server, FS* fs, SecurityMan
                   server,
                   AP_SETTINGS_SERVICE_PATH,
                   securityManager),
-    _fsPersistence(APSettings::serialize, APSettings::deserialize, this, fs, AP_SETTINGS_FILE) {
+    _fsPersistence(APSettings::serialize, APSettings::deserialize, this, fs, AP_SETTINGS_FILE),
+    _lastManaged(0),
+    _dnsServer(nullptr) {
   addUpdateHandler([&](String originId) { reconfigureAP(); }, false);
 }
 
