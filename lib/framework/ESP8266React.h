@@ -16,6 +16,7 @@
 #include <APSettingsService.h>
 #include <APStatus.h>
 #include <AuthenticationService.h>
+#include <FactoryResetService.h>
 #include <MqttSettingsService.h>
 #include <MqttStatus.h>
 #include <NTPSettingsService.h>
@@ -71,6 +72,10 @@ class ESP8266React {
     return _mqttSettingsService.getMqttClient();
   }
 
+  void factoryReset() {
+    _factoryResetService.factoryReset();
+  }
+
  private:
   SecuritySettingsService _securitySettingsService;
   WiFiSettingsService _wifiSettingsService;
@@ -79,6 +84,7 @@ class ESP8266React {
   OTASettingsService _otaSettingsService;
   MqttSettingsService _mqttSettingsService;
   RestartService _restartService;
+  FactoryResetService _factoryResetService;
 
   AuthenticationService _authenticationService;
 
