@@ -34,6 +34,16 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
     processing: false
   }
 
+  approxHeapFragmentation = (): number => {
+    const { data: { max_alloc_heap, free_heap } } = this.props;
+    return 100 - Math.round((max_alloc_heap / free_heap) * 100);
+  }
+
+  usedSketchPercentage = (): number => {
+    const { data: { sketch_size, free_sketch_space } } = this.props;
+    return Math.round((sketch_size / free_sketch_space) * 100);
+  }
+
   createListItems() {
     const { data } = this.props
     return (
@@ -44,7 +54,7 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
               <DevicesIcon />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary="Platform" secondary={data.esp_platform} />
+          <ListItemText primary="Device (Platform / SDK)" secondary={data.esp_platform + ' / ' + data.sdk_version} />
         </ListItem>
         <Divider variant="inset" component="li" />
         <ListItem >
@@ -62,7 +72,7 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
               <MemoryIcon />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary="Free Heap" secondary={data.free_heap + ' bytes'} />
+          <ListItemText primary="Heap (Free / Alloc / Frag)" secondary={data.free_heap + ' bytes / ' + data.max_alloc_heap + ' bytes / ' + this.approxHeapFragmentation() + '%'} />
         </ListItem>
         <Divider variant="inset" component="li" />
         <ListItem >
@@ -71,7 +81,7 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
               <DataUsageIcon />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary="Sketch Size (used/max)" secondary={data.sketch_size + ' / ' + data.free_sketch_space + ' bytes'} />
+          <ListItemText primary="Sketch (Size / Max / Used)" secondary={data.sketch_size + ' bytes / ' + data.free_sketch_space + ' bytes / ' + this.usedSketchPercentage() + '%'} />
         </ListItem>
         <Divider variant="inset" component="li" />
         <ListItem >
@@ -80,7 +90,7 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
               <SdStorageIcon />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary="Flash Chip Size" secondary={data.flash_chip_size + ' bytes'} />
+          <ListItemText primary="Flash Chip (Size / Speed)" secondary={data.flash_chip_size + ' bytes / ' + (data.flash_chip_speed / 1000000).toFixed(0) + ' MHz'} />
         </ListItem>
         <Divider variant="inset" component="li" />
       </Fragment>
