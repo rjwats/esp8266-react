@@ -39,11 +39,6 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
     return 100 - Math.round((max_alloc_heap / free_heap) * 100);
   }
 
-  usedSketchPercentage = (): number => {
-    const { data: { sketch_size, free_sketch_space } } = this.props;
-    return Math.round((sketch_size / free_sketch_space) * 100);
-  }
-
   createListItems() {
     const { data } = this.props
     return (
@@ -81,7 +76,7 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
               <DataUsageIcon />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary="Sketch (Size / Max / Used)" secondary={data.sketch_size + ' bytes / ' + data.free_sketch_space + ' bytes / ' + this.usedSketchPercentage() + '%'} />
+          <ListItemText primary="Sketch (Size / Free)" secondary={data.sketch_size + ' bytes / ' + data.free_sketch_space} />
         </ListItem>
         <Divider variant="inset" component="li" />
         <ListItem >
