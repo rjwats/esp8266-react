@@ -149,40 +149,50 @@ You can enable CORS on the back end by uncommenting the -D ENABLE_CORS build fla
 -D CORS_ORIGIN=\"http://localhost:3000\"
 ```
 
-## Device configuration & default settings
+## Factory settings
 
-The SPIFFS image (in the ['data'](data) folder) contains a JSON settings file for each of the configurable features. 
+The firmware has built-in factory settings which act as default values for the various configurable services where settings are not saved on the file system. These settings can be overridden using the build flags defined in [factory_settings.ini](factory_settings.ini).
 
-The config files can be found in the ['data/config'](data/config) directory:
+Customize the settings as you see fit, for example you might configure your home WiFi network as the factory default:
 
-File | Description
----- | -----------
-[apSettings.json](data/config/apSettings.json)             | Access point settings
-[mqttSettings.json](data/config/mqttSettings.json)         | MQTT connection settings
-[ntpSettings.json](data/config/ntpSettings.json)           | NTP synchronization settings
-[otaSettings.json](data/config/otaSettings.json)           | OTA update configuration
-[securitySettings.json](data/config/securitySettings.json) | Security settings and user credentials
-[wifiSettings.json](data/config/wifiSettings.json)         | WiFi connection settings
-
-These files can be pre-loaded with default configuration and [uploaded to the device](#uploading-the-file-system-image) if required. There are sensible defaults provided by the firmware, so this is optional.
+```ini
+    -D FACTORY_WIFI_SSID=\"My Awesome WiFi Network\"
+    -D FACTORY_WIFI_PASSWORD=\"secret\"
+    -D FACTORY_WIFI_HOSTNAME=\"awesome_light_controller\"
+```
 
 ### Default access point settings
 
-The default settings configure the device to bring up an access point on start up which can be used to configure the device:
+By default, the factory settings configure the device to bring up an access point on start up which can be used to configure the device:
 
 * SSID: ESP8266-React
 * Password: esp-react
 
 ### Security settings and user credentials
 
-The security settings and user credentials provide the following users by default:
+By default, the factory settings configure two user accounts with the following credentials: 
 
 Username | Password
 -------- | --------
 admin    | admin
 guest    | guest
 
-It is recommended that you change the JWT secret and user credentials from their defaults protect your device. You can do this in the user interface, or by modifying [securitySettings.json](data/config/securitySettings.json) before [uploading the file system image](#uploading-the-file-system-image). 
+It is recommended that you change the user credentials from their defaults better protect your device. You can do this in the user interface, or by modifying [factory_settings.ini](factory_settings.ini) as mentioned above.
+
+### Customizing the factory time zone setting
+
+Changing factory time zone setting is a common requirement. This requires a little effort because the time zone name and POSIX format are stored as separate values for the moment. The time zone names and POSIX formats are contained in the UI code in [TZ.ts](interface/src/ntp/TZ.ts). Take the appropriate pair of values from there, for example, for Los Angeles you would use:
+
+```ini
+    -D FACTORY_NTP_TIME_ZONE_LABEL=\"America/Los_Angeles\"
+    -D FACTORY_NTP_TIME_ZONE_FORMAT=\"PST8PDT,M3.2.0,M11.1.0\"
+```
+
+### Device ID factory defaults
+
+If not overridden with a build flag, the firmware will use the device ID to generate factory defaults for settings such as the JWT secret and MQTT client ID. 
+
+> **Tip**: Random values are generally better defaults for these settings, so it is recommended you leave these flags undefined.
 
 ## Building for different devices
 

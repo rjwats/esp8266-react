@@ -7,7 +7,8 @@ OTASettingsService::OTASettingsService(AsyncWebServer* server, FS* fs, SecurityM
                   server,
                   OTA_SETTINGS_SERVICE_PATH,
                   securityManager),
-    _fsPersistence(OTASettings::serialize, OTASettings::deserialize, this, fs, OTA_SETTINGS_FILE) {
+    _fsPersistence(OTASettings::serialize, OTASettings::deserialize, this, fs, OTA_SETTINGS_FILE),
+    _arduinoOTA(nullptr) {
 #ifdef ESP32
   WiFi.onEvent(std::bind(&OTASettingsService::onStationModeGotIP, this, std::placeholders::_1, std::placeholders::_2),
                WiFiEvent_t::SYSTEM_EVENT_STA_GOT_IP);
