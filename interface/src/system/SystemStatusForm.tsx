@@ -67,7 +67,7 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
               <MemoryIcon />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary="Heap (Free / Alloc / Frag)" secondary={data.free_heap + ' bytes / ' + data.max_alloc_heap + ' bytes / ' + this.approxHeapFragmentation() + '%'} />
+          <ListItemText primary="Heap (Free / Max Alloc)" secondary={data.free_heap + ' / ' + data.max_alloc_heap + ' bytes (~' + this.approxHeapFragmentation() + '% fragmentation)'} />
         </ListItem>
         <Divider variant="inset" component="li" />
         <ListItem >
@@ -76,7 +76,7 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
               <DataUsageIcon />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary="Sketch (Size / Free)" secondary={data.sketch_size + ' bytes / ' + data.free_sketch_space} />
+          <ListItemText primary="Sketch (Size / Free)" secondary={data.sketch_size + ' / ' + data.free_sketch_space + ' bytes'} />
         </ListItem>
         <Divider variant="inset" component="li" />
         <ListItem >
