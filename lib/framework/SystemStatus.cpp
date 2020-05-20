@@ -15,7 +15,7 @@ void SystemStatus::systemStatus(AsyncWebServerRequest* request) {
   root["max_alloc_heap"] = ESP.getMaxAllocHeap();
 #elif defined(ESP8266)
   root["esp_platform"] = "esp8266";
-  root["max_alloc_heap"] = ESP.getMaxFreeBlockSize();  
+  root["max_alloc_heap"] = ESP.getMaxFreeBlockSize();
 #endif
   root["cpu_freq_mhz"] = ESP.getCpuFreqMHz();
   root["free_heap"] = ESP.getFreeHeap();
