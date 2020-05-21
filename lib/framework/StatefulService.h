@@ -18,9 +18,9 @@
 
 typedef size_t update_handler_id_t;
 typedef std::function<void(const String& originId)> StateUpdateCallback;
-static update_handler_id_t currentUpdatedHandlerId;
 
 typedef struct StateUpdateHandlerInfo {
+  static update_handler_id_t currentUpdatedHandlerId;
   update_handler_id_t _id;
   StateUpdateCallback _cb;
   bool _allowRemove;
