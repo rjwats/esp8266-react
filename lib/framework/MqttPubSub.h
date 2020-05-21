@@ -34,13 +34,13 @@ class MqttPub : virtual public MqttConnector<T> {
   MqttPub(JsonSerializer<T> jsonSerializer,
           StatefulService<T>* statefulService,
           AsyncMqttClient* mqttClient,
-          String pubTopic = "",
+          const String& pubTopic = "",
           size_t bufferSize = DEFAULT_BUFFER_SIZE) :
       MqttConnector<T>(statefulService, mqttClient, bufferSize), _jsonSerializer(jsonSerializer), _pubTopic(pubTopic) {
-    MqttConnector<T>::_statefulService->addUpdateHandler([&](String originId) { publish(); }, false);
+    MqttConnector<T>::_statefulService->addUpdateHandler([&](const String& originId) { publish(); }, false);
   }
 
-  void setPubTopic(String pubTopic) {
+  void setPubTopic(const String& pubTopic) {
     _pubTopic = pubTopic;
     publish();
   }
@@ -77,7 +77,7 @@ class MqttSub : virtual public MqttConnector<T> {
   MqttSub(JsonDeserializer<T> jsonDeserializer,
           StatefulService<T>* statefulService,
           AsyncMqttClient* mqttClient,
-          String subTopic = "",
+          const String& subTopic = "",
           size_t bufferSize = DEFAULT_BUFFER_SIZE) :
       MqttConnector<T>(statefulService, mqttClient, bufferSize),
       _jsonDeserializer(jsonDeserializer),
@@ -92,7 +92,7 @@ class MqttSub : virtual public MqttConnector<T> {
                                                        std::placeholders::_6));
   }
 
-  void setSubTopic(String subTopic) {
+  void setSubTopic(const String& subTopic) {
     if (!_subTopic.equals(subTopic)) {
       // unsubscribe from the existing topic if one was set
       if (_subTopic.length() > 0) {
@@ -147,8 +147,8 @@ class MqttPubSub : public MqttPub<T>, public MqttSub<T> {
              JsonDeserializer<T> jsonDeserializer,
              StatefulService<T>* statefulService,
              AsyncMqttClient* mqttClient,
-             String pubTopic = "",
-             String subTopic = "",
+             const String& pubTopic = "",
+             const String& subTopic = "",
              size_t bufferSize = DEFAULT_BUFFER_SIZE) :
       MqttConnector<T>(statefulService, mqttClient, bufferSize),
       MqttPub<T>(jsonSerializer, statefulService, mqttClient, pubTopic, bufferSize),
@@ -156,7 +156,7 @@ class MqttPubSub : public MqttPub<T>, public MqttSub<T> {
   }
 
  public:
-  void configureTopics(String pubTopic, String subTopic) {
+  void configureTopics(const String& pubTopic, const String& subTopic) {
     MqttSub<T>::setSubTopic(subTopic);
     MqttPub<T>::setPubTopic(pubTopic);
   }

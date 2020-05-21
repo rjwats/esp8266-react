@@ -17,7 +17,7 @@
 #endif
 
 typedef size_t update_handler_id_t;
-typedef std::function<void(String originId)> StateUpdateCallback;
+typedef std::function<void(const String& originId)> StateUpdateCallback;
 static update_handler_id_t currentUpdatedHandlerId;
 
 typedef struct StateUpdateHandlerInfo {
@@ -80,7 +80,7 @@ class StatefulService {
 #endif
   }
 
-  void update(std::function<void(T&)> callback, String originId) {
+  void update(std::function<void(T&)> callback, const String& originId) {
 #ifdef ESP32
     xSemaphoreTakeRecursive(_accessMutex, portMAX_DELAY);
 #endif
@@ -91,7 +91,7 @@ class StatefulService {
 #endif
   }
 
-  void update(JsonObject& jsonObject, JsonDeserializer<T> deserializer, String originId) {
+  void update(JsonObject& jsonObject, JsonDeserializer<T> deserializer, const String& originId) {
 #ifdef ESP32
     xSemaphoreTakeRecursive(_accessMutex, portMAX_DELAY);
 #endif
@@ -122,7 +122,7 @@ class StatefulService {
 #endif
   }
 
-  void callUpdateHandlers(String originId) {
+  void callUpdateHandlers(const String& originId) {
     for (const StateUpdateHandlerInfo_t& updateHandler : _updateHandlers) {
       updateHandler._cb(originId);
     }
