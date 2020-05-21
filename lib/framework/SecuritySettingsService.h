@@ -77,7 +77,7 @@ class SecuritySettingsService : public StatefulService<SecuritySettings>, public
  private:
   HttpEndpoint<SecuritySettings> _httpEndpoint;
   FSPersistence<SecuritySettings> _fsPersistence;
-  ArduinoJsonJWT _jwtHandler = ArduinoJsonJWT(FACTORY_JWT_SECRET);
+  ArduinoJsonJWT _jwtHandler;
 
   void configureJWTHandler();
 

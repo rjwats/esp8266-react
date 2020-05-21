@@ -121,18 +121,21 @@ class MqttSettingsService : public StatefulService<MqttSettings> {
   FSPersistence<MqttSettings> _fsPersistence;
 
   // Pointers to hold retained copies of the mqtt client connection strings.
-  // Required as AsyncMqttClient holds refrences to the supplied connection strings.
-  char* _retainedHost = nullptr;
-  char* _retainedClientId = nullptr;
-  char* _retainedUsername = nullptr;
-  char* _retainedPassword = nullptr;
+  // This is required as AsyncMqttClient holds refrences to the supplied connection strings.
+  char* _retainedHost;
+  char* _retainedClientId;
+  char* _retainedUsername;
+  char* _retainedPassword;
 
-  AsyncMqttClient _mqttClient;
+  // variable to help manage connection
   bool _reconfigureMqtt;
   unsigned long _disconnectedAt;
 
   // connection status
   AsyncMqttClientDisconnectReason _disconnectReason;
+
+  // the MQTT client instance
+  AsyncMqttClient _mqttClient;
 
 #ifdef ESP32
   void onStationModeGotIP(WiFiEvent_t event, WiFiEventInfo_t info);
