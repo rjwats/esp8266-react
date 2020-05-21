@@ -79,8 +79,8 @@ class WebSocketTx : virtual public WebSocketConnector<T> {
               AuthenticationPredicate authenticationPredicate = AuthenticationPredicates::IS_ADMIN) :
       WebSocketConnector<T>(statefulService, server, webSocketPath, securityManager, authenticationPredicate),
       _jsonSerializer(jsonSerializer) {
-    WebSocketConnector<T>::_statefulService->addUpdateHandler([&](String originId) { transmitData(nullptr, originId); },
-                                                              false);
+    WebSocketConnector<T>::_statefulService->addUpdateHandler(
+        [&](const String& originId) { transmitData(nullptr, originId); }, false);
   }
 
   WebSocketTx(JsonSerializer<T> jsonSerializer,
@@ -88,8 +88,8 @@ class WebSocketTx : virtual public WebSocketConnector<T> {
               AsyncWebServer* server,
               char const* webSocketPath) :
       WebSocketConnector<T>(statefulService, server, webSocketPath), _jsonSerializer(jsonSerializer) {
-    WebSocketConnector<T>::_statefulService->addUpdateHandler([&](String originId) { transmitData(nullptr, originId); },
-                                                              false);
+    WebSocketConnector<T>::_statefulService->addUpdateHandler(
+        [&](const String& originId) { transmitData(nullptr, originId); }, false);
   }
 
  protected:
@@ -129,7 +129,7 @@ class WebSocketTx : virtual public WebSocketConnector<T> {
    * Original implementation sent clients their own IDs so they could ignore updates they initiated. This approach
    * simplifies the client and the server implementation but may not be sufficent for all use-cases.
    */
-  void transmitData(AsyncWebSocketClient* client, String originId) {
+  void transmitData(AsyncWebSocketClient* client, const String& originId) {
     DynamicJsonDocument jsonDocument = DynamicJsonDocument(WEB_SOCKET_MSG_SIZE);
     JsonObject root = jsonDocument.to<JsonObject>();
     root["type"] = "payload";
