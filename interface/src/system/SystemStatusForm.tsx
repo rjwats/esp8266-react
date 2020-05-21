@@ -34,6 +34,11 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
     processing: false
   }
 
+  approxHeapFragmentation = (): number => {
+    const { data: { max_alloc_heap, free_heap } } = this.props;
+    return 100 - Math.round((max_alloc_heap / free_heap) * 100);
+  }
+
   createListItems() {
     const { data } = this.props
     return (
@@ -44,7 +49,7 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
               <DevicesIcon />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary="Platform" secondary={data.esp_platform} />
+          <ListItemText primary="Device (Platform / SDK)" secondary={data.esp_platform + ' / ' + data.sdk_version} />
         </ListItem>
         <Divider variant="inset" component="li" />
         <ListItem >
@@ -62,7 +67,7 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
               <MemoryIcon />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary="Free Heap" secondary={data.free_heap + ' bytes'} />
+          <ListItemText primary="Heap (Free / Max Alloc)" secondary={data.free_heap + ' / ' + data.max_alloc_heap + ' bytes (~' + this.approxHeapFragmentation() + '% fragmentation)'} />
         </ListItem>
         <Divider variant="inset" component="li" />
         <ListItem >
@@ -71,7 +76,7 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
               <DataUsageIcon />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary="Sketch Size (used/max)" secondary={data.sketch_size + ' / ' + data.free_sketch_space + ' bytes'} />
+          <ListItemText primary="Sketch (Size / Free)" secondary={data.sketch_size + ' / ' + data.free_sketch_space + ' bytes'} />
         </ListItem>
         <Divider variant="inset" component="li" />
         <ListItem >
@@ -80,7 +85,7 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
               <SdStorageIcon />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary="Flash Chip Size" secondary={data.flash_chip_size + ' bytes'} />
+          <ListItemText primary="Flash Chip (Size / Speed)" secondary={data.flash_chip_size + ' bytes / ' + (data.flash_chip_speed / 1000000).toFixed(0) + ' MHz'} />
         </ListItem>
         <Divider variant="inset" component="li" />
       </Fragment>
