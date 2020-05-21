@@ -65,7 +65,7 @@ class SecurityManager {
   /*
    * Authenticate, returning the user if found
    */
-  virtual Authentication authenticate(String& username, String& password) = 0;
+  virtual Authentication authenticate(const String& username, const String& password) = 0;
 
   /*
    * Check the request header for the Authorization token

@@ -67,7 +67,7 @@ class SecuritySettingsService : public StatefulService<SecuritySettings>, public
   void begin();
 
   // Functions to implement SecurityManager
-  Authentication authenticate(String& username, String& password);
+  Authentication authenticate(const String& username, const String& password);
   Authentication authenticateRequest(AsyncWebServerRequest* request);
   String generateJWT(User* user);
   ArRequestFilterFunction filterRequest(AuthenticationPredicate predicate);
