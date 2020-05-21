@@ -20,7 +20,8 @@ class FSPersistence {
       _jsonDeserializer(jsonDeserializer),
       _statefulService(statefulService),
       _fs(fs),
-      _filePath(filePath) {
+      _filePath(filePath),
+      _updateHandlerId(0) {
     enableUpdateHandler();
   }
 
@@ -85,7 +86,7 @@ class FSPersistence {
   StatefulService<T>* _statefulService;
   FS* _fs;
   char const* _filePath;
-  update_handler_id_t _updateHandlerId = 0;
+  update_handler_id_t _updateHandlerId;
 
  protected:
   // We assume the deserializer supplies sensible defaults if an empty object

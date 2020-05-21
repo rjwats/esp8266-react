@@ -68,11 +68,11 @@ class APSettingsService : public StatefulService<APSettings> {
   HttpEndpoint<APSettings> _httpEndpoint;
   FSPersistence<APSettings> _fsPersistence;
 
-  // for the mangement delay loop
-  unsigned long _lastManaged;
-
   // for the captive portal
   DNSServer* _dnsServer;
+
+  // for the mangement delay loop
+  unsigned long _lastManaged;
 
   void reconfigureAP();
   void manageAP();
