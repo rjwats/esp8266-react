@@ -11,6 +11,8 @@ import DataUsageIcon from '@material-ui/icons/DataUsage';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import SettingsBackupRestoreIcon from '@material-ui/icons/SettingsBackupRestore';
+import GradientIcon from '@material-ui/icons/Gradient';
+import BuildIcon from '@material-ui/icons/Build';
 
 import { redirectingAuthorizedFetch, AuthenticatedContextProps, withAuthenticatedContext } from '../authentication';
 import { RestFormProps, FormButton, ErrorButton } from '../components';
@@ -59,6 +61,15 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
         <ListItem >
           <ListItemAvatar>
             <Avatar>
+              <BuildIcon />
+            </Avatar>
+          </ListItemAvatar>
+          <ListItemText primary="Framework Sdk Version" secondary={data.sdk_version} />
+        </ListItem>      
+        <Divider variant="inset" component="li" />
+        <ListItem >
+          <ListItemAvatar>
+            <Avatar>
               <MemoryIcon />
             </Avatar>
           </ListItemAvatar>
@@ -68,10 +79,19 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
         <ListItem >
           <ListItemAvatar>
             <Avatar>
+              <GradientIcon />
+            </Avatar>
+          </ListItemAvatar>
+          <ListItemText primary="Heap Fragmentation" secondary={data.heap_fragmentation + '%'} />
+        </ListItem>
+        <Divider variant="inset" component="li" />
+        <ListItem >
+          <ListItemAvatar>
+            <Avatar>
               <DataUsageIcon />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary="Sketch Size (used/max)" secondary={data.sketch_size + ' / ' + data.free_sketch_space + ' bytes'} />
+          <ListItemText primary={"Sketch Size - " + (data.sketch_size * 100 / data.free_sketch_space).toFixed(0) + "%"} secondary={data.sketch_size + ' / ' + data.free_sketch_space + ' bytes'} />
         </ListItem>
         <Divider variant="inset" component="li" />
         <ListItem >
