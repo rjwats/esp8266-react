@@ -44,9 +44,9 @@ void OTASettingsService::configureArduinoOTA() {
     _arduinoOTA->setPort(_state.port);
     _arduinoOTA->setPassword(_state.password.c_str());
     _arduinoOTA->onStart([]() { Serial.println(F("Starting")); });
-    _arduinoOTA->onEnd([]() { Serial.println(F("\nEnd")); });
+    _arduinoOTA->onEnd([]() { Serial.println(F("\r\nEnd")); });
     _arduinoOTA->onProgress([](unsigned int progress, unsigned int total) {
-      Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
+      Serial.printf_P(PSTR("Progress: %u%%\r\n"), (progress / (total / 100)));
     });
     _arduinoOTA->onError([](ota_error_t error) {
       Serial.printf("Error[%u]: ", error);

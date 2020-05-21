@@ -27,10 +27,8 @@ void WiFiStatus::onStationModeDisconnected(WiFiEvent_t event, WiFiEventInfo_t in
 }
 
 void WiFiStatus::onStationModeGotIP(WiFiEvent_t event, WiFiEventInfo_t info) {
-  Serial.print(F("WiFi Got IP. localIP="));
-  Serial.print(WiFi.localIP().toString());
-  Serial.print(F(", hostName="));
-  Serial.println(WiFi.getHostname());
+  Serial.printf_P(
+      PSTR("WiFi Got IP. localIP=%s, hostName=%s\r\n"), WiFi.localIP().toString().c_str(), WiFi.getHostname());
 }
 #elif defined(ESP8266)
 void WiFiStatus::onStationModeConnected(const WiFiEventStationModeConnected& event) {
@@ -44,10 +42,8 @@ void WiFiStatus::onStationModeDisconnected(const WiFiEventStationModeDisconnecte
 }
 
 void WiFiStatus::onStationModeGotIP(const WiFiEventStationModeGotIP& event) {
-  Serial.print(F("WiFi Got IP. localIP="));
-  Serial.print(event.ip);
-  Serial.print(F(", hostName="));
-  Serial.println(WiFi.hostname());
+  Serial.printf_P(
+      PSTR("WiFi Got IP. localIP=%s, hostName=%s\r\n"), event.ip.toString().c_str(), WiFi.hostname().c_str());
 }
 #endif
 
