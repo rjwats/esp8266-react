@@ -1,12 +1,13 @@
 export interface SystemStatus {
   esp_platform: string;
-  sdk_version: string;
+  max_alloc_heap: number;
   cpu_freq_mhz: number;
   free_heap: number;
   sketch_size: number;
   free_sketch_space: number;
+  sdk_version: string;
   flash_chip_size: number;
-  heap_fragmentation: number;
+  flash_chip_speed: number;
 }
 
 export interface OTASettings {

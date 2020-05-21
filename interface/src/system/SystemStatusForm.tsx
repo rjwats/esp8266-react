@@ -11,8 +11,6 @@ import DataUsageIcon from '@material-ui/icons/DataUsage';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import SettingsBackupRestoreIcon from '@material-ui/icons/SettingsBackupRestore';
-import GradientIcon from '@material-ui/icons/Gradient';
-import BuildIcon from '@material-ui/icons/Build';
 
 import { redirectingAuthorizedFetch, AuthenticatedContextProps, withAuthenticatedContext } from '../authentication';
 import { RestFormProps, FormButton, ErrorButton } from '../components';
@@ -36,6 +34,11 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
     processing: false
   }
 
+  approxHeapFragmentation = (): number => {
+    const { data: { max_alloc_heap, free_heap } } = this.props;
+    return 100 - Math.round((max_alloc_heap / free_heap) * 100);
+  }
+
   createListItems() {
     const { data } = this.props
     return (
@@ -46,7 +49,7 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
               <DevicesIcon />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary="Platform" secondary={data.esp_platform} />
+          <ListItemText primary="Device (Platform / SDK)" secondary={data.esp_platform + ' / ' + data.sdk_version} />
         </ListItem>
         <Divider variant="inset" component="li" />
         <ListItem >
@@ -61,28 +64,10 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
         <ListItem >
           <ListItemAvatar>
             <Avatar>
-              <BuildIcon />
-            </Avatar>
-          </ListItemAvatar>
-          <ListItemText primary="Framework Sdk Version" secondary={data.sdk_version} />
-        </ListItem>      
-        <Divider variant="inset" component="li" />
-        <ListItem >
-          <ListItemAvatar>
-            <Avatar>
               <MemoryIcon />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary="Free Heap" secondary={data.free_heap + ' bytes'} />
-        </ListItem>
-        <Divider variant="inset" component="li" />
-        <ListItem >
-          <ListItemAvatar>
-            <Avatar>
-              <GradientIcon />
-            </Avatar>
-          </ListItemAvatar>
-          <ListItemText primary="Heap Fragmentation" secondary={data.heap_fragmentation + '%'} />
+          <ListItemText primary="Heap (Free / Max Alloc)" secondary={data.free_heap + ' / ' + data.max_alloc_heap + ' bytes (~' + this.approxHeapFragmentation() + '% fragmentation)'} />
         </ListItem>
         <Divider variant="inset" component="li" />
         <ListItem >
@@ -91,7 +76,7 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
               <DataUsageIcon />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary={"Sketch Size - " + (data.sketch_size * 100 / data.free_sketch_space).toFixed(0) + "%"} secondary={data.sketch_size + ' / ' + data.free_sketch_space + ' bytes'} />
+          <ListItemText primary="Sketch (Size / Free)" secondary={data.sketch_size + ' / ' + data.free_sketch_space + ' bytes'} />
         </ListItem>
         <Divider variant="inset" component="li" />
         <ListItem >
@@ -100,7 +85,7 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
               <SdStorageIcon />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary="Flash Chip Size" secondary={data.flash_chip_size + ' bytes'} />
+          <ListItemText primary="Flash Chip (Size / Speed)" secondary={data.flash_chip_size + ' bytes / ' + (data.flash_chip_speed / 1000000).toFixed(0) + ' MHz'} />
         </ListItem>
         <Divider variant="inset" component="li" />
       </Fragment>
