@@ -48,7 +48,7 @@ class HttpGetEndpoint {
     AsyncJsonResponse* response = new AsyncJsonResponse(false, _bufferSize);
     JsonObject jsonObject = response->getRoot().to<JsonObject>();
     _statefulService->read(jsonObject, _jsonSerializer);
-
+    
     response->setLength();
     request->send(response);
   }
@@ -72,10 +72,10 @@ class HttpPostEndpoint {
           servicePath,
           securityManager->wrapCallback(
               std::bind(&HttpPostEndpoint::updateSettings, this, std::placeholders::_1, std::placeholders::_2),
-              authenticationPredicate)),
+              authenticationPredicate,
+              bufferSize)),
       _bufferSize(bufferSize) {
     _updateHandler.setMethod(HTTP_POST);
-    _updateHandler.setMaxContentLength(_bufferSize);
     server->addHandler(&_updateHandler);
   }
 
@@ -89,10 +89,10 @@ class HttpPostEndpoint {
       _jsonDeserializer(jsonDeserializer),
       _statefulService(statefulService),
       _updateHandler(servicePath,
-                     std::bind(&HttpPostEndpoint::updateSettings, this, std::placeholders::_1, std::placeholders::_2)),
+                     std::bind(&HttpPostEndpoint::updateSettings, this, std::placeholders::_1, std::placeholders::_2),
+                     bufferSize),
       _bufferSize(bufferSize) {
     _updateHandler.setMethod(HTTP_POST);
-    _updateHandler.setMaxContentLength(_bufferSize);
     server->addHandler(&_updateHandler);
   }
 
