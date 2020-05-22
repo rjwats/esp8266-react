@@ -9,23 +9,18 @@
 
 enum LogLevel { DEBUG = 0, INFO = 1, WARNING = 2, ERROR = 3 };
 
-#define LOGF_D(fmt, ...) Logger::log_P(LogLevel::DEBUG, PSTR(fmt), ##__VA_ARGS__)
-#define LOGF_I(fmt, ...) Logger::log_P(LogLevel::INFO, PSTR(fmt), ##__VA_ARGS__)
-#define LOGF_W(fmt, ...) Logger::log_P(LogLevel::WARNING, PSTR(fmt), ##__VA_ARGS__)
-#define LOGF_E(fmt, ...) Logger::log_P(LogLevel::ERROR, PSTR(fmt), ##__VA_ARGS__)
+#define LOGF_D(fmt, ...) Logger::log_P(LogLevel::DEBUG, __FILE__, __LINE__, PSTR(fmt), ##__VA_ARGS__)
+#define LOGF_I(fmt, ...) Logger::log_P(LogLevel::INFO, __FILE__, __LINE__, PSTR(fmt), ##__VA_ARGS__)
+#define LOGF_W(fmt, ...) Logger::log_P(LogLevel::WARNING, __FILE__, __LINE__, PSTR(fmt), ##__VA_ARGS__)
+#define LOGF_E(fmt, ...) Logger::log_P(LogLevel::ERROR, __FILE__, __LINE__, PSTR(fmt), ##__VA_ARGS__)
 
-#define LOG_D(msg) Logger::log(LogLevel::DEBUG, F(msg))
-#define LOG_I(msg) Logger::log(LogLevel::INFO, F(msg))
-#define LOG_W(msg) Logger::log(LogLevel::WARNING, F(msg))
-#define LOG_E(msg) Logger::log(LogLevel::ERROR, F(msg))
+#define LOG_D(msg) Logger::log(LogLevel::DEBUG, __FILE__, __LINE__, F(msg))
+#define LOG_I(msg) Logger::log(LogLevel::INFO, __FILE__, __LINE__, F(msg))
+#define LOG_W(msg) Logger::log(LogLevel::WARNING, __FILE__, __LINE__, F(msg))
+#define LOG_E(msg) Logger::log(LogLevel::ERROR, __FILE__, __LINE__, F(msg))
 
 typedef size_t log_event_handler_id_t;
-typedef std::function<void(time_t time,
-                           LogLevel level,
-                           const String& file,
-                           const uint16_t line,
-                           const String& func,
-                           const String& message)>
+typedef std::function<void(time_t time, LogLevel level, const String& file, const uint16_t line, const String& message)>
     LogEventHandler;
 
 typedef struct LogEventHandlerInfo {
@@ -56,14 +51,14 @@ class Logger {
     }
   }
 
-  static void log(LogLevel level, const String& message) {
-    logEvent(time(nullptr), level, message);
+  static void log(LogLevel level, char const* file, int line, const String& message) {
+    logEvent(time(nullptr), level, file, line, message);
   }
 
-  static void log_P(LogLevel level, PGM_P format, ...) {
+  static void log_P(LogLevel level, char const* file, int line, PGM_P format, ...) {
     va_list args;
     va_start(args, format);
-    logEvent(time(nullptr), level, printf_P_toString(format, args));
+    logEvent(time(nullptr), level, file, line, printf_P_toString(format, args));
     va_end(args);
   }
 
@@ -97,10 +92,14 @@ class Logger {
   }
 
  private:
-  static void logEvent(time_t time, LogLevel level, const String& message) {
+  static void logEvent(time_t time, LogLevel level, char const* file, int line, const String& message) {
     Serial.print(time);
     Serial.print(" ");
     Serial.print(level);
+    Serial.print(" ");
+    Serial.print(file);
+    Serial.print(" ");
+    Serial.print(line);
     Serial.print(" ");
     Serial.print(message);
     Serial.println();
