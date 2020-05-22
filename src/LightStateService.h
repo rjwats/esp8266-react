@@ -6,6 +6,7 @@
 #include <HttpEndpoint.h>
 #include <MqttPubSub.h>
 #include <WebSocketTxRx.h>
+#include <Logger.h>
 
 #define BLINK_LED 2
 #define PRINT_DELAY 5000
