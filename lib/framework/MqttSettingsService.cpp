@@ -27,7 +27,15 @@ MqttSettingsService::MqttSettingsService(AsyncWebServer* server, FS* fs, Securit
                   server,
                   MQTT_SETTINGS_SERVICE_PATH,
                   securityManager),
-    _fsPersistence(MqttSettings::serialize, MqttSettings::deserialize, this, fs, MQTT_SETTINGS_FILE) {
+    _fsPersistence(MqttSettings::serialize, MqttSettings::deserialize, this, fs, MQTT_SETTINGS_FILE),
+    _retainedHost(nullptr),
+    _retainedClientId(nullptr),
+    _retainedUsername(nullptr),
+    _retainedPassword(nullptr),
+    _reconfigureMqtt(false),
+    _disconnectedAt(0),
+    _disconnectReason(AsyncMqttClientDisconnectReason::TCP_DISCONNECTED),
+    _mqttClient() {
 #ifdef ESP32
   WiFi.onEvent(
       std::bind(&MqttSettingsService::onStationModeDisconnected, this, std::placeholders::_1, std::placeholders::_2),
