@@ -11,7 +11,6 @@
 #include <JsonSerializer.h>
 #include <JsonDeserializer.h>
 
-#define MAX_CONTENT_LENGTH 1024
 #define HTTP_ENDPOINT_ORIGIN_ID "http"
 
 template <class T>
@@ -22,8 +21,9 @@ class HttpGetEndpoint {
                   AsyncWebServer* server,
                   const String& servicePath,
                   SecurityManager* securityManager,
-                  AuthenticationPredicate authenticationPredicate = AuthenticationPredicates::IS_ADMIN) :
-      _jsonSerializer(jsonSerializer), _statefulService(statefulService) {
+                  AuthenticationPredicate authenticationPredicate = AuthenticationPredicates::IS_ADMIN,
+                  size_t bufferSize = DEFAULT_BUFFER_SIZE) :
+      _jsonSerializer(jsonSerializer), _statefulService(statefulService), _bufferSize(bufferSize) {
     server->on(servicePath.c_str(),
                HTTP_GET,
                securityManager->wrapRequest(std::bind(&HttpGetEndpoint::fetchSettings, this, std::placeholders::_1),
@@ -33,17 +33,19 @@ class HttpGetEndpoint {
   HttpGetEndpoint(JsonSerializer<T> jsonSerializer,
                   StatefulService<T>* statefulService,
                   AsyncWebServer* server,
-                  const String& servicePath) :
-      _jsonSerializer(jsonSerializer), _statefulService(statefulService) {
+                  const String& servicePath,
+                  size_t bufferSize = DEFAULT_BUFFER_SIZE) :
+      _jsonSerializer(jsonSerializer), _statefulService(statefulService), _bufferSize(bufferSize) {
     server->on(servicePath.c_str(), HTTP_GET, std::bind(&HttpGetEndpoint::fetchSettings, this, std::placeholders::_1));
   }
 
  protected:
   JsonSerializer<T> _jsonSerializer;
   StatefulService<T>* _statefulService;
+  size_t _bufferSize;
 
   void fetchSettings(AsyncWebServerRequest* request) {
-    AsyncJsonResponse* response = new AsyncJsonResponse(false, MAX_CONTENT_LENGTH);
+    AsyncJsonResponse* response = new AsyncJsonResponse(false, _bufferSize);
     JsonObject jsonObject = response->getRoot().to<JsonObject>();
     _statefulService->read(jsonObject, _jsonSerializer);
 
@@ -61,7 +63,8 @@ class HttpPostEndpoint {
                    AsyncWebServer* server,
                    const String& servicePath,
                    SecurityManager* securityManager,
-                   AuthenticationPredicate authenticationPredicate = AuthenticationPredicates::IS_ADMIN) :
+                   AuthenticationPredicate authenticationPredicate = AuthenticationPredicates::IS_ADMIN,
+                   size_t bufferSize = DEFAULT_BUFFER_SIZE) :
       _jsonSerializer(jsonSerializer),
       _jsonDeserializer(jsonDeserializer),
       _statefulService(statefulService),
@@ -69,9 +72,10 @@ class HttpPostEndpoint {
           servicePath,
           securityManager->wrapCallback(
               std::bind(&HttpPostEndpoint::updateSettings, this, std::placeholders::_1, std::placeholders::_2),
-              authenticationPredicate)) {
+              authenticationPredicate),
+          bufferSize),
+      _bufferSize(bufferSize) {
     _updateHandler.setMethod(HTTP_POST);
-    _updateHandler.setMaxContentLength(MAX_CONTENT_LENGTH);
     server->addHandler(&_updateHandler);
   }
 
@@ -79,14 +83,16 @@ class HttpPostEndpoint {
                    JsonDeserializer<T> jsonDeserializer,
                    StatefulService<T>* statefulService,
                    AsyncWebServer* server,
-                   const String& servicePath) :
+                   const String& servicePath,
+                   size_t bufferSize = DEFAULT_BUFFER_SIZE) :
       _jsonSerializer(jsonSerializer),
       _jsonDeserializer(jsonDeserializer),
       _statefulService(statefulService),
       _updateHandler(servicePath,
-                     std::bind(&HttpPostEndpoint::updateSettings, this, std::placeholders::_1, std::placeholders::_2)) {
+                     std::bind(&HttpPostEndpoint::updateSettings, this, std::placeholders::_1, std::placeholders::_2),
+                     bufferSize),
+      _bufferSize(bufferSize) {
     _updateHandler.setMethod(HTTP_POST);
-    _updateHandler.setMaxContentLength(MAX_CONTENT_LENGTH);
     server->addHandler(&_updateHandler);
   }
 
@@ -95,19 +101,11 @@ class HttpPostEndpoint {
   JsonDeserializer<T> _jsonDeserializer;
   StatefulService<T>* _statefulService;
   AsyncCallbackJsonWebHandler _updateHandler;
-
-  void fetchSettings(AsyncWebServerRequest* request) {
-    AsyncJsonResponse* response = new AsyncJsonResponse(false, MAX_CONTENT_LENGTH);
-    JsonObject jsonObject = response->getRoot().to<JsonObject>();
-    _statefulService->read(jsonObject, _jsonSerializer);
-
-    response->setLength();
-    request->send(response);
-  }
+  size_t _bufferSize;
 
   void updateSettings(AsyncWebServerRequest* request, JsonVariant& json) {
     if (json.is<JsonObject>()) {
-      AsyncJsonResponse* response = new AsyncJsonResponse(false, MAX_CONTENT_LENGTH);
+      AsyncJsonResponse* response = new AsyncJsonResponse(false, _bufferSize);
 
       // use callback to update the settings once the response is complete
       request->onDisconnect([this]() { _statefulService->callUpdateHandlers(HTTP_ENDPOINT_ORIGIN_ID); });
@@ -138,29 +136,33 @@ class HttpEndpoint : public HttpGetEndpoint<T>, public HttpPostEndpoint<T> {
                AsyncWebServer* server,
                const String& servicePath,
                SecurityManager* securityManager,
-               AuthenticationPredicate authenticationPredicate = AuthenticationPredicates::IS_ADMIN) :
+               AuthenticationPredicate authenticationPredicate = AuthenticationPredicates::IS_ADMIN,
+               size_t bufferSize = DEFAULT_BUFFER_SIZE) :
       HttpGetEndpoint<T>(jsonSerializer,
                          statefulService,
                          server,
                          servicePath,
                          securityManager,
-                         authenticationPredicate),
+                         authenticationPredicate,
+                         bufferSize),
       HttpPostEndpoint<T>(jsonSerializer,
                           jsonDeserializer,
                           statefulService,
                           server,
                           servicePath,
                           securityManager,
-                          authenticationPredicate) {
+                          authenticationPredicate,
+                          bufferSize) {
   }
 
   HttpEndpoint(JsonSerializer<T> jsonSerializer,
                JsonDeserializer<T> jsonDeserializer,
                StatefulService<T>* statefulService,
                AsyncWebServer* server,
-               const String& servicePath) :
-      HttpGetEndpoint<T>(jsonSerializer, statefulService, server, servicePath),
-      HttpPostEndpoint<T>(jsonSerializer, jsonDeserializer, statefulService, server, servicePath) {
+               const String& servicePath,
+               size_t bufferSize = DEFAULT_BUFFER_SIZE) :
+      HttpGetEndpoint<T>(jsonSerializer, statefulService, server, servicePath, bufferSize),
+      HttpPostEndpoint<T>(jsonSerializer, jsonDeserializer, statefulService, server, servicePath, bufferSize) {
   }
 };
 

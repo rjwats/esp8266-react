@@ -12,6 +12,10 @@
 #include <freertos/semphr.h>
 #endif
 
+#ifndef DEFAULT_BUFFER_SIZE
+#define DEFAULT_BUFFER_SIZE 1024
+#endif
+
 typedef size_t update_handler_id_t;
 typedef std::function<void(const String& originId)> StateUpdateCallback;
 
