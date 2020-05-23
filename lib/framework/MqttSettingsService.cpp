@@ -92,17 +92,11 @@ AsyncMqttClient* MqttSettingsService::getMqttClient() {
 }
 
 void MqttSettingsService::onMqttConnect(bool sessionPresent) {
-  Serial.print(F("Connected to MQTT, "));
-  if (sessionPresent) {
-    Serial.println(F("with persistent session"));
-  } else {
-    Serial.println(F("without persistent session"));
-  }
+  LOGF_I("Connected to MQTT, %s persistent session", sessionPresent ? PSTR("with") : PSTR("without"));
 }
 
 void MqttSettingsService::onMqttDisconnect(AsyncMqttClientDisconnectReason reason) {
-  Serial.print(F("Disconnected from MQTT reason: "));
-  Serial.println((uint8_t)reason);
+  LOGF_I("Disconnected from MQTT reason: %d", reason);
   _disconnectReason = reason;
   _disconnectedAt = millis();
 }
@@ -115,28 +109,28 @@ void MqttSettingsService::onConfigUpdated() {
 #ifdef ESP32
 void MqttSettingsService::onStationModeGotIP(WiFiEvent_t event, WiFiEventInfo_t info) {
   if (_state.enabled) {
-    Serial.println(F("WiFi connection dropped, starting MQTT client."));
+    LOG_I("Got IP address, starting MQTT client.");
     onConfigUpdated();
   }
 }
 
 void MqttSettingsService::onStationModeDisconnected(WiFiEvent_t event, WiFiEventInfo_t info) {
   if (_state.enabled) {
-    Serial.println(F("WiFi connection dropped, stopping MQTT client."));
+    LOG_I("WiFi connection dropped, stopping MQTT client.");
     onConfigUpdated();
   }
 }
 #elif defined(ESP8266)
 void MqttSettingsService::onStationModeGotIP(const WiFiEventStationModeGotIP& event) {
   if (_state.enabled) {
-    Serial.println(F("WiFi connection dropped, starting MQTT client."));
+    LOG_I("Got IP address, starting MQTT client.");
     onConfigUpdated();
   }
 }
 
 void MqttSettingsService::onStationModeDisconnected(const WiFiEventStationModeDisconnected& event) {
   if (_state.enabled) {
-    Serial.println(F("WiFi connection dropped, stopping MQTT client."));
+    LOG_I("WiFi connection dropped, stopping MQTT client.");
     onConfigUpdated();
   }
 }
@@ -148,7 +142,7 @@ void MqttSettingsService::configureMqtt() {
 
   // only connect if WiFi is connected and MQTT is enabled
   if (_state.enabled && WiFi.isConnected()) {
-    Serial.println(F("Connecting to MQTT..."));
+    LOG_I("Connecting to MQTT...");
     _mqttClient.setServer(retainCstr(_state.host.c_str(), &_retainedHost), _state.port);
     if (_state.username.length() > 0) {
       _mqttClient.setCredentials(

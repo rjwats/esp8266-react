@@ -6,6 +6,7 @@
 #include <FSPersistence.h>
 #include <AsyncMqttClient.h>
 #include <ESPUtils.h>
+#include <Logger.h>
 
 #define MQTT_RECONNECTION_DELAY 5000
 

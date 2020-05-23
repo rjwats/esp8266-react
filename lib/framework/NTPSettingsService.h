@@ -3,6 +3,7 @@
 
 #include <HttpEndpoint.h>
 #include <FSPersistence.h>
+#include <Logger.h>
 
 #include <time.h>
 #ifdef ESP32

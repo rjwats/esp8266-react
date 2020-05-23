@@ -9,18 +9,18 @@
 
 enum LogLevel { DEBUG = 0, INFO = 1, WARNING = 2, ERROR = 3 };
 
-#define LOGF_D(fmt, ...) Logger::log_P(LogLevel::DEBUG, __FILE__, __LINE__, PSTR(fmt), ##__VA_ARGS__)
-#define LOGF_I(fmt, ...) Logger::log_P(LogLevel::INFO, __FILE__, __LINE__, PSTR(fmt), ##__VA_ARGS__)
-#define LOGF_W(fmt, ...) Logger::log_P(LogLevel::WARNING, __FILE__, __LINE__, PSTR(fmt), ##__VA_ARGS__)
-#define LOGF_E(fmt, ...) Logger::log_P(LogLevel::ERROR, __FILE__, __LINE__, PSTR(fmt), ##__VA_ARGS__)
+#define LOGF_D(fmt, ...) Logger::logf(LogLevel::DEBUG, PSTR(__FILE__), __LINE__, PSTR(fmt), ##__VA_ARGS__)
+#define LOGF_I(fmt, ...) Logger::logf(LogLevel::INFO, PSTR(__FILE__), __LINE__, PSTR(fmt), ##__VA_ARGS__)
+#define LOGF_W(fmt, ...) Logger::logf(LogLevel::WARNING, PSTR(__FILE__), __LINE__, PSTR(fmt), ##__VA_ARGS__)
+#define LOGF_E(fmt, ...) Logger::logf(LogLevel::ERROR, PSTR(__FILE__), __LINE__, PSTR(fmt), ##__VA_ARGS__)
 
-#define LOG_D(msg) Logger::log(LogLevel::DEBUG, __FILE__, __LINE__, F(msg))
-#define LOG_I(msg) Logger::log(LogLevel::INFO, __FILE__, __LINE__, F(msg))
-#define LOG_W(msg) Logger::log(LogLevel::WARNING, __FILE__, __LINE__, F(msg))
-#define LOG_E(msg) Logger::log(LogLevel::ERROR, __FILE__, __LINE__, F(msg))
+#define LOG_D(msg) Logger::log(LogLevel::DEBUG, PSTR(__FILE__), __LINE__, PSTR(msg))
+#define LOG_I(msg) Logger::log(LogLevel::INFO, PSTR(__FILE__), __LINE__, PSTR(msg))
+#define LOG_W(msg) Logger::log(LogLevel::WARNING, PSTR(__FILE__), __LINE__, PSTR(msg))
+#define LOG_E(msg) Logger::log(LogLevel::ERROR, PSTR(__FILE__), __LINE__, PSTR(msg))
 
 typedef size_t log_event_handler_id_t;
-typedef std::function<void(time_t time, LogLevel level, const String& file, const uint16_t line, const String& message)>
+typedef std::function<void(time_t time, LogLevel level, const char* file, const uint16_t line, const char* message)>
     LogEventHandler;
 
 typedef struct LogEventHandlerInfo {
@@ -51,15 +51,36 @@ class Logger {
     }
   }
 
-  static void log(LogLevel level, char const* file, int line, const String& message) {
+  static void log(LogLevel level, const char* file, int line, const char* message) {
     logEvent(time(nullptr), level, file, line, message);
   }
 
-  static void log_P(LogLevel level, char const* file, int line, PGM_P format, ...) {
+  static void logf(LogLevel level, const char* file, int line, const char* format, ...) {
     va_list args;
+
+    // inital buffer, we can extend it if the formatted string doesn't fit
+    char temp[64];
     va_start(args, format);
-    logEvent(time(nullptr), level, file, line, printf_P_toString(format, args));
+    size_t len = vsnprintf_P(temp, sizeof(temp), format, args);
     va_end(args);
+
+    // buffer was large enough - log and exit early
+    if (len < sizeof(temp)) {
+      logEvent(time(nullptr), level, file, line, temp);
+      return;
+    }
+
+    // create a new buffer of the correct length if possible
+    char* buffer = new char[len + 1];
+    if (buffer) {
+      vsnprintf_P(buffer, len + 1, format, args);
+      logEvent(time(nullptr), level, file, line, buffer);
+      delete[] buffer;
+      return;
+    }
+
+    // we failed to allocate
+    logEvent(time(nullptr), level, file, line, PSTR("Error formatting log message"));
   }
 
  private:
@@ -69,30 +90,8 @@ class Logger {
     // class is static-only, prevent instantiation
   }
 
-  static String printf_P_toString(PGM_P format, va_list args) {
-    // inital buffer, we can extend it if the formatted string doesn't fit
-    char temp[64];
-    char* buffer = temp;
-    // try and read into the buffer, exit early if buffer was large enough
-    size_t len = vsnprintf_P(temp, sizeof(temp), format, args);
-    if (len < sizeof(temp)) {
-      return buffer;
-    }
-    // create a new buffer of the correct length if possible
-    buffer = new char[len + 1];
-    if (buffer) {
-      // format to the buffer
-      vsnprintf_P(buffer, len + 1, format, args);
-      // return the value as a string after releasing the buffer
-      String value = buffer;
-      delete[] buffer;
-      return value;
-    }
-    return F("Error formatting log message");
-  }
-
  private:
-  static void logEvent(time_t time, LogLevel level, char const* file, int line, const String& message) {
+  static void logEvent(time_t time, LogLevel level, char const* file, int line, char const* message) {
     Serial.print(time);
     Serial.print(" ");
     Serial.print(level);

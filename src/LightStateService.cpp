@@ -40,7 +40,7 @@ void LightStateService::begin() {
 }
 
 void LightStateService::onConfigUpdated() {
-  LOGF_D("The light is now: %s", _state.ledOn ? "on" : "off");
+  LOGF_I("The light is now: %s", _state.ledOn ? "on" : "off");
   digitalWrite(BLINK_LED, _state.ledOn ? LED_ON : LED_OFF);
 }
 
