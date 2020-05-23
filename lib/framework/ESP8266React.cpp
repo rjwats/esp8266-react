@@ -66,6 +66,9 @@ ESP8266React::ESP8266React(AsyncWebServer* server, FS* fs) :
   DefaultHeaders::Instance().addHeader("Access-Control-Allow-Headers", "Accept, Content-Type, Authorization");
   DefaultHeaders::Instance().addHeader("Access-Control-Allow-Credentials", "true");
 #endif
+
+  // Configure logging appenders
+  Logger::addEventHandler(SerialLogger::logEvent);
 }
 
 void ESP8266React::begin() {

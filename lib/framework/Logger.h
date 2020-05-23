@@ -7,6 +7,16 @@
 #include <JsonSerializer.h>
 #include <time.h>
 
+#define COLOR_RESET "\x1B[0m"
+#define COLOR_BLACK "\x1B[0;30m"
+#define COLOR_RED "\x1B[0;31m"
+#define COLOR_GREEN "\x1B[0;32m"
+#define COLOR_YELLOW "\x1B[0;33m"
+#define COLOR_BLUE "\x1B[0;34m"
+#define COLOR_MAGENTA "\x1B[0;35m"
+#define COLOR_CYAN "\x1B[0;36m"
+#define COLOR_WHITE "\x1B[0;37m"
+
 enum LogLevel { DEBUG = 0, INFO = 1, WARNING = 2, ERROR = 3 };
 
 #define LOGF_D(fmt, ...) Logger::logf(LogLevel::DEBUG, PSTR(__FILE__), __LINE__, PSTR(fmt), ##__VA_ARGS__)
@@ -90,7 +100,15 @@ class Logger {
     // class is static-only, prevent instantiation
   }
 
- private:
+  static void logEvent(time_t time, LogLevel level, char const* file, int line, char const* message) {
+    for (const LogEventHandlerInfo& eventHandler : _eventHandlers) {
+      eventHandler._cb(time, level, file, line, message);
+    }
+  }
+};
+
+class SerialLogger {
+ public:
   static void logEvent(time_t time, LogLevel level, char const* file, int line, char const* message) {
     Serial.print(time);
     Serial.print(" ");
@@ -104,4 +122,5 @@ class Logger {
     Serial.println();
   }
 };
+
 #endif
