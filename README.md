@@ -82,7 +82,9 @@ The interface will be automatically built by PlatformIO before it builds the fir
 
 #### Serving the interface from PROGMEM
 
-By default, the project is configured to serve the interface from PROGMEM. You do not need to upload a file system image unless you configure the framework to [serve the interface from SPIFFS](#serving-the-interface-from-spiffs).
+By default, the project is configured to serve the interface from PROGMEM. 
+
+> **Tip**: You do not need to upload a file system image unless you configure the framework to [serve the interface from SPIFFS](#serving-the-interface-from-spiffs).
 
 The interface will consume ~150k of program space which can be problematic if you already have a large binary artefact or if you have added large dependencies to the interface. The ESP32 binaries are fairly large in there simplest form so the addition of the interface resources requires us to use special partitioning for the ESP32.
 
