@@ -40,7 +40,6 @@ The project structure is as follows:
 
 Resource                         | Description
 -------------------------------- | ----------------------------------------------------------------------
-[data/](data)                    | The file system image directory
 [interface/](interface)          | React based front end
 [lib/framework/](lib/framework)  | C++ back end for the ESP8266/ESP32 device
 [src/](src)                      | The main.cpp and demo project to get you started
@@ -83,23 +82,25 @@ The interface will be automatically built by PlatformIO before it builds the fir
 
 #### Serving the interface from PROGMEM
 
-By default, the project is configured to serve the interface from PROGMEM. This can be disabled by removing the -D PROGMEM_WWW build flag in ['platformio.ini'](platformio.ini) and re-building the firmware. If this your desired approach you must manually [upload the file system image](#uploading-the-file-system-image) to the device.
+By default, the project is configured to serve the interface from PROGMEM. You do not need to upload a file system image unless you configure the framework to [serve the interface from SPIFFS](#serving-the-interface-from-spiffs).
 
 The interface will consume ~150k of program space which can be problematic if you already have a large binary artefact or if you have added large dependencies to the interface. The ESP32 binaries are fairly large in there simplest form so the addition of the interface resources requires us to use special partitioning for the ESP32.
 
 When building using the "node32s" profile, the project uses the custom [min_spiffs.csv](https://github.com/espressif/arduino-esp32/blob/master/tools/partitions/min_spiffs.csv) partitioning mode. You may want to disable this if you are manually uploading the file system image:
 
 
-```yaml
+```ini
 [env:node32s]
 board_build.partitions = min_spiffs.csv
 platform = espressif32
 board = node32s
 ```
 
-#### Uploading the file system image
+#### Serving the interface from SPIFFS
 
-If service content from SPIFFS, disable the PROGMEM_WWW build flag and build the project. The compiled interface will be copied to [data/](data) by the build process and may now be uploaded to the device by pressing the "Upload File System image" button:
+If you choose to serve the interface from SPIFFS you will need to change the default configuration and upload the file system image manually. 
+
+Disable `-D PROGMEM_WWW build` flag in ['platformio.ini'](platformio.ini) and re-build the firmware. The build process will now copy the compiled interface to the `data/` directory and it may be uploaded to the device by pressing the "Upload File System image" button:
 
 ![uploadfs](/media/uploadfs.png?raw=true "uploadfs")
 
@@ -131,7 +132,7 @@ npm start
 
 The interface has a development environment which is enabled when running the development server using `npm start`. The environment file can be found in ['interface/.env.development'](interface/.env.development) and contains the HTTP root URL and the WebSocket root URL:
 
-```properties
+```ini
 REACT_APP_HTTP_ROOT=http://192.168.0.99
 REACT_APP_WEB_SOCKET_ROOT=ws://192.168.0.99
 ```
@@ -144,7 +145,7 @@ The `REACT_APP_HTTP_ROOT` and `REACT_APP_WEB_SOCKET_ROOT` properties can be modi
 
 You can enable CORS on the back end by uncommenting the -D ENABLE_CORS build flag in ['platformio.ini'](platformio.ini) then re-building and uploading the firmware to the device. The default settings assume you will be accessing the development server on the default port on [http://localhost:3000](http://localhost:3000) this can also be changed if required:
 
-```properties
+```ini
 -D ENABLE_CORS
 -D CORS_ORIGIN=\"http://localhost:3000\"
 ```
@@ -204,7 +205,7 @@ The pre-configured environments are "esp12e" and "node32s". These are common ESP
 
 The settings file ['platformio.ini'](platformio.ini) configures the supported environments. Modify these, or add new environments for the devides you need to support. The default environments are as follows:
 
-```yaml
+```ini
 [env:esp12e]
 platform = espressif8266
 board = esp12e
@@ -217,7 +218,7 @@ board = node32s
 
 If you want to build for a different device, all you need to do is re-configure ['platformio.ini'](platformio.ini) and select an alternative environment by modifying the default_envs variable. Building for the common esp32 "node32s" board for example:
 
-```yaml
+```ini
 [platformio]
 ;default_envs = esp12e
 default_envs = node32s
@@ -268,7 +269,7 @@ You can replace the app icon is located at ['interface/public/app/icon.png'](int
 
 The app name displayed on the login page and on the menu bar can be modified by editing the REACT_APP_NAME property in ['interface/.env'](interface/.env)
 
-```properties
+```ini
 REACT_APP_NAME=Funky IoT Project
 ```
 
