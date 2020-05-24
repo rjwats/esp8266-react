@@ -27,8 +27,8 @@ interface SystemStatusFormState {
 
 type SystemStatusFormProps = AuthenticatedContextProps & RestFormProps<SystemStatus>;
 
-function asNum(num: number){
-  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+function formatNumber(num: number){
+  return new Intl.NumberFormat().format(num);
 }
 
 
@@ -73,7 +73,7 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
               <MemoryIcon />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary="Heap (Free / Max Alloc)" secondary={asNum(data.free_heap) + ' / ' + asNum(data.max_alloc_heap) + ' bytes (~' + this.approxHeapFragmentation() + '% fragmentation)'} />
+          <ListItemText primary="Heap (Free / Max Alloc)" secondary={formatNumber(data.free_heap) + ' / ' + formatNumber(data.max_alloc_heap) + ' bytes (~' + this.approxHeapFragmentation() + '% fragmentation)'} />
         </ListItem>
         <Divider variant="inset" component="li" />
         <ListItem >
@@ -82,7 +82,7 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
               <DataUsageIcon />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary="Sketch Size (used/max)" secondary={asNum(data.sketch_size) + ' / ' + asNum(data.free_sketch_space) + ' bytes'} />
+          <ListItemText primary="Sketch (Size / Free)" secondary={formatNumber(data.sketch_size) + ' / ' + formatNumber(data.free_sketch_space) + ' bytes'} />
         </ListItem>
         <Divider variant="inset" component="li" />
         <ListItem >
@@ -91,7 +91,7 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
               <SdStorageIcon />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary="Flash Chip (Size / Speed)" secondary={asNum(data.flash_chip_size) + ' bytes / ' + (data.flash_chip_speed / 1000000).toFixed(0) + ' MHz'} />
+          <ListItemText primary="Flash Chip (Size / Speed)" secondary={formatNumber(data.flash_chip_size) + ' bytes / ' + (data.flash_chip_speed / 1000000).toFixed(0) + ' MHz'} />
         </ListItem>
         <ListItem >
           <ListItemAvatar>
@@ -99,7 +99,7 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
               <StorageIcon />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary="SPIFFS (Used / Total | Free)" secondary={asNum(data.spiffs_used) + ' / ' + asNum(data.spiffs_size) + ' bytes | '+ asNum(data.spiffs_size-data.spiffs_used) + ' bytes free'} />
+          <ListItemText primary="SPIFFS (Used / Total | Free)" secondary={formatNumber(data.spiffs_used) + ' / ' + formatNumber(data.spiffs_size) + ' bytes | '+ formatNumber(data.spiffs_size-data.spiffs_used) + ' bytes free'} />
         </ListItem>        
         <Divider variant="inset" component="li" />
       </Fragment>
