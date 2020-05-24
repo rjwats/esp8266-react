@@ -30,8 +30,10 @@ enum LogLevel { DEBUG = 0, INFO = 1, WARNING = 2, ERROR = 3 };
 #define LOG_E(msg) Logger::log(LogLevel::ERROR, PSTR(__FILE__), __LINE__, PSTR(msg))
 
 typedef size_t log_event_handler_id_t;
-typedef std::function<void(time_t time, LogLevel level, const char* file, const uint16_t line, const char* message)>
+typedef std::function<void(tm* time, LogLevel level, const char* file, const uint16_t line, const char* message)>
     LogEventHandler;
+
+typedef std::function<void(const char* message)> FormatCallback;
 
 typedef struct LogEventHandlerInfo {
   static log_event_handler_id_t currentEventHandlerId;
@@ -62,10 +64,10 @@ class Logger {
   }
 
   static void log(LogLevel level, const char* file, int line, const char* message) {
-    logEvent(time(nullptr), level, file, line, message);
+    logEvent(level, file, line, message);
   }
 
-  static void logf(LogLevel level, const char* file, int line, const char* format, ...) {
+  static void logf(LogLevel level, const char* file, int line, PGM_P format, ...) {
     va_list args;
 
     // inital buffer, we can extend it if the formatted string doesn't fit
@@ -76,7 +78,7 @@ class Logger {
 
     // buffer was large enough - log and exit early
     if (len < sizeof(temp)) {
-      logEvent(time(nullptr), level, file, line, temp);
+      logEvent(level, file, line, temp);
       return;
     }
 
@@ -84,13 +86,44 @@ class Logger {
     char* buffer = new char[len + 1];
     if (buffer) {
       vsnprintf_P(buffer, len + 1, format, args);
-      logEvent(time(nullptr), level, file, line, buffer);
+      logEvent(level, file, line, buffer);
       delete[] buffer;
       return;
     }
 
     // we failed to allocate
-    logEvent(time(nullptr), level, file, line, PSTR("Error formatting log message"));
+    logEvent(level, file, line, PSTR("Error formatting log message"));
+  }
+
+  /**
+   * TODO - Replace the above with this generic format_P utility.
+   */
+  static void format_P(FormatCallback cb, PGM_P format, ...) {
+    va_list args;
+
+    // inital buffer, we can extend it if the formatted string doesn't fit
+    char temp[64];
+    va_start(args, format);
+    size_t len = vsnprintf_P(temp, sizeof(temp), format, args);
+    va_end(args);
+
+    // buffer was large enough - log and exit early
+    if (len < sizeof(temp)) {
+      cb(temp);
+      return;
+    }
+
+    // create a new buffer of the correct length if possible
+    char* buffer = new char[len + 1];
+    if (buffer) {
+      vsnprintf_P(buffer, len + 1, format, args);
+      cb(buffer);
+      delete[] buffer;
+      return;
+    }
+
+    // we failed to allocate
+    cb(PSTR("Error formatting log message"));
   }
 
  private:
@@ -100,7 +133,9 @@ class Logger {
     // class is static-only, prevent instantiation
   }
 
-  static void logEvent(time_t time, LogLevel level, char const* file, int line, char const* message) {
+  static void logEvent(LogLevel level, char const* file, int line, char const* message) {
+    time_t now = time(nullptr);
+    tm* time = gmtime(&now);
     for (const LogEventHandlerInfo& eventHandler : _eventHandlers) {
       eventHandler._cb(time, level, file, line, message);
     }
@@ -109,17 +144,53 @@ class Logger {
 
 class SerialLogger {
  public:
-  static void logEvent(time_t time, LogLevel level, char const* file, int line, char const* message) {
-    Serial.print(time);
-    Serial.print(" ");
-    Serial.print(level);
-    Serial.print(" ");
-    Serial.print(file);
-    Serial.print(" ");
-    Serial.print(line);
-    Serial.print(" ");
-    Serial.print(message);
-    Serial.println();
+  static void logEvent(tm* time, LogLevel level, char const* file, int line, char const* message) {
+    Logger::format_P([](const char* message) -> void { Serial.println(message); },
+                     PSTR("%s %s%7s %s%s[%d] %s%s"),
+                     formatTime(time).c_str(),
+                     levelColor(level),
+                     levelString(level),
+                     COLOR_CYAN,
+                     file,
+                     line,
+                     COLOR_RESET,
+                     message);
+  }
+
+ private:
+  static String formatTime(tm* time) {
+    char time_string[22];
+    strftime(time_string, 22, "%F %T", time);
+    return time_string;
+  }
+
+  static const char* levelString(LogLevel level) {
+    switch (level) {
+      case LogLevel::DEBUG:
+        return PSTR("DEBUG");
+      case LogLevel::INFO:
+        return PSTR("INFO");
+      case LogLevel::WARNING:
+        return PSTR("WARNING");
+      case LogLevel::ERROR:
+        return PSTR("ERROR");
+      default:
+        return PSTR("UNKNOWN");
+    }
+  }
+  static const char* levelColor(LogLevel level) {
+    switch (level) {
+      case LogLevel::DEBUG:
+        return COLOR_BLUE;
+      case LogLevel::INFO:
+        return COLOR_GREEN;
+      case LogLevel::WARNING:
+        return COLOR_CYAN;
+      case LogLevel::ERROR:
+        return COLOR_RED;
+      default:
+        return COLOR_WHITE;
+    }
   }
 };
 

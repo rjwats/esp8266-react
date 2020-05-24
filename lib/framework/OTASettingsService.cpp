@@ -66,7 +66,7 @@ void OTASettingsService::configureArduinoOTA() {
       LOGF_I("OTA update progress: %u%%", progress / (total / 100));
     });
     _arduinoOTA->onError(
-        [](ota_error_t error) { LOGF_E("OTA update error [%u]: %s", error, otaErrorMessage(error)); });
+        [](ota_error_t error) { LOGF_E("OTA update error[%u]: %s", error, otaErrorMessage(error)); });
     _arduinoOTA->begin();
   }
 }
