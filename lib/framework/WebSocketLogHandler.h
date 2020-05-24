@@ -32,7 +32,7 @@ class WebSocketLogHandler {
     request->send(403);
   }
 
-  void logEvent(tm* time, LogLevel level, const char* file, const uint16_t line, const char* message) {
+  void logEvent(const tm* time, LogLevel level, const String& file, const uint16_t line, const String& message) {
     // if there are no clients, don't bother doing anything
     if (!_webSocket.getClients().length()) {
       return;

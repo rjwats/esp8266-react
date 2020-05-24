@@ -6,31 +6,22 @@
 #include <functional>
 #include <time.h>
 
-#define COLOR_RESET "\x1B[0m"
-#define COLOR_BLACK "\x1B[0;30m"
-#define COLOR_RED "\x1B[0;31m"
-#define COLOR_GREEN "\x1B[0;32m"
-#define COLOR_YELLOW "\x1B[0;33m"
-#define COLOR_BLUE "\x1B[0;34m"
-#define COLOR_MAGENTA "\x1B[0;35m"
-#define COLOR_CYAN "\x1B[0;36m"
-#define COLOR_WHITE "\x1B[0;37m"
+#define FSH_P const __FlashStringHelper*
 
 enum LogLevel { DEBUG = 0, INFO = 1, WARNING = 2, ERROR = 3 };
 
-#define LOGF_D(fmt, ...) Logger::logf(LogLevel::DEBUG, PSTR(__FILE__), __LINE__, PSTR(fmt), ##__VA_ARGS__)
-#define LOGF_I(fmt, ...) Logger::logf(LogLevel::INFO, PSTR(__FILE__), __LINE__, PSTR(fmt), ##__VA_ARGS__)
-#define LOGF_W(fmt, ...) Logger::logf(LogLevel::WARNING, PSTR(__FILE__), __LINE__, PSTR(fmt), ##__VA_ARGS__)
-#define LOGF_E(fmt, ...) Logger::logf(LogLevel::ERROR, PSTR(__FILE__), __LINE__, PSTR(fmt), ##__VA_ARGS__)
+#define LOGF_D(fmt, ...) Logger::logf(LogLevel::DEBUG, F(__FILE__), __LINE__, PSTR(fmt), ##__VA_ARGS__)
+#define LOGF_I(fmt, ...) Logger::logf(LogLevel::INFO, F(__FILE__), __LINE__, PSTR(fmt), ##__VA_ARGS__)
+#define LOGF_W(fmt, ...) Logger::logf(LogLevel::WARNING, F(__FILE__), __LINE__, PSTR(fmt), ##__VA_ARGS__)
+#define LOGF_E(fmt, ...) Logger::logf(LogLevel::ERROR, F(__FILE__), __LINE__, PSTR(fmt), ##__VA_ARGS__)
 
-#define LOG_D(msg) Logger::log(LogLevel::DEBUG, PSTR(__FILE__), __LINE__, PSTR(msg))
-#define LOG_I(msg) Logger::log(LogLevel::INFO, PSTR(__FILE__), __LINE__, PSTR(msg))
-#define LOG_W(msg) Logger::log(LogLevel::WARNING, PSTR(__FILE__), __LINE__, PSTR(msg))
-#define LOG_E(msg) Logger::log(LogLevel::ERROR, PSTR(__FILE__), __LINE__, PSTR(msg))
+#define LOG_D(msg) Logger::log(LogLevel::DEBUG, F(__FILE__), __LINE__, F(msg))
+#define LOG_I(msg) Logger::log(LogLevel::INFO, F(__FILE__), __LINE__, F(msg))
+#define LOG_W(msg) Logger::log(LogLevel::WARNING, F(__FILE__), __LINE__, F(msg))
+#define LOG_E(msg) Logger::log(LogLevel::ERROR, F(__FILE__), __LINE__, F(msg))
 
 typedef size_t log_event_handler_id_t;
-typedef std::function<void(tm* time, LogLevel level, const char* file, const uint16_t line, const char* message)>
-    LogEventHandler;
+typedef std::function<void(tm* time, LogLevel level, String& file, int line, String& message)> LogEventHandler;
 
 typedef struct LogEventHandlerInfo {
   static log_event_handler_id_t currentEventHandlerId;
@@ -60,11 +51,11 @@ class Logger {
     }
   }
 
-  static void log(LogLevel level, const char* file, int line, const char* message) {
+  static void log(LogLevel level, FSH_P file, int line, FSH_P message) {
     logEvent(level, file, line, message);
   }
 
-  static void logf(LogLevel level, const char* file, int line, PGM_P format, ...) {
+  static void logf(LogLevel level, FSH_P file, int line, PGM_P format, ...) {
     va_list args;
 
     // inital buffer, we can extend it if the formatted string doesn't fit
@@ -89,7 +80,7 @@ class Logger {
     }
 
     // we failed to allocate
-    logEvent(level, file, line, PSTR("Error formatting log message"));
+    logEvent(level, file, line, F("Error formatting log message"));
   }
 
  private:
@@ -99,7 +90,7 @@ class Logger {
     // class is static-only, prevent instantiation
   }
 
-  static void logEvent(LogLevel level, char const* file, int line, char const* message) {
+  static void logEvent(LogLevel level, String file, int line, String message) {
     time_t now = time(nullptr);
     tm* time = localtime(&now);
     for (const LogEventHandlerInfo& eventHandler : _eventHandlers) {

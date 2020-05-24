@@ -8,6 +8,7 @@ import { MenuAppBar } from '../components';
 
 import SystemStatusController from './SystemStatusController';
 import OTASettingsController from './OTASettingsController';
+import LogEventController from './LogEventController';
 
 type SystemProps = AuthenticatedContextProps & RouteComponentProps;
 
@@ -21,12 +22,14 @@ class System extends Component<SystemProps> {
     const { authenticatedContext } = this.props;
     return (
       <MenuAppBar sectionTitle="System">
-        <Tabs value={this.props.match.url} onChange={this.handleTabChange} variant="fullWidth">
+        <Tabs id="system-tabs" value={this.props.match.url} onChange={this.handleTabChange} variant="fullWidth">
           <Tab value="/system/status" label="System Status" />
+          <Tab value="/system/log" label="Log" />
           <Tab value="/system/ota" label="OTA Settings" disabled={!authenticatedContext.me.admin} />
         </Tabs>
         <Switch>
           <AuthenticatedRoute exact path="/system/status" component={SystemStatusController} />
+          <AuthenticatedRoute exact path="/system/log" component={LogEventController} />
           <AuthenticatedRoute exact path="/system/ota" component={OTASettingsController} />
           <Redirect to="/system/status" />
         </Switch>

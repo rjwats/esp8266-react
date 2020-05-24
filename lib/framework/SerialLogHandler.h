@@ -5,33 +5,42 @@
 #include <Logger.h>
 #include <ESPUtils.h>
 
+#define COLOR_RESET "\x1B[0m"
+#define COLOR_CYAN "\x1B[0;36m"
+#define COLOR_BLUE "\x1B[0;34m"
+#define COLOR_GREEN "\x1B[0;32m"
+#define COLOR_YELLOW "\x1B[0;33m"
+#define COLOR_RED "\x1B[0;31m"
+#define COLOR_WHITE "\x1B[0;37m"
+// #define COLOR_MAGENTA "\x1B[0;35m" - perhaps for trace?
+
 class SerialLogHandler {
  public:
-  static void logEvent(tm* time, LogLevel level, char const* file, int line, char const* message) {
+  static void logEvent(const tm* time, LogLevel level, const String& file, int line, const String& message) {
     Serial.printf_P(PSTR("%s %s%7s %s%s[%d] %s%s\r\n"),
                     ESPUtils::toHrString(time).c_str(),
                     levelColor(level),
                     levelString(level),
                     COLOR_CYAN,
-                    file,
+                    file.c_str(),
                     line,
                     COLOR_RESET,
-                    message);
+                    message.c_str());
   }
 
  private:
   static const char* levelString(LogLevel level) {
     switch (level) {
       case LogLevel::DEBUG:
-        return PSTR("DEBUG");
+        return "DEBUG";
       case LogLevel::INFO:
-        return PSTR("INFO");
+        return "INFO";
       case LogLevel::WARNING:
-        return PSTR("WARNING");
+        return "WARNING";
       case LogLevel::ERROR:
-        return PSTR("ERROR");
+        return "ERROR";
       default:
-        return PSTR("UNKNOWN");
+        return "UNKNOWN";
     }
   }
   static const char* levelColor(LogLevel level) {
