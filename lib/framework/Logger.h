@@ -185,7 +185,7 @@ class SerialLogger {
       case LogLevel::INFO:
         return COLOR_GREEN;
       case LogLevel::WARNING:
-        return COLOR_CYAN;
+        return COLOR_YELLOW;
       case LogLevel::ERROR:
         return COLOR_RED;
       default:

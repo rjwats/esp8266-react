@@ -4,6 +4,7 @@
 #include <AsyncJson.h>
 #include <ESPAsyncWebServer.h>
 #include <SecurityManager.h>
+#include <Logger.h>
 
 #define VERIFY_AUTHORIZATION_PATH "/rest/verifyAuthorization"
 #define SIGN_IN_PATH "/rest/signIn"

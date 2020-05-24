@@ -38,6 +38,7 @@ void AuthenticationService::signIn(AsyncWebServerRequest* request, JsonVariant& 
       request->send(response);
       return;
     }
+    LOGF_W("Failed login for user: %s", username.c_str());
   }
   AsyncWebServerResponse* response = request->beginResponse(401);
   request->send(response);
