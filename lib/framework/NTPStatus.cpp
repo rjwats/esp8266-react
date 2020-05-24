@@ -7,12 +7,6 @@ NTPStatus::NTPStatus(AsyncWebServer* server, SecurityManager* securityManager) {
                                           AuthenticationPredicates::IS_AUTHENTICATED));
 }
 
-String toISOString(tm* time, bool incOffset) {
-  char time_string[25];
-  strftime(time_string, 25, incOffset ? "%FT%T%z" : "%FT%TZ", time);
-  return String(time_string);
-}
-
 void NTPStatus::ntpStatus(AsyncWebServerRequest* request) {
   AsyncJsonResponse* response = new AsyncJsonResponse(false, MAX_NTP_STATUS_SIZE);
   JsonObject root = response->getRoot();
@@ -24,10 +18,10 @@ void NTPStatus::ntpStatus(AsyncWebServerRequest* request) {
   root["status"] = sntp_enabled() ? 1 : 0;
 
   // the current time in UTC
-  root["time_utc"] = toISOString(gmtime(&now), false);
+  root["time_utc"] = ESPUtils::toISOString(gmtime(&now), false);
 
   // local time as ISO String with TZ
-  root["time_local"] = toISOString(localtime(&now), true);
+  root["time_local"] = ESPUtils::toISOString(localtime(&now), true);
 
   // the sntp server name
   root["server"] = sntp_getservername(0);

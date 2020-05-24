@@ -34,7 +34,7 @@ void WiFiStatus::onStationModeConnected(const WiFiEventStationModeConnected& eve
 }
 
 void WiFiStatus::onStationModeDisconnected(const WiFiEventStationModeDisconnected& event) {
-  LOGF_I("WiFi disconnected: reason=%d", event.reason);
+  LOGF_W("WiFi disconnected: reason=%d", event.reason);
 }
 
 void WiFiStatus::onStationModeGotIP(const WiFiEventStationModeGotIP& event) {

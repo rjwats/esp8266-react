@@ -12,6 +12,18 @@ class ESPUtils {
     return prefix + String(ESP.getChipId(), HEX);
 #endif
   }
+
+  static String toISOString(tm* time, bool incOffset) {
+    char time_string[25];
+    strftime(time_string, 25, incOffset ? "%FT%T%z" : "%FT%TZ", time);
+    return String(time_string);
+  }
+
+  static String toHrString(tm* time) {
+    char time_string[22];
+    strftime(time_string, 22, "%F %T%z", time);
+    return time_string;
+  }
 };
 
 #endif  // end ESPUtils

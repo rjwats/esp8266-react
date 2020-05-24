@@ -4,7 +4,6 @@
 #include <Arduino.h>
 #include <list>
 #include <functional>
-#include <JsonSerializer.h>
 #include <time.h>
 
 #define COLOR_RESET "\x1B[0m"
@@ -32,8 +31,6 @@ enum LogLevel { DEBUG = 0, INFO = 1, WARNING = 2, ERROR = 3 };
 typedef size_t log_event_handler_id_t;
 typedef std::function<void(tm* time, LogLevel level, const char* file, const uint16_t line, const char* message)>
     LogEventHandler;
-
-typedef std::function<void(const char* message)> FormatCallback;
 
 typedef struct LogEventHandlerInfo {
   static log_event_handler_id_t currentEventHandlerId;
@@ -95,37 +92,6 @@ class Logger {
     logEvent(level, file, line, PSTR("Error formatting log message"));
   }
 
-  /**
-   * TODO - Replace the above with this generic format_P utility.
-   */
-  static void format_P(FormatCallback cb, PGM_P format, ...) {
-    va_list args;
-
-    // inital buffer, we can extend it if the formatted string doesn't fit
-    char temp[64];
-    va_start(args, format);
-    size_t len = vsnprintf_P(temp, sizeof(temp), format, args);
-    va_end(args);
-
-    // buffer was large enough - log and exit early
-    if (len < sizeof(temp)) {
-      cb(temp);
-      return;
-    }
-
-    // create a new buffer of the correct length if possible
-    char* buffer = new char[len + 1];
-    if (buffer) {
-      vsnprintf_P(buffer, len + 1, format, args);
-      cb(buffer);
-      delete[] buffer;
-      return;
-    }
-
-    // we failed to allocate
-    cb(PSTR("Error formatting log message"));
-  }
-
  private:
   static std::list<LogEventHandlerInfo> _eventHandlers;
 
@@ -135,61 +101,9 @@ class Logger {
 
   static void logEvent(LogLevel level, char const* file, int line, char const* message) {
     time_t now = time(nullptr);
-    tm* time = gmtime(&now);
+    tm* time = localtime(&now);
     for (const LogEventHandlerInfo& eventHandler : _eventHandlers) {
       eventHandler._cb(time, level, file, line, message);
-    }
-  }
-};
-
-class SerialLogger {
- public:
-  static void logEvent(tm* time, LogLevel level, char const* file, int line, char const* message) {
-    Logger::format_P([](const char* message) -> void { Serial.println(message); },
-                     PSTR("%s %s%7s %s%s[%d] %s%s"),
-                     formatTime(time).c_str(),
-                     levelColor(level),
-                     levelString(level),
-                     COLOR_CYAN,
-                     file,
-                     line,
-                     COLOR_RESET,
-                     message);
-  }
-
- private:
-  static String formatTime(tm* time) {
-    char time_string[22];
-    strftime(time_string, 22, "%F %T", time);
-    return time_string;
-  }
-
-  static const char* levelString(LogLevel level) {
-    switch (level) {
-      case LogLevel::DEBUG:
-        return PSTR("DEBUG");
-      case LogLevel::INFO:
-        return PSTR("INFO");
-      case LogLevel::WARNING:
-        return PSTR("WARNING");
-      case LogLevel::ERROR:
-        return PSTR("ERROR");
-      default:
-        return PSTR("UNKNOWN");
-    }
-  }
-  static const char* levelColor(LogLevel level) {
-    switch (level) {
-      case LogLevel::DEBUG:
-        return COLOR_BLUE;
-      case LogLevel::INFO:
-        return COLOR_GREEN;
-      case LogLevel::WARNING:
-        return COLOR_YELLOW;
-      case LogLevel::ERROR:
-        return COLOR_RED;
-      default:
-        return COLOR_WHITE;
     }
   }
 };

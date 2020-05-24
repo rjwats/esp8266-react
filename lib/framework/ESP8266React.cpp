@@ -15,7 +15,8 @@ ESP8266React::ESP8266React(AsyncWebServer* server, FS* fs) :
     _ntpStatus(server, &_securitySettingsService),
     _apStatus(server, &_securitySettingsService),
     _mqttStatus(server, &_mqttSettingsService, &_securitySettingsService),
-    _systemStatus(server, &_securitySettingsService) {
+    _systemStatus(server, &_securitySettingsService),
+    _webSocketLogHandler(server, &_securitySettingsService) {
 #ifdef PROGMEM_WWW
   // Serve static resources from PROGMEM
   WWWData::registerRoutes(
@@ -67,8 +68,8 @@ ESP8266React::ESP8266React(AsyncWebServer* server, FS* fs) :
   DefaultHeaders::Instance().addHeader("Access-Control-Allow-Credentials", "true");
 #endif
 
-  // Configure logging appenders
-  Logger::addEventHandler(SerialLogger::logEvent);
+  // Configure serial log hander
+  Logger::addEventHandler(SerialLogHandler::logEvent);
 }
 
 void ESP8266React::begin() {

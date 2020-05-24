@@ -96,7 +96,7 @@ void MqttSettingsService::onMqttConnect(bool sessionPresent) {
 }
 
 void MqttSettingsService::onMqttDisconnect(AsyncMqttClientDisconnectReason reason) {
-  LOGF_I("Disconnected from MQTT reason: %d", reason);
+  LOGF_W("Disconnected from MQTT reason: %d", reason);
   _disconnectReason = reason;
   _disconnectedAt = millis();
 }

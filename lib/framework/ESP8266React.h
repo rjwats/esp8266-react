@@ -28,7 +28,8 @@
 #include <WiFiScanner.h>
 #include <WiFiSettingsService.h>
 #include <WiFiStatus.h>
-#include <Logger.h>
+#include <SerialLogHandler.h>
+#include <WebSocketLogHandler.h>
 
 #ifdef PROGMEM_WWW
 #include <WWWData.h>
@@ -95,6 +96,7 @@ class ESP8266React {
   APStatus _apStatus;
   MqttStatus _mqttStatus;
   SystemStatus _systemStatus;
+  WebSocketLogHandler _webSocketLogHandler;
 };
 
 #endif
