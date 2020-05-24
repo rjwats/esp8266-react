@@ -8,6 +8,8 @@ export interface SystemStatus {
   sdk_version: string;
   flash_chip_size: number;
   flash_chip_speed: number;
+  spiffs_size:number;
+  spiffs_used:number;
 }
 
 export interface OTASettings {

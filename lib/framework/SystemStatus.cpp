@@ -1,4 +1,10 @@
 #include <SystemStatus.h>
+#ifdef ESP32
+#include <esp_spiffs.h>
+#include <SPIFFS.h>
+#elif defined(ESP8266)
+#include <FS.h>
+#endif
 
 SystemStatus::SystemStatus(AsyncWebServer* server, SecurityManager* securityManager) {
   server->on(SYSTEM_STATUS_SERVICE_PATH,
@@ -24,6 +30,15 @@ void SystemStatus::systemStatus(AsyncWebServerRequest* request) {
   root["sdk_version"] = ESP.getSdkVersion();
   root["flash_chip_size"] = ESP.getFlashChipSize();
   root["flash_chip_speed"] = ESP.getFlashChipSpeed();
+#ifdef ESP32 
+  if (esp_spiffs_mounted(NULL)) {
+    root["spiffs_used"] = SPIFFS.usedBytes();
+    root["spiffs_size"] = SPIFFS.totalBytes();
+  }
+#elif !defined(PROGMEM_WWW) //couldn't find an esp8266 alternative to esp_spiffs_mounted()
+    root["spiffs_used"] = SPIFFS.usedBytes();
+    root["spiffs_size"] = SPIFFS.totalBytes();
+#endif  
   response->setLength();
   request->send(response);
 }
