@@ -51,7 +51,6 @@ class OTASettings {
 class OTASettingsService : public StatefulService<OTASettings> {
  public:
   OTASettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
-
   void begin();
   void loop();
 
@@ -59,7 +58,8 @@ class OTASettingsService : public StatefulService<OTASettings> {
   HttpEndpoint<OTASettings> _httpEndpoint;
   FSPersistence<OTASettings> _fsPersistence;
   ArduinoOTAClass* _arduinoOTA;
-
+  uint8_t _progress;
+  
   void configureArduinoOTA();
 #ifdef ESP32
   void onStationModeGotIP(WiFiEvent_t event, WiFiEventInfo_t info);

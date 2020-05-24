@@ -60,13 +60,19 @@ void OTASettingsService::configureArduinoOTA() {
     _arduinoOTA = new ArduinoOTAClass;
     _arduinoOTA->setPort(_state.port);
     _arduinoOTA->setPassword(_state.password.c_str());
-    _arduinoOTA->onStart([]() { LOG_I("Starting OTA update"); });
-    _arduinoOTA->onEnd([]() { LOG_I("Ending OTA update"); });
-    _arduinoOTA->onProgress([](unsigned int progress, unsigned int total) {
-      LOGF_I("OTA update progress: %u%%", progress / (total / 100));
+    _arduinoOTA->onStart([this]() {
+      LOG_I("Starting OTA update");
+      _progress = 0;
     });
-    _arduinoOTA->onError(
-        [](ota_error_t error) { LOGF_E("OTA update error[%u]: %s", error, otaErrorMessage(error)); });
+    _arduinoOTA->onEnd([]() { LOG_I("Ending OTA update"); });
+    _arduinoOTA->onProgress([this](unsigned int progress, unsigned int total) {
+      uint8_t currentProgress = progress / (total / 100);
+      if (currentProgress != _progress) {
+        _progress = currentProgress;
+        LOGF_I("OTA update progress: %u%%", _progress);
+      }
+    });
+    _arduinoOTA->onError([](ota_error_t error) { LOGF_E("OTA update error[%u]: %s", error, otaErrorMessage(error)); });
     _arduinoOTA->begin();
   }
 }

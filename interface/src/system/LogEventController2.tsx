@@ -1,33 +1,32 @@
 import React from 'react';
-import Sockette from 'sockette';
 import { withSnackbar, WithSnackbarProps } from 'notistack';
 
-import { addAccessTokenParameter } from '../authentication';
 import { LogEvent } from './types';
-import { WEB_SOCKET_ROOT } from '../api/Env';
+import { EVENT_SOURCE_ROOT } from '../api/Env';
 import LogEventConsole from './LogEventConsole';
+import { addAccessTokenParameter } from '../authentication';
 
-const LOG_EVENT_WEB_SOCKET_URL = WEB_SOCKET_ROOT + "log";
+const LOG_EVENT_EVENT_SOURCE_URL = EVENT_SOURCE_ROOT + "log";
 
-interface LogEventControllerState {
-    ws: Sockette;
+interface LogEventController2State {
+    eventSource?: EventSource;
     events: LogEvent[];
 }
 
-class LogEventController extends React.Component<WithSnackbarProps, LogEventControllerState>  {
+class LogEventController2 extends React.Component<WithSnackbarProps, LogEventController2State>  {
+    eventSource: EventSource;
 
     constructor(props: WithSnackbarProps) {
         super(props);
         this.state = {
-            ws: new Sockette(addAccessTokenParameter(LOG_EVENT_WEB_SOCKET_URL), {
-                onmessage: this.onMessage
-            }),
             events: []
         };
+        this.eventSource = new EventSource(addAccessTokenParameter(LOG_EVENT_EVENT_SOURCE_URL));
+        this.eventSource.onmessage = this.onMessage;
     }
 
     componentWillUnmount() {
-        this.state.ws.close();
+        this.eventSource.close();
     }
 
     onMessage = (event: MessageEvent) => {
@@ -46,4 +45,4 @@ class LogEventController extends React.Component<WithSnackbarProps, LogEventCont
 
 }
 
-export default withSnackbar(LogEventController);
+export default withSnackbar(LogEventController2);

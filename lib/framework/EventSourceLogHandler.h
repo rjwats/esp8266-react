@@ -1,23 +1,22 @@
-#ifndef WebSocketLogHandler_h
-#define WebSocketLogHandler_h
+#ifndef EventSourceLogHandler_h
+#define EventSourceLogHandler_h
 
 #include <ESPAsyncWebServer.h>
 #include <SecurityManager.h>
 #include <Logger.h>
 #include <ESPUtils.h>
 
-#define WEB_SOCKET_LOG_PATH "/ws/log"
-#define WEB_SOCKET_LOG_BUFFER 512
+#define EVENT_SOURCE_LOG_PATH "/es/log"
+#define EVENT_SOURCE_LOG_BUFFER 512
 
-class WebSocketLogHandler {
+class EventSourceLogHandler {
  public:
-  WebSocketLogHandler(AsyncWebServer* server, SecurityManager* securityManager) : _webSocket(WEB_SOCKET_LOG_PATH) {
-    _webSocket.setFilter(securityManager->filterRequest(AuthenticationPredicates::IS_ADMIN));
-    server->addHandler(&_webSocket);
-    server->on(WEB_SOCKET_LOG_PATH, HTTP_GET, std::bind(&WebSocketLogHandler::forbidden, this, std::placeholders::_1));
-
-    // TODO - consider the possibility of disabling/re-enabling the appender at run time?
-    Logger::addEventHandler(std::bind(&WebSocketLogHandler::logEvent,
+  EventSourceLogHandler(AsyncWebServer* server, SecurityManager* securityManager) : _events(EVENT_SOURCE_LOG_PATH) {
+    _events.setFilter(securityManager->filterRequest(AuthenticationPredicates::IS_ADMIN));
+    server->addHandler(&_events);
+    server->on(
+        EVENT_SOURCE_LOG_PATH, HTTP_GET, std::bind(&EventSourceLogHandler::forbidden, this, std::placeholders::_1));
+    Logger::addEventHandler(std::bind(&EventSourceLogHandler::logEvent,
                                       this,
                                       std::placeholders::_1,
                                       std::placeholders::_2,
@@ -27,7 +26,8 @@ class WebSocketLogHandler {
   }
 
  private:
-  AsyncWebSocket _webSocket;
+  AsyncEventSource _events;
+  static uint32_t eventId;
 
   void forbidden(AsyncWebServerRequest* request) {
     request->send(403);
@@ -35,12 +35,12 @@ class WebSocketLogHandler {
 
   void logEvent(const tm* time, LogLevel level, const String& file, const uint16_t line, const String& message) {
     // if there are no clients, don't bother doing anything
-    if (!_webSocket.getClients().length()) {
+    if (!_events.count()) {
       return;
     }
 
     // create JsonObject to hold log event
-    DynamicJsonDocument jsonDocument = DynamicJsonDocument(WEB_SOCKET_LOG_BUFFER);
+    DynamicJsonDocument jsonDocument = DynamicJsonDocument(EVENT_SOURCE_LOG_BUFFER);
     JsonObject logEvent = jsonDocument.to<JsonObject>();
     logEvent["time"] = ESPUtils::toISOString(time, true);
     logEvent["level"] = level;
@@ -50,10 +50,10 @@ class WebSocketLogHandler {
 
     // transmit log event to all clients
     size_t len = measureJson(jsonDocument);
-    AsyncWebSocketMessageBuffer* buffer = _webSocket.makeBuffer(len);
+    char* buffer = new char[len + 1];
     if (buffer) {
-      serializeJson(jsonDocument, (char*)buffer->get(), len + 1);
-      _webSocket.textAll(buffer);
+      serializeJson(jsonDocument, buffer, len + 1);
+      _events.send(buffer, "message", millis());
     }
   }
 };

@@ -21,7 +21,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     console: {
         padding: theme.spacing(2),
         height: (topOffset: () => number) => `calc(100vh - ${topOffset()}px)`,
-        backgroundColor: "black"
+        backgroundColor: "black",
+        overflowY: "scroll"
     },
     entry: {
         color: "#bbbbbb",
