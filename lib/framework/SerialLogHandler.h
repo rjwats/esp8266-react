@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include <Logger.h>
 #include <ESPUtils.h>
+#include <time.h>
 
 #define COLOR_RESET "\x1B[0m"
 #define COLOR_CYAN "\x1B[0;36m"
@@ -16,9 +17,9 @@
 
 class SerialLogHandler {
  public:
-  static void logEvent(const tm* time, LogLevel level, const String& file, int line, const String& message) {
+  static void logEvent(const time_t instant, LogLevel level, const String& file, uint16_t line, const String& message) {
     Serial.printf_P(PSTR("%s %s%7s %s%s[%d] %s%s\r\n"),
-                    ESPUtils::toHrString(time).c_str(),
+                    ESPUtils::toHrString(localtime(&instant)).c_str(),
                     levelColor(level),
                     levelString(level),
                     COLOR_CYAN,

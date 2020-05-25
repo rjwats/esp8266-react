@@ -5,6 +5,7 @@
 #include <SecurityManager.h>
 #include <Logger.h>
 #include <ESPUtils.h>
+#include <time.h>
 
 #define EVENT_SOURCE_LOG_PATH "/es/log"
 #define EVENT_SOURCE_LOG_BUFFER 512
@@ -36,7 +37,7 @@ class EventSourceLogHandler {
     request->send(403);
   }
 
-  void logEvent(const tm* time, LogLevel level, const String& file, const uint16_t line, const String& message) {
+  void logEvent(time_t instant, LogLevel level, const String& file, const uint16_t line, const String& message) {
     // if there are no clients, don't bother doing anything
     if (!_events.count()) {
       return;
@@ -45,7 +46,7 @@ class EventSourceLogHandler {
     // create JsonObject to hold log event
     DynamicJsonDocument jsonDocument = DynamicJsonDocument(EVENT_SOURCE_LOG_BUFFER);
     JsonObject logEvent = jsonDocument.to<JsonObject>();
-    logEvent["time"] = ESPUtils::toISOString(time, true);
+    logEvent["time"] = ESPUtils::toISOString(localtime(&instant), true);
     logEvent["level"] = level;
     logEvent["file"] = file;
     logEvent["line"] = line;

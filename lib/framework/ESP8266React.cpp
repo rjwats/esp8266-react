@@ -79,11 +79,13 @@ void ESP8266React::begin() {
   _webSocketLogHandler.begin();
   _eventSourceLogHandler.begin();
 
+  // start the NTP settings service first, to configure the timezone
+  _ntpSettingsService.begin();
+
   // begin services
   _securitySettingsService.begin();
   _wifiSettingsService.begin();
   _apSettingsService.begin();
-  _ntpSettingsService.begin();
   _otaSettingsService.begin();
   _mqttSettingsService.begin();
 }
