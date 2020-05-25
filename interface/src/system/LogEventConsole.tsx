@@ -8,27 +8,31 @@ import { formatIsoDateTimeToHr } from '../ntp/TimeFormat';
 interface LogEventConsoleProps {
     events: LogEvent[];
 }
-
-const topOffset = () => {
-    const wrapper = document.getElementById('system-tabs');
-    if (wrapper) {
-        return wrapper.getBoundingClientRect().bottom;
-    }
-    return 0;
+interface Offsets {
+    topOffset: () => number;
+    leftOffset: () => number;
 }
+
+const topOffset = () => document.getElementById('system-tabs')?.getBoundingClientRect().bottom || 0;
+const leftOffset = () => document.getElementById('system-tabs')?.getBoundingClientRect().left || 0;
 
 const useStyles = makeStyles((theme: Theme) => ({
     console: {
         padding: theme.spacing(2),
-        height: (topOffset: () => number) => `calc(100vh - ${topOffset()}px)`,
+        position: "absolute",
+        left: (offsets: Offsets) => offsets.leftOffset(),
+        right: 0,
+        top: (offsets: Offsets) => offsets.topOffset(),
+        bottom: 0,
         backgroundColor: "black",
-        overflowY: "scroll"
+        overflow: "auto"
     },
     entry: {
         color: "#bbbbbb",
         fontFamily: "Courier New, monospace",
         fontSize: "14px",
-        letterSpacing: "normal"
+        letterSpacing: "normal",
+        whiteSpace: "nowrap"
     },
     file: {
         color: "#00ffff"
@@ -53,7 +57,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const LogEventConsole: FC<LogEventConsoleProps> = (props) => {
     useWindowSize();
-    const classes = useStyles(topOffset);
+    const classes = useStyles({ topOffset, leftOffset });
     const { events } = props;
 
     const styleLevel = (level: LogLevel) => {
