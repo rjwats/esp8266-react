@@ -73,7 +73,7 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
               <MemoryIcon />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary="Heap (Free / Max Alloc)" secondary={formatNumber(data.free_heap) + ' / ' + formatNumber(data.max_alloc_heap) + ' bytes (~' + this.approxHeapFragmentation() + '% fragmentation)'} />
+          <ListItemText primary="Heap (Free / Max Alloc)" secondary={formatNumber(data.free_heap) + ' / ' + formatNumber(data.max_alloc_heap) + ' bytes (~' + this.approxHeapFragmentation() + '%\xa0fragmentation)'} />
         </ListItem>
         <Divider variant="inset" component="li" />
         <ListItem >
@@ -100,7 +100,7 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
               <FolderIcon />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary="File System (Used / Total)" secondary={formatNumber(data.fs_used) + ' / ' + formatNumber(data.fs_total) + ' bytes (' + formatNumber(data.fs_total - data.fs_used) + ' bytes free)'} />
+          <ListItemText primary="File System (Used / Total)" secondary={formatNumber(data.fs_used) + ' / ' + formatNumber(data.fs_total) + ' bytes (' + formatNumber(data.fs_total - data.fs_used) + '\xa0bytes free)'} />
         </ListItem>
         <Divider variant="inset" component="li" />
       </Fragment>
