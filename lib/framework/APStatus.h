@@ -11,6 +11,7 @@
 
 #include <ArduinoJson.h>
 #include <AsyncJson.h>
+#include <APSettingsService.h>
 #include <ESPAsyncWebServer.h>
 #include <IPAddress.h>
 #include <SecurityManager.h>
@@ -19,8 +20,16 @@
 #define AP_STATUS_SERVICE_PATH "/rest/apStatus"
 
 class APStatus {
+  APSettingsService* apSettingsService;
+
+  enum Status {
+    ACTIVE = 1,
+    INACTIVE = 2,
+    WAITING_CLIENTS_DISCONNECT = 3,
+  };
+
  public:
-  APStatus(AsyncWebServer* server, SecurityManager* securityManager);
+  APStatus(APSettingsService* apSettingsService, AsyncWebServer* server, SecurityManager* securityManager);
 
  private:
   void apStatus(AsyncWebServerRequest* request);

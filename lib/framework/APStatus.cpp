@@ -1,6 +1,7 @@
 #include <APStatus.h>
 
-APStatus::APStatus(AsyncWebServer* server, SecurityManager* securityManager) {
+APStatus::APStatus(APSettingsService* apSettingsService, AsyncWebServer* server, SecurityManager* securityManager) : 
+    apSettingsService(apSettingsService) {
   server->on(AP_STATUS_SERVICE_PATH,
              HTTP_GET,
              securityManager->wrapRequest(std::bind(&APStatus::apStatus, this, std::placeholders::_1),
@@ -12,7 +13,20 @@ void APStatus::apStatus(AsyncWebServerRequest* request) {
   JsonObject root = response->getRoot();
 
   WiFiMode_t currentWiFiMode = WiFi.getMode();
-  root["active"] = (currentWiFiMode == WIFI_AP || currentWiFiMode == WIFI_AP_STA);
+  Status status;
+  if ((currentWiFiMode & WIFI_AP) == 0) {
+    status = INACTIVE;
+  } else {
+    uint8_t provisionMode = apSettingsService->getStateSnapshot().provisionMode;
+    if (provisionMode == AP_MODE_ALWAYS 
+        || (provisionMode == AP_MODE_DISCONNECTED && WiFi.status() != WL_CONNECTED)) {
+      status = ACTIVE;
+    } else {
+      status = WAITING_CLIENTS_DISCONNECT;
+    }
+  }
+
+  root["status"] = (uint8_t) status;
   root["ip_address"] = WiFi.softAPIP().toString();
   root["mac_address"] = WiFi.softAPmacAddress();
   root["station_num"] = WiFi.softAPgetStationNum();

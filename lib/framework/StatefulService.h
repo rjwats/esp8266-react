@@ -61,65 +61,41 @@ class StatefulService {
   }
 
   void updateWithoutPropagation(std::function<void(T&)> callback) {
-#ifdef ESP32
-    xSemaphoreTakeRecursive(_accessMutex, portMAX_DELAY);
-#endif
+    beginTransaction();
     callback(_state);
-#ifdef ESP32
-    xSemaphoreGiveRecursive(_accessMutex);
-#endif
+    endTransaction();
   }
 
   void updateWithoutPropagation(JsonObject& jsonObject, JsonDeserializer<T> deserializer) {
-#ifdef ESP32
-    xSemaphoreTakeRecursive(_accessMutex, portMAX_DELAY);
-#endif
+    beginTransaction();
     deserializer(jsonObject, _state);
-#ifdef ESP32
-    xSemaphoreGiveRecursive(_accessMutex);
-#endif
+    endTransaction();
   }
 
   void update(std::function<void(T&)> callback, const String& originId) {
-#ifdef ESP32
-    xSemaphoreTakeRecursive(_accessMutex, portMAX_DELAY);
-#endif
+    beginTransaction();
     callback(_state);
     callUpdateHandlers(originId);
-#ifdef ESP32
-    xSemaphoreGiveRecursive(_accessMutex);
-#endif
+    endTransaction();
   }
 
   void update(JsonObject& jsonObject, JsonDeserializer<T> deserializer, const String& originId) {
-#ifdef ESP32
-    xSemaphoreTakeRecursive(_accessMutex, portMAX_DELAY);
-#endif
+    beginTransaction();
     deserializer(jsonObject, _state);
     callUpdateHandlers(originId);
-#ifdef ESP32
-    xSemaphoreGiveRecursive(_accessMutex);
-#endif
+    endTransaction();
   }
 
   void read(std::function<void(T&)> callback) {
-#ifdef ESP32
-    xSemaphoreTakeRecursive(_accessMutex, portMAX_DELAY);
-#endif
+    beginTransaction();
     callback(_state);
-#ifdef ESP32
-    xSemaphoreGiveRecursive(_accessMutex);
-#endif
+    endTransaction();
   }
 
   void read(JsonObject& jsonObject, JsonSerializer<T> serializer) {
-#ifdef ESP32
-    xSemaphoreTakeRecursive(_accessMutex, portMAX_DELAY);
-#endif
+    beginTransaction();
     serializer(_state, jsonObject);
-#ifdef ESP32
-    xSemaphoreGiveRecursive(_accessMutex);
-#endif
+    endTransaction();
   }
 
   void callUpdateHandlers(const String& originId) {
@@ -130,6 +106,18 @@ class StatefulService {
 
  protected:
   T _state;
+
+  inline void beginTransaction() {
+    #ifdef ESP32
+      xSemaphoreTakeRecursive(_accessMutex, portMAX_DELAY);
+    #endif
+  }
+
+  inline void endTransaction() {
+    #ifdef ESP32
+      xSemaphoreGiveRecursive(_accessMutex);
+    #endif
+  }
 
  private:
 #ifdef ESP32

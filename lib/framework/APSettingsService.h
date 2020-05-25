@@ -64,6 +64,8 @@ class APSettingsService : public StatefulService<APSettings> {
   void begin();
   void loop();
 
+  APSettings getStateSnapshot();
+
  private:
   HttpEndpoint<APSettings> _httpEndpoint;
   FSPersistence<APSettings> _fsPersistence;
