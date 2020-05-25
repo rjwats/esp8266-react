@@ -7,6 +7,7 @@ import DevicesIcon from '@material-ui/icons/Devices';
 import MemoryIcon from '@material-ui/icons/Memory';
 import ShowChartIcon from '@material-ui/icons/ShowChart';
 import SdStorageIcon from '@material-ui/icons/SdStorage';
+import StorageIcon from '@material-ui/icons/Storage';
 import DataUsageIcon from '@material-ui/icons/DataUsage';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import RefreshIcon from '@material-ui/icons/Refresh';
@@ -25,6 +26,11 @@ interface SystemStatusFormState {
 }
 
 type SystemStatusFormProps = AuthenticatedContextProps & RestFormProps<SystemStatus>;
+
+function formatNumber(num: number){
+  return new Intl.NumberFormat().format(num);
+}
+
 
 class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusFormState> {
 
@@ -67,7 +73,7 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
               <MemoryIcon />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary="Heap (Free / Max Alloc)" secondary={data.free_heap + ' / ' + data.max_alloc_heap + ' bytes (~' + this.approxHeapFragmentation() + '% fragmentation)'} />
+          <ListItemText primary="Heap (Free / Max Alloc)" secondary={formatNumber(data.free_heap) + ' / ' + formatNumber(data.max_alloc_heap) + ' bytes (~' + this.approxHeapFragmentation() + '% fragmentation)'} />
         </ListItem>
         <Divider variant="inset" component="li" />
         <ListItem >
@@ -76,7 +82,7 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
               <DataUsageIcon />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary="Sketch (Size / Free)" secondary={data.sketch_size + ' / ' + data.free_sketch_space + ' bytes'} />
+          <ListItemText primary="Sketch (Size / Free)" secondary={formatNumber(data.sketch_size) + ' / ' + formatNumber(data.free_sketch_space) + ' bytes'} />
         </ListItem>
         <Divider variant="inset" component="li" />
         <ListItem >
@@ -85,12 +91,20 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
               <SdStorageIcon />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary="Flash Chip (Size / Speed)" secondary={data.flash_chip_size + ' bytes / ' + (data.flash_chip_speed / 1000000).toFixed(0) + ' MHz'} />
+          <ListItemText primary="Flash Chip (Size / Speed)" secondary={formatNumber(data.flash_chip_size) + ' bytes / ' + (data.flash_chip_speed / 1000000).toFixed(0) + ' MHz'} />
         </ListItem>
+        <ListItem >
+          <ListItemAvatar>
+            <Avatar>
+              <StorageIcon />
+            </Avatar>
+          </ListItemAvatar>
+          <ListItemText primary="SPIFFS (Used / Total | Free)" secondary={formatNumber(data.spiffs_used) + ' / ' + formatNumber(data.spiffs_size) + ' bytes | '+ formatNumber(data.spiffs_size-data.spiffs_used) + ' bytes free'} />
+        </ListItem>        
         <Divider variant="inset" component="li" />
       </Fragment>
     );
-  }
+  } 
 
   renderRestartDialog() {
     return (
