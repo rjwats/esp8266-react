@@ -27,7 +27,7 @@ interface SystemStatusFormState {
 
 type SystemStatusFormProps = AuthenticatedContextProps & RestFormProps<SystemStatus>;
 
-function formatNumber(num: number){
+function formatNumber(num: number) {
   return new Intl.NumberFormat().format(num);
 }
 
@@ -93,18 +93,19 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
           </ListItemAvatar>
           <ListItemText primary="Flash Chip (Size / Speed)" secondary={formatNumber(data.flash_chip_size) + ' bytes / ' + (data.flash_chip_speed / 1000000).toFixed(0) + ' MHz'} />
         </ListItem>
+        <Divider variant="inset" component="li" />
         <ListItem >
           <ListItemAvatar>
             <Avatar>
               <StorageIcon />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary="SPIFFS (Used / Total | Free)" secondary={formatNumber(data.spiffs_used) + ' / ' + formatNumber(data.spiffs_size) + ' bytes | '+ formatNumber(data.spiffs_size-data.spiffs_used) + ' bytes free'} />
-        </ListItem>        
+          <ListItemText primary="SPIFFS (Used / Total)" secondary={formatNumber(data.spiffs_used) + ' / ' + formatNumber(data.spiffs_total) + ' bytes (' + formatNumber(data.spiffs_total - data.spiffs_used) + ' bytes free)'} />
+        </ListItem>
         <Divider variant="inset" component="li" />
       </Fragment>
     );
-  } 
+  }
 
   renderRestartDialog() {
     return (
