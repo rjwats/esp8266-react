@@ -15,15 +15,16 @@ class WebSocketLogHandler {
     _webSocket.setFilter(securityManager->filterRequest(AuthenticationPredicates::IS_ADMIN));
     server->addHandler(&_webSocket);
     server->on(WEB_SOCKET_LOG_PATH, HTTP_GET, std::bind(&WebSocketLogHandler::forbidden, this, std::placeholders::_1));
+  }
 
-    // TODO - consider the possibility of disabling/re-enabling the appender at run time?
-    Logger::addEventHandler(std::bind(&WebSocketLogHandler::logEvent,
-                                      this,
-                                      std::placeholders::_1,
-                                      std::placeholders::_2,
-                                      std::placeholders::_3,
-                                      std::placeholders::_4,
-                                      std::placeholders::_5));
+  void begin() {
+    Logger::getInstance()->addEventHandler(std::bind(&WebSocketLogHandler::logEvent,
+                                                     this,
+                                                     std::placeholders::_1,
+                                                     std::placeholders::_2,
+                                                     std::placeholders::_3,
+                                                     std::placeholders::_4,
+                                                     std::placeholders::_5));
   }
 
  private:

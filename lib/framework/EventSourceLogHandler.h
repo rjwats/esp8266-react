@@ -16,13 +16,16 @@ class EventSourceLogHandler {
     server->addHandler(&_events);
     server->on(
         EVENT_SOURCE_LOG_PATH, HTTP_GET, std::bind(&EventSourceLogHandler::forbidden, this, std::placeholders::_1));
-    Logger::addEventHandler(std::bind(&EventSourceLogHandler::logEvent,
-                                      this,
-                                      std::placeholders::_1,
-                                      std::placeholders::_2,
-                                      std::placeholders::_3,
-                                      std::placeholders::_4,
-                                      std::placeholders::_5));
+  }
+
+  void begin() {
+    Logger::getInstance()->addEventHandler(std::bind(&EventSourceLogHandler::logEvent,
+                                                     this,
+                                                     std::placeholders::_1,
+                                                     std::placeholders::_2,
+                                                     std::placeholders::_3,
+                                                     std::placeholders::_4,
+                                                     std::placeholders::_5));
   }
 
  private:

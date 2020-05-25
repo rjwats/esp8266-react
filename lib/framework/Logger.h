@@ -5,6 +5,7 @@
 #include <list>
 #include <functional>
 #include <time.h>
+#include <FS.h>
 
 #define FSH_P const __FlashStringHelper*
 
@@ -32,31 +33,19 @@ typedef struct LogEventHandlerInfo {
 
 class Logger {
  public:
-  static log_event_handler_id_t addEventHandler(LogEventHandler cb) {
-    if (!cb) {
-      return 0;
-    }
-    LogEventHandlerInfo eventHandler(cb);
-    _eventHandlers.push_back(eventHandler);
-    return eventHandler._id;
-  }
-
-  static void removeEventHandler(log_event_handler_id_t id) {
-    for (auto i = _eventHandlers.begin(); i != _eventHandlers.end();) {
-      if ((*i)._id == id) {
-        i = _eventHandlers.erase(i);
-      } else {
-        ++i;
-      }
-    }
-  }
-
   static void log(LogLevel level, FSH_P file, int line, FSH_P message) {
-    logEvent(level, file, line, message);
+    if (_instance) {
+      _instance->logEvent(level, file, line, message);
+    }
   }
 
   static void logf(LogLevel level, FSH_P file, int line, PGM_P format, ...) {
     va_list args;
+
+    // exit early if logging has not been started
+    if (!_instance) {
+      return;
+    }
 
     // inital buffer, we can extend it if the formatted string doesn't fit
     char temp[64];
@@ -66,7 +55,7 @@ class Logger {
 
     // buffer was large enough - log and exit early
     if (len < sizeof(temp)) {
-      logEvent(level, file, line, temp);
+      _instance->logEvent(level, file, line, temp);
       return;
     }
 
@@ -74,28 +63,59 @@ class Logger {
     char* buffer = new char[len + 1];
     if (buffer) {
       vsnprintf_P(buffer, len + 1, format, args);
-      logEvent(level, file, line, buffer);
+      _instance->logEvent(level, file, line, buffer);
       delete[] buffer;
       return;
     }
 
     // we failed to allocate
-    logEvent(level, file, line, F("Error formatting log message"));
+    _instance->logEvent(level, file, line, F("Error formatting log message"));
   }
 
- private:
-  static std::list<LogEventHandlerInfo> _eventHandlers;
-
-  Logger() {
-    // class is static-only, prevent instantiation
+  static void begin(FS* fs) {
+    if (!_instance) {
+      _instance = new Logger(fs);
+    }
   }
 
-  static void logEvent(LogLevel level, String file, int line, String message) {
+  static Logger* getInstance() {
+    return _instance;
+  }
+
+  log_event_handler_id_t addEventHandler(LogEventHandler cb) {
+    if (!cb) {
+      return 0;
+    }
+    LogEventHandlerInfo eventHandler(cb);
+    _eventHandlers.push_back(eventHandler);
+    return eventHandler._id;
+  }
+
+  void removeEventHandler(log_event_handler_id_t id) {
+    for (auto i = _eventHandlers.begin(); i != _eventHandlers.end();) {
+      if ((*i)._id == id) {
+        i = _eventHandlers.erase(i);
+      } else {
+        ++i;
+      }
+    }
+  }
+
+  void logEvent(LogLevel level, String file, int line, String message) {
     time_t now = time(nullptr);
     tm* time = localtime(&now);
     for (const LogEventHandlerInfo& eventHandler : _eventHandlers) {
       eventHandler._cb(time, level, file, line, message);
     }
+  }
+
+ private:
+  FS* _fs;
+  std::list<LogEventHandlerInfo> _eventHandlers;
+  static Logger* _instance;
+
+  Logger(FS* fs) : _fs(fs), _eventHandlers() {
+    // singleton only, prevent external instantiation
   }
 };
 

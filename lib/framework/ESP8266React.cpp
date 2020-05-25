@@ -69,11 +69,17 @@ ESP8266React::ESP8266React(AsyncWebServer* server, FS* fs) :
   DefaultHeaders::Instance().addHeader("Access-Control-Allow-Credentials", "true");
 #endif
 
-  // Configure serial log hander
-  Logger::addEventHandler(SerialLogHandler::logEvent);
+  // Begin logging
+  Logger::begin(fs);
 }
 
 void ESP8266React::begin() {
+  // begin log event handlers
+  Logger::getInstance()->addEventHandler(SerialLogHandler::logEvent);
+  _webSocketLogHandler.begin();
+  _eventSourceLogHandler.begin();
+
+  // begin services
   _securitySettingsService.begin();
   _wifiSettingsService.begin();
   _apSettingsService.begin();
@@ -83,6 +89,10 @@ void ESP8266React::begin() {
 }
 
 void ESP8266React::loop() {
+  // service log handlers - this may become part of a "LogHandler" interface
+  // _webSocketLogHandler.loop();
+  // _eventSourceLogHandler.loop();
+
   _wifiSettingsService.loop();
   _apSettingsService.loop();
   _otaSettingsService.loop();
