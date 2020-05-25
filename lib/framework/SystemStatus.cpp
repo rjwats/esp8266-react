@@ -26,13 +26,13 @@ void SystemStatus::systemStatus(AsyncWebServerRequest* request) {
   root["flash_chip_speed"] = ESP.getFlashChipSpeed();
 
 #ifdef ESP32
-  root["spiffs_total"] = SPIFFS.totalBytes();
-  root["spiffs_used"] = SPIFFS.usedBytes();
+  root["fs_total"] = SPIFFS.totalBytes();
+  root["fs_used"] = SPIFFS.usedBytes();
 #elif defined(ESP8266)
   FSInfo fs_info;
   SPIFFS.info(fs_info);
-  root["spiffs_total"] = fs_info.totalBytes;
-  root["spiffs_used"] = fs_info.usedBytes;
+  root["fs_total"] = fs_info.totalBytes;
+  root["fs_used"] = fs_info.usedBytes;
 #endif
 
   response->setLength();

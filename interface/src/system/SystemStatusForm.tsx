@@ -7,7 +7,7 @@ import DevicesIcon from '@material-ui/icons/Devices';
 import MemoryIcon from '@material-ui/icons/Memory';
 import ShowChartIcon from '@material-ui/icons/ShowChart';
 import SdStorageIcon from '@material-ui/icons/SdStorage';
-import StorageIcon from '@material-ui/icons/Storage';
+import FolderIcon from '@material-ui/icons/Folder';
 import DataUsageIcon from '@material-ui/icons/DataUsage';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import RefreshIcon from '@material-ui/icons/Refresh';
@@ -97,10 +97,10 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
         <ListItem >
           <ListItemAvatar>
             <Avatar>
-              <StorageIcon />
+              <FolderIcon />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary="SPIFFS (Used / Total)" secondary={formatNumber(data.spiffs_used) + ' / ' + formatNumber(data.spiffs_total) + ' bytes (' + formatNumber(data.spiffs_total - data.spiffs_used) + ' bytes free)'} />
+          <ListItemText primary="File System (Used / Total)" secondary={formatNumber(data.fs_used) + ' / ' + formatNumber(data.fs_total) + ' bytes (' + formatNumber(data.fs_total - data.fs_used) + ' bytes free)'} />
         </ListItem>
         <Divider variant="inset" component="li" />
       </Fragment>
