@@ -55,6 +55,7 @@ class EventSourceLogHandler {
       serializeJson(jsonDocument, buffer, len + 1);
       _events.send(buffer, "message", millis());
     }
+    delete[] buffer;
   }
 };
 
