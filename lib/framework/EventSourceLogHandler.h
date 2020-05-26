@@ -20,13 +20,7 @@ class EventSourceLogHandler {
   }
 
   void begin() {
-    Logger::getInstance()->addEventHandler(std::bind(&EventSourceLogHandler::logEvent,
-                                                     this,
-                                                     std::placeholders::_1,
-                                                     std::placeholders::_2,
-                                                     std::placeholders::_3,
-                                                     std::placeholders::_4,
-                                                     std::placeholders::_5));
+    Logger::getInstance()->addEventHandler(std::bind(&EventSourceLogHandler::logEvent, this, std::placeholders::_1));
   }
 
  private:
@@ -37,29 +31,35 @@ class EventSourceLogHandler {
     request->send(403);
   }
 
-  void logEvent(time_t instant, LogLevel level, const String& file, const uint16_t line, const String& message) {
-    // if there are no clients, don't bother doing anything
+  boolean logEvent(LogEvent& logEvent) {
+    // if there are no clients:
+    // don't bother doing anything, report it as a success
     if (!_events.count()) {
-      return;
+      return true;
     }
 
     // create JsonObject to hold log event
     DynamicJsonDocument jsonDocument = DynamicJsonDocument(EVENT_SOURCE_LOG_BUFFER);
-    JsonObject logEvent = jsonDocument.to<JsonObject>();
-    logEvent["time"] = ESPUtils::toISOString(localtime(&instant), true);
-    logEvent["level"] = level;
-    logEvent["file"] = file;
-    logEvent["line"] = line;
-    logEvent["message"] = message;
+    JsonObject jsonObject = jsonDocument.to<JsonObject>();
+    jsonObject["id"] = logEvent.id;
+    jsonObject["time"] = ESPUtils::toISOString(localtime(&logEvent.time), true);
+    jsonObject["level"] = logEvent.level;
+    jsonObject["file"] = logEvent.file;
+    jsonObject["line"] = logEvent.line;
+    jsonObject["message"] = logEvent.message;
 
     // transmit log event to all clients
     size_t len = measureJson(jsonDocument);
+
     char* buffer = new char[len + 1];
     if (buffer) {
       serializeJson(jsonDocument, buffer, len + 1);
       _events.send(buffer, "message", millis());
     }
     delete[] buffer;
+
+    // impossible to tell if the buffer is too full.
+    return true;
   }
 };
 

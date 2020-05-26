@@ -1,6 +1,7 @@
 #include <ESP8266React.h>
 
 ESP8266React::ESP8266React(AsyncWebServer* server, FS* fs) :
+    _fs(fs),
     _securitySettingsService(server, fs),
     _wifiSettingsService(server, fs, &_securitySettingsService),
     _apSettingsService(server, fs, &_securitySettingsService),
@@ -68,32 +69,26 @@ ESP8266React::ESP8266React(AsyncWebServer* server, FS* fs) :
   DefaultHeaders::Instance().addHeader("Access-Control-Allow-Headers", "Accept, Content-Type, Authorization");
   DefaultHeaders::Instance().addHeader("Access-Control-Allow-Credentials", "true");
 #endif
-
-  // Begin logging
-  Logger::begin(fs);
 }
 
 void ESP8266React::begin() {
-  // begin log event handlers
+  // Begin logging
+  Logger::begin(_fs);
   Logger::getInstance()->addEventHandler(SerialLogHandler::logEvent);
   _webSocketLogHandler.begin();
-  _eventSourceLogHandler.begin();
-
-  // start the NTP settings service first, to configure the timezone
-  _ntpSettingsService.begin();
+  // _eventSourceLogHandler.begin();
 
   // begin services
   _securitySettingsService.begin();
   _wifiSettingsService.begin();
+  _ntpSettingsService.begin();
   _apSettingsService.begin();
   _otaSettingsService.begin();
   _mqttSettingsService.begin();
 }
 
 void ESP8266React::loop() {
-  // service log handlers - this may become part of a "LogHandler" interface
-  // _webSocketLogHandler.loop();
-  // _eventSourceLogHandler.loop();
+  Logger::loop();
 
   _wifiSettingsService.loop();
   _apSettingsService.loop();

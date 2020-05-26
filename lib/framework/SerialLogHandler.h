@@ -17,16 +17,22 @@
 
 class SerialLogHandler {
  public:
-  static void logEvent(const time_t instant, LogLevel level, const String& file, uint16_t line, const String& message) {
+  static boolean logEvent(LogEvent& logEvent) {
+    // wait till the entire buffer is free before attempting to write to serial
+    // this helps us avoid blocking the main loop unnecessarily
+    if (Serial.availableForWrite() < UART_TX_FIFO_SIZE) {
+      return false;
+    }
     Serial.printf_P(PSTR("%s %s%7s %s%s[%d] %s%s\r\n"),
-                    ESPUtils::toHrString(localtime(&instant)).c_str(),
-                    levelColor(level),
-                    levelString(level),
+                    ESPUtils::toHrString(localtime(&logEvent.time)).c_str(),
+                    levelColor(logEvent.level),
+                    levelString(logEvent.level),
                     COLOR_CYAN,
-                    file.c_str(),
-                    line,
+                    logEvent.file.c_str(),
+                    logEvent.line,
                     COLOR_RESET,
-                    message.c_str());
+                    logEvent.message.c_str());
+    return true;
   }
 
  private:

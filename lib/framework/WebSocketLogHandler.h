@@ -19,13 +19,7 @@ class WebSocketLogHandler {
   }
 
   void begin() {
-    Logger::getInstance()->addEventHandler(std::bind(&WebSocketLogHandler::logEvent,
-                                                     this,
-                                                     std::placeholders::_1,
-                                                     std::placeholders::_2,
-                                                     std::placeholders::_3,
-                                                     std::placeholders::_4,
-                                                     std::placeholders::_5));
+    Logger::getInstance()->addEventHandler(std::bind(&WebSocketLogHandler::logEvent, this, std::placeholders::_1));
   }
 
  private:
@@ -35,20 +29,23 @@ class WebSocketLogHandler {
     request->send(403);
   }
 
-  void logEvent(time_t instant, LogLevel level, const String& file, const uint16_t line, const String& message) {
+  boolean logEvent(LogEvent& logEvent) {
     // if there are no clients, don't bother doing anything
     if (!_webSocket.getClients().length()) {
-      return;
+      return true;
+    }
+    if (!_webSocket.availableForWriteAll()) {
+      return false;
     }
 
     // create JsonObject to hold log event
     DynamicJsonDocument jsonDocument = DynamicJsonDocument(WEB_SOCKET_LOG_BUFFER);
-    JsonObject logEvent = jsonDocument.to<JsonObject>();
-    logEvent["time"] = ESPUtils::toISOString(localtime(&instant), true);
-    logEvent["level"] = level;
-    logEvent["file"] = file;
-    logEvent["line"] = line;
-    logEvent["message"] = message;
+    JsonObject jsonObject = jsonDocument.to<JsonObject>();
+    jsonObject["time"] = ESPUtils::toISOString(localtime(&logEvent.time), true);
+    jsonObject["level"] = logEvent.level;
+    jsonObject["file"] = logEvent.file;
+    jsonObject["line"] = logEvent.line;
+    jsonObject["message"] = logEvent.message;
 
     // transmit log event to all clients
     size_t len = measureJson(jsonDocument);
@@ -57,6 +54,7 @@ class WebSocketLogHandler {
       serializeJson(jsonDocument, (char*)buffer->get(), len + 1);
       _webSocket.textAll(buffer);
     }
+    return true;
   }
 };
 

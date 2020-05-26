@@ -26,18 +26,9 @@ enum LogLevel { DEBUG = 0, INFO = 1, WARNING = 2, ERROR = 3 };
 #define LOG_W(msg) Logger::log(LogLevel::WARNING, F(__FILE__), __LINE__, F(msg))
 #define LOG_E(msg) Logger::log(LogLevel::ERROR, F(__FILE__), __LINE__, F(msg))
 
-typedef size_t log_event_handler_id_t;
-typedef std::function<void(time_t time, LogLevel level, String& file, uint16_t line, String& message)> LogEventHandler;
-
-typedef struct LogEventHandlerInfo {
-  static log_event_handler_id_t currentEventHandlerId;
-  log_event_handler_id_t _id;
-  LogEventHandler _cb;
-  LogEventHandlerInfo(LogEventHandler cb) : _id(++currentEventHandlerId), _cb(cb){};
-} LogEventHandlerInfo_t;
-
 class LogEvent {
  public:
+  uint32_t id;
   time_t time;
   LogLevel level;
   String file;
@@ -60,6 +51,18 @@ class LogEvent {
     logEvent.message = root["message"] | "";
   }
 };
+
+typedef size_t log_event_handler_id_t;
+typedef std::function<boolean(LogEvent& logEvent)> LogEventHandler;
+
+typedef struct LogEventHandlerInfo {
+  static log_event_handler_id_t currentEventHandlerId;
+  log_event_handler_id_t _id;
+  LogEventHandler _cb;
+  uint32_t _latestEventId;
+  LogEventHandlerInfo(LogEventHandler cb, uint32_t latestEventId) :
+      _id(++currentEventHandlerId), _cb(cb), _latestEventId(latestEventId){};
+} LogEventHandlerInfo_t;
 
 class Logger {
  public:
@@ -102,6 +105,47 @@ class Logger {
     _instance->logEvent(level, file, line, F("Error formatting log message"));
   }
 
+  void flushBuffer() {
+    // TODO flush buffer to file system
+  }
+
+  void serviceEventHandlers() {
+    // TODO flush buffer to file system
+    // Service the event handlers one at a time
+    for (LogEventHandlerInfo& eventHandler : _eventHandlers) {
+      if (eventHandler._latestEventId < _latestEventId) {
+        // TAKE MUTEX
+        uint32_t nextEventId = eventHandler._latestEventId + 1;
+        uint32_t eventOffset = _latestEventId - nextEventId;
+
+        // TEMP - hack until we write the stuff to go fetch old events from the files
+        // brings us up to date with the start of the buffer
+        if (eventOffset > _maxBufferSize) {
+          nextEventId = _latestEventId - _maxBufferSize;
+          eventOffset = _maxBufferSize;
+        }
+
+        // try and queue up the next message
+        std::list<LogEvent>::iterator it = _buffer.begin();
+        std::advance(it, (_maxBufferSize - eventOffset) - 1);
+
+        // copy needed?
+        LogEvent logEvent = *it;
+        if (eventHandler._cb(logEvent)) {
+          eventHandler._latestEventId = nextEventId;
+        }
+        // RELEASE MUTEX
+      }
+    }
+  }
+
+  static void loop() {
+    if (_instance) {
+      _instance->flushBuffer();
+      _instance->serviceEventHandlers();
+    }
+  }
+
   static void begin(FS* fs) {
     if (!_instance) {
       _instance = new Logger(fs, LOGGER_FS_BUFFER_PATH);
@@ -117,7 +161,7 @@ class Logger {
     if (!cb) {
       return 0;
     }
-    LogEventHandlerInfo eventHandler(cb);
+    LogEventHandlerInfo eventHandler(cb, _latestEventId);
     _eventHandlers.push_back(eventHandler);
     return eventHandler._id;
   }
@@ -129,13 +173,6 @@ class Logger {
       } else {
         ++i;
       }
-    }
-  }
-
-  void logEvent(LogLevel level, String file, uint16_t line, String message) {
-    time_t now = time(nullptr);
-    for (const LogEventHandlerInfo& eventHandler : _eventHandlers) {
-      eventHandler._cb(now, level, file, line, message);
     }
   }
 
@@ -188,6 +225,27 @@ class Logger {
     return strtoul(eventId.c_str(), nullptr, 10);
   }
 
+  void logEvent(LogLevel level, String file, uint16_t line, String message) {
+    // START MUTEX
+    // create log event
+    LogEvent logEvent;
+    logEvent.id = ++_latestEventId;
+    logEvent.time = time(nullptr);
+    logEvent.level = level;
+    logEvent.file = file;
+    logEvent.line = line;
+    logEvent.message = message;
+
+    // chuck it on the back of the buffer
+    _buffer.push_back(logEvent);
+
+    // prune buffer as required
+    if (_buffer.size() > _maxBufferSize) {
+      _buffer.pop_front();
+    }
+    // RELEASE MUTEX
+  }
+
   void begin() {
     // find the "latest" file
     Dir dir = SPIFFS.openDir(_bufferPath);
@@ -206,16 +264,18 @@ class Logger {
     _latestEventId = _latestFileIndex;
     _flushedEventId = _latestFileIndex;
 
-    // TODO - this could be done more efficently
+    // TODO - this could be done more efficiently
     // parse latest file in order to calculate _latestEventId and _flushedEventId
     if (SPIFFS.exists(_latestFileName)) {
       File file = _fs->open(_latestFileName, "r");
+      char buffer[LOG_ENTRY_SIZE] = {0};
       DynamicJsonDocument jsonDocument = DynamicJsonDocument(LOG_ENTRY_SIZE);
       while (file.available()) {
-        // deserialize next entry
-        deserializeJson(jsonDocument, file.readStringUntil('\n'));
+        // read and deserialize
+        file.readBytesUntil('\n', buffer, LOG_ENTRY_SIZE);
+        deserializeJson(jsonDocument, buffer);
 
-        // chuck the next even on the pack of the buffer
+        // chuck each event on the back of the buffer
         LogEvent logEvent;
         JsonObject jsonObject = jsonDocument.as<JsonObject>();
         LogEvent::deserialize(jsonObject, logEvent);
@@ -229,6 +289,7 @@ class Logger {
           _buffer.pop_front();
         }
       }
+      file.close();
       _flushedEventId = _latestEventId;
     }
   }

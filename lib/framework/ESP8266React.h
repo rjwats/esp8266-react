@@ -80,6 +80,8 @@ class ESP8266React {
   }
 
  private:
+  FS* _fs;
+
   SecuritySettingsService _securitySettingsService;
   WiFiSettingsService _wifiSettingsService;
   APSettingsService _apSettingsService;
