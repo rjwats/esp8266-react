@@ -1,5 +1,5 @@
 export interface APStatus {
-  active: boolean;
+  status: number;
   ip_address: string;
   mac_address: string;
   station_num: number;

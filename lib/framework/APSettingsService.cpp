@@ -34,21 +34,23 @@ void APSettingsService::loop() {
 
 void APSettingsService::manageAP() {
   WiFiMode_t currentWiFiMode = WiFi.getMode();
-  if (_state.provisionMode == AP_MODE_ALWAYS ||
-      (_state.provisionMode == AP_MODE_DISCONNECTED && WiFi.status() != WL_CONNECTED)) {
+  APSettings state = getStateSnapshot();
+  if (state.provisionMode == AP_MODE_ALWAYS ||
+      (state.provisionMode == AP_MODE_DISCONNECTED && WiFi.status() != WL_CONNECTED)) {
     if (currentWiFiMode == WIFI_OFF || currentWiFiMode == WIFI_STA) {
       startAP();
     }
-  } else {
-    if (currentWiFiMode == WIFI_AP || currentWiFiMode == WIFI_AP_STA) {
-      stopAP();
-    }
+  } else if ((currentWiFiMode == WIFI_AP || currentWiFiMode == WIFI_AP_STA) 
+      && WiFi.softAPgetStationNum() == 0) {
+    stopAP();
   }
 }
 
 void APSettingsService::startAP() {
   Serial.println(F("Starting software access point"));
-  WiFi.softAP(_state.ssid.c_str(), _state.password.c_str());
+  APSettings state = getStateSnapshot();
+  // WiFi.softAP owns the copy of ssid and passwords strings
+  WiFi.softAP(state.ssid.c_str(), state.password.c_str());
   if (!_dnsServer) {
     IPAddress apIp = WiFi.softAPIP();
     Serial.print(F("Starting captive portal on "));
@@ -73,4 +75,11 @@ void APSettingsService::handleDNS() {
   if (_dnsServer) {
     _dnsServer->processNextRequest();
   }
+}
+
+APSettings APSettingsService::getStateSnapshot() { 
+  beginTransaction();
+  APSettings snapshot(_state);
+  endTransaction();
+  return snapshot; 
 }
