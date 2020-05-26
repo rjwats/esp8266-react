@@ -1,7 +1,7 @@
 import React, { RefObject } from 'react';
 import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
 
-import { Drawer, AppBar, Toolbar, Avatar, Divider, Button, IconButton } from '@material-ui/core';
+import { Drawer, AppBar, Toolbar, Avatar, Divider, Button, Box, IconButton } from '@material-ui/core';
 import { ClickAwayListener, Popper, Hidden, Typography } from '@material-ui/core';
 import { List, ListItem, ListItemIcon, ListItemText, ListItemAvatar } from '@material-ui/core';
 import { Card, CardContent, CardActions } from '@material-ui/core';
@@ -64,7 +64,7 @@ const styles = (theme: Theme) => createStyles({
     "& > * + *": {
       marginLeft: theme.spacing(2),
     }
-  }
+  },
 });
 
 interface MenuAppBarState {
@@ -110,6 +110,9 @@ class MenuAppBar extends React.Component<MenuAppBarProps, MenuAppBarState> {
     const drawer = (
       <div>
         <Toolbar>
+          <Box mr={3}>
+            <img src="/app/icon.png" height={42} />
+          </Box>
           <Typography variant="h6" color="textPrimary">
             {PROJECT_NAME}
           </Typography>
