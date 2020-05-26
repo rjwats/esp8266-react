@@ -105,7 +105,9 @@ class HttpPostEndpoint {
   void updateSettings(AsyncWebServerRequest* request, JsonVariant& json) {
     if (!json.is<JsonObject>()) {
       request->send(400);
+      return;
     }
+    
     JsonObject jsonObject = json.as<JsonObject>();
     UpdateOutcome outcome = _statefulService->updateWithoutPropagation(jsonObject, _jsonDeserializer);
     switch (outcome) {
