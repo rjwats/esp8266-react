@@ -16,6 +16,8 @@
 #define DEFAULT_BUFFER_SIZE 1024
 #endif
 
+enum class UpdateOutcome { OK = 0, OK_NO_PROPAGATION, INVALID };
+
 typedef size_t update_handler_id_t;
 typedef std::function<void(const String& originId)> StateUpdateCallback;
 
@@ -60,66 +62,41 @@ class StatefulService {
     }
   }
 
-  void updateWithoutPropagation(std::function<void(T&)> callback) {
-#ifdef ESP32
-    xSemaphoreTakeRecursive(_accessMutex, portMAX_DELAY);
-#endif
-    callback(_state);
-#ifdef ESP32
-    xSemaphoreGiveRecursive(_accessMutex);
-#endif
+  UpdateOutcome updateWithoutPropagation(std::function<void(T&)> callback) {
+    T newState;
+    callback(newState);
+    return applyUpdateInMutex(newState);
   }
 
-  void updateWithoutPropagation(JsonObject& jsonObject, JsonDeserializer<T> deserializer) {
-#ifdef ESP32
-    xSemaphoreTakeRecursive(_accessMutex, portMAX_DELAY);
-#endif
-    deserializer(jsonObject, _state);
-#ifdef ESP32
-    xSemaphoreGiveRecursive(_accessMutex);
-#endif
+  UpdateOutcome updateWithoutPropagation(JsonObject& jsonObject, JsonDeserializer<T> deserializer) {
+    T newState;
+    deserializer(jsonObject, newState);
+    return applyUpdateInMutex(newState);
   }
 
-  void update(std::function<void(T&)> callback, const String& originId) {
-#ifdef ESP32
-    xSemaphoreTakeRecursive(_accessMutex, portMAX_DELAY);
-#endif
-    callback(_state);
-    callUpdateHandlers(originId);
-#ifdef ESP32
-    xSemaphoreGiveRecursive(_accessMutex);
-#endif
+  UpdateOutcome update(std::function<void(T&)> callback, const String& originId) {
+    T newState;
+    callback(newState);
+    return applyUpdateInMutex(newState, [this, originId]() { callUpdateHandlers(originId); });
   }
 
-  void update(JsonObject& jsonObject, JsonDeserializer<T> deserializer, const String& originId) {
-#ifdef ESP32
-    xSemaphoreTakeRecursive(_accessMutex, portMAX_DELAY);
-#endif
-    deserializer(jsonObject, _state);
-    callUpdateHandlers(originId);
-#ifdef ESP32
-    xSemaphoreGiveRecursive(_accessMutex);
-#endif
+  UpdateOutcome update(JsonObject& jsonObject, JsonDeserializer<T> deserializer, const String& originId) {
+    T newState;
+    deserializer(jsonObject, newState);
+    return applyUpdateInMutex(newState, [this, originId]() { callUpdateHandlers(originId); });
   }
 
-  void read(std::function<void(T&)> callback) {
-#ifdef ESP32
-    xSemaphoreTakeRecursive(_accessMutex, portMAX_DELAY);
-#endif
-    callback(_state);
-#ifdef ESP32
-    xSemaphoreGiveRecursive(_accessMutex);
-#endif
+  T getState() {
+    beginTransaction();
+    T state(_state);
+    endTransaction();
+    return state;
   }
 
   void read(JsonObject& jsonObject, JsonSerializer<T> serializer) {
-#ifdef ESP32
-    xSemaphoreTakeRecursive(_accessMutex, portMAX_DELAY);
-#endif
+    beginTransaction();
     serializer(_state, jsonObject);
-#ifdef ESP32
-    xSemaphoreGiveRecursive(_accessMutex);
-#endif
+    endTransaction();
   }
 
   void callUpdateHandlers(const String& originId) {
@@ -131,11 +108,46 @@ class StatefulService {
  protected:
   T _state;
 
+  /**
+   * Stateful services which want to control how updates are processed can do so by overriding this function:
+   *
+   * A false return value indicates the update was rejected due to the provided state being invalid in some way.
+   * Propogation can be prevented by not calling the provided propagate update function.
+   */
+  virtual UpdateOutcome applyUpdate(T& newState) {
+    _state = newState;
+    return UpdateOutcome::OK;
+  }
+
  private:
 #ifdef ESP32
   SemaphoreHandle_t _accessMutex;
 #endif
   std::list<StateUpdateHandlerInfo_t> _updateHandlers;
+
+  UpdateOutcome applyUpdateInMutex(
+      T& newState,
+      std::function<void()> propagateUpdate = [] {}) {
+    beginTransaction();
+    UpdateOutcome outcome = applyUpdate(newState);
+    endTransaction();
+    if (outcome == UpdateOutcome::OK) {
+      propagateUpdate();
+    }
+    return outcome;
+  }
+
+  inline void beginTransaction() {
+#ifdef ESP32
+    xSemaphoreTakeRecursive(_accessMutex, portMAX_DELAY);
+#endif
+  }
+
+  inline void endTransaction() {
+#ifdef ESP32
+    xSemaphoreGiveRecursive(_accessMutex);
+#endif
+  }
 };
 
 #endif  // end StatefulService_h

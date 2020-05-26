@@ -48,7 +48,6 @@ class HttpGetEndpoint {
     AsyncJsonResponse* response = new AsyncJsonResponse(false, _bufferSize);
     JsonObject jsonObject = response->getRoot().to<JsonObject>();
     _statefulService->read(jsonObject, _jsonSerializer);
-
     response->setLength();
     request->send(response);
   }
@@ -104,25 +103,25 @@ class HttpPostEndpoint {
   size_t _bufferSize;
 
   void updateSettings(AsyncWebServerRequest* request, JsonVariant& json) {
-    if (json.is<JsonObject>()) {
-      AsyncJsonResponse* response = new AsyncJsonResponse(false, _bufferSize);
-
-      // use callback to update the settings once the response is complete
-      request->onDisconnect([this]() { _statefulService->callUpdateHandlers(HTTP_ENDPOINT_ORIGIN_ID); });
-
-      // update the settings, deferring the call to the update handlers to when the response is complete
-      _statefulService->updateWithoutPropagation([&](T& settings) {
-        JsonObject jsonObject = json.as<JsonObject>();
-        _jsonDeserializer(jsonObject, settings);
-        jsonObject = response->getRoot().to<JsonObject>();
-        _jsonSerializer(settings, jsonObject);
-      });
-
-      // write the response to the client
-      response->setLength();
-      request->send(response);
-    } else {
+    if (!json.is<JsonObject>()) {
       request->send(400);
+    }
+    JsonObject jsonObject = json.as<JsonObject>();
+    UpdateOutcome outcome = _statefulService->updateWithoutPropagation(jsonObject, _jsonDeserializer);
+    switch (outcome) {
+      case UpdateOutcome::OK:
+        request->onDisconnect([this]() { _statefulService->callUpdateHandlers(HTTP_ENDPOINT_ORIGIN_ID); });
+        // fallthrough
+      case UpdateOutcome::OK_NO_PROPAGATION: {
+        AsyncJsonResponse* response = new AsyncJsonResponse(false, _bufferSize);
+        JsonObject jsonObject = response->getRoot().to<JsonObject>();
+        _statefulService->read(jsonObject, _jsonSerializer);
+        response->setLength();
+        request->send(response);
+        break;
+      }
+      case UpdateOutcome::INVALID:
+        request->send(400);
     }
   }
 };

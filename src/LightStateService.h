@@ -56,6 +56,9 @@ class LightStateService : public StatefulService<LightState> {
                     AsyncMqttClient* mqttClient,
                     LightMqttSettingsService* lightMqttSettingsService);
   void begin();
+  
+ protected:
+  UpdateOutcome applyUpdate(LightState& newState) override;
 
  private:
   HttpEndpoint<LightState> _httpEndpoint;

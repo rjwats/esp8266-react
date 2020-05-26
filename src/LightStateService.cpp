@@ -40,7 +40,16 @@ void LightStateService::begin() {
 }
 
 void LightStateService::onConfigUpdated() {
+  Serial.printf_P(PSTR("The light is now: %s\r\n"), _state.ledOn ? "on" : "off");
   digitalWrite(BLINK_LED, _state.ledOn ? LED_ON : LED_OFF);
+}
+
+UpdateOutcome LightStateService::applyUpdate(LightState& newState) {
+  if (_state.ledOn != newState.ledOn) {
+    _state = newState;
+    return UpdateOutcome::OK;
+  }
+  return UpdateOutcome::OK_NO_PROPAGATION;
 }
 
 void LightStateService::registerConfig() {
@@ -52,14 +61,14 @@ void LightStateService::registerConfig() {
   String pubTopic;
 
   DynamicJsonDocument doc(256);
-  _lightMqttSettingsService->read([&](LightMqttSettings& settings) {
-    configTopic = settings.mqttPath + "/config";
-    subTopic = settings.mqttPath + "/set";
-    pubTopic = settings.mqttPath + "/state";
-    doc["~"] = settings.mqttPath;
-    doc["name"] = settings.name;
-    doc["unique_id"] = settings.uniqueId;
-  });
+  LightMqttSettings lightMqttSettings = _lightMqttSettingsService->getState();
+  configTopic = lightMqttSettings.mqttPath + "/config";
+  pubTopic = lightMqttSettings.mqttPath + "/state";
+  subTopic = lightMqttSettings.mqttPath + "/set";
+
+  doc["~"] = lightMqttSettings.mqttPath;
+  doc["name"] = lightMqttSettings.name;
+  doc["unique_id"] = lightMqttSettings.uniqueId;
   doc["cmd_t"] = "~/set";
   doc["stat_t"] = "~/state";
   doc["schema"] = "json";
