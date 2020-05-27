@@ -37,7 +37,7 @@ class WiFiSettings {
   IPAddress dnsIP1;
   IPAddress dnsIP2;
 
-  static void serialize(WiFiSettings& settings, JsonObject& root) {
+  static void read(WiFiSettings& settings, JsonObject& root) {
     // connection settings
     root["ssid"] = settings.ssid;
     root["password"] = settings.password;
@@ -52,7 +52,7 @@ class WiFiSettings {
     JsonUtils::writeIP(root, "dns_ip_2", settings.dnsIP2);
   }
 
-  static void deserialize(JsonObject& root, WiFiSettings& settings) {
+  static StateUpdateResult update(JsonObject& root, WiFiSettings& settings) {
     settings.ssid = root["ssid"] | FACTORY_WIFI_SSID;
     settings.password = root["password"] | FACTORY_WIFI_PASSWORD;
     settings.hostname = root["hostname"] | FACTORY_WIFI_HOSTNAME;
@@ -78,11 +78,7 @@ class WiFiSettings {
         (settings.localIP == INADDR_NONE || settings.gatewayIP == INADDR_NONE || settings.subnetMask == INADDR_NONE)) {
       settings.staticIPConfig = false;
     }
-  }
-
-  static UpdateOutcome update(JsonObject& root, WiFiSettings& settings) {
-    deserialize(root, settings);
-    return UpdateOutcome::CHANGED;
+    return StateUpdateResult::CHANGED;
   }
 };
 

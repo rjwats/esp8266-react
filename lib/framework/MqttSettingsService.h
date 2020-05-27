@@ -75,7 +75,7 @@ class MqttSettings {
   bool cleanSession;
   uint16_t maxTopicLength;
 
-  static void serialize(MqttSettings& settings, JsonObject& root) {
+  static void read(MqttSettings& settings, JsonObject& root) {
     root["enabled"] = settings.enabled;
     root["host"] = settings.host;
     root["port"] = settings.port;
@@ -87,7 +87,7 @@ class MqttSettings {
     root["max_topic_length"] = settings.maxTopicLength;
   }
 
-  static void deserialize(JsonObject& root, MqttSettings& settings) {
+  static StateUpdateResult update(JsonObject& root, MqttSettings& settings) {
     settings.enabled = root["enabled"] | FACTORY_MQTT_ENABLED;
     settings.host = root["host"] | FACTORY_MQTT_HOST;
     settings.port = root["port"] | FACTORY_MQTT_PORT;
@@ -97,11 +97,7 @@ class MqttSettings {
     settings.keepAlive = root["keep_alive"] | FACTORY_MQTT_KEEP_ALIVE;
     settings.cleanSession = root["clean_session"] | FACTORY_MQTT_CLEAN_SESSION;
     settings.maxTopicLength = root["max_topic_length"] | FACTORY_MQTT_MAX_TOPIC_LENGTH;
-  }
-
-  static UpdateOutcome update(JsonObject& root, MqttSettings& settings) {
-    deserialize(root, settings);
-    return UpdateOutcome::CHANGED;
+    return StateUpdateResult::CHANGED;
   }
 };
 

@@ -2,21 +2,19 @@
 #define FSPersistence_h
 
 #include <StatefulService.h>
-#include <JsonSerializer.h>
-#include <JsonDeserializer.h>
 #include <FS.h>
 
 template <class T>
 class FSPersistence {
  public:
-  FSPersistence(JsonSerializer<T> jsonSerializer,
-                JsonDeserializer<T> jsonDeserializer,
+  FSPersistence(JsonStateReader<T> stateReader,
+                JsonStateUpdater<T> stateUpdater,
                 StatefulService<T>* statefulService,
                 FS* fs,
                 char const* filePath,
                 size_t bufferSize = DEFAULT_BUFFER_SIZE) :
-      _jsonSerializer(jsonSerializer),
-      _jsonDeserializer(jsonDeserializer),
+      _stateReader(stateReader),
+      _stateUpdater(stateUpdater),
       _statefulService(statefulService),
       _fs(fs),
       _filePath(filePath),
@@ -33,7 +31,7 @@ class FSPersistence {
       DeserializationError error = deserializeJson(jsonDocument, settingsFile);
       if (error == DeserializationError::Ok && jsonDocument.is<JsonObject>()) {
         JsonObject jsonObject = jsonDocument.as<JsonObject>();
-        _statefulService->populateWithoutPropagation(jsonObject, _jsonDeserializer);
+        _statefulService->updateWithoutPropagation(jsonObject, _stateUpdater);
         settingsFile.close();
         return;
       }
@@ -49,7 +47,7 @@ class FSPersistence {
     // create and populate a new json object
     DynamicJsonDocument jsonDocument = DynamicJsonDocument(_bufferSize);
     JsonObject jsonObject = jsonDocument.to<JsonObject>();
-    _statefulService->read(jsonObject, _jsonSerializer);
+    _statefulService->read(jsonObject, _stateReader);
 
     // serialize it to filesystem
     File settingsFile = _fs->open(_filePath, "w");
@@ -79,8 +77,8 @@ class FSPersistence {
   }
 
  private:
-  JsonSerializer<T> _jsonSerializer;
-  JsonDeserializer<T> _jsonDeserializer;
+  JsonStateReader<T> _stateReader;
+  JsonStateUpdater<T> _stateUpdater;
   StatefulService<T>* _statefulService;
   FS* _fs;
   char const* _filePath;
@@ -88,12 +86,12 @@ class FSPersistence {
   update_handler_id_t _updateHandlerId;
 
  protected:
-  // We assume the deserializer supplies sensible defaults if an empty object
+  // We assume the updater supplies sensible defaults if an empty object
   // is supplied, this virtual function allows that to be changed.
   virtual void applyDefaults() {
     DynamicJsonDocument jsonDocument = DynamicJsonDocument(_bufferSize);
     JsonObject jsonObject = jsonDocument.as<JsonObject>();
-    _statefulService->populateWithoutPropagation(jsonObject, _jsonDeserializer);
+    _statefulService->updateWithoutPropagation(jsonObject, _stateUpdater);
   }
 };
 

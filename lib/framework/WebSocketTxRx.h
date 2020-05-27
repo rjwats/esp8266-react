@@ -2,7 +2,6 @@
 #define WebSocketTxRx_h
 
 #include <StatefulService.h>
-#include <JsonSerializer.h>
 #include <ESPAsyncWebServer.h>
 
 #define WEB_SOCKET_CLIENT_ID_MSG_SIZE 128
@@ -74,7 +73,7 @@ class WebSocketConnector {
 template <class T>
 class WebSocketTx : virtual public WebSocketConnector<T> {
  public:
-  WebSocketTx(JsonSerializer<T> jsonSerializer,
+  WebSocketTx(JsonStateReader<T> stateReader,
               StatefulService<T>* statefulService,
               AsyncWebServer* server,
               char const* webSocketPath,
@@ -87,17 +86,17 @@ class WebSocketTx : virtual public WebSocketConnector<T> {
                             securityManager,
                             authenticationPredicate,
                             bufferSize),
-      _jsonSerializer(jsonSerializer) {
+      _stateReader(stateReader) {
     WebSocketConnector<T>::_statefulService->addUpdateHandler(
         [&](const String& originId) { transmitData(nullptr, originId); }, false);
   }
 
-  WebSocketTx(JsonSerializer<T> jsonSerializer,
+  WebSocketTx(JsonStateReader<T> stateReader,
               StatefulService<T>* statefulService,
               AsyncWebServer* server,
               char const* webSocketPath,
               size_t bufferSize = DEFAULT_BUFFER_SIZE) :
-      WebSocketConnector<T>(statefulService, server, webSocketPath, bufferSize), _jsonSerializer(jsonSerializer) {
+      WebSocketConnector<T>(statefulService, server, webSocketPath, bufferSize), _stateReader(stateReader) {
     WebSocketConnector<T>::_statefulService->addUpdateHandler(
         [&](const String& originId) { transmitData(nullptr, originId); }, false);
   }
@@ -117,7 +116,7 @@ class WebSocketTx : virtual public WebSocketConnector<T> {
   }
 
  private:
-  JsonSerializer<T> _jsonSerializer;
+  JsonStateReader<T> _stateReader;
 
   void transmitId(AsyncWebSocketClient* client) {
     DynamicJsonDocument jsonDocument = DynamicJsonDocument(WEB_SOCKET_CLIENT_ID_MSG_SIZE);
@@ -145,7 +144,7 @@ class WebSocketTx : virtual public WebSocketConnector<T> {
     root["type"] = "payload";
     root["origin_id"] = originId;
     JsonObject payload = root.createNestedObject("payload");
-    WebSocketConnector<T>::_statefulService->read(payload, _jsonSerializer);
+    WebSocketConnector<T>::_statefulService->read(payload, _stateReader);
 
     size_t len = measureJson(jsonDocument);
     AsyncWebSocketMessageBuffer* buffer = WebSocketConnector<T>::_webSocket.makeBuffer(len);
@@ -163,7 +162,7 @@ class WebSocketTx : virtual public WebSocketConnector<T> {
 template <class T>
 class WebSocketRx : virtual public WebSocketConnector<T> {
  public:
-  WebSocketRx(JsonUpdateFunction<T> updateFunction,
+  WebSocketRx(JsonStateUpdater<T> stateUpdater,
               StatefulService<T>* statefulService,
               AsyncWebServer* server,
               char const* webSocketPath,
@@ -176,15 +175,15 @@ class WebSocketRx : virtual public WebSocketConnector<T> {
                             securityManager,
                             authenticationPredicate,
                             bufferSize),
-      _updateFunction(updateFunction) {
+      _stateUpdater(stateUpdater) {
   }
 
-  WebSocketRx(JsonUpdateFunction<T> updateFunction,
+  WebSocketRx(JsonStateUpdater<T> stateUpdater,
               StatefulService<T>* statefulService,
               AsyncWebServer* server,
               char const* webSocketPath,
               size_t bufferSize = DEFAULT_BUFFER_SIZE) :
-      WebSocketConnector<T>(statefulService, server, webSocketPath, bufferSize), _updateFunction(updateFunction) {
+      WebSocketConnector<T>(statefulService, server, webSocketPath, bufferSize), _stateUpdater(stateUpdater) {
   }
 
  protected:
@@ -203,7 +202,7 @@ class WebSocketRx : virtual public WebSocketConnector<T> {
           if (!error && jsonDocument.is<JsonObject>()) {
             JsonObject jsonObject = jsonDocument.as<JsonObject>();
             WebSocketConnector<T>::_statefulService->update(
-                jsonObject, _updateFunction, WebSocketConnector<T>::clientId(client));
+                jsonObject, _stateUpdater, WebSocketConnector<T>::clientId(client));
           }
         }
       }
@@ -211,14 +210,14 @@ class WebSocketRx : virtual public WebSocketConnector<T> {
   }
 
  private:
-  JsonUpdateFunction<T> _updateFunction;
+  JsonStateUpdater<T> _stateUpdater;
 };
 
 template <class T>
 class WebSocketTxRx : public WebSocketTx<T>, public WebSocketRx<T> {
  public:
-  WebSocketTxRx(JsonSerializer<T> jsonSerializer,
-                JsonUpdateFunction<T> updateFunction,
+  WebSocketTxRx(JsonStateReader<T> stateReader,
+                JsonStateUpdater<T> stateUpdater,
                 StatefulService<T>* statefulService,
                 AsyncWebServer* server,
                 char const* webSocketPath,
@@ -231,14 +230,14 @@ class WebSocketTxRx : public WebSocketTx<T>, public WebSocketRx<T> {
                             securityManager,
                             authenticationPredicate,
                             bufferSize),
-      WebSocketTx<T>(jsonSerializer,
+      WebSocketTx<T>(stateReader,
                      statefulService,
                      server,
                      webSocketPath,
                      securityManager,
                      authenticationPredicate,
                      bufferSize),
-      WebSocketRx<T>(updateFunction,
+      WebSocketRx<T>(stateUpdater,
                      statefulService,
                      server,
                      webSocketPath,
@@ -247,15 +246,15 @@ class WebSocketTxRx : public WebSocketTx<T>, public WebSocketRx<T> {
                      bufferSize) {
   }
 
-  WebSocketTxRx(JsonSerializer<T> jsonSerializer,
-                JsonUpdateFunction<T> updateFunction,
+  WebSocketTxRx(JsonStateReader<T> stateReader,
+                JsonStateUpdater<T> stateUpdater,
                 StatefulService<T>* statefulService,
                 AsyncWebServer* server,
                 char const* webSocketPath,
                 size_t bufferSize = DEFAULT_BUFFER_SIZE) :
       WebSocketConnector<T>(statefulService, server, webSocketPath, bufferSize),
-      WebSocketTx<T>(jsonSerializer, statefulService, server, webSocketPath, bufferSize),
-      WebSocketRx<T>(updateFunction, statefulService, server, webSocketPath, bufferSize) {
+      WebSocketTx<T>(stateReader, statefulService, server, webSocketPath, bufferSize),
+      WebSocketRx<T>(stateUpdater, statefulService, server, webSocketPath, bufferSize) {
   }
 
  protected:

@@ -14,21 +14,17 @@ class LightMqttSettings {
   String name;
   String uniqueId;
 
-  static void serialize(LightMqttSettings& settings, JsonObject& root) {
+  static void read(LightMqttSettings& settings, JsonObject& root) {
     root["mqtt_path"] = settings.mqttPath;
     root["name"] = settings.name;
     root["unique_id"] = settings.uniqueId;
   }
 
-  static void deserialize(JsonObject& root, LightMqttSettings& settings) {
+  static StateUpdateResult update(JsonObject& root, LightMqttSettings& settings) {
     settings.mqttPath = root["mqtt_path"] | ESPUtils::defaultDeviceValue("homeassistant/light/");
     settings.name = root["name"] | ESPUtils::defaultDeviceValue("light-");
     settings.uniqueId = root["unique_id"] | ESPUtils::defaultDeviceValue("light-");
-  }
-
-  static UpdateOutcome update(JsonObject& root, LightMqttSettings& settings) {
-    deserialize(root, settings);
-    return UpdateOutcome::CHANGED;
+    return StateUpdateResult::CHANGED;
   }
 };
 

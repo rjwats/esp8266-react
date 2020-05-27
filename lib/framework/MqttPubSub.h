@@ -2,7 +2,6 @@
 #define MqttPubSub_h
 
 #include <StatefulService.h>
-#include <JsonSerializer.h>
 #include <AsyncMqttClient.h>
 
 #define MQTT_ORIGIN_ID "mqtt"
@@ -30,12 +29,12 @@ class MqttConnector {
 template <class T>
 class MqttPub : virtual public MqttConnector<T> {
  public:
-  MqttPub(JsonSerializer<T> jsonSerializer,
+  MqttPub(JsonStateReader<T> stateReader,
           StatefulService<T>* statefulService,
           AsyncMqttClient* mqttClient,
           const String& pubTopic = "",
           size_t bufferSize = DEFAULT_BUFFER_SIZE) :
-      MqttConnector<T>(statefulService, mqttClient, bufferSize), _jsonSerializer(jsonSerializer), _pubTopic(pubTopic) {
+      MqttConnector<T>(statefulService, mqttClient, bufferSize), _stateReader(stateReader), _pubTopic(pubTopic) {
     MqttConnector<T>::_statefulService->addUpdateHandler([&](const String& originId) { publish(); }, false);
   }
 
@@ -50,7 +49,7 @@ class MqttPub : virtual public MqttConnector<T> {
   }
 
  private:
-  JsonSerializer<T> _jsonSerializer;
+  JsonStateReader<T> _stateReader;
   String _pubTopic;
 
   void publish() {
@@ -58,7 +57,7 @@ class MqttPub : virtual public MqttConnector<T> {
       // serialize to json doc
       DynamicJsonDocument json(MqttConnector<T>::_bufferSize);
       JsonObject jsonObject = json.to<JsonObject>();
-      MqttConnector<T>::_statefulService->read(jsonObject, _jsonSerializer);
+      MqttConnector<T>::_statefulService->read(jsonObject, _stateReader);
 
       // serialize to string
       String payload;
@@ -73,14 +72,12 @@ class MqttPub : virtual public MqttConnector<T> {
 template <class T>
 class MqttSub : virtual public MqttConnector<T> {
  public:
-  MqttSub(JsonUpdateFunction<T> updateFunction,
+  MqttSub(JsonStateUpdater<T> stateUpdater,
           StatefulService<T>* statefulService,
           AsyncMqttClient* mqttClient,
           const String& subTopic = "",
           size_t bufferSize = DEFAULT_BUFFER_SIZE) :
-      MqttConnector<T>(statefulService, mqttClient, bufferSize),
-      _updateFunction(updateFunction),
-      _subTopic(subTopic) {
+      MqttConnector<T>(statefulService, mqttClient, bufferSize), _stateUpdater(stateUpdater), _subTopic(subTopic) {
     MqttConnector<T>::_mqttClient->onMessage(std::bind(&MqttSub::onMqttMessage,
                                                        this,
                                                        std::placeholders::_1,
@@ -109,7 +106,7 @@ class MqttSub : virtual public MqttConnector<T> {
   }
 
  private:
-  JsonUpdateFunction<T> _updateFunction;
+  JsonStateUpdater<T> _stateUpdater;
   String _subTopic;
 
   void subscribe() {
@@ -134,7 +131,7 @@ class MqttSub : virtual public MqttConnector<T> {
     DeserializationError error = deserializeJson(json, payload, len);
     if (!error && json.is<JsonObject>()) {
       JsonObject jsonObject = json.as<JsonObject>();
-      MqttConnector<T>::_statefulService->update(jsonObject, _updateFunction, MQTT_ORIGIN_ID);
+      MqttConnector<T>::_statefulService->update(jsonObject, _stateUpdater, MQTT_ORIGIN_ID);
     }
   }
 };
@@ -142,16 +139,16 @@ class MqttSub : virtual public MqttConnector<T> {
 template <class T>
 class MqttPubSub : public MqttPub<T>, public MqttSub<T> {
  public:
-  MqttPubSub(JsonSerializer<T> jsonSerializer,
-             JsonUpdateFunction<T> updateFunction,
+  MqttPubSub(JsonStateReader<T> stateReader,
+             JsonStateUpdater<T> stateUpdater,
              StatefulService<T>* statefulService,
              AsyncMqttClient* mqttClient,
              const String& pubTopic = "",
              const String& subTopic = "",
              size_t bufferSize = DEFAULT_BUFFER_SIZE) :
       MqttConnector<T>(statefulService, mqttClient, bufferSize),
-      MqttPub<T>(jsonSerializer, statefulService, mqttClient, pubTopic, bufferSize),
-      MqttSub<T>(updateFunction, statefulService, mqttClient, subTopic, bufferSize) {
+      MqttPub<T>(stateReader, statefulService, mqttClient, pubTopic, bufferSize),
+      MqttSub<T>(stateUpdater, statefulService, mqttClient, subTopic, bufferSize) {
   }
 
  public:

@@ -21,13 +21,8 @@ static char* retainCstr(const char* cstr, char** ptr) {
 }
 
 MqttSettingsService::MqttSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) :
-    _httpEndpoint(MqttSettings::serialize,
-                  MqttSettings::update,
-                  this,
-                  server,
-                  MQTT_SETTINGS_SERVICE_PATH,
-                  securityManager),
-    _fsPersistence(MqttSettings::serialize, MqttSettings::deserialize, this, fs, MQTT_SETTINGS_FILE),
+    _httpEndpoint(MqttSettings::read, MqttSettings::update, this, server, MQTT_SETTINGS_SERVICE_PATH, securityManager),
+    _fsPersistence(MqttSettings::read, MqttSettings::update, this, fs, MQTT_SETTINGS_FILE),
     _retainedHost(nullptr),
     _retainedClientId(nullptr),
     _retainedUsername(nullptr),

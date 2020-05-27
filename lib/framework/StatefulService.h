@@ -2,8 +2,7 @@
 #define StatefulService_h
 
 #include <Arduino.h>
-#include <JsonDeserializer.h>
-#include <JsonSerializer.h>
+#include <ArduinoJson.h>
 
 #include <list>
 #include <functional>
@@ -16,13 +15,18 @@
 #define DEFAULT_BUFFER_SIZE 1024
 #endif
 
-enum class UpdateOutcome { CHANGED = 0, UNCHANGED, ERROR };
+enum class StateUpdateResult {
+  CHANGED = 0,  // The update changed the state and propagation should take place if required
+  UNCHANGED,    // The state was unchanged, propagation should not take place
+  ERROR         // There was a problem updating the state, propagation should not take place
+};
 
 template <class T>
-using UpdateFunction = UpdateOutcome (*)(T& settings);
-
+using StateUpdater = StateUpdateResult (*)(T& settings);
 template <class T>
-using JsonUpdateFunction = UpdateOutcome (*)(JsonObject& state, T& settings);
+using JsonStateUpdater = StateUpdateResult (*)(JsonObject& root, T& settings);
+template <class T>
+using JsonStateReader = void (*)(T& settings, JsonObject& root);
 
 typedef size_t update_handler_id_t;
 typedef std::function<void(const String& originId)> StateUpdateCallback;
@@ -68,62 +72,49 @@ class StatefulService {
     }
   }
 
-  UpdateOutcome update(UpdateFunction<T> updateFunction, const String& originId) {
+  StateUpdateResult update(StateUpdater<T> stateUpdater, const String& originId) {
     beginTransaction();
-    UpdateOutcome outcome = updateFunction(_state);
-    if (outcome == UpdateOutcome::CHANGED) {
+    StateUpdateResult result = stateUpdater(_state);
+    if (result == StateUpdateResult::CHANGED) {
       callUpdateHandlers(originId);
     }
     endTransaction();
-    return outcome;
+    return result;
   }
 
-  UpdateOutcome updateWithoutPropagation(UpdateFunction<T> updateFunction) {
+  StateUpdateResult updateWithoutPropagation(StateUpdater<T> stateUpdater) {
     beginTransaction();
-    UpdateOutcome outcome = updateFunction(_state);
+    StateUpdateResult result = stateUpdater(_state);
     endTransaction();
-    return outcome;
+    return result;
   }
 
-  UpdateOutcome update(JsonObject& jsonObject, JsonUpdateFunction<T> jsonUpdateFunction, const String& originId) {
+  StateUpdateResult update(JsonObject& jsonObject, JsonStateUpdater<T> stateUpdater, const String& originId) {
     beginTransaction();
-    UpdateOutcome outcome = jsonUpdateFunction(jsonObject, _state);
-    if (outcome == UpdateOutcome::CHANGED) {
+    StateUpdateResult result = stateUpdater(jsonObject, _state);
+    if (result == StateUpdateResult::CHANGED) {
       callUpdateHandlers(originId);
     }
     endTransaction();
-    return outcome;
+    return result;
   }
 
-  UpdateOutcome updateWithoutPropagation(JsonObject& jsonObject, JsonUpdateFunction<T> jsonUpdateFunction) {
+  StateUpdateResult updateWithoutPropagation(JsonObject& jsonObject, JsonStateUpdater<T> stateUpdater) {
     beginTransaction();
-    UpdateOutcome outcome = jsonUpdateFunction(jsonObject, _state);
+    StateUpdateResult result = stateUpdater(jsonObject, _state);
     endTransaction();
-    return outcome;
+    return result;
   }
 
-  void populate(JsonObject& jsonObject, JsonDeserializer<T> deserializer, const String& originId) {
+  void read(std::function<void(T&)> stateReader) {
     beginTransaction();
-    deserializer(jsonObject, _state);
-    callUpdateHandlers(originId);
-    endTransaction();
-  }
-
-  void populateWithoutPropagation(JsonObject& jsonObject, JsonDeserializer<T> deserializer) {
-    beginTransaction();
-    deserializer(jsonObject, _state);
+    stateReader(_state);
     endTransaction();
   }
 
-  void read(std::function<void(T&)> callback) {
+  void read(JsonObject& jsonObject, JsonStateReader<T> stateReader) {
     beginTransaction();
-    callback(_state);
-    endTransaction();
-  }
-
-  void read(JsonObject& jsonObject, JsonSerializer<T> serializer) {
-    beginTransaction();
-    serializer(_state, jsonObject);
+    stateReader(_state, jsonObject);
     endTransaction();
   }
 

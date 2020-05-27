@@ -31,31 +31,31 @@ class LightState {
  public:
   bool ledOn;
 
-  static void serialize(LightState& settings, JsonObject& root) {
+  static void read(LightState& settings, JsonObject& root) {
     root["led_on"] = settings.ledOn;
   }
 
-  static UpdateOutcome update(JsonObject& root, LightState& lightState) {
+  static StateUpdateResult update(JsonObject& root, LightState& lightState) {
     boolean newState = root["led_on"] | DEFAULT_LED_STATE;
     if (lightState.ledOn != newState) {
       lightState.ledOn = newState;
-      return UpdateOutcome::CHANGED;
+      return StateUpdateResult::CHANGED;
     }
-    return UpdateOutcome::UNCHANGED;
+    return StateUpdateResult::UNCHANGED;
   }
 
-  static void haSerialize(LightState& settings, JsonObject& root) {
+  static void haRead(LightState& settings, JsonObject& root) {
     root["state"] = settings.ledOn ? ON_STATE : OFF_STATE;
   }
 
-  static UpdateOutcome haUpdate(JsonObject& root, LightState& lightState) {
+  static StateUpdateResult haUpdate(JsonObject& root, LightState& lightState) {
     String state = root["state"];
     boolean newState = strcmp(ON_STATE, state.c_str()) ? false : true;
     if (lightState.ledOn != newState) {
       lightState.ledOn = newState;
-      return UpdateOutcome::CHANGED;
+      return StateUpdateResult::CHANGED;
     }
-    return UpdateOutcome::UNCHANGED;
+    return StateUpdateResult::UNCHANGED;
   }
 };
 
