@@ -2,7 +2,7 @@
 
 NTPSettingsService::NTPSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) :
     _httpEndpoint(NTPSettings::serialize,
-                  NTPSettings::deserialize,
+                  NTPSettings::update,
                   this,
                   server,
                   NTP_SETTINGS_SERVICE_PATH,

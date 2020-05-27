@@ -58,6 +58,11 @@ class SecuritySettings {
       settings.users.push_back(User(FACTORY_GUEST_USERNAME, FACTORY_GUEST_PASSWORD, false));
     }
   }
+
+  static UpdateOutcome update(JsonObject& root, SecuritySettings& settings) {
+    deserialize(root, settings);
+    return UpdateOutcome::CHANGED;
+  }
 };
 
 class SecuritySettingsService : public StatefulService<SecuritySettings>, public SecurityManager {

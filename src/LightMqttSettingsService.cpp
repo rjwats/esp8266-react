@@ -2,7 +2,7 @@
 
 LightMqttSettingsService::LightMqttSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) :
     _httpEndpoint(LightMqttSettings::serialize,
-                  LightMqttSettings::deserialize,
+                  LightMqttSettings::update,
                   this,
                   server,
                   LIGHT_BROKER_SETTINGS_PATH,

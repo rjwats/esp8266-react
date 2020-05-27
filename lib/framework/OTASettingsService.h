@@ -45,6 +45,11 @@ class OTASettings {
     settings.port = root["port"] | FACTORY_OTA_PORT;
     settings.password = root["password"] | FACTORY_OTA_PASSWORD;
   }
+
+  static UpdateOutcome update(JsonObject& root, OTASettings& settings) {
+    deserialize(root, settings);
+    return UpdateOutcome::CHANGED;
+  }
 };
 
 class OTASettingsService : public StatefulService<OTASettings> {

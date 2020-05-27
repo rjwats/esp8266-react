@@ -98,6 +98,11 @@ class MqttSettings {
     settings.cleanSession = root["clean_session"] | FACTORY_MQTT_CLEAN_SESSION;
     settings.maxTopicLength = root["max_topic_length"] | FACTORY_MQTT_MAX_TOPIC_LENGTH;
   }
+
+  static UpdateOutcome update(JsonObject& root, MqttSettings& settings) {
+    deserialize(root, settings);
+    return UpdateOutcome::CHANGED;
+  }
 };
 
 class MqttSettingsService : public StatefulService<MqttSettings> {

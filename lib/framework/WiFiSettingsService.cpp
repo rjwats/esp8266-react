@@ -2,7 +2,7 @@
 
 WiFiSettingsService::WiFiSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) :
     _httpEndpoint(WiFiSettings::serialize,
-                  WiFiSettings::deserialize,
+                  WiFiSettings::update,
                   this,
                   server,
                   WIFI_SETTINGS_SERVICE_PATH,

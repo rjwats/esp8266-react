@@ -25,6 +25,11 @@ class LightMqttSettings {
     settings.name = root["name"] | ESPUtils::defaultDeviceValue("light-");
     settings.uniqueId = root["unique_id"] | ESPUtils::defaultDeviceValue("light-");
   }
+
+  static UpdateOutcome update(JsonObject& root, LightMqttSettings& settings) {
+    deserialize(root, settings);
+    return UpdateOutcome::CHANGED;
+  }
 };
 
 class LightMqttSettingsService : public StatefulService<LightMqttSettings> {

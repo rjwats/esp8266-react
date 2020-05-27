@@ -55,6 +55,11 @@ class APSettings {
     settings.ssid = root["ssid"] | FACTORY_AP_SSID;
     settings.password = root["password"] | FACTORY_AP_PASSWORD;
   }
+
+  static UpdateOutcome update(JsonObject& root, APSettings& settings) {
+    deserialize(root, settings);
+    return UpdateOutcome::CHANGED;
+  }
 };
 
 class APSettingsService : public StatefulService<APSettings> {

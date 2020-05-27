@@ -16,6 +16,14 @@
 #define DEFAULT_BUFFER_SIZE 1024
 #endif
 
+enum class UpdateOutcome { CHANGED = 0, UNCHANGED, ERROR };
+
+template <class T>
+using UpdateFunction = UpdateOutcome (*)(T& settings);
+
+template <class T>
+using JsonUpdateFunction = UpdateOutcome (*)(JsonObject& state, T& settings);
+
 typedef size_t update_handler_id_t;
 typedef std::function<void(const String& originId)> StateUpdateCallback;
 
@@ -60,66 +68,63 @@ class StatefulService {
     }
   }
 
-  void updateWithoutPropagation(std::function<void(T&)> callback) {
-#ifdef ESP32
-    xSemaphoreTakeRecursive(_accessMutex, portMAX_DELAY);
-#endif
-    callback(_state);
-#ifdef ESP32
-    xSemaphoreGiveRecursive(_accessMutex);
-#endif
+  UpdateOutcome update(UpdateFunction<T> updateFunction, const String& originId) {
+    beginTransaction();
+    UpdateOutcome outcome = updateFunction(_state);
+    if (outcome == UpdateOutcome::CHANGED) {
+      callUpdateHandlers(originId);
+    }
+    endTransaction();
+    return outcome;
   }
 
-  void updateWithoutPropagation(JsonObject& jsonObject, JsonDeserializer<T> deserializer) {
-#ifdef ESP32
-    xSemaphoreTakeRecursive(_accessMutex, portMAX_DELAY);
-#endif
+  UpdateOutcome updateWithoutPropagation(UpdateFunction<T> updateFunction) {
+    beginTransaction();
+    UpdateOutcome outcome = updateFunction(_state);
+    endTransaction();
+    return outcome;
+  }
+
+  UpdateOutcome update(JsonObject& jsonObject, JsonUpdateFunction<T> jsonUpdateFunction, const String& originId) {
+    beginTransaction();
+    UpdateOutcome outcome = jsonUpdateFunction(jsonObject, _state);
+    if (outcome == UpdateOutcome::CHANGED) {
+      callUpdateHandlers(originId);
+    }
+    endTransaction();
+    return outcome;
+  }
+
+  UpdateOutcome updateWithoutPropagation(JsonObject& jsonObject, JsonUpdateFunction<T> jsonUpdateFunction) {
+    beginTransaction();
+    UpdateOutcome outcome = jsonUpdateFunction(jsonObject, _state);
+    endTransaction();
+    return outcome;
+  }
+
+  void populate(JsonObject& jsonObject, JsonDeserializer<T> deserializer, const String& originId) {
+    beginTransaction();
     deserializer(jsonObject, _state);
-#ifdef ESP32
-    xSemaphoreGiveRecursive(_accessMutex);
-#endif
-  }
-
-  void update(std::function<void(T&)> callback, const String& originId) {
-#ifdef ESP32
-    xSemaphoreTakeRecursive(_accessMutex, portMAX_DELAY);
-#endif
-    callback(_state);
     callUpdateHandlers(originId);
-#ifdef ESP32
-    xSemaphoreGiveRecursive(_accessMutex);
-#endif
+    endTransaction();
   }
 
-  void update(JsonObject& jsonObject, JsonDeserializer<T> deserializer, const String& originId) {
-#ifdef ESP32
-    xSemaphoreTakeRecursive(_accessMutex, portMAX_DELAY);
-#endif
+  void populateWithoutPropagation(JsonObject& jsonObject, JsonDeserializer<T> deserializer) {
+    beginTransaction();
     deserializer(jsonObject, _state);
-    callUpdateHandlers(originId);
-#ifdef ESP32
-    xSemaphoreGiveRecursive(_accessMutex);
-#endif
+    endTransaction();
   }
 
   void read(std::function<void(T&)> callback) {
-#ifdef ESP32
-    xSemaphoreTakeRecursive(_accessMutex, portMAX_DELAY);
-#endif
+    beginTransaction();
     callback(_state);
-#ifdef ESP32
-    xSemaphoreGiveRecursive(_accessMutex);
-#endif
+    endTransaction();
   }
 
   void read(JsonObject& jsonObject, JsonSerializer<T> serializer) {
-#ifdef ESP32
-    xSemaphoreTakeRecursive(_accessMutex, portMAX_DELAY);
-#endif
+    beginTransaction();
     serializer(_state, jsonObject);
-#ifdef ESP32
-    xSemaphoreGiveRecursive(_accessMutex);
-#endif
+    endTransaction();
   }
 
   void callUpdateHandlers(const String& originId) {
@@ -136,6 +141,18 @@ class StatefulService {
   SemaphoreHandle_t _accessMutex;
 #endif
   std::list<StateUpdateHandlerInfo_t> _updateHandlers;
+
+  inline void beginTransaction() {
+#ifdef ESP32
+    xSemaphoreTakeRecursive(_accessMutex, portMAX_DELAY);
+#endif
+  }
+
+  inline void endTransaction() {
+#ifdef ESP32
+    xSemaphoreGiveRecursive(_accessMutex);
+#endif
+  }
 };
 
 #endif  // end StatefulService_h

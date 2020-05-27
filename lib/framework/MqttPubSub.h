@@ -3,7 +3,6 @@
 
 #include <StatefulService.h>
 #include <JsonSerializer.h>
-#include <JsonDeserializer.h>
 #include <AsyncMqttClient.h>
 
 #define MQTT_ORIGIN_ID "mqtt"
@@ -74,13 +73,13 @@ class MqttPub : virtual public MqttConnector<T> {
 template <class T>
 class MqttSub : virtual public MqttConnector<T> {
  public:
-  MqttSub(JsonDeserializer<T> jsonDeserializer,
+  MqttSub(JsonUpdateFunction<T> updateFunction,
           StatefulService<T>* statefulService,
           AsyncMqttClient* mqttClient,
           const String& subTopic = "",
           size_t bufferSize = DEFAULT_BUFFER_SIZE) :
       MqttConnector<T>(statefulService, mqttClient, bufferSize),
-      _jsonDeserializer(jsonDeserializer),
+      _updateFunction(updateFunction),
       _subTopic(subTopic) {
     MqttConnector<T>::_mqttClient->onMessage(std::bind(&MqttSub::onMqttMessage,
                                                        this,
@@ -110,7 +109,7 @@ class MqttSub : virtual public MqttConnector<T> {
   }
 
  private:
-  JsonDeserializer<T> _jsonDeserializer;
+  JsonUpdateFunction<T> _updateFunction;
   String _subTopic;
 
   void subscribe() {
@@ -135,7 +134,7 @@ class MqttSub : virtual public MqttConnector<T> {
     DeserializationError error = deserializeJson(json, payload, len);
     if (!error && json.is<JsonObject>()) {
       JsonObject jsonObject = json.as<JsonObject>();
-      MqttConnector<T>::_statefulService->update(jsonObject, _jsonDeserializer, MQTT_ORIGIN_ID);
+      MqttConnector<T>::_statefulService->update(jsonObject, _updateFunction, MQTT_ORIGIN_ID);
     }
   }
 };
@@ -144,7 +143,7 @@ template <class T>
 class MqttPubSub : public MqttPub<T>, public MqttSub<T> {
  public:
   MqttPubSub(JsonSerializer<T> jsonSerializer,
-             JsonDeserializer<T> jsonDeserializer,
+             JsonUpdateFunction<T> updateFunction,
              StatefulService<T>* statefulService,
              AsyncMqttClient* mqttClient,
              const String& pubTopic = "",
@@ -152,7 +151,7 @@ class MqttPubSub : public MqttPub<T>, public MqttSub<T> {
              size_t bufferSize = DEFAULT_BUFFER_SIZE) :
       MqttConnector<T>(statefulService, mqttClient, bufferSize),
       MqttPub<T>(jsonSerializer, statefulService, mqttClient, pubTopic, bufferSize),
-      MqttSub<T>(jsonDeserializer, statefulService, mqttClient, subTopic, bufferSize) {
+      MqttSub<T>(updateFunction, statefulService, mqttClient, subTopic, bufferSize) {
   }
 
  public:

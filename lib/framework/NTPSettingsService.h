@@ -50,6 +50,11 @@ class NTPSettings {
     settings.tzLabel = root["tz_label"] | FACTORY_NTP_TIME_ZONE_LABEL;
     settings.tzFormat = root["tz_format"] | FACTORY_NTP_TIME_ZONE_FORMAT;
   }
+
+  static UpdateOutcome update(JsonObject& root, NTPSettings& settings) {
+    deserialize(root, settings);
+    return UpdateOutcome::CHANGED;
+  }
 };
 
 class NTPSettingsService : public StatefulService<NTPSettings> {

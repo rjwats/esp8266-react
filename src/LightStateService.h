@@ -35,17 +35,27 @@ class LightState {
     root["led_on"] = settings.ledOn;
   }
 
-  static void deserialize(JsonObject& root, LightState& settings) {
-    settings.ledOn = root["led_on"] | DEFAULT_LED_STATE;
+  static UpdateOutcome update(JsonObject& root, LightState& lightState) {
+    boolean newState = root["led_on"] | DEFAULT_LED_STATE;
+    if (lightState.ledOn != newState) {
+      lightState.ledOn = newState;
+      return UpdateOutcome::CHANGED;
+    }
+    return UpdateOutcome::UNCHANGED;
   }
 
   static void haSerialize(LightState& settings, JsonObject& root) {
     root["state"] = settings.ledOn ? ON_STATE : OFF_STATE;
   }
 
-  static void haDeserialize(JsonObject& root, LightState& settings) {
+  static UpdateOutcome haUpdate(JsonObject& root, LightState& lightState) {
     String state = root["state"];
-    settings.ledOn = strcmp(ON_STATE, state.c_str()) ? false : true;
+    boolean newState = strcmp(ON_STATE, state.c_str()) ? false : true;
+    if (lightState.ledOn != newState) {
+      lightState.ledOn = newState;
+      return UpdateOutcome::CHANGED;
+    }
+    return UpdateOutcome::UNCHANGED;
   }
 };
 

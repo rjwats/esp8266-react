@@ -79,6 +79,11 @@ class WiFiSettings {
       settings.staticIPConfig = false;
     }
   }
+
+  static UpdateOutcome update(JsonObject& root, WiFiSettings& settings) {
+    deserialize(root, settings);
+    return UpdateOutcome::CHANGED;
+  }
 };
 
 class WiFiSettingsService : public StatefulService<WiFiSettings> {

@@ -2,7 +2,7 @@
 
 OTASettingsService::OTASettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) :
     _httpEndpoint(OTASettings::serialize,
-                  OTASettings::deserialize,
+                  OTASettings::update,
                   this,
                   server,
                   OTA_SETTINGS_SERVICE_PATH,
