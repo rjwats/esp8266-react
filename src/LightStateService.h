@@ -50,7 +50,14 @@ class LightState {
 
   static StateUpdateResult haUpdate(JsonObject& root, LightState& lightState) {
     String state = root["state"];
-    boolean newState = strcmp(ON_STATE, state.c_str()) ? false : true;
+    // parse new led state 
+    boolean newState = false;
+    if (state.equals(ON_STATE)) {
+      newState = true;
+    } else if (!state.equals(OFF_STATE)) {
+      return StateUpdateResult::ERROR;
+    }
+    // change the new state, if required
     if (lightState.ledOn != newState) {
       lightState.ledOn = newState;
       return StateUpdateResult::CHANGED;
