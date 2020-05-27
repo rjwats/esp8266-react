@@ -22,9 +22,8 @@ enum class StateUpdateResult {
 };
 
 template <class T>
-using StateUpdater = StateUpdateResult (*)(T& settings);
-template <class T>
 using JsonStateUpdater = StateUpdateResult (*)(JsonObject& root, T& settings);
+
 template <class T>
 using JsonStateReader = void (*)(T& settings, JsonObject& root);
 
@@ -72,7 +71,7 @@ class StatefulService {
     }
   }
 
-  StateUpdateResult update(StateUpdater<T> stateUpdater, const String& originId) {
+  StateUpdateResult update(std::function<StateUpdateResult(T&)> stateUpdater, const String& originId) {
     beginTransaction();
     StateUpdateResult result = stateUpdater(_state);
     if (result == StateUpdateResult::CHANGED) {
@@ -82,7 +81,7 @@ class StatefulService {
     return result;
   }
 
-  StateUpdateResult updateWithoutPropagation(StateUpdater<T> stateUpdater) {
+  StateUpdateResult updateWithoutPropagation(std::function<StateUpdateResult(T&)> stateUpdater) {
     beginTransaction();
     StateUpdateResult result = stateUpdater(_state);
     endTransaction();
