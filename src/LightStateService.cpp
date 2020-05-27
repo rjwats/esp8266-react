@@ -40,6 +40,7 @@ void LightStateService::begin() {
 }
 
 void LightStateService::onConfigUpdated() {
+  Serial.printf_P(PSTR("The light is now: %s\r\n"), _state.ledOn ? "on" : "off");
   digitalWrite(BLINK_LED, _state.ledOn ? LED_ON : LED_OFF);
 }
 
