@@ -126,12 +126,6 @@ class StatefulService {
  protected:
   T _state;
 
- private:
-#ifdef ESP32
-  SemaphoreHandle_t _accessMutex;
-#endif
-  std::list<StateUpdateHandlerInfo_t> _updateHandlers;
-
   inline void beginTransaction() {
 #ifdef ESP32
     xSemaphoreTakeRecursive(_accessMutex, portMAX_DELAY);
@@ -143,6 +137,12 @@ class StatefulService {
     xSemaphoreGiveRecursive(_accessMutex);
 #endif
   }
+
+ private:
+#ifdef ESP32
+  SemaphoreHandle_t _accessMutex;
+#endif
+  std::list<StateUpdateHandlerInfo_t> _updateHandlers;
 };
 
 #endif  // end StatefulService_h
