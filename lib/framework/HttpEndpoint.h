@@ -102,34 +102,24 @@ class HttpPostEndpoint {
   size_t _bufferSize;
 
   void updateSettings(AsyncWebServerRequest* request, JsonVariant& json) {
-    if (json.is<JsonObject>()) {
-      AsyncJsonResponse* response = new AsyncJsonResponse(false, _bufferSize);
-
-      JsonObject jsonObject = json.as<JsonObject>();
-      StateUpdateResult outcome = _statefulService->updateWithoutPropagation(jsonObject, _stateUpdater);
-
-      switch (outcome) {
-        case StateUpdateResult::CHANGED:
-          request->onDisconnect([this]() { _statefulService->callUpdateHandlers(HTTP_ENDPOINT_ORIGIN_ID); });
-          // fallthrough
-        case StateUpdateResult::UNCHANGED: {
-          AsyncJsonResponse* response = new AsyncJsonResponse(false, _bufferSize);
-          JsonObject jsonObject = response->getRoot().to<JsonObject>();
-          _statefulService->read(jsonObject, _stateReader);
-          response->setLength();
-          request->send(response);
-          break;
-        }
-        case StateUpdateResult::ERROR:
-          request->send(400);
-      }
-
-      // write the response to the client
-      response->setLength();
-      request->send(response);
-    } else {
+    if (!json.is<JsonObject>()) {
       request->send(400);
+      return;
     }
+    JsonObject jsonObject = json.as<JsonObject>();
+    StateUpdateResult outcome = _statefulService->updateWithoutPropagation(jsonObject, _stateUpdater);
+    if (outcome == StateUpdateResult::ERROR) {
+      request->send(400);
+      return;
+    }
+    if (outcome == StateUpdateResult::CHANGED) {
+      request->onDisconnect([this]() { _statefulService->callUpdateHandlers(HTTP_ENDPOINT_ORIGIN_ID); });
+    }
+    AsyncJsonResponse* response = new AsyncJsonResponse(false, _bufferSize);
+    jsonObject = response->getRoot().to<JsonObject>();
+    _statefulService->read(jsonObject, _stateReader);
+    response->setLength();
+    request->send(response);
   }
 };
 
