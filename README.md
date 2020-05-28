@@ -350,7 +350,7 @@ The following diagram visualises how the framework's modular components fit toge
 
 #### Stateful service
 
-The [StatefulService.h](lib/framework/StatefulService.h) class is a responsible for managing state and interfacing with code which wants to change or respond to changes in that state. You can define a data class to hold some state, then build a StatefulService class to manage its state. After that you may attach HTTP endpoints, WebSockets or MQTT topics to the stateful service to deliver and/or respond to changes in the state.
+The [StatefulService.h](lib/framework/StatefulService.h) class is responsible for managing state. It has an API which allows other code to update or respond to updates in the state it manages. You can define a data class to hold state, then build a StatefulService class to manage it. After that you may attach HTTP endpoints, WebSockets or MQTT topics to the StatefulService instance to provide commonly required features.
 
 Here is a simple example of a state class and a StatefulService to manage it:
 
