@@ -350,7 +350,9 @@ The following diagram visualises how the framework's modular components fit toge
 
 #### Stateful service
 
-The [StatefulService.h](lib/framework/StatefulService.h) class is a responsible for managing state and interfacing with code which wants to change or respond to changes in that state. You can define a data class to hold some state, then build a StatefulService class to manage its state:
+The [StatefulService.h](lib/framework/StatefulService.h) class is responsible for managing state. It has an API which allows other code to update or respond to updates in the state it manages. You can define a data class to hold state, then build a StatefulService class to manage it. After that you may attach HTTP endpoints, WebSockets or MQTT topics to the StatefulService instance to provide commonly required features.
+
+Here is a simple example of a state class and a StatefulService to manage it:
 
 ```cpp
 class LightState {
@@ -369,7 +371,8 @@ You may listen for changes to state by registering an update handler callback. I
 // register an update handler
 update_handler_id_t myUpdateHandler = lightStateService.addUpdateHandler(
   [&](const String& originId) {
-    Serial.println("The light's state has been updated"); 
+    Serial.print("The light's state has been updated by: "); 
+    Serial.println(originId); 
   }
 );
 
@@ -377,7 +380,7 @@ update_handler_id_t myUpdateHandler = lightStateService.addUpdateHandler(
 lightStateService.removeUpdateHandler(myUpdateHandler);
 ```
 
-An "originId" is passed to the update handler which may be used to identify the origin of the update. The default origin values the framework provides are:
+An "originId" is passed to the update handler which may be used to identify the origin of an update. The default origin values the framework provides are:
 
 Origin                | Description
 --------------------- | -----------
@@ -393,17 +396,35 @@ lightStateService.read([&](LightState& state) {
 });
 ```
 
-StatefulService also exposes an update function which allows the caller to update the state with a callback. This approach automatically calls the registered update handlers when complete. The example below turns on the lights using the arbitrary origin "timer":
+StatefulService also exposes an update function which allows the caller to update the state with a callback. This function automatically calls the registered update handlers if the state has been changed. The example below changes the state of the light (turns it on) using the arbitrary origin "timer" and returns the "CHANGED" state update result, indicating that a change was made:
 
 ```cpp
 lightStateService.update([&](LightState& state) {
-  state.on = true;  // turn on the lights!
+   if (state.on) {
+    return StateUpdateResult::UNCHANGED; // lights were already on, return UNCHANGED
+  }
+  state.on = true;  // turn on the lights
+  return StateUpdateResult::CHANGED; // notify StatefulService by returning CHANGED
 }, "timer");
 ```
 
+There are three possible return values for an update function which are as follows:
+
+Origin                        | Description
+----------------------------- | ---------------------------------------------------------------------------
+StateUpdateResult::CHANGED    | The update changed the state, propagation should take place if required
+StateUpdateResult::UNCHANGED  | The state was unchanged, propagation should not take place
+StateUpdateResult::ERROR      | There was an error updating the state, propagation should not take place
+
 #### Serialization
 
-When transmitting state over HTTP, WebSockets, or MQTT it must to be marshalled into a serializable form (JSON). The framework uses ArduinoJson for serialization and the functions defined in [JsonSerializer.h](lib/framework/JsonSerializer.h) and [JsonDeserializer.h](lib/framework/JsonDeserializer.h) facilitate this.
+When reading or updating state from an external source (HTTP, WebSockets, or MQTT for example) the state must be marshalled into a serializable form (JSON). SettingsService provides two callback patterns which facilitate this internally:
+
+Callback         | Signature                                                | Purpose
+---------------- | -------------------------------------------------------- | ---------------------------------------------------------------------------------
+JsonStateReader  | void read(T& settings, JsonObject& root)                 | Reading the state object into a JsonObject
+JsonStateUpdater | StateUpdateResult update(JsonObject& root, T& settings)  | Updating the state from a JsonObject, returning the appropriate StateUpdateResult
+
 
 The static functions below can be used to facilitate the serialization/deserialization of the light state:
 
@@ -413,32 +434,33 @@ class LightState {
   bool on = false;
   uint8_t brightness = 255;
   
-  static void serialize(LightState& state, JsonObject& root) {
+  static void read(LightState& state, JsonObject& root) {
     root["on"] = state.on;
     root["brightness"] = state.brightness;
   }
 
-  static void deserialize(JsonObject& root, LightState& state) {
+  static StateUpdateResult update(JsonObject& root, LightState& state) {
     state.on = root["on"] | false;
     state.brightness = root["brightness"] | 255;
+    return StateUpdateResult::CHANGED;
   }
 };
 ```
 
 For convenience, the StatefulService class provides overloads of its `update` and `read` functions which utilize these functions.
 
-Copy the state to a JsonObject using a serializer:
+Read the state to a JsonObject using a serializer:
 
 ```cpp
 JsonObject jsonObject = jsonDocument.to<JsonObject>();
-lightStateService->read(jsonObject, serializer);
+lightStateService->read(jsonObject, LightState::read);
 ```
 
 Update the state from a JsonObject using a deserializer:
 
 ```cpp
 JsonObject jsonObject = jsonDocument.as<JsonObject>();
-lightStateService->update(jsonObject, deserializer, "timer");
+lightStateService->update(jsonObject, LightState::update, "timer");
 ```
 
 #### Endpoints
@@ -451,7 +473,7 @@ The code below demonstrates how to extend the LightStateService class to provide
 class LightStateService : public StatefulService<LightState> {
  public:
   LightStateService(AsyncWebServer* server) :
-      _httpEndpoint(LightState::serialize, LightState::deserialize, this, server, "/rest/lightState") {
+      _httpEndpoint(LightState::read, LightState::update, this, server, "/rest/lightState") {
   }
 
  private:
@@ -471,7 +493,7 @@ The code below demonstrates how to extend the LightStateService class to provide
 class LightStateService : public StatefulService<LightState> {
  public:
   LightStateService(FS* fs) :
-      _fsPersistence(LightState::serialize, LightState::deserialize, this, fs, "/config/lightState.json") {
+      _fsPersistence(LightState::read, LightState::update, this, fs, "/config/lightState.json") {
   }
 
  private:
@@ -489,7 +511,7 @@ The code below demonstrates how to extend the LightStateService class to provide
 class LightStateService : public StatefulService<LightState> {
  public:
   LightStateService(AsyncWebServer* server) :
-      _webSocket(LightState::serialize, LightState::deserialize, this, server, "/ws/lightState"), {
+      _webSocket(LightState::read, LightState::update, this, server, "/ws/lightState"), {
   }
 
  private:
@@ -508,15 +530,16 @@ The framework includes an MQTT client which can be configured via the UI. MQTT r
 The code below demonstrates how to extend the LightStateService class to interface with MQTT:
 
 ```cpp
+
 class LightStateService : public StatefulService<LightState> {
  public:
   LightStateService(AsyncMqttClient* mqttClient) :
-    _mqttPubSub(LightState::serialize, 
-                    LightState::deserialize,
-                    this,
-                    mqttClient,
-                    "homeassistant/light/my_light/set",
-                    "homeassistant/light/my_light/state") {
+      _mqttPubSub(LightState::read,
+                  LightState::update,
+                  this,
+                  mqttClient,
+                  "homeassistant/light/my_light/set",
+                  "homeassistant/light/my_light/state") {
   }
 
  private:

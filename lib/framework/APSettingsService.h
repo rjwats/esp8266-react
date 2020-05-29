@@ -36,13 +36,13 @@ class APSettings {
   String ssid;
   String password;
 
-  static void serialize(APSettings& settings, JsonObject& root) {
+  static void read(APSettings& settings, JsonObject& root) {
     root["provision_mode"] = settings.provisionMode;
     root["ssid"] = settings.ssid;
     root["password"] = settings.password;
   }
 
-  static void deserialize(JsonObject& root, APSettings& settings) {
+  static StateUpdateResult update(JsonObject& root, APSettings& settings) {
     settings.provisionMode = root["provision_mode"] | FACTORY_AP_PROVISION_MODE;
     switch (settings.provisionMode) {
       case AP_MODE_ALWAYS:
@@ -54,6 +54,7 @@ class APSettings {
     }
     settings.ssid = root["ssid"] | FACTORY_AP_SSID;
     settings.password = root["password"] | FACTORY_AP_PASSWORD;
+    return StateUpdateResult::CHANGED;
   }
 };
 

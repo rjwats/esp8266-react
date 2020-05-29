@@ -4,16 +4,16 @@ LightStateService::LightStateService(AsyncWebServer* server,
                                      SecurityManager* securityManager,
                                      AsyncMqttClient* mqttClient,
                                      LightMqttSettingsService* lightMqttSettingsService) :
-    _httpEndpoint(LightState::serialize,
-                  LightState::deserialize,
+    _httpEndpoint(LightState::read,
+                  LightState::update,
                   this,
                   server,
                   LIGHT_SETTINGS_ENDPOINT_PATH,
                   securityManager,
                   AuthenticationPredicates::IS_AUTHENTICATED),
-    _mqttPubSub(LightState::haSerialize, LightState::haDeserialize, this, mqttClient),
-    _webSocket(LightState::serialize,
-               LightState::deserialize,
+    _mqttPubSub(LightState::haRead, LightState::haUpdate, this, mqttClient),
+    _webSocket(LightState::read,
+               LightState::update,
                this,
                server,
                LIGHT_SETTINGS_SOCKET_PATH,
@@ -40,6 +40,7 @@ void LightStateService::begin() {
 }
 
 void LightStateService::onConfigUpdated() {
+  Serial.printf_P(PSTR("The light is now: %s\r\n"), _state.ledOn ? "on" : "off");
   digitalWrite(BLINK_LED, _state.ledOn ? LED_ON : LED_OFF);
 }
 
