@@ -1,3 +1,9 @@
+export enum ApProvisionMode {
+  AP_MODE_ALWAYS = 0,
+  AP_MODE_DISCONNECTED = 1,
+  AP_NEVER = 2
+}
+
 export interface APStatus {
   active: boolean;
   ip_address: string;
@@ -6,7 +12,7 @@ export interface APStatus {
 }
 
 export interface APSettings {
-  provision_mode: number;
+  provision_mode: ApProvisionMode;
   ssid: string;
   password: string;
 }
