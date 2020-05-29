@@ -21,7 +21,7 @@ export const apStatus = ({ status }: APStatus) => {
     case APNetworkStatus.INACTIVE:
       return "Inactive";
     case APNetworkStatus.LINGERING:
-      return "Lingering until idle"
+      return "Lingering until idle";
     default:
       return "Unknown";
   }
