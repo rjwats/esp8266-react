@@ -74,10 +74,10 @@ class StatefulService {
   StateUpdateResult update(std::function<StateUpdateResult(T&)> stateUpdater, const String& originId) {
     beginTransaction();
     StateUpdateResult result = stateUpdater(_state);
+    endTransaction();
     if (result == StateUpdateResult::CHANGED) {
       callUpdateHandlers(originId);
     }
-    endTransaction();
     return result;
   }
 
@@ -91,10 +91,10 @@ class StatefulService {
   StateUpdateResult update(JsonObject& jsonObject, JsonStateUpdater<T> stateUpdater, const String& originId) {
     beginTransaction();
     StateUpdateResult result = stateUpdater(jsonObject, _state);
+    endTransaction();
     if (result == StateUpdateResult::CHANGED) {
       callUpdateHandlers(originId);
     }
-    endTransaction();
     return result;
   }
 

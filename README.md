@@ -400,8 +400,11 @@ StatefulService also exposes an update function which allows the caller to updat
 
 ```cpp
 lightStateService.update([&](LightState& state) {
-  state.on = true;  // turn on the lights!
-  return StateUpdateResult::CHANGED; // notify StatefulService of the change
+   if (state.on) {
+    return StateUpdateResult::UNCHANGED; // lights were already on, return UNCHANGED
+  }
+  state.on = true;  // turn on the lights
+  return StateUpdateResult::CHANGED; // notify StatefulService by returning CHANGED
 }, "timer");
 ```
 
