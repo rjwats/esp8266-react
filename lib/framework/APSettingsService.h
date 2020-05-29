@@ -30,6 +30,12 @@
 #define AP_SETTINGS_FILE "/config/apSettings.json"
 #define AP_SETTINGS_SERVICE_PATH "/rest/apSettings"
 
+enum APNetworkStatus {
+  ACTIVE = 0,
+  INACTIVE,
+  LINGERING
+};
+
 class APSettings {
  public:
   uint8_t provisionMode;
@@ -43,17 +49,23 @@ class APSettings {
   }
 
   static StateUpdateResult update(JsonObject& root, APSettings& settings) {
-    settings.provisionMode = root["provision_mode"] | FACTORY_AP_PROVISION_MODE;
+    APSettings newSettings = {};
+    newSettings.provisionMode = root["provision_mode"] | FACTORY_AP_PROVISION_MODE;
     switch (settings.provisionMode) {
       case AP_MODE_ALWAYS:
       case AP_MODE_DISCONNECTED:
       case AP_MODE_NEVER:
         break;
       default:
-        settings.provisionMode = AP_MODE_ALWAYS;
+        newSettings.provisionMode = AP_MODE_ALWAYS;
     }
-    settings.ssid = root["ssid"] | FACTORY_AP_SSID;
-    settings.password = root["password"] | FACTORY_AP_PASSWORD;
+    newSettings.ssid = root["ssid"] | FACTORY_AP_SSID;
+    newSettings.password = root["password"] | FACTORY_AP_PASSWORD;
+    if (newSettings.provisionMode == settings.provisionMode && newSettings.ssid.equals(settings.ssid) &&
+        newSettings.password.equals(settings.password)) {
+      return StateUpdateResult::UNCHANGED;
+    }
+    settings = newSettings;
     return StateUpdateResult::CHANGED;
   }
 };
@@ -64,6 +76,7 @@ class APSettingsService : public StatefulService<APSettings> {
 
   void begin();
   void loop();
+  APNetworkStatus getAPNetworkStatus();
 
  private:
   HttpEndpoint<APSettings> _httpEndpoint;
@@ -73,7 +86,8 @@ class APSettingsService : public StatefulService<APSettings> {
   DNSServer* _dnsServer;
 
   // for the mangement delay loop
-  unsigned long _lastManaged;
+  volatile unsigned long _lastManaged;
+  volatile boolean _reconfigureAp;
 
   void reconfigureAP();
   void manageAP();
