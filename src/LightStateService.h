@@ -32,21 +32,38 @@ class LightState {
  public:
   bool ledOn;
 
-  static void serialize(LightState& settings, JsonObject& root) {
+  static void read(LightState& settings, JsonObject& root) {
     root["led_on"] = settings.ledOn;
   }
 
-  static void deserialize(JsonObject& root, LightState& settings) {
-    settings.ledOn = root["led_on"] | DEFAULT_LED_STATE;
+  static StateUpdateResult update(JsonObject& root, LightState& lightState) {
+    boolean newState = root["led_on"] | DEFAULT_LED_STATE;
+    if (lightState.ledOn != newState) {
+      lightState.ledOn = newState;
+      return StateUpdateResult::CHANGED;
+    }
+    return StateUpdateResult::UNCHANGED;
   }
 
-  static void haSerialize(LightState& settings, JsonObject& root) {
+  static void haRead(LightState& settings, JsonObject& root) {
     root["state"] = settings.ledOn ? ON_STATE : OFF_STATE;
   }
 
-  static void haDeserialize(JsonObject& root, LightState& settings) {
+  static StateUpdateResult haUpdate(JsonObject& root, LightState& lightState) {
     String state = root["state"];
-    settings.ledOn = strcmp(ON_STATE, state.c_str()) ? false : true;
+    // parse new led state 
+    boolean newState = false;
+    if (state.equals(ON_STATE)) {
+      newState = true;
+    } else if (!state.equals(OFF_STATE)) {
+      return StateUpdateResult::ERROR;
+    }
+    // change the new state, if required
+    if (lightState.ledOn != newState) {
+      lightState.ledOn = newState;
+      return StateUpdateResult::CHANGED;
+    }
+    return StateUpdateResult::UNCHANGED;
   }
 };
 

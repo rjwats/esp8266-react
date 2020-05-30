@@ -1,13 +1,8 @@
 #include <SecuritySettingsService.h>
 
 SecuritySettingsService::SecuritySettingsService(AsyncWebServer* server, FS* fs) :
-    _httpEndpoint(SecuritySettings::serialize,
-                  SecuritySettings::deserialize,
-                  this,
-                  server,
-                  SECURITY_SETTINGS_PATH,
-                  this),
-    _fsPersistence(SecuritySettings::serialize, SecuritySettings::deserialize, this, fs, SECURITY_SETTINGS_FILE),
+    _httpEndpoint(SecuritySettings::read, SecuritySettings::update, this, server, SECURITY_SETTINGS_PATH, this),
+    _fsPersistence(SecuritySettings::read, SecuritySettings::update, this, fs, SECURITY_SETTINGS_FILE),
     _jwtHandler(FACTORY_JWT_SECRET) {
   addUpdateHandler([&](const String& originId) { configureJWTHandler(); }, false);
 }

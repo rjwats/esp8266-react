@@ -14,7 +14,7 @@ ESP8266React::ESP8266React(AsyncWebServer* server, FS* fs) :
     _wifiScanner(server, &_securitySettingsService),
     _wifiStatus(server, &_securitySettingsService),
     _ntpStatus(server, &_securitySettingsService),
-    _apStatus(server, &_securitySettingsService),
+    _apStatus(server, &_securitySettingsService, &_apSettingsService),
     _mqttStatus(server, &_mqttSettingsService, &_securitySettingsService),
     _systemStatus(server, &_securitySettingsService),
     _webSocketLogHandler(server, &_securitySettingsService),
@@ -45,11 +45,11 @@ ESP8266React::ESP8266React(AsyncWebServer* server, FS* fs) :
       });
 #else
   // Serve static resources from /www/
-  server->serveStatic("/js/", SPIFFS, "/www/js/");
-  server->serveStatic("/css/", SPIFFS, "/www/css/");
-  server->serveStatic("/fonts/", SPIFFS, "/www/fonts/");
-  server->serveStatic("/app/", SPIFFS, "/www/app/");
-  server->serveStatic("/favicon.ico", SPIFFS, "/www/favicon.ico");
+  server->serveStatic("/js/", *fs, "/www/js/");
+  server->serveStatic("/css/", *fs, "/www/css/");
+  server->serveStatic("/fonts/", *fs, "/www/fonts/");
+  server->serveStatic("/app/", *fs, "/www/app/");
+  server->serveStatic("/favicon.ico", *fs, "/www/favicon.ico");
   // Serving all other get requests with "/www/index.htm"
   // OPTIONS get a straight up 200 response
   server->onNotFound([](AsyncWebServerRequest* request) {

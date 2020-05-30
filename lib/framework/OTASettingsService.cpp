@@ -1,13 +1,8 @@
 #include <OTASettingsService.h>
 
 OTASettingsService::OTASettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) :
-    _httpEndpoint(OTASettings::serialize,
-                  OTASettings::deserialize,
-                  this,
-                  server,
-                  OTA_SETTINGS_SERVICE_PATH,
-                  securityManager),
-    _fsPersistence(OTASettings::serialize, OTASettings::deserialize, this, fs, OTA_SETTINGS_FILE),
+    _httpEndpoint(OTASettings::read, OTASettings::update, this, server, OTA_SETTINGS_SERVICE_PATH, securityManager),
+    _fsPersistence(OTASettings::read, OTASettings::update, this, fs, OTA_SETTINGS_FILE),
     _arduinoOTA(nullptr) {
 #ifdef ESP32
   WiFi.onEvent(std::bind(&OTASettingsService::onStationModeGotIP, this, std::placeholders::_1, std::placeholders::_2),

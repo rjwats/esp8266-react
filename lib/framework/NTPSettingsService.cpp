@@ -1,13 +1,8 @@
 #include <NTPSettingsService.h>
 
 NTPSettingsService::NTPSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) :
-    _httpEndpoint(NTPSettings::serialize,
-                  NTPSettings::deserialize,
-                  this,
-                  server,
-                  NTP_SETTINGS_SERVICE_PATH,
-                  securityManager),
-    _fsPersistence(NTPSettings::serialize, NTPSettings::deserialize, this, fs, NTP_SETTINGS_FILE) {
+    _httpEndpoint(NTPSettings::read, NTPSettings::update, this, server, NTP_SETTINGS_SERVICE_PATH, securityManager),
+    _fsPersistence(NTPSettings::read, NTPSettings::update, this, fs, NTP_SETTINGS_FILE) {
 #ifdef ESP32
   WiFi.onEvent(
       std::bind(&NTPSettingsService::onStationModeDisconnected, this, std::placeholders::_1, std::placeholders::_2),

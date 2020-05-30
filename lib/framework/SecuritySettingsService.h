@@ -29,7 +29,7 @@ class SecuritySettings {
   String jwtSecret;
   std::list<User> users;
 
-  static void serialize(SecuritySettings& settings, JsonObject& root) {
+  static void read(SecuritySettings& settings, JsonObject& root) {
     // secret
     root["jwt_secret"] = settings.jwtSecret;
 
@@ -43,7 +43,7 @@ class SecuritySettings {
     }
   }
 
-  static void deserialize(JsonObject& root, SecuritySettings& settings) {
+  static StateUpdateResult update(JsonObject& root, SecuritySettings& settings) {
     // secret
     settings.jwtSecret = root["jwt_secret"] | FACTORY_JWT_SECRET;
 
@@ -57,6 +57,7 @@ class SecuritySettings {
       settings.users.push_back(User(FACTORY_ADMIN_USERNAME, FACTORY_ADMIN_PASSWORD, true));
       settings.users.push_back(User(FACTORY_GUEST_USERNAME, FACTORY_GUEST_PASSWORD, false));
     }
+    return StateUpdateResult::CHANGED;
   }
 };
 

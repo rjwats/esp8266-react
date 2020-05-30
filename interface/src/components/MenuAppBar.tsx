@@ -1,7 +1,7 @@
 import React, { RefObject } from 'react';
 import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
 
-import { Drawer, AppBar, Toolbar, Avatar, Divider, Button, IconButton } from '@material-ui/core';
+import { Drawer, AppBar, Toolbar, Avatar, Divider, Button, Box, IconButton } from '@material-ui/core';
 import { ClickAwayListener, Popper, Hidden, Typography } from '@material-ui/core';
 import { List, ListItem, ListItemIcon, ListItemText, ListItemAvatar } from '@material-ui/core';
 import { Card, CardContent, CardActions } from '@material-ui/core';
@@ -42,6 +42,16 @@ const styles = (theme: Theme) => createStyles({
       width: `calc(100% - ${drawerWidth}px)`,
     },
   },
+  toolbarImage: {
+    [theme.breakpoints.up('xs')]: {
+      height: 24,
+      marginRight: theme.spacing(2)
+    },
+    [theme.breakpoints.up('sm')]: {
+      height: 36,
+      marginRight: theme.spacing(3)
+    },
+  },
   menuButton: {
     marginRight: theme.spacing(2),
     [theme.breakpoints.up('md')]: {
@@ -64,7 +74,7 @@ const styles = (theme: Theme) => createStyles({
     "& > * + *": {
       marginLeft: theme.spacing(2),
     }
-  }
+  },
 });
 
 interface MenuAppBarState {
@@ -110,6 +120,9 @@ class MenuAppBar extends React.Component<MenuAppBarProps, MenuAppBarState> {
     const drawer = (
       <div>
         <Toolbar>
+          <Box display="flex">
+            <img src="/app/icon.png" className={classes.toolbarImage} alt={PROJECT_NAME} />
+          </Box>
           <Typography variant="h6" color="textPrimary">
             {PROJECT_NAME}
           </Typography>
@@ -142,7 +155,7 @@ class MenuAppBar extends React.Component<MenuAppBarProps, MenuAppBarState> {
               <DeviceHubIcon />
             </ListItemIcon>
             <ListItemText primary="MQTT" />
-          </ListItem>          
+          </ListItem>
           <ListItem to='/security/' selected={path.startsWith('/security/')} button component={Link} disabled={!authenticatedContext.me.admin}>
             <ListItemIcon>
               <LockIcon />

@@ -5,12 +5,10 @@
 
 #ifdef ESP32
 #include <AsyncTCP.h>
-#include <SPIFFS.h>
 #include <WiFi.h>
 #elif defined(ESP8266)
 #include <ESP8266WiFi.h>
 #include <ESPAsyncTCP.h>
-#include <FS.h>
 #endif
 
 #include <APSettingsService.h>

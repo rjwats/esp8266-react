@@ -8,46 +8,44 @@
 
 #include <SecurityManager.h>
 #include <StatefulService.h>
-#include <JsonSerializer.h>
-#include <JsonDeserializer.h>
 
 #define HTTP_ENDPOINT_ORIGIN_ID "http"
 
 template <class T>
 class HttpGetEndpoint {
  public:
-  HttpGetEndpoint(JsonSerializer<T> jsonSerializer,
+  HttpGetEndpoint(JsonStateReader<T> stateReader,
                   StatefulService<T>* statefulService,
                   AsyncWebServer* server,
                   const String& servicePath,
                   SecurityManager* securityManager,
                   AuthenticationPredicate authenticationPredicate = AuthenticationPredicates::IS_ADMIN,
                   size_t bufferSize = DEFAULT_BUFFER_SIZE) :
-      _jsonSerializer(jsonSerializer), _statefulService(statefulService), _bufferSize(bufferSize) {
+      _stateReader(stateReader), _statefulService(statefulService), _bufferSize(bufferSize) {
     server->on(servicePath.c_str(),
                HTTP_GET,
                securityManager->wrapRequest(std::bind(&HttpGetEndpoint::fetchSettings, this, std::placeholders::_1),
                                             authenticationPredicate));
   }
 
-  HttpGetEndpoint(JsonSerializer<T> jsonSerializer,
+  HttpGetEndpoint(JsonStateReader<T> stateReader,
                   StatefulService<T>* statefulService,
                   AsyncWebServer* server,
                   const String& servicePath,
                   size_t bufferSize = DEFAULT_BUFFER_SIZE) :
-      _jsonSerializer(jsonSerializer), _statefulService(statefulService), _bufferSize(bufferSize) {
+      _stateReader(stateReader), _statefulService(statefulService), _bufferSize(bufferSize) {
     server->on(servicePath.c_str(), HTTP_GET, std::bind(&HttpGetEndpoint::fetchSettings, this, std::placeholders::_1));
   }
 
  protected:
-  JsonSerializer<T> _jsonSerializer;
+  JsonStateReader<T> _stateReader;
   StatefulService<T>* _statefulService;
   size_t _bufferSize;
 
   void fetchSettings(AsyncWebServerRequest* request) {
     AsyncJsonResponse* response = new AsyncJsonResponse(false, _bufferSize);
     JsonObject jsonObject = response->getRoot().to<JsonObject>();
-    _statefulService->read(jsonObject, _jsonSerializer);
+    _statefulService->read(jsonObject, _stateReader);
 
     response->setLength();
     request->send(response);
@@ -57,16 +55,16 @@ class HttpGetEndpoint {
 template <class T>
 class HttpPostEndpoint {
  public:
-  HttpPostEndpoint(JsonSerializer<T> jsonSerializer,
-                   JsonDeserializer<T> jsonDeserializer,
+  HttpPostEndpoint(JsonStateReader<T> stateReader,
+                   JsonStateUpdater<T> stateUpdater,
                    StatefulService<T>* statefulService,
                    AsyncWebServer* server,
                    const String& servicePath,
                    SecurityManager* securityManager,
                    AuthenticationPredicate authenticationPredicate = AuthenticationPredicates::IS_ADMIN,
                    size_t bufferSize = DEFAULT_BUFFER_SIZE) :
-      _jsonSerializer(jsonSerializer),
-      _jsonDeserializer(jsonDeserializer),
+      _stateReader(stateReader),
+      _stateUpdater(stateUpdater),
       _statefulService(statefulService),
       _updateHandler(
           servicePath,
@@ -79,14 +77,14 @@ class HttpPostEndpoint {
     server->addHandler(&_updateHandler);
   }
 
-  HttpPostEndpoint(JsonSerializer<T> jsonSerializer,
-                   JsonDeserializer<T> jsonDeserializer,
+  HttpPostEndpoint(JsonStateReader<T> stateReader,
+                   JsonStateUpdater<T> stateUpdater,
                    StatefulService<T>* statefulService,
                    AsyncWebServer* server,
                    const String& servicePath,
                    size_t bufferSize = DEFAULT_BUFFER_SIZE) :
-      _jsonSerializer(jsonSerializer),
-      _jsonDeserializer(jsonDeserializer),
+      _stateReader(stateReader),
+      _stateUpdater(stateUpdater),
       _statefulService(statefulService),
       _updateHandler(servicePath,
                      std::bind(&HttpPostEndpoint::updateSettings, this, std::placeholders::_1, std::placeholders::_2),
@@ -97,56 +95,54 @@ class HttpPostEndpoint {
   }
 
  protected:
-  JsonSerializer<T> _jsonSerializer;
-  JsonDeserializer<T> _jsonDeserializer;
+  JsonStateReader<T> _stateReader;
+  JsonStateUpdater<T> _stateUpdater;
   StatefulService<T>* _statefulService;
   AsyncCallbackJsonWebHandler _updateHandler;
   size_t _bufferSize;
 
   void updateSettings(AsyncWebServerRequest* request, JsonVariant& json) {
-    if (json.is<JsonObject>()) {
-      AsyncJsonResponse* response = new AsyncJsonResponse(false, _bufferSize);
-
-      // use callback to update the settings once the response is complete
-      request->onDisconnect([this]() { _statefulService->callUpdateHandlers(HTTP_ENDPOINT_ORIGIN_ID); });
-
-      // update the settings, deferring the call to the update handlers to when the response is complete
-      _statefulService->updateWithoutPropagation([&](T& settings) {
-        JsonObject jsonObject = json.as<JsonObject>();
-        _jsonDeserializer(jsonObject, settings);
-        jsonObject = response->getRoot().to<JsonObject>();
-        _jsonSerializer(settings, jsonObject);
-      });
-
-      // write the response to the client
-      response->setLength();
-      request->send(response);
-    } else {
+    if (!json.is<JsonObject>()) {
       request->send(400);
+      return;
     }
+    JsonObject jsonObject = json.as<JsonObject>();
+    StateUpdateResult outcome = _statefulService->updateWithoutPropagation(jsonObject, _stateUpdater);
+    if (outcome == StateUpdateResult::ERROR) {
+      request->send(400);
+      return;
+    }
+    if (outcome == StateUpdateResult::CHANGED) {
+      request->onDisconnect([this]() { _statefulService->callUpdateHandlers(HTTP_ENDPOINT_ORIGIN_ID); });
+    }
+    AsyncJsonResponse* response = new AsyncJsonResponse(false, _bufferSize);
+    jsonObject = response->getRoot().to<JsonObject>();
+    _statefulService->read(jsonObject, _stateReader);
+    response->setLength();
+    request->send(response);
   }
 };
 
 template <class T>
 class HttpEndpoint : public HttpGetEndpoint<T>, public HttpPostEndpoint<T> {
  public:
-  HttpEndpoint(JsonSerializer<T> jsonSerializer,
-               JsonDeserializer<T> jsonDeserializer,
+  HttpEndpoint(JsonStateReader<T> stateReader,
+               JsonStateUpdater<T> stateUpdater,
                StatefulService<T>* statefulService,
                AsyncWebServer* server,
                const String& servicePath,
                SecurityManager* securityManager,
                AuthenticationPredicate authenticationPredicate = AuthenticationPredicates::IS_ADMIN,
                size_t bufferSize = DEFAULT_BUFFER_SIZE) :
-      HttpGetEndpoint<T>(jsonSerializer,
+      HttpGetEndpoint<T>(stateReader,
                          statefulService,
                          server,
                          servicePath,
                          securityManager,
                          authenticationPredicate,
                          bufferSize),
-      HttpPostEndpoint<T>(jsonSerializer,
-                          jsonDeserializer,
+      HttpPostEndpoint<T>(stateReader,
+                          stateUpdater,
                           statefulService,
                           server,
                           servicePath,
@@ -155,14 +151,14 @@ class HttpEndpoint : public HttpGetEndpoint<T>, public HttpPostEndpoint<T> {
                           bufferSize) {
   }
 
-  HttpEndpoint(JsonSerializer<T> jsonSerializer,
-               JsonDeserializer<T> jsonDeserializer,
+  HttpEndpoint(JsonStateReader<T> stateReader,
+               JsonStateUpdater<T> stateUpdater,
                StatefulService<T>* statefulService,
                AsyncWebServer* server,
                const String& servicePath,
                size_t bufferSize = DEFAULT_BUFFER_SIZE) :
-      HttpGetEndpoint<T>(jsonSerializer, statefulService, server, servicePath, bufferSize),
-      HttpPostEndpoint<T>(jsonSerializer, jsonDeserializer, statefulService, server, servicePath, bufferSize) {
+      HttpGetEndpoint<T>(stateReader, statefulService, server, servicePath, bufferSize),
+      HttpPostEndpoint<T>(stateReader, stateUpdater, statefulService, server, servicePath, bufferSize) {
   }
 };
 

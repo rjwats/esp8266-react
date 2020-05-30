@@ -6,8 +6,8 @@ import SaveIcon from '@material-ui/icons/Save';
 
 import {PasswordValidator, RestFormProps, FormActions, FormButton} from '../components';
 
-import { isAPEnabled, AP_MODE_ALWAYS, AP_MODE_DISCONNECTED, AP_NEVER } from './APModes';
-import { APSettings } from './types';
+import { isAPEnabled } from './APModes';
+import { APSettings, APProvisionMode } from './types';
 
 type APSettingsFormProps = RestFormProps<APSettings>;
 
@@ -24,9 +24,9 @@ class APSettingsForm extends React.Component<APSettingsFormProps> {
           variant="outlined"
           onChange={handleValueChange('provision_mode')}
           margin="normal">
-          <MenuItem value={AP_MODE_ALWAYS}>Always</MenuItem>
-          <MenuItem value={AP_MODE_DISCONNECTED}>When WiFi Disconnected</MenuItem>
-          <MenuItem value={AP_NEVER}>Never</MenuItem>
+          <MenuItem value={APProvisionMode.AP_MODE_ALWAYS}>Always</MenuItem>
+          <MenuItem value={APProvisionMode.AP_MODE_DISCONNECTED}>When WiFi Disconnected</MenuItem>
+          <MenuItem value={APProvisionMode.AP_NEVER}>Never</MenuItem>
         </SelectValidator>
         {
           isAPEnabled(data) &&

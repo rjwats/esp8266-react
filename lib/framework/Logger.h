@@ -7,8 +7,7 @@
 #include <time.h>
 #include <string>
 #include <FS.h>
-#include <JsonSerializer.h>
-#include <JsonDeserializer.h>
+#include <ArduinoJson.h>
 
 #define LOGGER_FS_BUFFER_PATH "/log/"
 #define FSH_P const __FlashStringHelper*
