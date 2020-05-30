@@ -2,6 +2,7 @@
 #define SecuritySettingsService_h
 
 #include <ESPUtils.h>
+#include <Features.h>
 #include <SecurityManager.h>
 #include <HttpEndpoint.h>
 #include <FSPersistence.h>
