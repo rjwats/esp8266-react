@@ -1,25 +1,10 @@
 #ifndef SecuritySettingsService_h
 #define SecuritySettingsService_h
 
+#include <ESPUtils.h>
 #include <SecurityManager.h>
 #include <HttpEndpoint.h>
 #include <FSPersistence.h>
-
-#ifndef FACTORY_ADMIN_USERNAME
-#define FACTORY_ADMIN_USERNAME "admin"
-#endif
-
-#ifndef FACTORY_ADMIN_PASSWORD
-#define FACTORY_ADMIN_PASSWORD "admin"
-#endif
-
-#ifndef FACTORY_GUEST_USERNAME
-#define FACTORY_GUEST_USERNAME "guest"
-#endif
-
-#ifndef FACTORY_GUEST_PASSWORD
-#define FACTORY_GUEST_PASSWORD "guest"
-#endif
 
 #define SECURITY_SETTINGS_FILE "/config/securitySettings.json"
 #define SECURITY_SETTINGS_PATH "/rest/securitySettings"
@@ -45,7 +30,7 @@ class SecuritySettings {
 
   static StateUpdateResult update(JsonObject& root, SecuritySettings& settings) {
     // secret
-    settings.jwtSecret = root["jwt_secret"] | FACTORY_JWT_SECRET;
+    settings.jwtSecret = root["jwt_secret"] | FactoryValue::format(FACTORY_JWT_SECRET);
 
     // users
     settings.users.clear();

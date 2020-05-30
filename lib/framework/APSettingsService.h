@@ -1,6 +1,7 @@
 #ifndef APSettingsConfig_h
 #define APSettingsConfig_h
 
+#include <ESPUtils.h>
 #include <HttpEndpoint.h>
 #include <FSPersistence.h>
 
@@ -14,18 +15,6 @@
 #define AP_MODE_NEVER 2
 
 #define DNS_PORT 53
-
-#ifndef FACTORY_AP_SSID
-#define FACTORY_AP_SSID "ESP8266-React"
-#endif
-
-#ifndef FACTORY_AP_PASSWORD
-#define FACTORY_AP_PASSWORD "esp-react"
-#endif
-
-#ifndef FACTORY_AP_PROVISION_MODE
-#define FACTORY_AP_PROVISION_MODE AP_MODE_DISCONNECTED
-#endif
 
 #define AP_SETTINGS_FILE "/config/apSettings.json"
 #define AP_SETTINGS_SERVICE_PATH "/rest/apSettings"
@@ -59,7 +48,7 @@ class APSettings {
       default:
         newSettings.provisionMode = AP_MODE_ALWAYS;
     }
-    newSettings.ssid = root["ssid"] | FACTORY_AP_SSID;
+    newSettings.ssid = root["ssid"] | FactoryValue::format(FACTORY_AP_SSID);
     newSettings.password = root["password"] | FACTORY_AP_PASSWORD;
     if (newSettings.provisionMode == settings.provisionMode && newSettings.ssid.equals(settings.ssid) &&
         newSettings.password.equals(settings.password)) {
