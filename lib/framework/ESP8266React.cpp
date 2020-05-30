@@ -13,7 +13,7 @@ ESP8266React::ESP8266React(AsyncWebServer* server, FS* fs) :
     _wifiScanner(server, &_securitySettingsService),
     _wifiStatus(server, &_securitySettingsService),
     _ntpStatus(server, &_securitySettingsService),
-    _apStatus(server, &_securitySettingsService),
+    _apStatus(server, &_securitySettingsService, &_apSettingsService),
     _mqttStatus(server, &_mqttSettingsService, &_securitySettingsService),
     _systemStatus(server, &_securitySettingsService) {
 #ifdef PROGMEM_WWW
