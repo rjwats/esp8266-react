@@ -1,10 +1,13 @@
 #ifndef MqttPubSub_h
 #define MqttPubSub_h
 
+#include <Features.h>
 #include <StatefulService.h>
 #include <AsyncMqttClient.h>
 
 #define MQTT_ORIGIN_ID "mqtt"
+
+#if FT_ENABLED(FT_MQTT)
 
 template <class T>
 class MqttConnector {
@@ -164,4 +167,5 @@ class MqttPubSub : public MqttPub<T>, public MqttSub<T> {
   }
 };
 
+#endif // end FT_ENABLED(FT_MQTT)
 #endif  // end MqttPubSub

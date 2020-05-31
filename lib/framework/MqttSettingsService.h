@@ -1,11 +1,14 @@
 #ifndef MqttSettingsService_h
 #define MqttSettingsService_h
 
+#include <Features.h>
 #include <StatefulService.h>
 #include <HttpEndpoint.h>
 #include <FSPersistence.h>
 #include <AsyncMqttClient.h>
 #include <ESPUtils.h>
+
+#if FT_ENABLED(FT_MQTT)
 
 #define MQTT_RECONNECTION_DELAY 5000
 
@@ -153,4 +156,5 @@ class MqttSettingsService : public StatefulService<MqttSettings> {
   void configureMqtt();
 };
 
+#endif // end FT_ENABLED(FT_MQTT)
 #endif  // end MqttSettingsService_h

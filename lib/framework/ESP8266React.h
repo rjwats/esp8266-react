@@ -18,8 +18,10 @@
 #include <AuthenticationService.h>
 #endif
 #include <FactoryResetService.h>
+#if FT_ENABLED(FT_MQTT)
 #include <MqttSettingsService.h>
 #include <MqttStatus.h>
+#endif
 #include <NTPSettingsService.h>
 #include <NTPStatus.h>
 #include <OTASettingsService.h>
@@ -67,6 +69,7 @@ class ESP8266React {
     return &_otaSettingsService;
   }
 
+#if FT_ENABLED(FT_MQTT)
   StatefulService<MqttSettings>* getMqttSettingsService() {
     return &_mqttSettingsService;
   }
@@ -74,6 +77,7 @@ class ESP8266React {
   AsyncMqttClient* getMqttClient() {
     return _mqttSettingsService.getMqttClient();
   }
+#endif
 
   void factoryReset() {
     _factoryResetService.factoryReset();
@@ -86,7 +90,9 @@ class ESP8266React {
   APSettingsService _apSettingsService;
   NTPSettingsService _ntpSettingsService;
   OTASettingsService _otaSettingsService;
+#if FT_ENABLED(FT_MQTT)
   MqttSettingsService _mqttSettingsService;
+#endif
   RestartService _restartService;
   FactoryResetService _factoryResetService;
 #if FT_ENABLED(FT_SECURITY)
@@ -96,7 +102,9 @@ class ESP8266React {
   WiFiStatus _wifiStatus;
   NTPStatus _ntpStatus;
   APStatus _apStatus;
+#if FT_ENABLED(FT_MQTT)
   MqttStatus _mqttStatus;
+#endif
   SystemStatus _systemStatus;
 };
 
