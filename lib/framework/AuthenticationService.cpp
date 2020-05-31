@@ -1,5 +1,7 @@
 #include <AuthenticationService.h>
 
+#if FT_ENABLED(FT_SECURITY)
+
 AuthenticationService::AuthenticationService(AsyncWebServer* server, SecurityManager* securityManager) :
     _securityManager(securityManager),
     _signInHandler(SIGN_IN_PATH,
@@ -42,3 +44,5 @@ void AuthenticationService::signIn(AsyncWebServerRequest* request, JsonVariant& 
   AsyncWebServerResponse* response = request->beginResponse(401);
   request->send(response);
 }
+
+#endif // end FT_ENABLED(FT_SECURITY)

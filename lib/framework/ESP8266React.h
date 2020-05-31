@@ -11,9 +11,12 @@
 #include <ESPAsyncTCP.h>
 #endif
 
+#include <FeaturesService.h>
 #include <APSettingsService.h>
 #include <APStatus.h>
+#if FT_ENABLED(FT_SECURITY)
 #include <AuthenticationService.h>
+#endif
 #include <FactoryResetService.h>
 #include <MqttSettingsService.h>
 #include <MqttStatus.h>
@@ -42,9 +45,11 @@ class ESP8266React {
     return &_securitySettingsService;
   }
 
+#if FT_ENABLED(FT_SECURITY)
   StatefulService<SecuritySettings>* getSecuritySettingsService() {
     return &_securitySettingsService;
   }
+#endif
 
   StatefulService<WiFiSettings>* getWiFiSettingsService() {
     return &_wifiSettingsService;
@@ -75,6 +80,7 @@ class ESP8266React {
   }
 
  private:
+  FeaturesService _featureService;
   SecuritySettingsService _securitySettingsService;
   WiFiSettingsService _wifiSettingsService;
   APSettingsService _apSettingsService;
@@ -83,9 +89,9 @@ class ESP8266React {
   MqttSettingsService _mqttSettingsService;
   RestartService _restartService;
   FactoryResetService _factoryResetService;
-
+#if FT_ENABLED(FT_SECURITY)
   AuthenticationService _authenticationService;
-
+#endif
   WiFiScanner _wifiScanner;
   WiFiStatus _wifiStatus;
   NTPStatus _ntpStatus;

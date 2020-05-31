@@ -1,5 +1,7 @@
 #include <SecuritySettingsService.h>
 
+#if FT_ENABLED(FT_SECURITY)
+
 SecuritySettingsService::SecuritySettingsService(AsyncWebServer* server, FS* fs) :
     _httpEndpoint(SecuritySettings::read, SecuritySettings::update, this, server, SECURITY_SETTINGS_PATH, this),
     _fsPersistence(SecuritySettings::read, SecuritySettings::update, this, fs, SECURITY_SETTINGS_FILE),
@@ -94,14 +96,45 @@ ArRequestHandlerFunction SecuritySettingsService::wrapRequest(ArRequestHandlerFu
   };
 }
 
-ArJsonRequestHandlerFunction SecuritySettingsService::wrapCallback(ArJsonRequestHandlerFunction callback,
+ArJsonRequestHandlerFunction SecuritySettingsService::wrapCallback(ArJsonRequestHandlerFunction onRequest,
                                                                    AuthenticationPredicate predicate) {
-  return [this, callback, predicate](AsyncWebServerRequest* request, JsonVariant& json) {
+  return [this, onRequest, predicate](AsyncWebServerRequest* request, JsonVariant& json) {
     Authentication authentication = authenticateRequest(request);
     if (!predicate(authentication)) {
       request->send(401);
       return;
     }
-    callback(request, json);
+    onRequest(request, json);
   };
 }
+
+#else
+
+User ADMIN_USER = User(FACTORY_ADMIN_USERNAME, FACTORY_ADMIN_PASSWORD, true);
+
+SecuritySettingsService::SecuritySettingsService(AsyncWebServer* server, FS* fs) : SecurityManager() {
+}
+SecuritySettingsService::~SecuritySettingsService() {
+}
+
+ArRequestFilterFunction SecuritySettingsService::filterRequest(AuthenticationPredicate predicate) {
+  return [this, predicate](AsyncWebServerRequest* request) { return true; };
+}
+
+// Return the admin user on all request - disabling security features
+Authentication SecuritySettingsService::authenticateRequest(AsyncWebServerRequest* request) {
+  return Authentication(ADMIN_USER);
+}
+
+// Return the function unwrapped
+ArRequestHandlerFunction SecuritySettingsService::wrapRequest(ArRequestHandlerFunction onRequest,
+                                                              AuthenticationPredicate predicate) {
+  return onRequest;
+}
+
+ArJsonRequestHandlerFunction SecuritySettingsService::wrapCallback(ArJsonRequestHandlerFunction onRequest,
+                                                                   AuthenticationPredicate predicate) {
+  return onRequest;
+}
+
+#endif
