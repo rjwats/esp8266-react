@@ -16,25 +16,31 @@ import System from './system/System';
 
 import { PROJECT_PATH } from './api';
 import Mqtt from './mqtt/Mqtt';
+import { withFeatures, WithFeaturesProps } from './features/FeaturesContext';
 
-class AppRouting extends Component {
+class AppRouting extends Component<WithFeaturesProps> {
 
   componentDidMount() {
     Authentication.clearLoginRedirect();
   }
 
   render() {
+    const { features } = this.props;
     return (
       <AuthenticationWrapper>
         <Switch>
           <UnauthenticatedRoute exact path="/" component={SignIn} />
           <AuthenticatedRoute exact path={`/${PROJECT_PATH}/*`} component={ProjectRouting} />
-          <AuthenticatedRoute exact path="/wifi/*" component={WiFiConnection} />         
+          <AuthenticatedRoute exact path="/wifi/*" component={WiFiConnection} />
           <AuthenticatedRoute exact path="/ap/*" component={AccessPoint} />
           <AuthenticatedRoute exact path="/ntp/*" component={NetworkTime} />
-          <AuthenticatedRoute exact path="/mqtt/*" component={Mqtt} />
-          <AuthenticatedRoute exact path="/security/*" component={Security} /> 
-          <AuthenticatedRoute exact path="/system/*" component={System} />          
+          {features.mqtt && (
+            <AuthenticatedRoute exact path="/mqtt/*" component={Mqtt} />
+          )}
+          {features.security && (
+            <AuthenticatedRoute exact path="/security/*" component={Security} />
+          )}
+          <AuthenticatedRoute exact path="/system/*" component={System} />
           <Redirect to="/" />
         </Switch>
       </AuthenticationWrapper>
@@ -42,4 +48,4 @@ class AppRouting extends Component {
   }
 }
 
-export default AppRouting;
+export default withFeatures(AppRouting);

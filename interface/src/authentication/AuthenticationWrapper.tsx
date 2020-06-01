@@ -7,6 +7,7 @@ import { VERIFY_AUTHORIZATION_ENDPOINT } from '../api';
 import { ACCESS_TOKEN, authorizedFetch, getStorage } from './Authentication';
 import { AuthenticationContext, Me } from './AuthenticationContext';
 import FullScreenLoading from '../components/FullScreenLoading';
+import { withFeatures, WithFeaturesProps } from '../features/FeaturesContext';
 
 export const decodeMeJWT = (accessToken: string): Me => jwtDecode(accessToken);
 
@@ -15,7 +16,7 @@ interface AuthenticationWrapperState {
   initialized: boolean;
 }
 
-type AuthenticationWrapperProps = WithSnackbarProps;
+type AuthenticationWrapperProps = WithSnackbarProps & WithFeaturesProps;
 
 class AuthenticationWrapper extends React.Component<AuthenticationWrapperProps, AuthenticationWrapperState> {
 
@@ -58,6 +59,10 @@ class AuthenticationWrapper extends React.Component<AuthenticationWrapperProps, 
   }
 
   refresh = () => {
+    if (!this.props.features.security) {
+      this.setState({ initialized: true, context: { ...this.state.context, me: { admin: true, username: "admin" } } });
+      return;
+    }
     const accessToken = getStorage().getItem(ACCESS_TOKEN)
     if (accessToken) {
       authorizedFetch(VERIFY_AUTHORIZATION_ENDPOINT)
@@ -101,4 +106,4 @@ class AuthenticationWrapper extends React.Component<AuthenticationWrapperProps, 
 
 }
 
-export default withSnackbar(AuthenticationWrapper)
+export default withFeatures(withSnackbar(AuthenticationWrapper))

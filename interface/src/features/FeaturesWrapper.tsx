@@ -1,19 +1,19 @@
 import React, { Component } from 'react';
 
 import { Features } from './types';
-import { FeaturesContext } from './context';
+import { FeaturesContext } from './FeaturesContext';
 import FullScreenLoading from '../components/FullScreenLoading';
 import ApplicationError from '../components/ApplicationError';
 import { FEATURES_ENDPOINT } from '../api';
 
-interface ApplicationState {
+interface FeaturesWrapperState {
   features?: Features;
   error?: string;
 };
 
-class Application extends Component<{}, ApplicationState> {
+class FeaturesWrapper extends Component<{}, FeaturesWrapperState> {
 
-  state: ApplicationState = {};
+  state: FeaturesWrapperState = {};
 
   componentDidMount() {
     this.fetchFeaturesDetails();
@@ -25,7 +25,7 @@ class Application extends Component<{}, ApplicationState> {
         if (response.status === 200) {
           return response.json();
         } else {
-          throw Error("Invalid status code: " + response.status);
+          throw Error("Unexpected status code: " + response.status);
         }
       }).then(features => {
         this.setState({ features });
@@ -58,4 +58,4 @@ class Application extends Component<{}, ApplicationState> {
 
 }
 
-export default Application;
+export default FeaturesWrapper;

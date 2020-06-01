@@ -11,6 +11,7 @@ interface UnauthenticatedRouteProps extends RouteProps {
 type RenderComponent = (props: RouteComponentProps<any>) => React.ReactNode;
 
 class UnauthenticatedRoute extends Route<UnauthenticatedRouteProps & AuthenticationContextProps> {
+  
   public render() {
     const { authenticationContext, component:Component, ...rest } = this.props;
     const renderComponent: RenderComponent = (props) => {
