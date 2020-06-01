@@ -1,4 +1,4 @@
-import React, { RefObject } from 'react';
+import React, { RefObject, Fragment } from 'react';
 import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
 
 import { Drawer, AppBar, Toolbar, Avatar, Divider, Button, Box, IconButton } from '@material-ui/core';
@@ -129,9 +129,12 @@ class MenuAppBar extends React.Component<MenuAppBarProps, MenuAppBarState> {
           </Typography>
           <Divider absolute />
         </Toolbar>
-        <Divider />
-        <ProjectMenu />
-        <Divider />
+        {features.project && (
+          <Fragment>
+            <ProjectMenu />
+            <Divider />
+          </Fragment>
+        )}
         <List>
           <ListItem to='/wifi/' selected={path.startsWith('/wifi/')} button component={Link}>
             <ListItemIcon>

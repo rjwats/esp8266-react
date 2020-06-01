@@ -30,7 +30,9 @@ class AppRouting extends Component<WithFeaturesProps> {
       <AuthenticationWrapper>
         <Switch>
           <UnauthenticatedRoute exact path="/" component={SignIn} />
-          <AuthenticatedRoute exact path={`/${PROJECT_PATH}/*`} component={ProjectRouting} />
+          {features.project && (
+            <AuthenticatedRoute exact path={`/${PROJECT_PATH}/*`} component={ProjectRouting} />
+          )}
           <AuthenticatedRoute exact path="/wifi/*" component={WiFiConnection} />
           <AuthenticatedRoute exact path="/ap/*" component={AccessPoint} />
           <AuthenticatedRoute exact path="/ntp/*" component={NetworkTime} />
