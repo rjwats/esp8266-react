@@ -21,8 +21,9 @@ LightStateService::LightStateService(AsyncWebServer* server,
                AuthenticationPredicates::IS_AUTHENTICATED),
     _mqttClient(mqttClient),
     _lightMqttSettingsService(lightMqttSettingsService) {
-  // configure blink led to be output
-  pinMode(BLINK_LED, OUTPUT);
+  // set up led controller
+  // TODO - make controller types and pin configurable
+  _ledController = &FastLED.addLeds<LED_TYPE, LED_DATA_PIN, COLOR_ORDER>(_leds, NUM_LEDS);
 
   // configure MQTT callback
   _mqttClient->onConnect(std::bind(&LightStateService::registerConfig, this));
@@ -34,13 +35,55 @@ LightStateService::LightStateService(AsyncWebServer* server,
   addUpdateHandler([&](const String& originId) { onConfigUpdated(); }, false);
 }
 
+CLEDController* LightStateService::getLedController() {
+  return _ledController;
+}
+
+void LightStateService::addEffect(String key, void* lightEffect) {
+  _lightEffects.insert(LightEffectPair(key, lightEffect));
+}
+
 void LightStateService::begin() {
+  FastLED.setMaxPowerInMilliWatts(10000);
   _state.ledOn = DEFAULT_LED_STATE;
+  _state.color = CRGB::White;
+  _state.brightness = 100;
   onConfigUpdated();
 }
 
+void LightStateService::loop() {
+  if (_refresh) {
+    // set the brightness
+    FastLED.setBrightness(_state.brightness);
+
+    // find the effect (if present)
+    LightEffectMap::iterator it = _lightEffects.find(_state.effect);
+    if (it != _lightEffects.end()) {
+      _currentEffect = reinterpret_cast<LightEffect*>(it->second);
+    } else {
+      _currentEffect = nullptr;
+    }
+  }
+
+  // serve current effect or manual, as required
+  if (_currentEffect != nullptr) {
+    _currentEffect->loop();
+  } else if (_refresh) {
+    if (_state.ledOn) {
+      fill_solid(_leds, NUM_LEDS, _state.color);
+      FastLED.show();
+    } else {
+      _ledController->clearLeds(NUM_LEDS);
+    }
+  }
+
+  // clear the refresh flag
+  _refresh = false;
+}
+
 void LightStateService::onConfigUpdated() {
-  digitalWrite(BLINK_LED, _state.ledOn ? LED_ON : LED_OFF);
+  _refresh = true;
+  // digitalWrite(BLINK_LED, _state.ledOn ? LED_ON : LED_OFF);
 }
 
 void LightStateService::registerConfig() {
@@ -63,7 +106,15 @@ void LightStateService::registerConfig() {
   doc["cmd_t"] = "~/set";
   doc["stat_t"] = "~/state";
   doc["schema"] = "json";
-  doc["brightness"] = false;
+  doc["brightness"] = true;
+  doc["rgb"] = true;
+  doc["effect"] = true;
+
+  JsonArray effectList = doc.createNestedArray("effect_list");
+  effectList.add("Manual");
+  effectList.add("Rainbow");
+  effectList.add("Lightning");
+  effectList.add("Fire");
 
   String payload;
   serializeJson(doc, payload);

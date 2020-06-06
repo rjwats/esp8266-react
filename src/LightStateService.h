@@ -6,63 +6,68 @@
 #include <HttpEndpoint.h>
 #include <MqttPubSub.h>
 #include <WebSocketTxRx.h>
+#include <FastLED.h>
+#include <JsonUtil.h>
+#include <LightEffect.h>
+#include <map>
 
-#define BLINK_LED 2
-#define PRINT_DELAY 5000
+// fast led settings
+#define LED_DATA_PIN 14  // was 21 for esp32
+#define COLOR_ORDER GRB
+#define LED_TYPE WS2812
+#define NUM_LEDS 96
+#define NUM_MODES 7
 
+#define DEFAULT_EFFECT "Manual"
 #define DEFAULT_LED_STATE false
 #define OFF_STATE "OFF"
 #define ON_STATE "ON"
 
-// Note that the built-in LED is on when the pin is low on most NodeMCU boards.
-// This is because the anode is tied to VCC and the cathode to the GPIO 4 (Arduino pin 2).
-#ifdef ESP32
-#define LED_ON 0x1
-#define LED_OFF 0x0
-#elif defined(ESP8266)
-#define LED_ON 0x0
-#define LED_OFF 0x1
-#endif
-
 #define LIGHT_SETTINGS_ENDPOINT_PATH "/rest/lightState"
 #define LIGHT_SETTINGS_SOCKET_PATH "/ws/lightState"
+
+typedef std::map<String, void*> LightEffectMap;
+typedef std::pair<String, void*> LightEffectPair;
 
 class LightState {
  public:
   bool ledOn;
+  uint8_t brightness;
+  CRGB color;
+  String effect;
 
-  static void read(LightState& settings, JsonObject& root) {
-    root["led_on"] = settings.ledOn;
+  static void read(LightState& lightState, JsonObject& root) {
+    root["led_on"] = lightState.ledOn;
+    root["color"] = colorToHexString(lightState.color);
+    root["brightness"] = lightState.brightness;
+    root["effect"] = lightState.effect;
   }
 
   static StateUpdateResult update(JsonObject& root, LightState& lightState) {
-    boolean newState = root["led_on"] | DEFAULT_LED_STATE;
-    if (lightState.ledOn != newState) {
-      lightState.ledOn = newState;
-      return StateUpdateResult::CHANGED;
-    }
-    return StateUpdateResult::UNCHANGED;
+    lightState.ledOn = root["led_on"] | DEFAULT_LED_STATE;
+    String color = root["color"];
+    lightState.color = hexStringToColor(color, CRGB::White);
+    lightState.brightness = root["brightness"] | 255;
+    lightState.effect = root["effect"] | DEFAULT_EFFECT;
+
+    return StateUpdateResult::CHANGED;
   }
 
-  static void haRead(LightState& settings, JsonObject& root) {
-    root["state"] = settings.ledOn ? ON_STATE : OFF_STATE;
+  static void haRead(LightState& lightState, JsonObject& root) {
+    root["state"] = lightState.ledOn ? ON_STATE : OFF_STATE;
+    colorToRGBJson(lightState.color, root);
+    root["brightness"] = lightState.brightness;
+    root["effect"] = lightState.effect;
   }
 
   static StateUpdateResult haUpdate(JsonObject& root, LightState& lightState) {
     String state = root["state"];
-    // parse new led state 
-    boolean newState = false;
-    if (state.equals(ON_STATE)) {
-      newState = true;
-    } else if (!state.equals(OFF_STATE)) {
-      return StateUpdateResult::ERROR;
-    }
-    // change the new state, if required
-    if (lightState.ledOn != newState) {
-      lightState.ledOn = newState;
-      return StateUpdateResult::CHANGED;
-    }
-    return StateUpdateResult::UNCHANGED;
+    lightState.ledOn = state.equals(ON_STATE);
+    rgbJsonToColor(root, lightState.color);
+    lightState.brightness = root["brightness"] | lightState.brightness;
+    lightState.effect = root["effect"] | lightState.effect;
+
+    return StateUpdateResult::CHANGED;
   }
 };
 
@@ -73,6 +78,11 @@ class LightStateService : public StatefulService<LightState> {
                     AsyncMqttClient* mqttClient,
                     LightMqttSettingsService* lightMqttSettingsService);
   void begin();
+  void loop();
+
+  // temp - LED controller should be suppliex externally
+  CLEDController* getLedController();
+  void addEffect(String key, void* lightEffect);
 
  private:
   HttpEndpoint<LightState> _httpEndpoint;
@@ -80,6 +90,13 @@ class LightStateService : public StatefulService<LightState> {
   WebSocketTxRx<LightState> _webSocket;
   AsyncMqttClient* _mqttClient;
   LightMqttSettingsService* _lightMqttSettingsService;
+  
+  LightEffectMap _lightEffects;
+  LightEffect* _currentEffect = nullptr;
+
+  bool _refresh;
+  CRGB _leds[NUM_LEDS];
+  CLEDController* _ledController;
 
   void registerConfig();
   void onConfigUpdated();
