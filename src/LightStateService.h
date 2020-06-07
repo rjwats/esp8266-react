@@ -20,7 +20,7 @@
 #define NUM_LEDS 96
 #define NUM_MODES 7
 
-#define DEFAULT_EFFECT "Manual"
+#define DEFAULT_EFFECT "Color"
 #define DEFAULT_LED_STATE false
 #define OFF_STATE "OFF"
 #define ON_STATE "ON"
@@ -82,7 +82,7 @@ class LightStateService : public StatefulService<LightState> {
 
   // temp - LED controller should be suppliex externally
   CLEDController* getLedController();
-  
+
   template <class E>
   void addEffect(LightEffectService<E>* service, JsonStateReader<E> stateReader, JsonStateUpdater<E> stateUpdater) {
     _lightEffects.push_back(std::make_shared<RegisteredLightEffectService<E>>(

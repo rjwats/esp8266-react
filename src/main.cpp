@@ -3,6 +3,7 @@
 #include <LightStateService.h>
 #include <FS.h>
 #include <RainbowEffect.h>
+#include <ConfettiEffect.h>
 
 #define SERIAL_BAUD_RATE 115200
 
@@ -18,6 +19,7 @@ LightStateService lightStateService = LightStateService(&server,
                                                         &lightMqttSettingsService);
 
 RainbowEffect rainbowEffect = RainbowEffect(lightStateService.getLedController());
+ConfettiEffect confettiEffect = ConfettiEffect(lightStateService.getLedController());
 
 void setup() {
   // start serial and filesystem
@@ -31,6 +33,7 @@ void setup() {
 #endif
 
   lightStateService.addEffect(&rainbowEffect, RainbowEffectSettings::read, RainbowEffectSettings::update);
+  lightStateService.addEffect(&confettiEffect, ConfettiEffectSettings::read, ConfettiEffectSettings::update);
 
   // start the framework and demo project
   esp8266React.begin();

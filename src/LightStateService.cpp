@@ -111,10 +111,11 @@ void LightStateService::registerConfig() {
   doc["effect"] = true;
 
   JsonArray effectList = doc.createNestedArray("effect_list");
-  effectList.add("Manual");
-  effectList.add("Rainbow");
-  effectList.add("Lightning");
-  effectList.add("Fire");
+  effectList.add("Color");
+  for (auto const& effectPtr : _lightEffects) {
+    RegisteredLightEffect* effect = effectPtr.get();
+    effectList.add(effect->getId());
+  }
 
   String payload;
   serializeJson(doc, payload);
