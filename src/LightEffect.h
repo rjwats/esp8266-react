@@ -13,20 +13,18 @@
 
 class LightEffect {
  protected:
-  String _id;
   CLEDController* _ledController;
 
  public:
-  LightEffect(String id, CLEDController* ledController) : _id(id), _ledController(ledController) {
+  LightEffect(CLEDController* ledController) : _ledController(ledController) {
   }
 
-  String getId() {
-    return _id;
-  }
+  /**
+   * Get the ID of the effect - max ~25 chars
+   */
+  virtual String getId() = 0;
 
   /*
-   * Allow the effect to control the LEDs.
-   *
    * Called by the main loop on the active effect.
    */
   virtual void loop() = 0;
@@ -40,21 +38,47 @@ class LightEffect {
 template <class T>
 class LightEffectService : public LightEffect, public StatefulService<T> {
  public:
-  LightEffectService(String id,
-                     CLEDController* ledController,
-                     JsonStateReader<T> stateReader,
-                     JsonStateUpdater<T> stateUpdater,
-                     FS* fs,
-                     AsyncWebServer* server,
-                     SecurityManager* securityManager) :
-      LightEffect(id, ledController),
-      StatefulService<T>(),
-      _fsPersistence(stateReader, stateUpdater, this, fs, String(LIGHT_EFFECT_FS_DIRECTORY + id).c_str()),
+  LightEffectService(CLEDController* ledController) : LightEffect(ledController), StatefulService<T>() {
+  }
+};
+
+class RegisteredLightEffect {
+ public:
+  RegisteredLightEffect(LightEffect* lightEffect) : _lightEffect(lightEffect) {
+  }
+
+  String getId() {
+    return _lightEffect->getId();
+  }
+
+  LightEffect* getEffect() {
+    return _lightEffect;
+  }
+
+ protected:
+  LightEffect* _lightEffect;
+};
+
+template <class T>
+class RegisteredLightEffectService : public RegisteredLightEffect {
+ public:
+  RegisteredLightEffectService(JsonStateReader<T> stateReader,
+                               JsonStateUpdater<T> stateUpdater,
+                               LightEffectService<T>* service,
+                               FS* fs,
+                               AsyncWebServer* server,
+                               SecurityManager* securityManager) :
+      RegisteredLightEffect(service),
+      _fsPersistence(stateReader,
+                     stateUpdater,
+                     service,
+                     fs,
+                     String(LIGHT_EFFECT_FS_DIRECTORY + service->getId()).c_str()),
       _httpEndpoint(stateReader,
                     stateUpdater,
-                    this,
+                    service,
                     server,
-                    String(LIGHT_EFFECT_REST_PREFIX + id).c_str(),
+                    String(LIGHT_EFFECT_REST_PREFIX + service->getId()).c_str(),
                     securityManager,
                     AuthenticationPredicates::IS_AUTHENTICATED) {
   }

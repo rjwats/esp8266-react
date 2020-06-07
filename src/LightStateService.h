@@ -9,7 +9,9 @@
 #include <FastLED.h>
 #include <JsonUtil.h>
 #include <LightEffect.h>
-#include <map>
+#include <FS.h>
+#include <list>
+#include <memory>
 
 // fast led settings
 #define LED_DATA_PIN 14  // was 21 for esp32
@@ -25,9 +27,6 @@
 
 #define LIGHT_SETTINGS_ENDPOINT_PATH "/rest/lightState"
 #define LIGHT_SETTINGS_SOCKET_PATH "/ws/lightState"
-
-typedef std::map<String, LightEffect*> LightEffectMap;
-typedef std::pair<String, LightEffect*> LightEffectPair;
 
 class LightState {
  public:
@@ -74,6 +73,7 @@ class LightState {
 class LightStateService : public StatefulService<LightState> {
  public:
   LightStateService(AsyncWebServer* server,
+                    FS* fs,
                     SecurityManager* securityManager,
                     AsyncMqttClient* mqttClient,
                     LightMqttSettingsService* lightMqttSettingsService);
@@ -82,16 +82,25 @@ class LightStateService : public StatefulService<LightState> {
 
   // temp - LED controller should be suppliex externally
   CLEDController* getLedController();
-  void addEffect(String key, LightEffect* lightEffect);
+  
+  template <class E>
+  void addEffect(LightEffectService<E>* service, JsonStateReader<E> stateReader, JsonStateUpdater<E> stateUpdater) {
+    _lightEffects.push_back(std::make_shared<RegisteredLightEffectService<E>>(
+        stateReader, stateUpdater, service, _fs, _server, _securityManager));
+  }
 
  private:
+  AsyncWebServer* _server;
+  FS* _fs;
+  SecurityManager* _securityManager;
+
   HttpEndpoint<LightState> _httpEndpoint;
   MqttPubSub<LightState> _mqttPubSub;
   WebSocketTxRx<LightState> _webSocket;
   AsyncMqttClient* _mqttClient;
   LightMqttSettingsService* _lightMqttSettingsService;
-  
-  LightEffectMap _lightEffects;
+
+  std::list<std::shared_ptr<RegisteredLightEffect>> _lightEffects;
   LightEffect* _currentEffect = nullptr;
 
   bool _refresh;

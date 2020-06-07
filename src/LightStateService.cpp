@@ -1,9 +1,13 @@
 #include <LightStateService.h>
 
 LightStateService::LightStateService(AsyncWebServer* server,
+                                     FS* fs,
                                      SecurityManager* securityManager,
                                      AsyncMqttClient* mqttClient,
                                      LightMqttSettingsService* lightMqttSettingsService) :
+    _server(server),
+    _fs(fs),
+    _securityManager(securityManager),
     _httpEndpoint(LightState::read,
                   LightState::update,
                   this,
@@ -39,11 +43,6 @@ CLEDController* LightStateService::getLedController() {
   return _ledController;
 }
 
-// Create all the associated stuff for an effect (endpoints persistance etc..)
-void LightStateService::addEffect(String key, LightEffect* lightEffect) {
-  _lightEffects.insert(LightEffectPair(key, lightEffect));
-}
-
 void LightStateService::begin() {
   FastLED.setMaxPowerInMilliWatts(10000);
   _state.ledOn = DEFAULT_LED_STATE;
@@ -57,12 +56,12 @@ void LightStateService::loop() {
     // set the brightness
     FastLED.setBrightness(_state.brightness);
 
-    // find the effect (if present)
-    LightEffectMap::iterator it = _lightEffects.find(_state.effect);
-    if (it != _lightEffects.end()) {
-      _currentEffect = it->second;
-    } else {
-      _currentEffect = nullptr;
+    _currentEffect = nullptr;
+    for (auto const& effectPtr : _lightEffects) {
+      RegisteredLightEffect* effect = effectPtr.get();
+      if (effect->getId().equals(_state.effect)) {
+        _currentEffect = effect->getEffect();
+      }
     }
   }
 

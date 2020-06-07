@@ -12,11 +12,12 @@ LightMqttSettingsService lightMqttSettingsService =
     LightMqttSettingsService(&server, &SPIFFS, esp8266React.getSecurityManager());
 
 LightStateService lightStateService = LightStateService(&server,
+                                                        &SPIFFS,
                                                         esp8266React.getSecurityManager(),
                                                         esp8266React.getMqttClient(),
                                                         &lightMqttSettingsService);
-RainbowEffect rainbowEffect =
-    RainbowEffect("Rainbow", lightStateService.getLedController(), &SPIFFS, &server, esp8266React.getSecurityManager());
+
+RainbowEffect rainbowEffect = RainbowEffect(lightStateService.getLedController());
 
 void setup() {
   // start serial and filesystem
@@ -29,7 +30,7 @@ void setup() {
   SPIFFS.begin();
 #endif
 
-  lightStateService.addEffect("Rainbow", &rainbowEffect);
+  lightStateService.addEffect(&rainbowEffect, RainbowEffectSettings::read, RainbowEffectSettings::update);
 
   // start the framework and demo project
   esp8266React.begin();

@@ -34,20 +34,30 @@ class RainbowEffect : public LightEffectService<RainbowEffectSettings> {
   bool _refresh = true;
 
  public:
-  RainbowEffect(String id,
-                CLEDController* ledController,
-                FS* fs,
-                AsyncWebServer* server,
-                SecurityManager* securityManager) :
-      LightEffectService(id,
-                         ledController,
-                         RainbowEffectSettings::read,
-                         RainbowEffectSettings::update,
-                         fs,
-                         server,
-                         securityManager){};
-  void loop();
-  void activate();
+  RainbowEffect(CLEDController* ledController) : LightEffectService(ledController){};
+
+  String getId() {
+    return "Rainbow";
+  }
+
+  void activate() {
+    _lastFrameMicros = micros();
+  }
+
+  void loop() {
+    if (_state.rotateSpeed > 0) {
+      unsigned long rotateDelayMicros = 1000000 / _state.rotateSpeed;
+      unsigned long currentMicros = micros();
+      unsigned long microsElapsed = (unsigned long)(currentMicros - _lastFrameMicros);
+      if (microsElapsed >= rotateDelayMicros) {
+        _lastFrameMicros = currentMicros;
+        _initialhue++;
+      }
+    }
+    fill_rainbow(
+        LightEffect::_ledController->leds(), LightEffect::_ledController->size(), _initialhue, _state.hueDelta);
+    FastLED.show();
+  }
 };
 
 #endif
