@@ -2,7 +2,7 @@
 #define CONFETTI_MODE_H
 
 #include <Arduino.h>
-#include <FastLed.h>
+#include <FastLED.h>
 #include <LightEffect.h>
 #include <JsonUtil.h>
 

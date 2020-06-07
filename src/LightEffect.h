@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 #include <ArduinoJson.h>
-#include <FastLed.h>
+#include <FastLED.h>
 #include <StatefulService.h>
 #include <FSPersistence.h>
 #include <HttpEndpoint.h>

@@ -2,7 +2,7 @@
 #define COLOR_UTIL_H
 
 #include <ArduinoJson.h>
-#include <FastLed.h>
+#include <FastLED.h>
 
 String colorToHexString(CRGB color);
 CRGB hexStringToColor(String& hexColor, CRGB def);
