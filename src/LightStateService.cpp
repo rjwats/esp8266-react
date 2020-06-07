@@ -39,7 +39,8 @@ CLEDController* LightStateService::getLedController() {
   return _ledController;
 }
 
-void LightStateService::addEffect(String key, void* lightEffect) {
+// Create all the associated stuff for an effect (endpoints persistance etc..)
+void LightStateService::addEffect(String key, LightEffect* lightEffect) {
   _lightEffects.insert(LightEffectPair(key, lightEffect));
 }
 
@@ -59,7 +60,7 @@ void LightStateService::loop() {
     // find the effect (if present)
     LightEffectMap::iterator it = _lightEffects.find(_state.effect);
     if (it != _lightEffects.end()) {
-      _currentEffect = reinterpret_cast<LightEffect*>(it->second);
+      _currentEffect = it->second;
     } else {
       _currentEffect = nullptr;
     }

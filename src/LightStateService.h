@@ -26,8 +26,8 @@
 #define LIGHT_SETTINGS_ENDPOINT_PATH "/rest/lightState"
 #define LIGHT_SETTINGS_SOCKET_PATH "/ws/lightState"
 
-typedef std::map<String, void*> LightEffectMap;
-typedef std::pair<String, void*> LightEffectPair;
+typedef std::map<String, LightEffect*> LightEffectMap;
+typedef std::pair<String, LightEffect*> LightEffectPair;
 
 class LightState {
  public:
@@ -82,7 +82,7 @@ class LightStateService : public StatefulService<LightState> {
 
   // temp - LED controller should be suppliex externally
   CLEDController* getLedController();
-  void addEffect(String key, void* lightEffect);
+  void addEffect(String key, LightEffect* lightEffect);
 
  private:
   HttpEndpoint<LightState> _httpEndpoint;

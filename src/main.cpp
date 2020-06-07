@@ -15,7 +15,8 @@ LightStateService lightStateService = LightStateService(&server,
                                                         esp8266React.getSecurityManager(),
                                                         esp8266React.getMqttClient(),
                                                         &lightMqttSettingsService);
-RainbowEffect rainbowEffect = RainbowEffect(lightStateService.getLedController());
+RainbowEffect rainbowEffect =
+    RainbowEffect("Rainbow", lightStateService.getLedController(), &SPIFFS, &server, esp8266React.getSecurityManager());
 
 void setup() {
   // start serial and filesystem
