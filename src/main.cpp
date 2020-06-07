@@ -31,9 +31,10 @@ void setup() {
 #elif defined(ESP8266)
   SPIFFS.begin();
 #endif
-
-  lightStateService.addEffect(&rainbowEffect, RainbowEffectSettings::read, RainbowEffectSettings::update);
-  lightStateService.addEffect(&confettiEffect, ConfettiEffectSettings::read, ConfettiEffectSettings::update);
+  lightStateService.addEffect<ConfettiEffectSettings>(
+      &confettiEffect, ConfettiEffectSettings::read, ConfettiEffectSettings::update);
+  lightStateService.addEffect<RainbowEffectSettings>(
+      &rainbowEffect, RainbowEffectSettings::read, RainbowEffectSettings::update);
 
   // start the framework and demo project
   esp8266React.begin();

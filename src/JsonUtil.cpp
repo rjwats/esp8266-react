@@ -13,7 +13,11 @@ String colorToHexString(CRGB color) {
   return colorString;
 }
 
-void rgbJsonToColor(JsonObject& root, CRGB& color, String key) {
+CRGB rgbJsonToColor(JsonObject rgbColor) {
+  return CRGB(rgbColor["r"] | 0, rgbColor["g"] | 0, rgbColor["b"] | 0);
+}
+
+void rgbJsonToColoroo(JsonObject& root, CRGB& color, String key) {
   if (root.containsKey(key)) {
     JsonObject jsonObject = root[key];
     color.r = jsonObject["r"] | 0;

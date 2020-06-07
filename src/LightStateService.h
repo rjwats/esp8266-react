@@ -33,41 +33,7 @@ class LightState {
   bool ledOn;
   uint8_t brightness;
   CRGB color;
-  String effect;
-
-  static void read(LightState& lightState, JsonObject& root) {
-    root["led_on"] = lightState.ledOn;
-    root["color"] = colorToHexString(lightState.color);
-    root["brightness"] = lightState.brightness;
-    root["effect"] = lightState.effect;
-  }
-
-  static StateUpdateResult update(JsonObject& root, LightState& lightState) {
-    lightState.ledOn = root["led_on"] | DEFAULT_LED_STATE;
-    String color = root["color"];
-    lightState.color = hexStringToColor(color, CRGB::White);
-    lightState.brightness = root["brightness"] | 255;
-    lightState.effect = root["effect"] | DEFAULT_EFFECT;
-
-    return StateUpdateResult::CHANGED;
-  }
-
-  static void haRead(LightState& lightState, JsonObject& root) {
-    root["state"] = lightState.ledOn ? ON_STATE : OFF_STATE;
-    colorToRGBJson(lightState.color, root);
-    root["brightness"] = lightState.brightness;
-    root["effect"] = lightState.effect;
-  }
-
-  static StateUpdateResult haUpdate(JsonObject& root, LightState& lightState) {
-    String state = root["state"];
-    lightState.ledOn = state.equals(ON_STATE);
-    rgbJsonToColor(root, lightState.color);
-    lightState.brightness = root["brightness"] | lightState.brightness;
-    lightState.effect = root["effect"] | lightState.effect;
-
-    return StateUpdateResult::CHANGED;
-  }
+  LightEffect* effect = nullptr;
 };
 
 class LightStateService : public StatefulService<LightState> {
@@ -101,7 +67,6 @@ class LightStateService : public StatefulService<LightState> {
   LightMqttSettingsService* _lightMqttSettingsService;
 
   std::list<std::shared_ptr<RegisteredLightEffect>> _lightEffects;
-  LightEffect* _currentEffect = nullptr;
 
   bool _refresh;
   CRGB _leds[NUM_LEDS];
@@ -109,6 +74,55 @@ class LightStateService : public StatefulService<LightState> {
 
   void registerConfig();
   void onConfigUpdated();
+
+  LightEffect* getEffect(String effectId) {
+    for (auto const& effectPtr : _lightEffects) {
+      RegisteredLightEffect* effect = effectPtr.get();
+      if (effect->getId().equals(effectId)) {
+        return effect->getEffect();
+      }
+    }
+    return nullptr;
+  }
+
+  void readForService(LightState& lightState, JsonObject& root) {
+    root["led_on"] = lightState.ledOn;
+    root["color"] = colorToHexString(lightState.color);
+    root["brightness"] = lightState.brightness;
+    root["effect"] = lightState.effect == nullptr ? DEFAULT_EFFECT : lightState.effect->getId();
+  }
+
+  // TODO - validating update?
+  StateUpdateResult updateFromService(JsonObject& root, LightState& lightState) {
+    lightState.ledOn = root["led_on"] | DEFAULT_LED_STATE;
+    String color = root["color"];
+    lightState.color = hexStringToColor(color, CRGB::White);
+    lightState.brightness = root["brightness"] | 255;
+    lightState.effect = getEffect(root["effect"]);
+    return StateUpdateResult::CHANGED;
+  }
+
+  void readForHa(LightState& lightState, JsonObject& root) {
+    root["state"] = lightState.ledOn ? ON_STATE : OFF_STATE;
+    colorToRGBJson(lightState.color, root);
+    root["brightness"] = lightState.brightness;
+    root["effect"] = lightState.effect == nullptr ? DEFAULT_EFFECT : lightState.effect->getId();
+  }
+
+  // TODO - validating update?
+  StateUpdateResult updateFromHa(JsonObject& root, LightState& lightState) {
+    lightState.ledOn = root["state"].as<String>().equals(ON_STATE);
+    if (root.containsKey("color")) {
+      lightState.color = rgbJsonToColor(root["color"].as<JsonObject>());
+    }
+    if (root.containsKey("brightness")) {
+      lightState.brightness = root["brightness"];
+    }
+    if (root.containsKey("effect")) {
+      lightState.effect = getEffect(root["effect"]);
+    }
+    return StateUpdateResult::CHANGED;
+  }
 };
 
 #endif

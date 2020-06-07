@@ -24,15 +24,15 @@ class LightEffect {
    */
   virtual String getId() = 0;
 
-  /*
-   * Called by the main loop on the active effect.
-   */
-  virtual void loop() = 0;
-
   /**
    * Called when the effect is activated.
    */
   virtual void activate() = 0;
+
+  /*
+   * Called by the main loop on the active effect.
+   */
+  virtual void loop() = 0;
 };
 
 template <class T>

@@ -6,10 +6,12 @@
 
 String colorToHexString(CRGB color);
 CRGB hexStringToColor(String& hexColor, CRGB def);
+CRGB rgbJsonToColor(JsonObject rgbColor);
 
 // void updateColorFromJson(JsonObject& root, CRGB* color, CRGB def, String key = "color");
 void colorToRGBJson(CRGB& color, JsonObject& root, String key = "color");
 void rgbJsonToColor(JsonObject& root, CRGB& color, String key = "color");
+
 
 /*
 void updateBooleanArrayFromJson(JsonObject& root, bool booleanArray[], uint16_t maxSize, String key);
