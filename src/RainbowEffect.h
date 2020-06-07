@@ -14,17 +14,6 @@ class RainbowEffectSettings {
  public:
   uint8_t rotateSpeed;
   uint8_t hueDelta;
-
-  static void read(RainbowEffectSettings& settings, JsonObject& root) {
-    root["rotate_speed"] = settings.rotateSpeed;
-    root["hue_delta"] = settings.hueDelta;
-  }
-
-  static StateUpdateResult update(JsonObject& root, RainbowEffectSettings& settings) {
-    settings.rotateSpeed = root["rotate_speed"] | RAINBOW_DEFAULT_ROTATE_SPEED;
-    settings.hueDelta = root["hue_delta"] | RAINBOW_DEFAULT_HUE_DELTA;
-    return StateUpdateResult::CHANGED;
-  }
 };
 
 class RainbowEffect : public LightEffectService<RainbowEffectSettings> {
@@ -57,6 +46,17 @@ class RainbowEffect : public LightEffectService<RainbowEffectSettings> {
     fill_rainbow(
         LightEffect::_ledController->leds(), LightEffect::_ledController->size(), _initialhue, _state.hueDelta);
     FastLED.show();
+  }
+
+  void readSettings(RainbowEffectSettings& settings, JsonObject& root) {
+    root["rotate_speed"] = settings.rotateSpeed;
+    root["hue_delta"] = settings.hueDelta;
+  }
+
+  StateUpdateResult updateSettings(JsonObject& root, RainbowEffectSettings& settings) {
+    settings.rotateSpeed = root["rotate_speed"] | RAINBOW_DEFAULT_ROTATE_SPEED;
+    settings.hueDelta = root["hue_delta"] | RAINBOW_DEFAULT_HUE_DELTA;
+    return StateUpdateResult::CHANGED;
   }
 };
 

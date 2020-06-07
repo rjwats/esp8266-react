@@ -40,6 +40,15 @@ class LightEffectService : public LightEffect, public StatefulService<T> {
  public:
   LightEffectService(CLEDController* ledController) : LightEffect(ledController), StatefulService<T>() {
   }
+  /**
+   * Read the current configuration to a JsonObject
+   */
+  virtual void readSettings(T& settings, JsonObject& root) = 0;
+
+  /**
+   * Update the current configuration from a JsonObject
+   */
+  virtual StateUpdateResult updateSettings(JsonObject& root, T& settings) = 0;
 };
 
 class RegisteredLightEffect {
@@ -54,6 +63,8 @@ class RegisteredLightEffect {
   LightEffect* getEffect() {
     return _lightEffect;
   }
+
+  virtual void begin() = 0;
 
  protected:
   LightEffect* _lightEffect;
@@ -81,6 +92,10 @@ class RegisteredLightEffectService : public RegisteredLightEffect {
                     String(LIGHT_EFFECT_REST_PREFIX + service->getId()).c_str(),
                     securityManager,
                     AuthenticationPredicates::IS_AUTHENTICATED) {
+  }
+
+  void begin() {
+    _fsPersistence.readFromFS();
   }
 
  protected:

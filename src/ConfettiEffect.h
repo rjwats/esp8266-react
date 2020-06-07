@@ -7,24 +7,12 @@
 #include <JsonUtil.h>
 
 #define CONFETTI_DEFAULT_MAX_CHANGES 24
-#define CONFETTI_DEFAULT_BRIGHTNESS 255
 #define CONFETTI_DEFAULT_DELAY 5
 
 class ConfettiEffectSettings {
  public:
   uint8_t maxChanges = CONFETTI_DEFAULT_MAX_CHANGES;
   uint8_t delay = CONFETTI_DEFAULT_DELAY;
-
-  static void read(ConfettiEffectSettings& settings, JsonObject& root) {
-    root["max_changes"] = settings.maxChanges;
-    root["delay"] = settings.delay;
-  }
-
-  static StateUpdateResult update(JsonObject& root, ConfettiEffectSettings& settings) {
-    settings.maxChanges = root["max_changes"] || CONFETTI_DEFAULT_MAX_CHANGES;
-    settings.delay = root["delay"] || CONFETTI_DEFAULT_DELAY;
-    return StateUpdateResult::CHANGED;
-  }
 };
 
 class ConfettiEffect : public LightEffectService<ConfettiEffectSettings> {
@@ -99,6 +87,17 @@ class ConfettiEffect : public LightEffectService<ConfettiEffectSettings> {
 
   void activate() {
     _refresh = true;
+  }
+
+  void readSettings(ConfettiEffectSettings& settings, JsonObject& root) {
+    root["max_changes"] = settings.maxChanges;
+    root["delay"] = settings.delay;
+  }
+
+  StateUpdateResult updateSettings(JsonObject& root, ConfettiEffectSettings& settings) {
+    settings.maxChanges = root["max_changes"] | CONFETTI_DEFAULT_MAX_CHANGES;
+    settings.delay = root["delay"] | CONFETTI_DEFAULT_DELAY;
+    return StateUpdateResult::CHANGED;
   }
 };
 

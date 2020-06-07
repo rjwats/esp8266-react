@@ -22,6 +22,9 @@ RainbowEffect rainbowEffect = RainbowEffect(lightStateService.getLedController()
 ConfettiEffect confettiEffect = ConfettiEffect(lightStateService.getLedController());
 
 void setup() {
+  lightStateService.addEffect<ConfettiEffectSettings>(&confettiEffect);
+  lightStateService.addEffect<RainbowEffectSettings>(&rainbowEffect);
+
   // start serial and filesystem
   Serial.begin(SERIAL_BAUD_RATE);
 
@@ -31,10 +34,6 @@ void setup() {
 #elif defined(ESP8266)
   SPIFFS.begin();
 #endif
-  lightStateService.addEffect<ConfettiEffectSettings>(
-      &confettiEffect, ConfettiEffectSettings::read, ConfettiEffectSettings::update);
-  lightStateService.addEffect<RainbowEffectSettings>(
-      &rainbowEffect, RainbowEffectSettings::read, RainbowEffectSettings::update);
 
   // start the framework and demo project
   esp8266React.begin();

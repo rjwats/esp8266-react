@@ -50,9 +50,14 @@ class LightStateService : public StatefulService<LightState> {
   CLEDController* getLedController();
 
   template <class E>
-  void addEffect(LightEffectService<E>* service, JsonStateReader<E> stateReader, JsonStateUpdater<E> stateUpdater) {
+  void addEffect(LightEffectService<E>* service) {
     _lightEffects.push_back(std::make_shared<RegisteredLightEffectService<E>>(
-        stateReader, stateUpdater, service, _fs, _server, _securityManager));
+        std::bind(&LightEffectService<E>::readSettings, service, std::placeholders::_1, std::placeholders::_2),
+        std::bind(&LightEffectService<E>::updateSettings, service, std::placeholders::_1, std::placeholders::_2),
+        service,
+        _fs,
+        _server,
+        _securityManager));
   }
 
  private:

@@ -17,8 +17,6 @@ void rgbJsonToColor(JsonObject& root, CRGB& color, String key = "color");
 void updateBooleanArrayFromJson(JsonObject& root, bool booleanArray[], uint16_t maxSize, String key);
 void writeBooleanArrayToJson(JsonObject& root, bool booleanArray[], uint16_t maxSize, String key);
 
-
-
 void updateByteFromJson(JsonObject& root, uint8_t* value, uint8_t def, String key);
 void writeByteToJson(JsonObject& root, uint8_t* value, String key);
 

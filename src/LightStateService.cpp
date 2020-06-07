@@ -52,6 +52,11 @@ void LightStateService::begin() {
   _state.color = CRGB::White;
   _state.brightness = 100;
   onConfigUpdated();
+
+  // allow the effects to read their settings from the file system
+  for (auto const& effectPtr : _lightEffects) {
+    effectPtr.get()->begin();
+  }
 }
 
 void LightStateService::onConfigUpdated() {
@@ -62,17 +67,17 @@ void LightStateService::loop() {
   LightEffect* effect = _state.effect;
   if (_refresh) {
     FastLED.setBrightness(_state.brightness);
-    if (effect == nullptr) {
-      if (_state.ledOn) {
+    if (_state.ledOn) {
+      if (effect == nullptr) {
         fill_solid(_leds, NUM_LEDS, _state.color);
         FastLED.show();
-      } else {
-        _ledController->clearLeds(NUM_LEDS);
       }
+    } else {
+      _ledController->clearLeds(NUM_LEDS);
     }
     _refresh = false;
   }
-  if (effect != nullptr) {
+  if (_state.ledOn && effect != nullptr) {
     effect->loop();
   }
 }
