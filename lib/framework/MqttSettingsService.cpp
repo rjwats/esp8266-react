@@ -1,7 +1,5 @@
 #include <MqttSettingsService.h>
 
-#if FT_ENABLED(FT_MQTT)
-
 /**
  * Retains a copy of the cstr provided in the pointer provided using dynamic allocation.
  *
@@ -161,5 +159,3 @@ void MqttSettingsService::configureMqtt() {
     _mqttClient.connect();
   }
 }
-
-#endif // end FT_ENABLED(FT_MQTT)

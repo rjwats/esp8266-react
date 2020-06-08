@@ -18,8 +18,6 @@
 #define MAX_MQTT_STATUS_SIZE 1024
 #define MQTT_STATUS_SERVICE_PATH "/rest/mqttStatus"
 
-#if FT_ENABLED(FT_MQTT)
-
 class MqttStatus {
  public:
   MqttStatus(AsyncWebServer* server, MqttSettingsService* mqttSettingsService, SecurityManager* securityManager);
@@ -30,5 +28,4 @@ class MqttStatus {
   void mqttStatus(AsyncWebServerRequest* request);
 };
 
-#endif // end FT_ENABLED(FT_MQTT)
 #endif  // end MqttStatus_h

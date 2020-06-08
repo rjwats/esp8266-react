@@ -18,10 +18,8 @@
 #include <AuthenticationService.h>
 #endif
 #include <FactoryResetService.h>
-#if FT_ENABLED(FT_MQTT)
 #include <MqttSettingsService.h>
 #include <MqttStatus.h>
-#endif
 #include <NTPSettingsService.h>
 #include <NTPStatus.h>
 #include <OTASettingsService.h>

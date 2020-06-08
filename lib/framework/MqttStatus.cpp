@@ -1,6 +1,5 @@
 #include <MqttStatus.h>
 
-#if FT_ENABLED(FT_MQTT)
 MqttStatus::MqttStatus(AsyncWebServer* server,
                        MqttSettingsService* mqttSettingsService,
                        SecurityManager* securityManager) :
@@ -23,5 +22,3 @@ void MqttStatus::mqttStatus(AsyncWebServerRequest* request) {
   response->setLength();
   request->send(response);
 }
-
-#endif // end FT_ENABLED(FT_MQTT)
