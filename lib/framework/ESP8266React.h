@@ -89,30 +89,26 @@ class ESP8266React {
   FeaturesService _featureService;
   SecuritySettingsService _securitySettingsService;
   WiFiSettingsService _wifiSettingsService;
+  WiFiScanner _wifiScanner;
+  WiFiStatus _wifiStatus;
   APSettingsService _apSettingsService;
+  APStatus _apStatus;
 #if FT_ENABLED(FT_NTP)
   NTPSettingsService _ntpSettingsService;
+  NTPStatus _ntpStatus;
 #endif
 #if FT_ENABLED(FT_OTA)
   OTASettingsService _otaSettingsService;
 #endif
 #if FT_ENABLED(FT_MQTT)
   MqttSettingsService _mqttSettingsService;
+  MqttStatus _mqttStatus;
 #endif
-  RestartService _restartService;
-  FactoryResetService _factoryResetService;
 #if FT_ENABLED(FT_SECURITY)
   AuthenticationService _authenticationService;
 #endif
-  WiFiScanner _wifiScanner;
-  WiFiStatus _wifiStatus;
-#if FT_ENABLED(FT_NTP)  
-  NTPStatus _ntpStatus;
-#endif  
-  APStatus _apStatus;
-#if FT_ENABLED(FT_MQTT)
-  MqttStatus _mqttStatus;
-#endif
+  RestartService _restartService;
+  FactoryResetService _factoryResetService;
   SystemStatus _systemStatus;
 };
 
