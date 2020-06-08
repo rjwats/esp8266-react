@@ -17,6 +17,9 @@ import System from './system/System';
 import { PROJECT_PATH } from './api';
 import Mqtt from './mqtt/Mqtt';
 import { withFeatures, WithFeaturesProps } from './features/FeaturesContext';
+import { Features } from './features/types';
+
+export const getDefaultRoute = (features: Features) => features.project ? `/${PROJECT_PATH}/` : "/wifi/";
 
 class AppRouting extends Component<WithFeaturesProps> {
 
@@ -45,7 +48,7 @@ class AppRouting extends Component<WithFeaturesProps> {
             <AuthenticatedRoute exact path="/security/*" component={Security} />
           )}
           <AuthenticatedRoute exact path="/system/*" component={System} />
-          <Redirect to={features.security ? "/" : "/wifi/"} />
+          <Redirect to={getDefaultRoute(features)} />
         </Switch>
       </AuthenticationWrapper>
     )
