@@ -40,7 +40,9 @@ class AppRouting extends Component<WithFeaturesProps> {
           )}
           <AuthenticatedRoute exact path="/wifi/*" component={WiFiConnection} />
           <AuthenticatedRoute exact path="/ap/*" component={AccessPoint} />
+          {features.ntp && (
           <AuthenticatedRoute exact path="/ntp/*" component={NetworkTime} />
+          )}
           {features.mqtt && (
             <AuthenticatedRoute exact path="/mqtt/*" component={Mqtt} />
           )}
