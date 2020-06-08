@@ -5,11 +5,15 @@ ESP8266React::ESP8266React(AsyncWebServer* server, FS* fs) :
     _securitySettingsService(server, fs),
     _wifiSettingsService(server, fs, &_securitySettingsService),
     _apSettingsService(server, fs, &_securitySettingsService),
+#if FT_ENABLED(FT_NTP)
     _ntpSettingsService(server, fs, &_securitySettingsService),
+#endif
+#if FT_ENABLED(FT_OTA)
     _otaSettingsService(server, fs, &_securitySettingsService),
-#if FT_ENABLED(FT_MQTT)      
+#endif
+#if FT_ENABLED(FT_MQTT)
     _mqttSettingsService(server, fs, &_securitySettingsService),
-#endif    
+#endif
     _restartService(server, &_securitySettingsService),
     _factoryResetService(server, fs, &_securitySettingsService),
 #if FT_ENABLED(FT_SECURITY)
@@ -17,11 +21,13 @@ ESP8266React::ESP8266React(AsyncWebServer* server, FS* fs) :
 #endif
     _wifiScanner(server, &_securitySettingsService),
     _wifiStatus(server, &_securitySettingsService),
+#if FT_ENABLED(FT_NTP)
     _ntpStatus(server, &_securitySettingsService),
+#endif
     _apStatus(server, &_securitySettingsService, &_apSettingsService),
-#if FT_ENABLED(FT_MQTT)    
+#if FT_ENABLED(FT_MQTT)
     _mqttStatus(server, &_mqttSettingsService, &_securitySettingsService),
-#endif    
+#endif
     _systemStatus(server, &_securitySettingsService) {
 #ifdef PROGMEM_WWW
   // Serve static resources from PROGMEM
@@ -81,17 +87,23 @@ void ESP8266React::begin() {
 #endif
   _wifiSettingsService.begin();
   _apSettingsService.begin();
+#if FT_ENABLED(FT_NTP)
   _ntpSettingsService.begin();
+#endif
+#if FT_ENABLED(FT_OTA)
   _otaSettingsService.begin();
+#endif
 #if FT_ENABLED(FT_MQTT)
   _mqttSettingsService.begin();
-#endif  
+#endif
 }
 
 void ESP8266React::loop() {
   _wifiSettingsService.loop();
   _apSettingsService.loop();
+#if FT_ENABLED(FT_OTA)
   _otaSettingsService.loop();
+#endif
 #if FT_ENABLED(FT_MQTT)
   _mqttSettingsService.loop();
 #endif

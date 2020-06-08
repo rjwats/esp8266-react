@@ -29,7 +29,9 @@ class AppRouting extends Component<WithFeaturesProps> {
     return (
       <AuthenticationWrapper>
         <Switch>
-          <UnauthenticatedRoute exact path="/" component={SignIn} />
+          {features.security && (
+            <UnauthenticatedRoute exact path="/" component={SignIn} />
+          )}
           {features.project && (
             <AuthenticatedRoute exact path={`/${PROJECT_PATH}/*`} component={ProjectRouting} />
           )}
@@ -43,7 +45,7 @@ class AppRouting extends Component<WithFeaturesProps> {
             <AuthenticatedRoute exact path="/security/*" component={Security} />
           )}
           <AuthenticatedRoute exact path="/system/*" component={System} />
-          <Redirect to="/" />
+          <Redirect to={features.security ? "/" : "/wifi/"} />
         </Switch>
       </AuthenticationWrapper>
     )

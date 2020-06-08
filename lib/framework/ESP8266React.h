@@ -61,13 +61,17 @@ class ESP8266React {
     return &_apSettingsService;
   }
 
+#if FT_ENABLED(FT_NTP)
   StatefulService<NTPSettings>* getNTPSettingsService() {
     return &_ntpSettingsService;
   }
+#endif
 
+#if FT_ENABLED(FT_OTA)
   StatefulService<OTASettings>* getOTASettingsService() {
     return &_otaSettingsService;
   }
+#endif
 
 #if FT_ENABLED(FT_MQTT)
   StatefulService<MqttSettings>* getMqttSettingsService() {
@@ -88,8 +92,12 @@ class ESP8266React {
   SecuritySettingsService _securitySettingsService;
   WiFiSettingsService _wifiSettingsService;
   APSettingsService _apSettingsService;
+#if FT_ENABLED(FT_NTP)
   NTPSettingsService _ntpSettingsService;
+#endif
+#if FT_ENABLED(FT_OTA)
   OTASettingsService _otaSettingsService;
+#endif
 #if FT_ENABLED(FT_MQTT)
   MqttSettingsService _mqttSettingsService;
 #endif
@@ -100,7 +108,9 @@ class ESP8266React {
 #endif
   WiFiScanner _wifiScanner;
   WiFiStatus _wifiStatus;
+#if FT_ENABLED(FT_NTP)  
   NTPStatus _ntpStatus;
+#endif  
   APStatus _apStatus;
 #if FT_ENABLED(FT_MQTT)
   MqttStatus _mqttStatus;

@@ -148,12 +148,14 @@ class MenuAppBar extends React.Component<MenuAppBarProps, MenuAppBarState> {
             </ListItemIcon>
             <ListItemText primary="Access Point" />
           </ListItem>
+          {features.ntp && (
           <ListItem to='/ntp/' selected={path.startsWith('/ntp/')} button component={Link}>
             <ListItemIcon>
               <AccessTimeIcon />
             </ListItemIcon>
             <ListItemText primary="Network Time" />
           </ListItem>
+          )}
           {features.mqtt && (
             <ListItem to='/mqtt/' selected={path.startsWith('/mqtt/')} button component={Link}>
               <ListItemIcon>

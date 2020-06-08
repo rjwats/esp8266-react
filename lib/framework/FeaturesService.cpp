@@ -22,6 +22,16 @@ void FeaturesService::features(AsyncWebServerRequest* request) {
 #else
   root["mqtt"] = false;
 #endif
+#if FT_ENABLED(FT_NTP)
+  root["ntp"] = true;
+#else
+  root["ntp"] = false;
+#endif
+#if FT_ENABLED(FT_OTA)
+  root["ota"] = true;
+#else
+  root["ota"] = false;
+#endif
   response->setLength();
   request->send(response);
 }
