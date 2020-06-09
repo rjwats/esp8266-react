@@ -1,5 +1,6 @@
 import { ENDPOINT_ROOT } from './Env';
 
+export const FEATURES_ENDPOINT = ENDPOINT_ROOT + "features";
 export const NTP_STATUS_ENDPOINT = ENDPOINT_ROOT + "ntpStatus";
 export const NTP_SETTINGS_ENDPOINT = ENDPOINT_ROOT + "ntpSettings";
 export const AP_SETTINGS_ENDPOINT = ENDPOINT_ROOT + "apSettings";

@@ -8,6 +8,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import AppRouting from './AppRouting';
 import CustomMuiTheme from './CustomMuiTheme';
 import { PROJECT_NAME } from './api';
+import FeaturesWrapper from './features/FeaturesWrapper';
 
 // this redirect forces a call to authenticationContext.refresh() which invalidates the JWT if it is invalid.
 const unauthorizedRedirect = () => <Redirect to="/" />;
@@ -34,10 +35,12 @@ class App extends Component {
               <CloseIcon />
             </IconButton>
           )}>
-          <Switch>
-            <Route exact path="/unauthorized" component={unauthorizedRedirect} />
-            <Route component={AppRouting} />
-          </Switch>
+          <FeaturesWrapper>
+            <Switch>
+              <Route exact path="/unauthorized" component={unauthorizedRedirect} />
+              <Route component={AppRouting} />
+            </Switch>
+          </FeaturesWrapper>
         </SnackbarProvider>
       </CustomMuiTheme>
     );
