@@ -100,8 +100,8 @@ export function restController<D, P extends RestControllerProps<D>>(endpointUrl:
 
       render() {
         return <RestController
-          {...this.props as P}
           {...this.state}
+          {...this.props as P}
           handleValueChange={this.handleValueChange}
           setData={this.setData}
           saveData={this.saveData}
