@@ -14,9 +14,7 @@
 #include <FeaturesService.h>
 #include <APSettingsService.h>
 #include <APStatus.h>
-#if FT_ENABLED(FT_SECURITY)
 #include <AuthenticationService.h>
-#endif
 #include <FactoryResetService.h>
 #include <MqttSettingsService.h>
 #include <MqttStatus.h>

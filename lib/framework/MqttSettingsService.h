@@ -1,7 +1,6 @@
 #ifndef MqttSettingsService_h
 #define MqttSettingsService_h
 
-#include <Features.h>
 #include <StatefulService.h>
 #include <HttpEndpoint.h>
 #include <FSPersistence.h>

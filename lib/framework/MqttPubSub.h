@@ -1,7 +1,6 @@
 #ifndef MqttPubSub_h
 #define MqttPubSub_h
 
-#include <Features.h>
 #include <StatefulService.h>
 #include <AsyncMqttClient.h>
 
