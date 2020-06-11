@@ -1,7 +1,8 @@
 import * as H from 'history';
 
 import history from '../history';
-import { PROJECT_PATH } from '../api';
+import { Features } from '../features/types';
+import { getDefaultRoute } from '../AppRouting';
 
 export const ACCESS_TOKEN = 'access_token';
 export const LOGIN_PATHNAME = 'loginPathname';
@@ -26,12 +27,12 @@ export function clearLoginRedirect() {
   getStorage().removeItem(LOGIN_SEARCH);
 }
 
-export function fetchLoginRedirect(): H.LocationDescriptorObject {
+export function fetchLoginRedirect(features: Features): H.LocationDescriptorObject {
   const loginPathname = getStorage().getItem(LOGIN_PATHNAME);
   const loginSearch = getStorage().getItem(LOGIN_SEARCH);
   clearLoginRedirect();
   return {
-    pathname: loginPathname || `/${PROJECT_PATH}/`,
+    pathname: loginPathname || getDefaultRoute(features),
     search: (loginPathname && loginSearch) || undefined
   };
 }

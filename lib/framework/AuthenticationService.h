@@ -1,6 +1,7 @@
 #ifndef AuthenticationService_H_
 #define AuthenticationService_H_
 
+#include <Features.h>
 #include <AsyncJson.h>
 #include <ESPAsyncWebServer.h>
 #include <SecurityManager.h>
@@ -10,6 +11,8 @@
 #define SIGN_IN_PATH "/rest/signIn"
 
 #define MAX_AUTHENTICATION_SIZE 256
+
+#if FT_ENABLED(FT_SECURITY)
 
 class AuthenticationService {
  public:
@@ -24,4 +27,5 @@ class AuthenticationService {
   void verifyAuthorization(AsyncWebServerRequest* request);
 };
 
+#endif  // end FT_ENABLED(FT_SECURITY)
 #endif  // end SecurityManager_h

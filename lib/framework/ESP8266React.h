@@ -11,6 +11,7 @@
 #include <ESPAsyncTCP.h>
 #endif
 
+#include <FeaturesService.h>
 #include <APSettingsService.h>
 #include <APStatus.h>
 #include <AuthenticationService.h>
@@ -45,9 +46,11 @@ class ESP8266React {
     return &_securitySettingsService;
   }
 
+#if FT_ENABLED(FT_SECURITY)
   StatefulService<SecuritySettings>* getSecuritySettingsService() {
     return &_securitySettingsService;
   }
+#endif
 
   StatefulService<WiFiSettings>* getWiFiSettingsService() {
     return &_wifiSettingsService;
@@ -57,14 +60,19 @@ class ESP8266React {
     return &_apSettingsService;
   }
 
+#if FT_ENABLED(FT_NTP)
   StatefulService<NTPSettings>* getNTPSettingsService() {
     return &_ntpSettingsService;
   }
+#endif
 
+#if FT_ENABLED(FT_OTA)
   StatefulService<OTASettings>* getOTASettingsService() {
     return &_otaSettingsService;
   }
+#endif
 
+#if FT_ENABLED(FT_MQTT)
   StatefulService<MqttSettings>* getMqttSettingsService() {
     return &_mqttSettingsService;
   }
@@ -72,6 +80,7 @@ class ESP8266React {
   AsyncMqttClient* getMqttClient() {
     return _mqttSettingsService.getMqttClient();
   }
+#endif
 
   void factoryReset() {
     _factoryResetService.factoryReset();
@@ -79,23 +88,29 @@ class ESP8266React {
 
  private:
   FS* _fs;
-
+  FeaturesService _featureService;
   SecuritySettingsService _securitySettingsService;
   WiFiSettingsService _wifiSettingsService;
-  APSettingsService _apSettingsService;
-  NTPSettingsService _ntpSettingsService;
-  OTASettingsService _otaSettingsService;
-  MqttSettingsService _mqttSettingsService;
-  RestartService _restartService;
-  FactoryResetService _factoryResetService;
-
-  AuthenticationService _authenticationService;
-
   WiFiScanner _wifiScanner;
   WiFiStatus _wifiStatus;
-  NTPStatus _ntpStatus;
+  APSettingsService _apSettingsService;
   APStatus _apStatus;
+#if FT_ENABLED(FT_NTP)
+  NTPSettingsService _ntpSettingsService;
+  NTPStatus _ntpStatus;
+#endif
+#if FT_ENABLED(FT_OTA)
+  OTASettingsService _otaSettingsService;
+#endif
+#if FT_ENABLED(FT_MQTT)
+  MqttSettingsService _mqttSettingsService;
   MqttStatus _mqttStatus;
+#endif
+#if FT_ENABLED(FT_SECURITY)
+  AuthenticationService _authenticationService;
+#endif
+  RestartService _restartService;
+  FactoryResetService _factoryResetService;
   SystemStatus _systemStatus;
   WebSocketLogHandler _webSocketLogHandler;
   EventSourceLogHandler _eventSourceLogHandler;

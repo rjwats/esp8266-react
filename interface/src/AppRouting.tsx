@@ -16,30 +16,45 @@ import System from './system/System';
 
 import { PROJECT_PATH } from './api';
 import Mqtt from './mqtt/Mqtt';
+import { withFeatures, WithFeaturesProps } from './features/FeaturesContext';
+import { Features } from './features/types';
 
-class AppRouting extends Component {
+export const getDefaultRoute = (features: Features) => features.project ? `/${PROJECT_PATH}/` : "/wifi/";
+
+class AppRouting extends Component<WithFeaturesProps> {
 
   componentDidMount() {
     Authentication.clearLoginRedirect();
   }
 
   render() {
+    const { features } = this.props;
     return (
       <AuthenticationWrapper>
         <Switch>
-          <UnauthenticatedRoute exact path="/" component={SignIn} />
-          <AuthenticatedRoute exact path={`/${PROJECT_PATH}/*`} component={ProjectRouting} />
-          <AuthenticatedRoute exact path="/wifi/*" component={WiFiConnection} />         
+          {features.security && (
+            <UnauthenticatedRoute exact path="/" component={SignIn} />
+          )}
+          {features.project && (
+            <AuthenticatedRoute exact path={`/${PROJECT_PATH}/*`} component={ProjectRouting} />
+          )}
+          <AuthenticatedRoute exact path="/wifi/*" component={WiFiConnection} />
           <AuthenticatedRoute exact path="/ap/*" component={AccessPoint} />
+          {features.ntp && (
           <AuthenticatedRoute exact path="/ntp/*" component={NetworkTime} />
-          <AuthenticatedRoute exact path="/mqtt/*" component={Mqtt} />
-          <AuthenticatedRoute exact path="/security/*" component={Security} /> 
-          <AuthenticatedRoute exact path="/system/*" component={System} />          
-          <Redirect to="/" />
+          )}
+          {features.mqtt && (
+            <AuthenticatedRoute exact path="/mqtt/*" component={Mqtt} />
+          )}
+          {features.security && (
+            <AuthenticatedRoute exact path="/security/*" component={Security} />
+          )}
+          <AuthenticatedRoute exact path="/system/*" component={System} />
+          <Redirect to={getDefaultRoute(features)} />
         </Switch>
       </AuthenticationWrapper>
     )
   }
 }
 
-export default AppRouting;
+export default withFeatures(AppRouting);

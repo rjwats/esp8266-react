@@ -21,11 +21,11 @@ enum class StateUpdateResult {
   ERROR         // There was a problem updating the state, propagation should not take place
 };
 
-template <class T>
-using JsonStateUpdater = StateUpdateResult (*)(JsonObject& root, T& settings);
+template <typename T>
+using JsonStateUpdater = std::function<StateUpdateResult(JsonObject& root, T& settings)>;
 
-template <class T>
-using JsonStateReader = void (*)(T& settings, JsonObject& root);
+template <typename T>
+using JsonStateReader = std::function<void(T& settings, JsonObject& root)>;
 
 typedef size_t update_handler_id_t;
 typedef std::function<void(const String& originId)> StateUpdateCallback;
