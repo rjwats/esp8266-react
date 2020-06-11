@@ -26,8 +26,7 @@ ESP8266React::ESP8266React(AsyncWebServer* server, FS* fs) :
     _restartService(server, &_securitySettingsService),
     _factoryResetService(server, fs, &_securitySettingsService),
     _systemStatus(server, &_securitySettingsService),
-    _webSocketLogHandler(server, &_securitySettingsService),
-    _eventSourceLogHandler(server, &_securitySettingsService) {
+    _webSocketLogHandler(server, &_securitySettingsService) {
 #ifdef PROGMEM_WWW
   // Serve static resources from PROGMEM
   WWWData::registerRoutes(

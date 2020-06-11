@@ -29,7 +29,6 @@
 #include <WiFiStatus.h>
 #include <SerialLogHandler.h>
 #include <WebSocketLogHandler.h>
-#include <EventSourceLogHandler.h>
 
 #ifdef PROGMEM_WWW
 #include <WWWData.h>
@@ -113,7 +112,6 @@ class ESP8266React {
   FactoryResetService _factoryResetService;
   SystemStatus _systemStatus;
   WebSocketLogHandler _webSocketLogHandler;
-  EventSourceLogHandler _eventSourceLogHandler;
 };
 
 #endif
