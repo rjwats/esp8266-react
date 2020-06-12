@@ -204,7 +204,7 @@ It is recommended that you change the user credentials from their defaults bette
 
 ### Customizing the factory time zone setting
 
-Changing factory time zone setting is a common requirement. This requires a little effort because the time zone name and POSIX format are stored as separate values for the moment. The time zone names and POSIX formats are contained in the UI code in [TZ.ts](interface/src/ntp/TZ.ts). Take the appropriate pair of values from there, for example, for Los Angeles you would use:
+Changing factory time zone setting is a common requirement. This requires a little effort because the time zone name and POSIX format are stored as separate values for the moment. The time zone names and POSIX formats are contained in the UI code in [TZ.tsx](interface/src/ntp/TZ.tsx). Take the appropriate pair of values from there, for example, for Los Angeles you would use:
 
 ```ini
     -D FACTORY_NTP_TIME_ZONE_LABEL=\"America/Los_Angeles\"
