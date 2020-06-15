@@ -59,6 +59,7 @@ void NTPSettingsService::configureNTP() {
     configTime(_state.tzFormat.c_str(), _state.server.c_str());
 #endif
   } else {
+    setTZ(_state.tzFormat.c_str());
     sntp_stop();
   }
 }
@@ -71,7 +72,6 @@ void NTPSettingsService::configureTime(AsyncWebServerRequest* request, JsonVaria
     if (s != nullptr) {
       time_t time = mktime(&tm);
       struct timeval now = {.tv_sec = time};
-      setTZ(_state.tzFormat.c_str());
       settimeofday(&now, nullptr);
       AsyncWebServerResponse* response = request->beginResponse(200);
       request->send(response);

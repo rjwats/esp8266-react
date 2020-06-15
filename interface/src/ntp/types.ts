@@ -17,3 +17,7 @@ export interface NTPSettings {
   tz_label: string;
   tz_format: string;
 }
+
+export interface Time {
+  time_utc: string;
+}
