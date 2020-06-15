@@ -2,7 +2,12 @@
 
 NTPSettingsService::NTPSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) :
     _httpEndpoint(NTPSettings::read, NTPSettings::update, this, server, NTP_SETTINGS_SERVICE_PATH, securityManager),
-    _fsPersistence(NTPSettings::read, NTPSettings::update, this, fs, NTP_SETTINGS_FILE) {
+    _fsPersistence(NTPSettings::read, NTPSettings::update, this, fs, NTP_SETTINGS_FILE),
+    _timeHandler(TIME_PATH,
+                 std::bind(&NTPSettingsService::configureTime, this, std::placeholders::_1, std::placeholders::_2)) {
+  _timeHandler.setMethod(HTTP_POST);
+  _timeHandler.setMaxContentLength(MAX_TIME_SIZE);
+  server->addHandler(&_timeHandler);
 #ifdef ESP32
   WiFi.onEvent(
       std::bind(&NTPSettingsService::onStationModeDisconnected, this, std::placeholders::_1, std::placeholders::_2),
@@ -56,4 +61,23 @@ void NTPSettingsService::configureNTP() {
   } else {
     sntp_stop();
   }
+}
+
+void NTPSettingsService::configureTime(AsyncWebServerRequest* request, JsonVariant& json) {
+  if (!_state.enabled && json.is<JsonObject>()) {
+    String timeUtc = json["time_utc"];
+    struct tm tm = {0};
+    char* s = strptime(timeUtc.c_str(), "%Y-%m-%dT%H:%M:%SZ", &tm);
+    if (s != nullptr) {
+      time_t time = mktime(&tm);
+      struct timeval now = {.tv_sec = time};
+      setTZ(_state.tzFormat.c_str());
+      settimeofday(&now, nullptr);
+      AsyncWebServerResponse* response = request->beginResponse(200);
+      request->send(response);
+      return;
+    }
+  }
+  AsyncWebServerResponse* response = request->beginResponse(400);
+  request->send(response);
 }
