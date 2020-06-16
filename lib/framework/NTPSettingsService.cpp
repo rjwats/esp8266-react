@@ -59,7 +59,12 @@ void NTPSettingsService::configureNTP() {
     configTime(_state.tzFormat.c_str(), _state.server.c_str());
 #endif
   } else {
+#ifdef ESP32
+    setenv("TZ", _state.tzFormat.c_str(), 1);
+    tzset();
+#elif defined(ESP8266)
     setTZ(_state.tzFormat.c_str());
+#endif
     sntp_stop();
   }
 }
