@@ -99,6 +99,7 @@ class NTPStatusForm extends Component<NTPStatusFormProps, NTPStatusFormState> {
             type="datetime-local"
             value={this.state.localTime}
             onChange={this.updateLocalTime}
+            disabled={this.state.processing}
             variant="outlined"
             fullWidth
             InputLabelProps={{
