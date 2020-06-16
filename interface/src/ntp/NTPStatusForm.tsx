@@ -2,7 +2,8 @@ import React, { Component, Fragment } from 'react';
 import moment from 'moment';
 
 import { WithTheme, withTheme } from '@material-ui/core/styles';
-import { Avatar, Divider, List, ListItem, ListItemAvatar, ListItemText, ListItemSecondaryAction, Button, Dialog, DialogTitle, DialogContent, DialogActions, Box, TextField } from '@material-ui/core';
+import { Avatar, Divider, List, ListItem, ListItemAvatar, ListItemText, Button } from '@material-ui/core';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Box, TextField } from '@material-ui/core';
 
 import SwapVerticalCircleIcon from '@material-ui/icons/SwapVerticalCircle';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
@@ -11,15 +12,14 @@ import UpdateIcon from '@material-ui/icons/Update';
 import AvTimerIcon from '@material-ui/icons/AvTimer';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
-import { RestFormProps, FormActions, FormButton, HighlightAvatar } from '../components';
-
+import { RestFormProps, FormButton, HighlightAvatar } from '../components';
 import { isNtpActive, ntpStatusHighlight, ntpStatus } from './NTPStatus';
 import { formatIsoDateTime, formatLocalDateTime } from './TimeFormat';
 import { NTPStatus, Time } from './types';
-import { redirectingAuthorizedFetch } from '../authentication';
+import { redirectingAuthorizedFetch, withAuthenticatedContext, AuthenticatedContextProps } from '../authentication';
 import { TIME_ENDPOINT } from '../api';
 
-type NTPStatusFormProps = RestFormProps<NTPStatus> & WithTheme;
+type NTPStatusFormProps = RestFormProps<NTPStatus> & WithTheme & AuthenticatedContextProps;
 
 interface NTPStatusFormState {
   settingTime: boolean;
@@ -93,7 +93,6 @@ class NTPStatusForm extends Component<NTPStatusFormProps, NTPStatusFormState> {
       >
         <DialogTitle>Set Time</DialogTitle>
         <DialogContent dividers>
-          <Box mb={2}>Select your local date and time below to manually configure the device's time.</Box>
           <TextField
             label="Local Time"
             type="datetime-local"
@@ -107,11 +106,11 @@ class NTPStatusForm extends Component<NTPStatusFormProps, NTPStatusFormState> {
           />
         </DialogContent>
         <DialogActions>
-          <Button startIcon={<AccessTimeIcon />} variant="contained" onClick={this.configureTime} disabled={this.state.processing} color="primary" autoFocus>
-            Set Time
-          </Button>
           <Button variant="contained" onClick={this.closeSetTime} color="secondary">
             Cancel
+          </Button>
+          <Button startIcon={<AccessTimeIcon />} variant="contained" onClick={this.configureTime} disabled={this.state.processing} color="primary" autoFocus>
+            Set Time
           </Button>
         </DialogActions>
       </Dialog>
@@ -120,6 +119,7 @@ class NTPStatusForm extends Component<NTPStatusFormProps, NTPStatusFormState> {
 
   render() {
     const { data, theme } = this.props
+    const me = this.props.authenticatedContext.me;
     return (
       <Fragment>
         <List>
@@ -129,7 +129,7 @@ class NTPStatusForm extends Component<NTPStatusFormProps, NTPStatusFormState> {
                 <UpdateIcon />
               </HighlightAvatar>
             </ListItemAvatar>
-            <ListItemText primary="Synchronization Status" secondary={ntpStatus(data)} />
+            <ListItemText primary="Status" secondary={ntpStatus(data)} />
           </ListItem>
           <Divider variant="inset" component="li" />
           {isNtpActive(data) && (
@@ -152,13 +152,6 @@ class NTPStatusForm extends Component<NTPStatusFormProps, NTPStatusFormState> {
               </Avatar>
             </ListItemAvatar>
             <ListItemText primary="Local Time" secondary={formatIsoDateTime(data.time_local)} />
-            {!isNtpActive(data) && (
-              <ListItemSecondaryAction>
-                <Button onClick={this.openSetTime} variant="contained" color="secondary" startIcon={<AccessTimeIcon />}>
-                  Set Time
-                </Button>
-              </ListItemSecondaryAction>
-            )}
           </ListItem>
           <Divider variant="inset" component="li" />
           <ListItem>
@@ -180,15 +173,24 @@ class NTPStatusForm extends Component<NTPStatusFormProps, NTPStatusFormState> {
           </ListItem>
           <Divider variant="inset" component="li" />
         </List>
-        <FormActions>
-          <FormButton startIcon={<RefreshIcon />} variant="contained" color="secondary" onClick={this.props.loadData}>
-            Refresh
-          </FormButton>
-        </FormActions>
+        <Box display="flex" flexWrap="wrap">
+          <Box flexGrow={1} padding={1}>
+            <FormButton startIcon={<RefreshIcon />} variant="contained" color="secondary" onClick={this.props.loadData}>
+              Refresh
+            </FormButton>
+          </Box>
+          {me.admin && !isNtpActive(data) && (
+            <Box flexWrap="none" padding={1} whiteSpace="nowrap">
+              <Button onClick={this.openSetTime} variant="contained" color="primary" startIcon={<AccessTimeIcon />}>
+                Set Time
+              </Button>
+            </Box>
+          )}
+        </Box>
         {this.renderSetTimeDialog()}
       </Fragment>
     );
   }
 }
 
-export default withTheme(NTPStatusForm);
+export default withAuthenticatedContext(withTheme(NTPStatusForm));

@@ -70,7 +70,7 @@ void NTPSettingsService::configureNTP() {
 }
 
 void NTPSettingsService::configureTime(AsyncWebServerRequest* request, JsonVariant& json) {
-  if (!_state.enabled && json.is<JsonObject>()) {
+  if (!sntp_enabled() && json.is<JsonObject>()) {
     String timeUtc = json["time_utc"];
     struct tm tm = {0};
     char* s = strptime(timeUtc.c_str(), "%Y-%m-%dT%H:%M:%SZ", &tm);

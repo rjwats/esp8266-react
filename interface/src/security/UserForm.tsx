@@ -70,11 +70,11 @@ class UserForm extends React.Component<UserFormProps> {
             />
           </DialogContent>
           <DialogActions>
-            <FormButton variant="contained" color="primary" type="submit" onClick={this.submit}>
-              Done
-            </FormButton>
             <FormButton variant="contained" color="secondary" onClick={onCancelEditing}>
               Cancel
+            </FormButton>
+            <FormButton variant="contained" color="primary" type="submit" onClick={this.submit}>
+              Done
             </FormButton>
           </DialogActions>
         </Dialog>
