@@ -93,6 +93,7 @@ class NTPStatusForm extends Component<NTPStatusFormProps, NTPStatusFormState> {
       >
         <DialogTitle>Set Time</DialogTitle>
         <DialogContent dividers>
+          <Box mb={2}>Enter local date and time below to set the device's time.</Box>
           <TextField
             label="Local Time"
             type="datetime-local"
