@@ -4,7 +4,9 @@ NTPSettingsService::NTPSettingsService(AsyncWebServer* server, FS* fs, SecurityM
     _httpEndpoint(NTPSettings::read, NTPSettings::update, this, server, NTP_SETTINGS_SERVICE_PATH, securityManager),
     _fsPersistence(NTPSettings::read, NTPSettings::update, this, fs, NTP_SETTINGS_FILE),
     _timeHandler(TIME_PATH,
-                 std::bind(&NTPSettingsService::configureTime, this, std::placeholders::_1, std::placeholders::_2)) {
+                 securityManager->wrapCallback(
+                     std::bind(&NTPSettingsService::configureTime, this, std::placeholders::_1, std::placeholders::_2),
+                     AuthenticationPredicates::IS_ADMIN)) {
   _timeHandler.setMethod(HTTP_POST);
   _timeHandler.setMaxContentLength(MAX_TIME_SIZE);
   server->addHandler(&_timeHandler);
