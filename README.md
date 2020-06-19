@@ -110,9 +110,43 @@ Alternatively run the 'uploadfs' target:
 platformio run -t uploadfs
 ```
 
-### Running the interface locally
+### Developing the interface locally
 
-You can run a development server locally to allow you preview changes to the front end without the need to upload a file system image to the device after each change. 
+UI development is an iterative process so it's best to run a development server locally during interface development (using `npm start`). This can be accomplished by deploying the backend to a device and configuring the interface to point to it:
+
+![Development Server](/media/devserver.png?raw=true "Development Server")
+
+The following steps can get you up and running for local interface development:
+
+- [Enable CORS](#enabling-cors) in platformio.ini
+- Deploy firmware to device
+- [Configure endpoint root](#configuring-the-endpoint-root) with device's IP in interface/.env.development
+- [Start the development server](#starting-the-development-server) with "npm start"
+- Develop interface locally
+
+#### Enabling CORS
+
+You can enable CORS on the back end by uncommenting the -D ENABLE_CORS build flag in ['platformio.ini'](platformio.ini) then re-building and uploading the firmware to the device. The default settings assume you will be accessing the development server on the default port on [http://localhost:3000](http://localhost:3000) this can also be changed if required:
+
+```ini
+-D ENABLE_CORS
+-D CORS_ORIGIN=\"http://localhost:3000\"
+```
+
+#### Configuring the endpoint root
+
+The interface has a development environment which is enabled when running the development server using `npm start`. The environment file can be found in ['interface/.env.development'](interface/.env.development) and contains the HTTP root URL and the WebSocket root URL:
+
+```ini
+REACT_APP_HTTP_ROOT=http://192.168.0.99
+REACT_APP_WEB_SOCKET_ROOT=ws://192.168.0.99
+```
+
+The `REACT_APP_HTTP_ROOT` and `REACT_APP_WEB_SOCKET_ROOT` properties can be modified to point a ESP device running the back end.
+
+> **Tip**: You must restart the development server for changes to the environment file to come into effect.
+
+#### Starting the development server
 
 Change to the ['interface'](interface) directory with your bash shell (or Git Bash) and use the standard commands you would with any react app built with create-react-app:
 
@@ -127,28 +161,6 @@ npm install
 npm start
 ```
 > **Tip**: You can (optionally) speed up the build by commenting out the call to build_interface.py under "extra scripts" during local development. This will prevent the npm process from building the production release every time the firmware is compiled significantly decreasing the build time.
-
-#### Changing the endpoint root
-
-The interface has a development environment which is enabled when running the development server using `npm start`. The environment file can be found in ['interface/.env.development'](interface/.env.development) and contains the HTTP root URL and the WebSocket root URL:
-
-```ini
-REACT_APP_HTTP_ROOT=http://192.168.0.99
-REACT_APP_WEB_SOCKET_ROOT=ws://192.168.0.99
-```
-
-The `REACT_APP_HTTP_ROOT` and `REACT_APP_WEB_SOCKET_ROOT` properties can be modified to point a ESP device running the back end.
-
-> **Tip**: You must restart the development server for changes to the environment file to come into effect.
-
-#### Enabling CORS
-
-You can enable CORS on the back end by uncommenting the -D ENABLE_CORS build flag in ['platformio.ini'](platformio.ini) then re-building and uploading the firmware to the device. The default settings assume you will be accessing the development server on the default port on [http://localhost:3000](http://localhost:3000) this can also be changed if required:
-
-```ini
--D ENABLE_CORS
--D CORS_ORIGIN=\"http://localhost:3000\"
-```
 
 ## Selecting features
 
@@ -204,7 +216,7 @@ It is recommended that you change the user credentials from their defaults bette
 
 ### Customizing the factory time zone setting
 
-Changing factory time zone setting is a common requirement. This requires a little effort because the time zone name and POSIX format are stored as separate values for the moment. The time zone names and POSIX formats are contained in the UI code in [TZ.ts](interface/src/ntp/TZ.ts). Take the appropriate pair of values from there, for example, for Los Angeles you would use:
+Changing factory time zone setting is a common requirement. This requires a little effort because the time zone name and POSIX format are stored as separate values for the moment. The time zone names and POSIX formats are contained in the UI code in [TZ.tsx](interface/src/ntp/TZ.tsx). Take the appropriate pair of values from there, for example, for Los Angeles you would use:
 
 ```ini
     -D FACTORY_NTP_TIME_ZONE_LABEL=\"America/Los_Angeles\"

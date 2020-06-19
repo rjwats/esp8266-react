@@ -118,11 +118,11 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
           Are you sure you want to restart the device?
         </DialogContent>
         <DialogActions>
-          <Button startIcon={<PowerSettingsNewIcon />} variant="contained" onClick={this.onRestartConfirmed} disabled={this.state.processing} color="primary" autoFocus>
-            Restart
-          </Button>
           <Button variant="contained" onClick={this.onRestartRejected} color="secondary">
             Cancel
+          </Button>
+          <Button startIcon={<PowerSettingsNewIcon />} variant="contained" onClick={this.onRestartConfirmed} disabled={this.state.processing} color="primary" autoFocus>
+            Restart
           </Button>
         </DialogActions>
       </Dialog>
@@ -165,12 +165,12 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
           Are you sure you want to reset the device to its factory defaults?
         </DialogContent>
         <DialogActions>
-          <ErrorButton startIcon={<SettingsBackupRestoreIcon />} variant="contained" onClick={this.onFactoryResetConfirmed} disabled={this.state.processing} autoFocus>
-            Factory Reset
-          </ErrorButton>
           <Button variant="contained" onClick={this.onFactoryResetRejected} color="secondary">
             Cancel
           </Button>
+          <ErrorButton startIcon={<SettingsBackupRestoreIcon />} variant="contained" onClick={this.onFactoryResetConfirmed} disabled={this.state.processing} autoFocus>
+            Factory Reset
+          </ErrorButton>
         </DialogActions>
       </Dialog>
     )
