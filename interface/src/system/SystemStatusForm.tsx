@@ -80,7 +80,7 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
                     <AppsIcon />
                   </Avatar>
                 </ListItemAvatar>
-                <ListItemText primary="PSRAM (Total / Free)" secondary={formatNumber(data.psram_size) + ' / ' + formatNumber(data.free_psram) + ' bytes'} />
+                <ListItemText primary="PSRAM (Size / Free)" secondary={formatNumber(data.psram_size) + ' / ' + formatNumber(data.free_psram) + ' bytes'} />
               </ListItem>
             </Fragment>)
         }
