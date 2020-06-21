@@ -33,11 +33,13 @@ const ApplicationError: FC<ApplicationErrorProps> = ({ error }) => {
     <div className={classes.siteErrorPage}>
       <CssBaseline />
       <Paper className={classes.siteErrorPagePanel} elevation={10}>
-        <Box display="flex" flexDirection="row" justifyContent="center">
+        <Box display="flex" flexDirection="row" justifyContent="center" alignItems="center" mb={2}>
           <WarningIcon fontSize="large" color="error" />
-          <Typography variant="h4" gutterBottom>
-            &nbsp;Application error
-          </Typography>
+          <Box ml={2}>
+            <Typography variant="h4">
+              Application error
+            </Typography>
+          </Box>
         </Box>
         <Typography variant="subtitle1" gutterBottom>
           Failed to configure the application, please refresh to try again.
