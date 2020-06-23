@@ -14,6 +14,7 @@ ESP8266React::ESP8266React(AsyncWebServer* server, FS* fs) :
 #endif
 #if FT_ENABLED(FT_OTA)
     _otaSettingsService(server, fs, &_securitySettingsService),
+    _otaUpload(server, &_securitySettingsService),
 #endif
 #if FT_ENABLED(FT_MQTT)
     _mqttSettingsService(server, fs, &_securitySettingsService),

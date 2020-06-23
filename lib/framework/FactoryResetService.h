@@ -11,6 +11,7 @@
 
 #include <ESPAsyncWebServer.h>
 #include <SecurityManager.h>
+#include <RestartService.h>
 #include <FS.h>
 
 #define FS_CONFIG_DIRECTORY "/config"
