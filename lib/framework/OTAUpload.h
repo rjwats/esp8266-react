@@ -18,6 +18,8 @@
 
 #define OTA_UPLOAD_PATH "/rest/ota_upload"
 
+enum class UpdateError { BEGIN_ERROR, UPDATE_ERROR };
+
 class OTAUpload {
  public:
   OTAUpload(AsyncWebServer* server, SecurityManager* securityManager);
@@ -31,6 +33,7 @@ class OTAUpload {
                     size_t len,
                     bool final);
   void uploadComplete(AsyncWebServerRequest* request);
+  void handleError(AsyncWebServerRequest* request, UpdateError error, int code);
 };
 
 #endif  // end OTAUpload_h
