@@ -16,7 +16,7 @@
 #include <SecurityManager.h>
 #include <RestartService.h>
 
-#define OTA_UPLOAD_PATH "/rest/ota_upload"
+#define OTA_UPLOAD_PATH "/rest/otaUpload"
 
 enum class UpdateError { BEGIN_ERROR, UPDATE_ERROR };
 
