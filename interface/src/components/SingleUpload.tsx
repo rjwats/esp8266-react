@@ -1,15 +1,17 @@
-import React, { FC } from 'react';
+import React, { FC, Fragment } from 'react';
 import { useDropzone, DropzoneState } from 'react-dropzone';
 
 import { makeStyles, createStyles } from '@material-ui/styles';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import { Theme, Box, Typography, LinearProgress } from '@material-ui/core';
+import CancelIcon from '@material-ui/icons/Cancel';
+import { Theme, Box, Typography, LinearProgress, Button } from '@material-ui/core';
+import ErrorButton from './ErrorButton';
 
 interface SingleUploadStyleProps extends DropzoneState {
   uploading: boolean;
 }
 
-const progressPercentage = (progress: ProgressEvent) =>  Math.round((progress.loaded * 100) / progress.total);
+const progressPercentage = (progress: ProgressEvent) => Math.round((progress.loaded * 100) / progress.total);
 
 const getBorderColor = (theme: Theme, props: SingleUploadStyleProps) => {
   if (props.isDragAccept) {
@@ -39,13 +41,14 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }));
 
 export interface SingleUploadProps {
-  accept?: string | string[];
   onDrop: (acceptedFiles: File[]) => void;
+  onCancel: () => void;
+  accept?: string | string[];
   uploading: boolean;
   progress?: ProgressEvent;
 }
 
-const SingleUpload: FC<SingleUploadProps> = ({ onDrop, accept, uploading, progress }) => {
+const SingleUpload: FC<SingleUploadProps> = ({ onDrop, onCancel, accept, uploading, progress }) => {
   const dropzoneState = useDropzone({ onDrop, accept, disabled: uploading, multiple: false });
   const { getRootProps, getInputProps } = dropzoneState;
   const classes = useStyles({ ...dropzoneState, uploading });
@@ -77,9 +80,14 @@ const SingleUpload: FC<SingleUploadProps> = ({ onDrop, accept, uploading, progre
           {renderProgressText()}
         </Typography>
         {uploading && (
-          <Box width="100%" pt={2}>
-            {renderProgress(progress)}
-          </Box>
+          <Fragment>
+            <Box width="100%" p={2}>
+              {renderProgress(progress)}
+            </Box>
+            <ErrorButton startIcon={<CancelIcon />} variant="contained" color="primary" onClick={onCancel}>
+              Cancel
+            </ErrorButton>
+          </Fragment>
         )}
       </Box>
     </div>

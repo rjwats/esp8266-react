@@ -27,6 +27,8 @@ class UploadFirmwareController extends Component<WithSnackbarProps, UploadFirmwa
     this.setState({ progress });
   }
 
+
+
   uploadFile = (file: File) => {
     if (this.state.xhr) {
       return;
@@ -38,7 +40,7 @@ class UploadFirmwareController extends Component<WithSnackbarProps, UploadFirmwa
         throw Error("Invalid status code: " + xhr.status);
       }
       this.props.enqueueSnackbar("Activating new firmware", { variant: 'success' });
-      this.setState({ xhr: undefined, progress: undefined  });
+      this.setState({ xhr: undefined, progress: undefined });
     }).catch((error: Error) => {
       if (error.name === 'AbortError') {
         this.props.enqueueSnackbar("Upload aborted by user", { variant: 'warning' });
@@ -50,11 +52,18 @@ class UploadFirmwareController extends Component<WithSnackbarProps, UploadFirmwa
     });
   }
 
+  cancelUpload = () => {
+    if (this.state.xhr) {
+      this.state.xhr.abort();
+      this.setState({ xhr: undefined, progress: undefined });
+    }
+  }
+  
   render() {
     const { xhr, progress } = this.state;
     return (
       <SectionContent title="Upload Firmware">
-        <UploadFirmwareForm onFileSelected={this.uploadFile} uploading={!!xhr} progress={progress} />
+        <UploadFirmwareForm onFileSelected={this.uploadFile} onCancel={this.cancelUpload} uploading={!!xhr} progress={progress} />
       </SectionContent>
     );
   }
