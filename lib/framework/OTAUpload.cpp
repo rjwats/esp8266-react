@@ -27,55 +27,58 @@ void OTAUpload::handleUpload(AsyncWebServerRequest* request,
     Authentication authentication = _securityManager->authenticateRequest(request);
     if (AuthenticationPredicates::IS_ADMIN(authentication)) {
       if (Update.begin(request->contentLength())) {
-        // it is possible for the client to hang up
-        // let's make sure we end the update if that happens
-        request->onDisconnect([]() { Update.end(); });
+        // success, let's make sure we end the update if the client hangs up
+        request->onDisconnect(OTAUpload::handleEarlyDisconnect);
       } else {
+        // failed to begin, send an error response
         Update.printError(Serial);
-        handleError(request, UpdateError::BEGIN_ERROR, 500);
+        handleError(request, 500);
       }
     } else {
-      handleError(request, UpdateError::BEGIN_ERROR, 403);
+      // send the forbidden response
+      handleError(request, 403);
     }
   }
 
-  // we must call end() when we receive the final frame, so we continue on update errors
-  UpdateError* error = (UpdateError*)request->_tempObject;
-  if (!error || *error == UpdateError::UPDATE_ERROR) {
+  // if we haven't delt with an error, continue with the update
+  if (!request->_tempObject) {
     if (Update.write(data, len) != len) {
       Update.printError(Serial);
-      handleError(request, UpdateError::UPDATE_ERROR, 500);
+      handleError(request, 500);
     }
     if (final) {
       if (!Update.end(true)) {
         Update.printError(Serial);
-        handleError(request, UpdateError::UPDATE_ERROR, 500);
+        handleError(request, 500);
       }
     }
   }
 }
 
 void OTAUpload::uploadComplete(AsyncWebServerRequest* request) {
-  // if we encountered an error, don't render a response
-  UpdateError* error = (UpdateError*)request->_tempObject;
-  if (error) {
+  // if no error, send the success response
+  if (!request->_tempObject) {
+    request->onDisconnect(RestartService::restartNow);
+    AsyncWebServerResponse* response = request->beginResponse(200);
+    request->send(response);
+  }
+}
+
+void OTAUpload::handleError(AsyncWebServerRequest* request, int code) {
+  // if we have had an error already, do nothing
+  if (request->_tempObject) {
     return;
   }
-
-  // perform restart on disconnect & send 200 response
-  request->onDisconnect([]() { RestartService::restartNow(); });
-  AsyncWebServerResponse* response = request->beginResponse(200);
+  // send the error code to the client and record the error code in the temp object
+  request->_tempObject = new int(code);
+  AsyncWebServerResponse* response = request->beginResponse(code);
   request->send(response);
 }
 
-void OTAUpload::handleError(AsyncWebServerRequest* request, UpdateError error, int code) {
-  // we have already delt with an error during the update request do nothing
-  if (request->_tempObject != nullptr) {
-    return;
-  }
-
-  // send the error code to the client and record the error in the temp object
-  request->_tempObject = new UpdateError(error);
-  AsyncWebServerResponse* response = request->beginResponse(code);
-  request->send(response);
+void OTAUpload::handleEarlyDisconnect() {
+#ifdef ESP32
+  Update.abort();
+#elif defined(ESP8266)
+  Update.end();
+#endif
 }
