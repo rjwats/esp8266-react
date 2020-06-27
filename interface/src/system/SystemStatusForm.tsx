@@ -9,6 +9,7 @@ import ShowChartIcon from '@material-ui/icons/ShowChart';
 import SdStorageIcon from '@material-ui/icons/SdStorage';
 import FolderIcon from '@material-ui/icons/Folder';
 import DataUsageIcon from '@material-ui/icons/DataUsage';
+import AppsIcon from '@material-ui/icons/Apps';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import SettingsBackupRestoreIcon from '@material-ui/icons/SettingsBackupRestore';
@@ -17,7 +18,7 @@ import { redirectingAuthorizedFetch, AuthenticatedContextProps, withAuthenticate
 import { RestFormProps, FormButton, ErrorButton } from '../components';
 import { FACTORY_RESET_ENDPOINT, RESTART_ENDPOINT } from '../api';
 
-import { SystemStatus } from './types';
+import { SystemStatus, EspPlatform } from './types';
 
 interface SystemStatusFormState {
   confirmRestart: boolean;
@@ -31,18 +32,12 @@ function formatNumber(num: number) {
   return new Intl.NumberFormat().format(num);
 }
 
-
 class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusFormState> {
 
   state: SystemStatusFormState = {
     confirmRestart: false,
     confirmFactoryReset: false,
     processing: false
-  }
-
-  approxHeapFragmentation = (): number => {
-    const { data: { max_alloc_heap, free_heap } } = this.props;
-    return 100 - Math.round((max_alloc_heap / free_heap) * 100);
   }
 
   createListItems() {
@@ -73,8 +68,22 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
               <MemoryIcon />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary="Heap (Free / Max Alloc)" secondary={formatNumber(data.free_heap) + ' / ' + formatNumber(data.max_alloc_heap) + ' bytes (~' + this.approxHeapFragmentation() + '%\xa0fragmentation)'} />
+          <ListItemText primary="Heap (Free / Max Alloc)" secondary={formatNumber(data.free_heap) + ' / ' + formatNumber(data.max_alloc_heap) + ' bytes ' + (data.esp_platform === EspPlatform.ESP8266 ? '(' + data.heap_fragmentation + '% fragmentation)' : '')} />
         </ListItem>
+        {
+          (data.esp_platform === EspPlatform.ESP32 && data.psram_size > 0) && (
+            <Fragment>
+              <Divider variant="inset" component="li" />
+              <ListItem >
+                <ListItemAvatar>
+                  <Avatar>
+                    <AppsIcon />
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText primary="PSRAM (Size / Free)" secondary={formatNumber(data.psram_size) + ' / ' + formatNumber(data.free_psram) + ' bytes'} />
+              </ListItem>
+            </Fragment>)
+        }
         <Divider variant="inset" component="li" />
         <ListItem >
           <ListItemAvatar>
@@ -118,11 +127,11 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
           Are you sure you want to restart the device?
         </DialogContent>
         <DialogActions>
-          <Button startIcon={<PowerSettingsNewIcon />} variant="contained" onClick={this.onRestartConfirmed} disabled={this.state.processing} color="primary" autoFocus>
-            Restart
-          </Button>
           <Button variant="contained" onClick={this.onRestartRejected} color="secondary">
             Cancel
+          </Button>
+          <Button startIcon={<PowerSettingsNewIcon />} variant="contained" onClick={this.onRestartConfirmed} disabled={this.state.processing} color="primary" autoFocus>
+            Restart
           </Button>
         </DialogActions>
       </Dialog>
@@ -165,12 +174,12 @@ class SystemStatusForm extends Component<SystemStatusFormProps, SystemStatusForm
           Are you sure you want to reset the device to its factory defaults?
         </DialogContent>
         <DialogActions>
-          <ErrorButton startIcon={<SettingsBackupRestoreIcon />} variant="contained" onClick={this.onFactoryResetConfirmed} disabled={this.state.processing} autoFocus>
-            Factory Reset
-          </ErrorButton>
           <Button variant="contained" onClick={this.onFactoryResetRejected} color="secondary">
             Cancel
           </Button>
+          <ErrorButton startIcon={<SettingsBackupRestoreIcon />} variant="contained" onClick={this.onFactoryResetConfirmed} disabled={this.state.processing} autoFocus>
+            Factory Reset
+          </ErrorButton>
         </DialogActions>
       </Dialog>
     )

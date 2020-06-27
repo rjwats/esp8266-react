@@ -10,6 +10,8 @@
 #define SECURITY_SETTINGS_FILE "/config/securitySettings.json"
 #define SECURITY_SETTINGS_PATH "/rest/securitySettings"
 
+#if FT_ENABLED(FT_SECURITY)
+
 class SecuritySettings {
  public:
   String jwtSecret;
@@ -79,4 +81,19 @@ class SecuritySettingsService : public StatefulService<SecuritySettings>, public
   boolean validatePayload(JsonObject& parsedPayload, User* user);
 };
 
+#else
+
+class SecuritySettingsService : public SecurityManager {
+ public:
+  SecuritySettingsService(AsyncWebServer* server, FS* fs);
+  ~SecuritySettingsService();
+
+  // minimal set of functions to support framework with security settings disabled  
+  Authentication authenticateRequest(AsyncWebServerRequest* request);
+  ArRequestFilterFunction filterRequest(AuthenticationPredicate predicate);
+  ArRequestHandlerFunction wrapRequest(ArRequestHandlerFunction onRequest, AuthenticationPredicate predicate);
+  ArJsonRequestHandlerFunction wrapCallback(ArJsonRequestHandlerFunction onRequest, AuthenticationPredicate predicate);
+};
+
+#endif  // end FT_ENABLED(FT_SECURITY)
 #endif  // end SecuritySettingsService_h

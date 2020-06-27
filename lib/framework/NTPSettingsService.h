@@ -14,6 +14,9 @@
 #define NTP_SETTINGS_FILE "/config/ntpSettings.json"
 #define NTP_SETTINGS_SERVICE_PATH "/rest/ntpSettings"
 
+#define MAX_TIME_SIZE 256
+#define TIME_PATH "/rest/time"
+
 class NTPSettings {
  public:
   bool enabled;
@@ -46,6 +49,7 @@ class NTPSettingsService : public StatefulService<NTPSettings> {
  private:
   HttpEndpoint<NTPSettings> _httpEndpoint;
   FSPersistence<NTPSettings> _fsPersistence;
+  AsyncCallbackJsonWebHandler _timeHandler;
 
 #ifdef ESP32
   void onStationModeGotIP(WiFiEvent_t event, WiFiEventInfo_t info);
@@ -58,6 +62,7 @@ class NTPSettingsService : public StatefulService<NTPSettings> {
   void onStationModeDisconnected(const WiFiEventStationModeDisconnected& event);
 #endif
   void configureNTP();
+  void configureTime(AsyncWebServerRequest* request, JsonVariant& json);
 };
 
 #endif  // end NTPSettingsService_h

@@ -13,9 +13,12 @@ void SystemStatus::systemStatus(AsyncWebServerRequest* request) {
 #ifdef ESP32
   root["esp_platform"] = "esp32";
   root["max_alloc_heap"] = ESP.getMaxAllocHeap();
+  root["psram_size"] = ESP.getPsramSize();
+  root["free_psram"] = ESP.getFreePsram();  
 #elif defined(ESP8266)
   root["esp_platform"] = "esp8266";
   root["max_alloc_heap"] = ESP.getMaxFreeBlockSize();
+  root["heap_fragmentation"] = ESP.getHeapFragmentation();
 #endif
   root["cpu_freq_mhz"] = ESP.getCpuFreqMHz();
   root["free_heap"] = ESP.getFreeHeap();

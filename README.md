@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/rjwats/esp8266-react.svg?branch=master)](https://travis-ci.org/rjwats/esp8266-react)
 
-A simple, secure and extensible framework for IoT projects built on ESP8266/ESP32 platforms with responsive React front-end.
+A simple, secure and extensible framework for IoT projects built on ESP8266/ESP32 platforms with responsive [React](https://reactjs.org/) front-end built with [Material-UI](https://material-ui.com/).
 
 Designed to work with the PlatformIO IDE with [limited setup](#getting-started). Please read below for setup, build and upload instructions.
 
@@ -19,9 +19,7 @@ Provides many of the features required for IoT projects:
 * Remote Firmware Updates - Enable secured OTA updates
 * Security - Protected RESTful endpoints and a secured user interface
 
-The back end is provided by a set of RESTful endpoints and the responsive React based front end is built using [Material-UI](https://material-ui.com/).
-
-The front end has the prerequisite manifest file and icon, so it can be added to the home screen of a mobile device if required.
+Features may be [enabled or disabled](#selecting-features) as required at compile time.
 
 ## Getting Started
 
@@ -112,9 +110,43 @@ Alternatively run the 'uploadfs' target:
 platformio run -t uploadfs
 ```
 
-### Running the interface locally
+### Developing the interface locally
 
-You can run a development server locally to allow you preview changes to the front end without the need to upload a file system image to the device after each change. 
+UI development is an iterative process so it's best to run a development server locally during interface development (using `npm start`). This can be accomplished by deploying the backend to a device and configuring the interface to point to it:
+
+![Development Server](/media/devserver.png?raw=true "Development Server")
+
+The following steps can get you up and running for local interface development:
+
+- [Enable CORS](#enabling-cors) in platformio.ini
+- Deploy firmware to device
+- [Configure endpoint root](#configuring-the-endpoint-root) with device's IP in interface/.env.development
+- [Start the development server](#starting-the-development-server) with "npm start"
+- Develop interface locally
+
+#### Enabling CORS
+
+You can enable CORS on the back end by uncommenting the -D ENABLE_CORS build flag in ['platformio.ini'](platformio.ini) then re-building and uploading the firmware to the device. The default settings assume you will be accessing the development server on the default port on [http://localhost:3000](http://localhost:3000) this can also be changed if required:
+
+```ini
+-D ENABLE_CORS
+-D CORS_ORIGIN=\"http://localhost:3000\"
+```
+
+#### Configuring the endpoint root
+
+The interface has a development environment which is enabled when running the development server using `npm start`. The environment file can be found in ['interface/.env.development'](interface/.env.development) and contains the HTTP root URL and the WebSocket root URL:
+
+```ini
+REACT_APP_HTTP_ROOT=http://192.168.0.99
+REACT_APP_WEB_SOCKET_ROOT=ws://192.168.0.99
+```
+
+The `REACT_APP_HTTP_ROOT` and `REACT_APP_WEB_SOCKET_ROOT` properties can be modified to point a ESP device running the back end.
+
+> **Tip**: You must restart the development server for changes to the environment file to come into effect.
+
+#### Starting the development server
 
 Change to the ['interface'](interface) directory with your bash shell (or Git Bash) and use the standard commands you would with any react app built with create-react-app:
 
@@ -130,31 +162,31 @@ npm start
 ```
 > **Tip**: You can (optionally) speed up the build by commenting out the call to build_interface.py under "extra scripts" during local development. This will prevent the npm process from building the production release every time the firmware is compiled significantly decreasing the build time.
 
-#### Changing the endpoint root
+## Selecting features
 
-The interface has a development environment which is enabled when running the development server using `npm start`. The environment file can be found in ['interface/.env.development'](interface/.env.development) and contains the HTTP root URL and the WebSocket root URL:
+Many of the framework's built in features may be enabled or disabled as required at compile time. This can help save sketch space and memory if your project does not require the full suite of features. The access point and WiFi management features are "core features" and are always enabled. Feature selection may be controlled with the build flags defined in [features.ini](features.ini).
 
-```ini
-REACT_APP_HTTP_ROOT=http://192.168.0.99
-REACT_APP_WEB_SOCKET_ROOT=ws://192.168.0.99
-```
-
-The `REACT_APP_HTTP_ROOT` and `REACT_APP_WEB_SOCKET_ROOT` properties can be modified to point a ESP device running the back end firmware.
-
-> **Tip**: You must restart the development server for changes to the environment file to come into effect.
-
-#### Enabling CORS
-
-You can enable CORS on the back end by uncommenting the -D ENABLE_CORS build flag in ['platformio.ini'](platformio.ini) then re-building and uploading the firmware to the device. The default settings assume you will be accessing the development server on the default port on [http://localhost:3000](http://localhost:3000) this can also be changed if required:
+Customize the settings as you see fit. A value of 0 will disable the specified feature:
 
 ```ini
--D ENABLE_CORS
--D CORS_ORIGIN=\"http://localhost:3000\"
+    -D FT_PROJECT=1
+    -D FT_SECURITY=1
+    -D FT_MQTT=1
+    -D FT_NTP=1
+    -D FT_OTA=1
 ```
+
+Flag          | Description
+------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------
+FT_PROJECT    | Controls whether the "project" section of the UI is enabled. Disable this if you don't intend to have your own screens in the UI.
+FT_SECURITY   | Controls whether the [security features](#security-features) are enabled. Disabling this means you won't need to authenticate to access the device and all authentication predicates will be bypassed.
+FT_MQTT       | Controls whether the MQTT features are enabled. Disable this if your project does not require MQTT support.
+FT_NTP        | Controls whether network time protocol synchronization features are enabled. Disable this if your project does not require accurate time.
+FT_OTA        | Controls whether OTA update support is enabled. Disable this if you won't be using the remote update feature.
 
 ## Factory settings
 
-The firmware has built-in factory settings which act as default values for the various configurable services where settings are not saved on the file system. These settings can be overridden using the build flags defined in [factory_settings.ini](factory_settings.ini).
+The framework has built-in factory settings which act as default values for the various configurable services where settings are not saved on the file system. These settings can be overridden using the build flags defined in [factory_settings.ini](factory_settings.ini).
 
 Customize the settings as you see fit, for example you might configure your home WiFi network as the factory default:
 
@@ -184,7 +216,7 @@ It is recommended that you change the user credentials from their defaults bette
 
 ### Customizing the factory time zone setting
 
-Changing factory time zone setting is a common requirement. This requires a little effort because the time zone name and POSIX format are stored as separate values for the moment. The time zone names and POSIX formats are contained in the UI code in [TZ.ts](interface/src/ntp/TZ.ts). Take the appropriate pair of values from there, for example, for Los Angeles you would use:
+Changing factory time zone setting is a common requirement. This requires a little effort because the time zone name and POSIX format are stored as separate values for the moment. The time zone names and POSIX formats are contained in the UI code in [TZ.tsx](interface/src/ntp/TZ.tsx). Take the appropriate pair of values from there, for example, for Los Angeles you would use:
 
 ```ini
     -D FACTORY_NTP_TIME_ZONE_LABEL=\"America/Los_Angeles\"
@@ -193,7 +225,7 @@ Changing factory time zone setting is a common requirement. This requires a litt
 
 ### Device ID factory defaults
 
-If not overridden with a build flag, the firmware will use the device ID to generate factory defaults for settings such as the JWT secret and MQTT client ID. 
+If not overridden with a build flag, the framework will use the device ID to generate factory defaults for settings such as the JWT secret and MQTT client ID. 
 
 > **Tip**: Random values are generally better defaults for these settings, so it is recommended you leave these flags undefined.
 
@@ -481,7 +513,7 @@ class LightStateService : public StatefulService<LightState> {
 };
 ```
 
-Endpoint security is provided by authentication predicates which are [documented below](#security-features). The SecurityManager and authentication predicate may be provided if a secure endpoint is required. The demo project shows how endpoints can be secured.
+Endpoint security is provided by authentication predicates which are [documented below](#security-features). The SecurityManager and authentication predicate may be provided if a secure endpoint is required. The placeholder project shows how endpoints can be secured.
 
 #### Persistence
 
@@ -519,7 +551,7 @@ class LightStateService : public StatefulService<LightState> {
 };
 ```
 
-WebSocket security is provided by authentication predicates which are [documented below](#security-features). The SecurityManager and authentication predicate may be provided if a secure WebSocket is required. The demo project shows how WebSockets can be secured.
+WebSocket security is provided by authentication predicates which are [documented below](#security-features). The SecurityManager and authentication predicate may be provided if a secure WebSocket is required. The placeholder project shows how WebSockets can be secured.
 
 #### MQTT
 
