@@ -3,9 +3,13 @@ import { useDropzone, DropzoneState } from 'react-dropzone';
 
 import { makeStyles, createStyles } from '@material-ui/styles';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import { Theme, Box, Typography, CircularProgress, LinearProgress } from '@material-ui/core';
+import { Theme, Box, Typography, LinearProgress } from '@material-ui/core';
 
-const getBorderColor = (theme: Theme, props: DropzoneState) => {
+interface DropZoneStyleProps extends DropzoneState {
+  uploading: boolean;
+}
+
+const getBorderColor = (theme: Theme, props: DropZoneStyleProps) => {
   if (props.isDragAccept) {
     return theme.palette.success.dark;
   }
@@ -26,29 +30,40 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     borderStyle: 'dashed',
     color: theme.palette.grey[700],
     transition: 'border .24s ease-in-out',
-    cursor: 'pointer',
+    cursor: (props: DropZoneStyleProps) => props.uploading ? 'pointer' : 'default',
     width: '100%',
-    borderColor: (props: DropzoneState) => getBorderColor(theme, props)
+    borderColor: (props: DropZoneStyleProps) => getBorderColor(theme, props)
   }
 }));
 
-export interface UploadDropzoneProps {
-  onDrop: (acceptedFiles: File[]) => void;
+export interface SingleUploadProps {
   accept?: string | string[];
-  uploading?: boolean;
+  onDrop: (acceptedFiles: File[]) => void;
+  uploading: boolean;
+  progress?: ProgressEvent;
 }
 
-const UploadDropzone: FC<UploadDropzoneProps> = ({ onDrop, accept, uploading }) => {
-  const dropZoneState = useDropzone({ onDrop, accept, disabled: uploading, multiple: false });
+const SingleUpload: FC<SingleUploadProps> = ({ onDrop, accept, uploading, progress }) => {
+  const dropZoneState = useDropzone({ onDrop, accept, disabled: uploading, multiple: false, minSize: 1 });
   const { getRootProps, getInputProps } = dropZoneState;
-  const classes = useStyles(dropZoneState);
+  const classes = useStyles({ ...dropZoneState, uploading });
 
   const renderProgressText = () => {
     if (uploading) {
-      return "Uploading...";
+      if (progress?.lengthComputable) {
+        return `Uploading: ${progress.loaded} / ${progress.total} bytes`;
+      }
+      return "Uploading\u2026";
     }
     return "Drop file here, or click to browse";
   }
+
+  const renderProgress = (progress?: ProgressEvent) => (
+    <LinearProgress
+      variant={!progress || progress.lengthComputable ? "determinate" : "indeterminate"}
+      value={!progress ? 0 : progress.lengthComputable ? Math.round((progress.loaded * 100) / progress.total) : 0}
+    />
+  );
 
   return (
     <div {...getRootProps({ className: classes.dropZone })}>
@@ -60,7 +75,7 @@ const UploadDropzone: FC<UploadDropzoneProps> = ({ onDrop, accept, uploading }) 
         </Typography>
         {uploading && (
           <Box width="100%" pt={2}>
-            <LinearProgress style={{ width: "100%" }} variant="indeterminate" />
+            {renderProgress(progress)}
           </Box>
         )}
       </Box>
@@ -68,4 +83,4 @@ const UploadDropzone: FC<UploadDropzoneProps> = ({ onDrop, accept, uploading }) 
   );
 }
 
-export default UploadDropzone;
+export default SingleUpload;
