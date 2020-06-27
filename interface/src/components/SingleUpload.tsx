@@ -5,11 +5,11 @@ import { makeStyles, createStyles } from '@material-ui/styles';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { Theme, Box, Typography, LinearProgress } from '@material-ui/core';
 
-interface DropZoneStyleProps extends DropzoneState {
+interface SingleUploadStyleProps extends DropzoneState {
   uploading: boolean;
 }
 
-const getBorderColor = (theme: Theme, props: DropZoneStyleProps) => {
+const getBorderColor = (theme: Theme, props: SingleUploadStyleProps) => {
   if (props.isDragAccept) {
     return theme.palette.success.dark;
   }
@@ -30,9 +30,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     borderStyle: 'dashed',
     color: theme.palette.grey[700],
     transition: 'border .24s ease-in-out',
-    cursor: (props: DropZoneStyleProps) => props.uploading ? 'default' : 'pointer',
+    cursor: (props: SingleUploadStyleProps) => props.uploading ? 'default' : 'pointer',
     width: '100%',
-    borderColor: (props: DropZoneStyleProps) => getBorderColor(theme, props)
+    borderColor: (props: SingleUploadStyleProps) => getBorderColor(theme, props)
   }
 }));
 
