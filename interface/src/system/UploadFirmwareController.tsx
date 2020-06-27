@@ -43,7 +43,7 @@ class UploadFirmwareController extends Component<WithSnackbarProps, UploadFirmwa
       this.setState({ xhr: undefined, progress: undefined });
     }).catch((error: Error) => {
       if (error.name === 'AbortError') {
-        this.props.enqueueSnackbar("Upload aborted by user", { variant: 'warning' });
+        this.props.enqueueSnackbar("Upload cancelled by user", { variant: 'warning' });
       } else {
         const errorMessage = error.name === 'UploadError' ? "Error during upload" : (error.message || "Unknown error");
         this.props.enqueueSnackbar("Problem uploading: " + errorMessage, { variant: 'error' });
@@ -58,7 +58,7 @@ class UploadFirmwareController extends Component<WithSnackbarProps, UploadFirmwa
       this.setState({ xhr: undefined, progress: undefined });
     }
   }
-  
+
   render() {
     const { xhr, progress } = this.state;
     return (
