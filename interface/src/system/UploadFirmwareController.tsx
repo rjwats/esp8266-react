@@ -27,8 +27,6 @@ class UploadFirmwareController extends Component<WithSnackbarProps, UploadFirmwa
     this.setState({ progress });
   }
 
-
-
   uploadFile = (file: File) => {
     if (this.state.xhr) {
       return;
