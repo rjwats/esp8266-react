@@ -24,13 +24,13 @@ const getBorderColor = (theme: Theme, props: DropZoneStyleProps) => {
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   dropZone: {
-    padding: theme.spacing(3),
+    padding: theme.spacing(8, 2),
     borderWidth: 2,
     borderRadius: 2,
     borderStyle: 'dashed',
     color: theme.palette.grey[700],
     transition: 'border .24s ease-in-out',
-    cursor: (props: DropZoneStyleProps) => props.uploading ? 'pointer' : 'default',
+    cursor: (props: DropZoneStyleProps) => props.uploading ? 'default' : 'pointer',
     width: '100%',
     borderColor: (props: DropZoneStyleProps) => getBorderColor(theme, props)
   }
@@ -44,7 +44,7 @@ export interface SingleUploadProps {
 }
 
 const SingleUpload: FC<SingleUploadProps> = ({ onDrop, accept, uploading, progress }) => {
-  const dropZoneState = useDropzone({ onDrop, accept, disabled: uploading, multiple: false, minSize: 1 });
+  const dropZoneState = useDropzone({ onDrop, accept, disabled: uploading, multiple: false });
   const { getRootProps, getInputProps } = dropZoneState;
   const classes = useStyles({ ...dropZoneState, uploading });
 
@@ -55,7 +55,7 @@ const SingleUpload: FC<SingleUploadProps> = ({ onDrop, accept, uploading, progre
       }
       return "Uploading\u2026";
     }
-    return "Drop file here, or click to browse";
+    return "Drop file here or click to browse";
   }
 
   const renderProgress = (progress?: ProgressEvent) => (
