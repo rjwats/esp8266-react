@@ -223,11 +223,14 @@ Changing factory time zone setting is a common requirement. This requires a litt
     -D FACTORY_NTP_TIME_ZONE_FORMAT=\"PST8PDT,M3.2.0,M11.1.0\"
 ```
 
-### Device ID factory defaults
+### Dynamic values
 
-If not overridden with a build flag, the framework will use the device ID to generate factory defaults for settings such as the JWT secret and MQTT client ID. 
+Some factory settings support placeholder substitution. Placeholders will be replaced with it's actual values at runtime. It allows to generate dynamic settings for different devices. Such factory settings can be distinguished by `supports placeholders` comment is placed next to it.
 
-> **Tip**: Random values are generally better defaults for these settings, so it is recommended you leave these flags undefined.
+Placeholder | Actual value
+----------- | --------
+${platform} | One of "eps32" or "esp8266" depending on a microcontoller type
+${chip_id}  | unique microcontroller chip id
 
 ## Building for different devices
 
