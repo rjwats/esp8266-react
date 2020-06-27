@@ -1,10 +1,11 @@
-#include <OTAUpload.h>
+#include <UploadFirmwareService.h>
 
-OTAUpload::OTAUpload(AsyncWebServer* server, SecurityManager* securityManager) : _securityManager(securityManager) {
-  server->on(OTA_UPLOAD_PATH,
+UploadFirmwareService::UploadFirmwareService(AsyncWebServer* server, SecurityManager* securityManager) :
+    _securityManager(securityManager) {
+  server->on(UPLOAD_FIRMWARE_PATH,
              HTTP_POST,
-             std::bind(&OTAUpload::uploadComplete, this, std::placeholders::_1),
-             std::bind(&OTAUpload::handleUpload,
+             std::bind(&UploadFirmwareService::uploadComplete, this, std::placeholders::_1),
+             std::bind(&UploadFirmwareService::handleUpload,
                        this,
                        std::placeholders::_1,
                        std::placeholders::_2,
@@ -17,18 +18,18 @@ OTAUpload::OTAUpload(AsyncWebServer* server, SecurityManager* securityManager) :
 #endif
 }
 
-void OTAUpload::handleUpload(AsyncWebServerRequest* request,
-                             const String& filename,
-                             size_t index,
-                             uint8_t* data,
-                             size_t len,
-                             bool final) {
+void UploadFirmwareService::handleUpload(AsyncWebServerRequest* request,
+                                         const String& filename,
+                                         size_t index,
+                                         uint8_t* data,
+                                         size_t len,
+                                         bool final) {
   if (!index) {
     Authentication authentication = _securityManager->authenticateRequest(request);
     if (AuthenticationPredicates::IS_ADMIN(authentication)) {
       if (Update.begin(request->contentLength())) {
         // success, let's make sure we end the update if the client hangs up
-        request->onDisconnect(OTAUpload::handleEarlyDisconnect);
+        request->onDisconnect(UploadFirmwareService::handleEarlyDisconnect);
       } else {
         // failed to begin, send an error response
         Update.printError(Serial);
@@ -55,7 +56,7 @@ void OTAUpload::handleUpload(AsyncWebServerRequest* request,
   }
 }
 
-void OTAUpload::uploadComplete(AsyncWebServerRequest* request) {
+void UploadFirmwareService::uploadComplete(AsyncWebServerRequest* request) {
   // if no error, send the success response
   if (!request->_tempObject) {
     request->onDisconnect(RestartService::restartNow);
@@ -64,7 +65,7 @@ void OTAUpload::uploadComplete(AsyncWebServerRequest* request) {
   }
 }
 
-void OTAUpload::handleError(AsyncWebServerRequest* request, int code) {
+void UploadFirmwareService::handleError(AsyncWebServerRequest* request, int code) {
   // if we have had an error already, do nothing
   if (request->_tempObject) {
     return;
@@ -75,7 +76,7 @@ void OTAUpload::handleError(AsyncWebServerRequest* request, int code) {
   request->send(response);
 }
 
-void OTAUpload::handleEarlyDisconnect() {
+void UploadFirmwareService::handleEarlyDisconnect() {
 #ifdef ESP32
   Update.abort();
 #elif defined(ESP8266)

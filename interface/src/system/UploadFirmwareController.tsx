@@ -1,20 +1,20 @@
 import React, { Component } from 'react';
 
 import { SectionContent } from '../components';
-import { OTA_UPLOAD_ENDPOINT } from '../api';
+import { UPLOAD_FIRMWARE_ENDPOINT } from '../api';
 
-import OTAUploadForm from './OTAUploadForm';
+import UploadFirmwareForm from './UploadFirmwareForm';
 import { redirectingAuthorizedUpload } from '../authentication';
 import { withSnackbar, WithSnackbarProps } from 'notistack';
 
-interface OTAUploadControllerState {
+interface UploadFirmwareControllerState {
   xhr?: XMLHttpRequest;
   progress?: ProgressEvent;
 }
 
-class OTAUploadController extends Component<WithSnackbarProps, OTAUploadControllerState> {
+class UploadFirmwareController extends Component<WithSnackbarProps, UploadFirmwareControllerState> {
 
-  state: OTAUploadControllerState = {
+  state: UploadFirmwareControllerState = {
     xhr: undefined,
     progress: undefined
   };
@@ -33,7 +33,7 @@ class OTAUploadController extends Component<WithSnackbarProps, OTAUploadControll
     }
     var xhr = new XMLHttpRequest();
     this.setState({ xhr });
-    redirectingAuthorizedUpload(xhr, OTA_UPLOAD_ENDPOINT, file, this.updateProgress).then(() => {
+    redirectingAuthorizedUpload(xhr, UPLOAD_FIRMWARE_ENDPOINT, file, this.updateProgress).then(() => {
       if (xhr.status !== 200) {
         throw Error("Invalid status code: " + xhr.status);
       }
@@ -53,12 +53,12 @@ class OTAUploadController extends Component<WithSnackbarProps, OTAUploadControll
   render() {
     const { xhr, progress } = this.state;
     return (
-      <SectionContent title="OTA Upload">
-        <OTAUploadForm onFileSelected={this.uploadFile} uploading={!!xhr} progress={progress} />
+      <SectionContent title="Upload Firmware">
+        <UploadFirmwareForm onFileSelected={this.uploadFile} uploading={!!xhr} progress={progress} />
       </SectionContent>
     );
   }
 
 }
 
-export default withSnackbar(OTAUploadController);
+export default withSnackbar(UploadFirmwareController);

@@ -1,5 +1,5 @@
-#ifndef OTAUpload_h
-#define OTAUpload_h
+#ifndef UploadFirmwareService_h
+#define UploadFirmwareService_h
 
 #include <Arduino.h>
 
@@ -16,11 +16,11 @@
 #include <SecurityManager.h>
 #include <RestartService.h>
 
-#define OTA_UPLOAD_PATH "/rest/otaUpload"
+#define UPLOAD_FIRMWARE_PATH "/rest/uploadFirmware"
 
-class OTAUpload {
+class UploadFirmwareService {
  public:
-  OTAUpload(AsyncWebServer* server, SecurityManager* securityManager);
+  UploadFirmwareService(AsyncWebServer* server, SecurityManager* securityManager);
 
  private:
   SecurityManager* _securityManager;
@@ -35,4 +35,4 @@ class OTAUpload {
   static void handleEarlyDisconnect();
 };
 
-#endif  // end OTAUpload_h
+#endif  // end UploadFirmwareService_h

@@ -9,15 +9,17 @@ interface SingleUploadStyleProps extends DropzoneState {
   uploading: boolean;
 }
 
+const progressPercentage = (progress: ProgressEvent) =>  Math.round((progress.loaded * 100) / progress.total);
+
 const getBorderColor = (theme: Theme, props: SingleUploadStyleProps) => {
   if (props.isDragAccept) {
-    return theme.palette.success.dark;
+    return theme.palette.success.main;
   }
   if (props.isDragReject) {
-    return theme.palette.error.dark;
+    return theme.palette.error.main;
   }
   if (props.isDragActive) {
-    return theme.palette.info.dark;
+    return theme.palette.info.main;
   }
   return theme.palette.grey[700];
 }
@@ -48,10 +50,11 @@ const SingleUpload: FC<SingleUploadProps> = ({ onDrop, accept, uploading, progre
   const { getRootProps, getInputProps } = dropzoneState;
   const classes = useStyles({ ...dropzoneState, uploading });
 
+
   const renderProgressText = () => {
     if (uploading) {
       if (progress?.lengthComputable) {
-        return `Uploading: ${progress.loaded} / ${progress.total} bytes`;
+        return `Uploading: ${progressPercentage(progress)}%`;
       }
       return "Uploading\u2026";
     }
@@ -61,7 +64,7 @@ const SingleUpload: FC<SingleUploadProps> = ({ onDrop, accept, uploading, progre
   const renderProgress = (progress?: ProgressEvent) => (
     <LinearProgress
       variant={!progress || progress.lengthComputable ? "determinate" : "indeterminate"}
-      value={!progress ? 0 : progress.lengthComputable ? Math.round((progress.loaded * 100) / progress.total) : 0}
+      value={!progress ? 0 : progress.lengthComputable ? progressPercentage(progress) : 0}
     />
   );
 

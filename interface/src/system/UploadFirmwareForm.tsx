@@ -2,13 +2,13 @@ import React, { Fragment } from 'react';
 import { SingleUpload } from '../components';
 import { Box } from '@material-ui/core';
 
-interface OTAUploadFormProps {
+interface UploadFirmwareFormProps {
   uploading: boolean;
   progress?: ProgressEvent;
   onFileSelected: (file: File) => void;
 }
 
-class OTAUploadForm extends React.Component<OTAUploadFormProps> {
+class UploadFirmwareForm extends React.Component<UploadFirmwareFormProps> {
 
   handleDrop = (files: File[]) => {
     const file = files[0];
@@ -22,7 +22,7 @@ class OTAUploadForm extends React.Component<OTAUploadFormProps> {
     return (
       <Fragment>
         <Box py={2}>
-          Upload the new "firmware.bin" file using the form below. This will immediately start the firmware replacement.
+          Upload a new firmware (.bin) file below to replace the existing firmware.
         </Box>
         <SingleUpload accept="application/octet-stream" onDrop={this.handleDrop} uploading={uploading} progress={progress} />
       </Fragment>
@@ -31,4 +31,4 @@ class OTAUploadForm extends React.Component<OTAUploadFormProps> {
 
 }
 
-export default OTAUploadForm;
+export default UploadFirmwareForm;

@@ -10,7 +10,7 @@ import { MenuAppBar } from '../components';
 
 import SystemStatusController from './SystemStatusController';
 import OTASettingsController from './OTASettingsController';
-import OTAUploadController from './OTAUploadController';
+import UploadFirmwareController from './UploadFirmwareController';
 
 type SystemProps = AuthenticatedContextProps & RouteComponentProps & WithFeaturesProps;
 
@@ -29,8 +29,8 @@ class System extends Component<SystemProps> {
           {features.ota && (
             <Tab value="/system/ota" label="OTA Settings" disabled={!authenticatedContext.me.admin} />
           )}
-          {features.ota && (
-            <Tab value="/system/upload" label="OTA Upload" disabled={!authenticatedContext.me.admin} />
+          {features.upload_firmware && (
+            <Tab value="/system/upload" label="Upload Firmware" disabled={!authenticatedContext.me.admin} />
           )}
         </Tabs>
         <Switch>
@@ -38,8 +38,8 @@ class System extends Component<SystemProps> {
           {features.ota && (
             <AuthenticatedRoute exact path="/system/ota" component={OTASettingsController} />
           )}
-          {features.ota && (
-            <AuthenticatedRoute exact path="/system/upload" component={OTAUploadController} />
+          {features.upload_firmware && (
+            <AuthenticatedRoute exact path="/system/upload" component={UploadFirmwareController} />
           )}
           <Redirect to="/system/status" />
         </Switch>
