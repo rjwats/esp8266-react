@@ -23,7 +23,7 @@ const getBorderColor = (theme: Theme, props: SingleUploadStyleProps) => {
 }
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
-  dropZone: {
+  dropzone: {
     padding: theme.spacing(8, 2),
     borderWidth: 2,
     borderRadius: 2,
@@ -44,9 +44,9 @@ export interface SingleUploadProps {
 }
 
 const SingleUpload: FC<SingleUploadProps> = ({ onDrop, accept, uploading, progress }) => {
-  const dropZoneState = useDropzone({ onDrop, accept, disabled: uploading, multiple: false });
-  const { getRootProps, getInputProps } = dropZoneState;
-  const classes = useStyles({ ...dropZoneState, uploading });
+  const dropzoneState = useDropzone({ onDrop, accept, disabled: uploading, multiple: false });
+  const { getRootProps, getInputProps } = dropzoneState;
+  const classes = useStyles({ ...dropzoneState, uploading });
 
   const renderProgressText = () => {
     if (uploading) {
@@ -66,7 +66,7 @@ const SingleUpload: FC<SingleUploadProps> = ({ onDrop, accept, uploading, progre
   );
 
   return (
-    <div {...getRootProps({ className: classes.dropZone })}>
+    <div {...getRootProps({ className: classes.dropzone })}>
       <input {...getInputProps()} />
       <Box flexDirection="column" display="flex" alignItems="center">
         <CloudUploadIcon fontSize='large' />
