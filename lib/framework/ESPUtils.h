@@ -3,15 +3,8 @@
 
 #include <Arduino.h>
 
-class ESPUtils {
- public:
-  static String defaultDeviceValue(String prefix = "") {
-#ifdef ESP32
-    return prefix + String((unsigned long)ESP.getEfuseMac(), HEX);
-#elif defined(ESP8266)
-    return prefix + String(ESP.getChipId(), HEX);
-#endif
-  }
+namespace FactoryValue {
+  String format(String tpl);
 };
 
 #endif  // end ESPUtils

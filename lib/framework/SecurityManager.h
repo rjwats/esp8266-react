@@ -4,13 +4,8 @@
 #include <Features.h>
 #include <ArduinoJsonJWT.h>
 #include <ESPAsyncWebServer.h>
-#include <ESPUtils.h>
 #include <AsyncJson.h>
 #include <list>
-
-#ifndef FACTORY_JWT_SECRET
-#define FACTORY_JWT_SECRET ESPUtils::defaultDeviceValue()
-#endif
 
 #define ACCESS_TOKEN_PARAMATER "access_token"
 
