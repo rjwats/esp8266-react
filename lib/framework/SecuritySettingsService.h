@@ -7,24 +7,24 @@
 #include <HttpEndpoint.h>
 #include <FSPersistence.h>
 
-#ifndef FACTORY_JWT_SECRET	
+#ifndef FACTORY_JWT_SECRET
 #define FACTORY_JWT_SECRET "{chip_id}"
 #endif
 
-#ifndef FACTORY_ADMIN_USERNAME	
-#define FACTORY_ADMIN_USERNAME "admin"	
-#endif	
+#ifndef FACTORY_ADMIN_USERNAME
+#define FACTORY_ADMIN_USERNAME "admin"
+#endif
 
-#ifndef FACTORY_ADMIN_PASSWORD	
-#define FACTORY_ADMIN_PASSWORD "admin"	
-#endif	
+#ifndef FACTORY_ADMIN_PASSWORD
+#define FACTORY_ADMIN_PASSWORD "admin"
+#endif
 
-#ifndef FACTORY_GUEST_USERNAME	
-#define FACTORY_GUEST_USERNAME "guest"	
-#endif	
+#ifndef FACTORY_GUEST_USERNAME
+#define FACTORY_GUEST_USERNAME "guest"
+#endif
 
-#ifndef FACTORY_GUEST_PASSWORD	
-#define FACTORY_GUEST_PASSWORD "guest"	
+#ifndef FACTORY_GUEST_PASSWORD
+#define FACTORY_GUEST_PASSWORD "guest"
 #endif
 
 #define SECURITY_SETTINGS_FILE "/config/securitySettings.json"
@@ -108,7 +108,7 @@ class SecuritySettingsService : public SecurityManager {
   SecuritySettingsService(AsyncWebServer* server, FS* fs);
   ~SecuritySettingsService();
 
-  // minimal set of functions to support framework with security settings disabled  
+  // minimal set of functions to support framework with security settings disabled
   Authentication authenticateRequest(AsyncWebServerRequest* request);
   ArRequestFilterFunction filterRequest(AuthenticationPredicate predicate);
   ArRequestHandlerFunction wrapRequest(ArRequestHandlerFunction onRequest, AuthenticationPredicate predicate);

@@ -7,40 +7,40 @@
 #include <AsyncMqttClient.h>
 #include <SettingValue.h>
 
-#ifndef FACTORY_MQTT_ENABLED	
-#define FACTORY_MQTT_ENABLED false	
-#endif	
+#ifndef FACTORY_MQTT_ENABLED
+#define FACTORY_MQTT_ENABLED false
+#endif
 
-#ifndef FACTORY_MQTT_HOST	
-#define FACTORY_MQTT_HOST "test.mosquitto.org"	
-#endif	
+#ifndef FACTORY_MQTT_HOST
+#define FACTORY_MQTT_HOST "test.mosquitto.org"
+#endif
 
-#ifndef FACTORY_MQTT_PORT	
-#define FACTORY_MQTT_PORT 1883	
-#endif	
+#ifndef FACTORY_MQTT_PORT
+#define FACTORY_MQTT_PORT 1883
+#endif
 
-#ifndef FACTORY_MQTT_USERNAME	
-#define FACTORY_MQTT_USERNAME ""	
-#endif	
+#ifndef FACTORY_MQTT_USERNAME
+#define FACTORY_MQTT_USERNAME ""
+#endif
 
-#ifndef FACTORY_MQTT_PASSWORD	
-#define FACTORY_MQTT_PASSWORD ""	
-#endif	
+#ifndef FACTORY_MQTT_PASSWORD
+#define FACTORY_MQTT_PASSWORD ""
+#endif
 
-#ifndef FACTORY_MQTT_CLIENT_ID	
+#ifndef FACTORY_MQTT_CLIENT_ID
 #define FACTORY_MQTT_CLIENT_ID "{platform}-{chip_id}"
-#endif	
+#endif
 
-#ifndef FACTORY_MQTT_KEEP_ALIVE	
-#define FACTORY_MQTT_KEEP_ALIVE 16	
-#endif	
+#ifndef FACTORY_MQTT_KEEP_ALIVE
+#define FACTORY_MQTT_KEEP_ALIVE 16
+#endif
 
-#ifndef FACTORY_MQTT_CLEAN_SESSION	
-#define FACTORY_MQTT_CLEAN_SESSION true	
-#endif	
+#ifndef FACTORY_MQTT_CLEAN_SESSION
+#define FACTORY_MQTT_CLEAN_SESSION true
+#endif
 
-#ifndef FACTORY_MQTT_MAX_TOPIC_LENGTH	
-#define FACTORY_MQTT_MAX_TOPIC_LENGTH 128	
+#ifndef FACTORY_MQTT_MAX_TOPIC_LENGTH
+#define FACTORY_MQTT_MAX_TOPIC_LENGTH 128
 #endif
 
 #define MQTT_SETTINGS_FILE "/config/mqttSettings.json"

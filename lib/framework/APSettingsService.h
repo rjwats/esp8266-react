@@ -8,16 +8,16 @@
 #include <DNSServer.h>
 #include <IPAddress.h>
 
-#ifndef FACTORY_AP_SSID	
-#define FACTORY_AP_SSID "ESP8266 React ({chip_id})"	
-#endif	
+#ifndef FACTORY_AP_SSID
+#define FACTORY_AP_SSID "ESP8266 React ({chip_id})"
+#endif
 
-#ifndef FACTORY_AP_PASSWORD	
-#define FACTORY_AP_PASSWORD "esp-react"	
-#endif	
+#ifndef FACTORY_AP_PASSWORD
+#define FACTORY_AP_PASSWORD "esp-react"
+#endif
 
-#ifndef FACTORY_AP_PROVISION_MODE	
-#define FACTORY_AP_PROVISION_MODE AP_MODE_DISCONNECTED	
+#ifndef FACTORY_AP_PROVISION_MODE
+#define FACTORY_AP_PROVISION_MODE AP_MODE_DISCONNECTED
 #endif
 
 #define AP_SETTINGS_FILE "/config/apSettings.json"
@@ -31,11 +31,7 @@
 
 #define DNS_PORT 53
 
-enum APNetworkStatus {
-  ACTIVE = 0,
-  INACTIVE,
-  LINGERING
-};
+enum APNetworkStatus { ACTIVE = 0, INACTIVE, LINGERING };
 
 class APSettings {
  public:

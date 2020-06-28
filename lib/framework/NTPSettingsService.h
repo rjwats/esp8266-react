@@ -11,20 +11,20 @@
 #include <sntp.h>
 #endif
 
-#ifndef FACTORY_NTP_ENABLED	
-#define FACTORY_NTP_ENABLED true	
-#endif	
+#ifndef FACTORY_NTP_ENABLED
+#define FACTORY_NTP_ENABLED true
+#endif
 
-#ifndef FACTORY_NTP_TIME_ZONE_LABEL	
-#define FACTORY_NTP_TIME_ZONE_LABEL "Europe/London"	
-#endif	
+#ifndef FACTORY_NTP_TIME_ZONE_LABEL
+#define FACTORY_NTP_TIME_ZONE_LABEL "Europe/London"
+#endif
 
-#ifndef FACTORY_NTP_TIME_ZONE_FORMAT	
-#define FACTORY_NTP_TIME_ZONE_FORMAT "GMT0BST,M3.5.0/1,M10.5.0"	
-#endif	
+#ifndef FACTORY_NTP_TIME_ZONE_FORMAT
+#define FACTORY_NTP_TIME_ZONE_FORMAT "GMT0BST,M3.5.0/1,M10.5.0"
+#endif
 
-#ifndef FACTORY_NTP_SERVER	
-#define FACTORY_NTP_SERVER "time.google.com"	
+#ifndef FACTORY_NTP_SERVER
+#define FACTORY_NTP_SERVER "time.google.com"
 #endif
 
 #define NTP_SETTINGS_FILE "/config/ntpSettings.json"
