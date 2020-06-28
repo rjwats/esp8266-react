@@ -7,8 +7,21 @@
 #include <HttpEndpoint.h>
 #include <JsonUtils.h>
 
+#ifndef FACTORY_WIFI_SSID	
+#define FACTORY_WIFI_SSID ""	
+#endif	
+
+#ifndef FACTORY_WIFI_PASSWORD	
+#define FACTORY_WIFI_PASSWORD ""	
+#endif	
+
+#ifndef FACTORY_WIFI_HOSTNAME	
+#define FACTORY_WIFI_HOSTNAME "${platform}-${chip_id}"	
+#endif
+
 #define WIFI_SETTINGS_FILE "/config/wifiSettings.json"
 #define WIFI_SETTINGS_SERVICE_PATH "/rest/wifiSettings"
+
 #define WIFI_RECONNECTION_DELAY 1000 * 30
 
 class WiFiSettings {
