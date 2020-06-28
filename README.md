@@ -229,7 +229,7 @@ Some factory settings support placeholder substitution. Placeholders will be rep
 
 Placeholder | Actual value
 ----------- | --------
-${platform} | One of "eps32" or "esp8266" depending on a microcontoller type
+${platform} | One of "esp32" or "esp8266" depending on a microcontoller type
 ${chip_id}  | unique microcontroller chip id
 
 ## Building for different devices
