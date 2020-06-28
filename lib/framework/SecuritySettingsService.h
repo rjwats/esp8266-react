@@ -1,7 +1,7 @@
 #ifndef SecuritySettingsService_h
 #define SecuritySettingsService_h
 
-#include <ESPUtils.h>
+#include <SettingValue.h>
 #include <Features.h>
 #include <SecurityManager.h>
 #include <HttpEndpoint.h>
@@ -53,7 +53,7 @@ class SecuritySettings {
 
   static StateUpdateResult update(JsonObject& root, SecuritySettings& settings) {
     // secret
-    settings.jwtSecret = root["jwt_secret"] | FactoryValue::format(FACTORY_JWT_SECRET);
+    settings.jwtSecret = root["jwt_secret"] | SettingValue::format(FACTORY_JWT_SECRET);
 
     // users
     settings.users.clear();

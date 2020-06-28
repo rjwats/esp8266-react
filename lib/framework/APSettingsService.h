@@ -1,7 +1,7 @@
 #ifndef APSettingsConfig_h
 #define APSettingsConfig_h
 
-#include <ESPUtils.h>
+#include <SettingValue.h>
 #include <HttpEndpoint.h>
 #include <FSPersistence.h>
 
@@ -60,7 +60,7 @@ class APSettings {
       default:
         newSettings.provisionMode = AP_MODE_ALWAYS;
     }
-    newSettings.ssid = root["ssid"] | FactoryValue::format(FACTORY_AP_SSID);
+    newSettings.ssid = root["ssid"] | SettingValue::format(FACTORY_AP_SSID);
     newSettings.password = root["password"] | FACTORY_AP_PASSWORD;
     if (newSettings.provisionMode == settings.provisionMode && newSettings.ssid.equals(settings.ssid) &&
         newSettings.password.equals(settings.password)) {

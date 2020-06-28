@@ -5,7 +5,7 @@
 #include <HttpEndpoint.h>
 #include <FSPersistence.h>
 #include <AsyncMqttClient.h>
-#include <ESPUtils.h>
+#include <SettingValue.h>
 
 #ifndef FACTORY_MQTT_ENABLED	
 #define FACTORY_MQTT_ENABLED false	
@@ -83,9 +83,9 @@ class MqttSettings {
     settings.enabled = root["enabled"] | FACTORY_MQTT_ENABLED;
     settings.host = root["host"] | FACTORY_MQTT_HOST;
     settings.port = root["port"] | FACTORY_MQTT_PORT;
-    settings.username = root["username"] | FactoryValue::format(FACTORY_MQTT_USERNAME);
+    settings.username = root["username"] | SettingValue::format(FACTORY_MQTT_USERNAME);
     settings.password = root["password"] | FACTORY_MQTT_PASSWORD;
-    settings.clientId = root["client_id"] | FactoryValue::format(FACTORY_MQTT_CLIENT_ID);
+    settings.clientId = root["client_id"] | SettingValue::format(FACTORY_MQTT_CLIENT_ID);
     settings.keepAlive = root["keep_alive"] | FACTORY_MQTT_KEEP_ALIVE;
     settings.cleanSession = root["clean_session"] | FACTORY_MQTT_CLEAN_SESSION;
     settings.maxTopicLength = root["max_topic_length"] | FACTORY_MQTT_MAX_TOPIC_LENGTH;

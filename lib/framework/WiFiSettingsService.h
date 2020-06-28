@@ -1,7 +1,7 @@
 #ifndef WiFiSettingsService_h
 #define WiFiSettingsService_h
 
-#include <ESPUtils.h>
+#include <SettingValue.h>
 #include <StatefulService.h>
 #include <FSPersistence.h>
 #include <HttpEndpoint.h>
@@ -57,7 +57,7 @@ class WiFiSettings {
   static StateUpdateResult update(JsonObject& root, WiFiSettings& settings) {
     settings.ssid = root["ssid"] | FACTORY_WIFI_SSID;
     settings.password = root["password"] | FACTORY_WIFI_PASSWORD;
-    settings.hostname = root["hostname"] | FactoryValue::format(FACTORY_WIFI_HOSTNAME);
+    settings.hostname = root["hostname"] | SettingValue::format(FACTORY_WIFI_HOSTNAME);
     settings.staticIPConfig = root["static_ip_config"] | false;
 
     // extended settings

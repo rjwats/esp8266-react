@@ -169,11 +169,11 @@ Many of the framework's built in features may be enabled or disabled as required
 Customize the settings as you see fit. A value of 0 will disable the specified feature:
 
 ```ini
-    -D FT_PROJECT=1
-    -D FT_SECURITY=1
-    -D FT_MQTT=1
-    -D FT_NTP=1
-    -D FT_OTA=1
+  -D FT_PROJECT=1
+  -D FT_SECURITY=1
+  -D FT_MQTT=1
+  -D FT_NTP=1
+  -D FT_OTA=1
 ```
 
 Flag          | Description
@@ -191,9 +191,9 @@ The framework has built-in factory settings which act as default values for the 
 Customize the settings as you see fit, for example you might configure your home WiFi network as the factory default:
 
 ```ini
-    -D FACTORY_WIFI_SSID=\"My Awesome WiFi Network\"
-    -D FACTORY_WIFI_PASSWORD=\"secret\"
-    -D FACTORY_WIFI_HOSTNAME=\"awesome_light_controller\"
+  -D FACTORY_WIFI_SSID=\"My Awesome WiFi Network\"
+  -D FACTORY_WIFI_PASSWORD=\"secret\"
+  -D FACTORY_WIFI_HOSTNAME=\"awesome_light_controller\"
 ```
 
 ### Default access point settings
@@ -219,18 +219,30 @@ It is recommended that you change the user credentials from their defaults bette
 Changing factory time zone setting is a common requirement. This requires a little effort because the time zone name and POSIX format are stored as separate values for the moment. The time zone names and POSIX formats are contained in the UI code in [TZ.tsx](interface/src/ntp/TZ.tsx). Take the appropriate pair of values from there, for example, for Los Angeles you would use:
 
 ```ini
-    -D FACTORY_NTP_TIME_ZONE_LABEL=\"America/Los_Angeles\"
-    -D FACTORY_NTP_TIME_ZONE_FORMAT=\"PST8PDT,M3.2.0,M11.1.0\"
+  -D FACTORY_NTP_TIME_ZONE_LABEL=\"America/Los_Angeles\"
+  -D FACTORY_NTP_TIME_ZONE_FORMAT=\"PST8PDT,M3.2.0,M11.1.0\"
 ```
 
-### Dynamic values
+### Placeholder substitution
 
-Some factory settings support placeholder substitution. Placeholders will be replaced with it's actual values at runtime. It allows to generate dynamic settings for different devices. Such factory settings can be distinguished by `supports placeholders` comment is placed next to it.
+Various settings support placeholder substitution, indicated by comments in [factory_settings.ini](factory_settings.ini). This can be particularly useful where settings need to be unique, such as the Access Point SSID or MQTT client id. The following placeholders are supported:
 
-Placeholder | Actual value
------------ | --------
-{platform} | One of "esp32" or "esp8266" depending on a microcontoller type
-{chip_id}  | unique microcontroller chip id
+Placeholder | Substituted value 
+----------- | -----------------
+{platform}  | The microcontroller platform, e.g. "esp32" or "esp8266"
+{chip_id}   | The chip identifier, e.g. "4334a"
+
+You may use SettingValue::format in your own code if you require the use of these placeholders. This is demonstrated in the demo project:
+
+```cpp
+  static StateUpdateResult update(JsonObject& root, LightMqttSettings& settings) {
+    settings.mqttPath = root["mqtt_path"] | SettingValue::format("homeassistant/light/{chip_id}");
+    settings.name = root["name"] | SettingValue::format("light-{chip_id}");
+    settings.uniqueId = root["unique_id"] | SettingValue::format("light-{chip_id}");
+    return StateUpdateResult::CHANGED;
+  }
+};
+```
 
 ## Building for different devices
 
