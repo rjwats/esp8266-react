@@ -35,7 +35,7 @@ export default function RestFormLoader<D>(props: RestFormLoaderProps<D>) {
       <div className={classes.loadingSettings}>
         <LinearProgress className={classes.loadingSettingsDetails} />
         <Typography variant="h6" className={classes.loadingSettingsDetails}>
-          Loading...
+          Loading&hellip;
         </Typography>
       </div>
     );

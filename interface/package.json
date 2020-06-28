@@ -21,6 +21,7 @@
     "notistack": "^0.9.16",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-dropzone": "^11.0.1",
     "react-form-validator-core": "^0.6.4",
     "react-material-ui-form-validator": "^2.0.10",
     "react-router": "^5.1.2",

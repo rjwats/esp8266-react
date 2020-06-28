@@ -32,6 +32,11 @@ void FeaturesService::features(AsyncWebServerRequest* request) {
 #else
   root["ota"] = false;
 #endif
+#if FT_ENABLED(FT_UPLOAD_FIRMWARE)
+  root["upload_firmware"] = true;
+#else
+  root["upload_firmware"] = false;
+#endif
   response->setLength();
   request->send(response);
 }

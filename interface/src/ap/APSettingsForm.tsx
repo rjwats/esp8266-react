@@ -18,7 +18,7 @@ class APSettingsForm extends React.Component<APSettingsFormProps> {
     return (
       <ValidatorForm onSubmit={saveData} ref="APSettingsForm">
         <SelectValidator name="provision_mode"
-          label="Provide Access Point..."
+          label="Provide Access Point&hellip;"
           value={data.provision_mode}
           fullWidth
           variant="outlined"

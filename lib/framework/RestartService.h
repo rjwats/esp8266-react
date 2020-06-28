@@ -18,6 +18,12 @@ class RestartService {
  public:
   RestartService(AsyncWebServer* server, SecurityManager* securityManager);
 
+  static void restartNow() {
+    WiFi.disconnect(true);
+    delay(500);
+    ESP.restart();
+  }
+
  private:
   void restart(AsyncWebServerRequest* request);
 };

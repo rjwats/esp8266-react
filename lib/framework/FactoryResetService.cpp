@@ -30,5 +30,5 @@ void FactoryResetService::factoryReset() {
     fs->remove(configDirectory.fileName());
   }
 #endif
-  ESP.restart();
+  RestartService::restartNow();
 }
