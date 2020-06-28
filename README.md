@@ -16,7 +16,7 @@ Provides many of the features required for IoT projects:
 * Configurable Access Point - Can be continuous or automatically enabled when WiFi connection fails
 * Network Time - Synchronization with NTP
 * MQTT - Connection to an MQTT broker for automation and monitoring
-* Remote Firmware Updates - Enable secured OTA updates
+* Remote Firmware Updates - Firmware replacement using OTA update or upload via UI
 * Security - Protected RESTful endpoints and a secured user interface
 
 Features may be [enabled or disabled](#selecting-features) as required at compile time.
@@ -185,6 +185,7 @@ FT_MQTT            | Controls whether the MQTT features are enabled. Disable thi
 FT_NTP             | Controls whether network time protocol synchronization features are enabled. Disable this if your project does not require accurate time.
 FT_OTA             | Controls whether OTA update support is enabled. Disable this if you won't be using the remote update feature.
 FT_UPLOAD_FIRMWARE | Controls the whether the manual upload firmware feature is enabled. Disable this if you won't be manually uploading firmware.
+
 ## Factory settings
 
 The framework has built-in factory settings which act as default values for the various configurable services where settings are not saved on the file system. These settings can be overridden using the build flags defined in [factory_settings.ini](factory_settings.ini).
