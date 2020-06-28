@@ -9,8 +9,8 @@ String format(String tpl) {
   String chipId(ESP.getChipId(), HEX);
   String platform(F("esp8266"));
 #endif
-  tpl.replace(F("${chip_id}"), chipId);
-  tpl.replace(F("${platform}"), platform);
+  tpl.replace(F("{chip_id}"), chipId);
+  tpl.replace(F("{platform}"), platform);
   return tpl;
 }
 };  // namespace FactoryValue

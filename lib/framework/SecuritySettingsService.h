@@ -8,7 +8,7 @@
 #include <FSPersistence.h>
 
 #ifndef FACTORY_JWT_SECRET	
-#define FACTORY_JWT_SECRET "${chip_id}"
+#define FACTORY_JWT_SECRET "{chip_id}"
 #endif
 
 #ifndef FACTORY_ADMIN_USERNAME	

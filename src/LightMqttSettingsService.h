@@ -21,9 +21,9 @@ class LightMqttSettings {
   }
 
   static StateUpdateResult update(JsonObject& root, LightMqttSettings& settings) {
-    settings.mqttPath = root["mqtt_path"] | FactoryValue::format("homeassistant/light/${chip_id}");
-    settings.name = root["name"] | FactoryValue::format("light-${chip_id}");
-    settings.uniqueId = root["unique_id"] | FactoryValue::format("light-${chip_id}");
+    settings.mqttPath = root["mqtt_path"] | FactoryValue::format("homeassistant/light/{chip_id}");
+    settings.name = root["name"] | FactoryValue::format("light-{chip_id}");
+    settings.uniqueId = root["unique_id"] | FactoryValue::format("light-{chip_id}");
     return StateUpdateResult::CHANGED;
   }
 };
