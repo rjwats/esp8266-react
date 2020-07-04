@@ -303,7 +303,7 @@ You can replace the app icon is located at ['interface/public/app/icon.png'](int
 
 ### Changing the app name
 
-The app name displayed on the login page and on the menu bar can be modified by editing the REACT_APP_NAME property in ['interface/.env'](interface/.env)
+The app name displayed on the sign in page and on the menu bar can be modified by editing the REACT_APP_NAME property in ['interface/.env'](interface/.env)
 
 ```ini
 REACT_APP_NAME=Funky IoT Project
