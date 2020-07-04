@@ -641,6 +641,7 @@ Configure the WiFi SSID and password manually:
 esp8266React.getWiFiSettingsService()->update([&](WiFiSettings& wifiSettings) {
   wifiSettings.ssid = "MyNetworkSSID";
   wifiSettings.password = "MySuperSecretPassword";
+  return StateUpdateResult::CHANGED; 
 }, "myapp");
 ```
 
