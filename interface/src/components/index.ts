@@ -8,6 +8,7 @@ export { default as RestFormLoader } from './RestFormLoader';
 export { default as SectionContent } from './SectionContent';
 export { default as WebSocketFormLoader } from './WebSocketFormLoader';
 export { default as ErrorButton } from './ErrorButton';
+export { default as SingleUpload } from './SingleUpload';
 
 export * from './RestFormLoader';
 export * from './RestController';

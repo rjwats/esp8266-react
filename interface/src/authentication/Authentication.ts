@@ -54,12 +54,45 @@ export function authorizedFetch(url: RequestInfo, params?: RequestInit): Promise
 }
 
 /**
+ * fetch() does not yet support upload progress, this wrapper allows us to configure the xhr request 
+ * for a single file upload and takes care of adding the Authroization header and redirecting on 
+ * authroization errors as we do for normal fetch operations.
+ */
+export function redirectingAuthorizedUpload(xhr: XMLHttpRequest, url: string, file: File, onProgress: (event: ProgressEvent<EventTarget>) => void): Promise<void> {
+  return new Promise((resolve, reject) => {
+    xhr.open("POST", url, true);
+    const accessToken = getStorage().getItem(ACCESS_TOKEN);
+    if (accessToken) {
+      xhr.withCredentials = true;
+      xhr.setRequestHeader("Authorization", 'Bearer ' + accessToken);
+    }
+    xhr.upload.onprogress = onProgress;
+    xhr.onload = function () {
+      if (xhr.status === 401 || xhr.status === 403) {
+        history.push("/unauthorized");
+      } else {
+        resolve();
+      }
+    };
+    xhr.onerror = function (event: ProgressEvent<EventTarget>) {
+      reject(new DOMException('Error', 'UploadError'));
+    };
+    xhr.onabort = function () {
+      reject(new DOMException('Aborted', 'AbortError'));
+    };
+    const formData = new FormData();
+    formData.append('file', file);
+    xhr.send(formData);
+  });
+}
+
+/**
  * Wraps the normal fetch routene which redirects on 401 response.
  */
 export function redirectingAuthorizedFetch(url: RequestInfo, params?: RequestInit): Promise<Response> {
   return new Promise<Response>((resolve, reject) => {
     authorizedFetch(url, params).then(response => {
-      if (response.status === 401) {
+      if (response.status === 401 || response.status === 403) {
         history.push("/unauthorized");
       } else {
         resolve(response);

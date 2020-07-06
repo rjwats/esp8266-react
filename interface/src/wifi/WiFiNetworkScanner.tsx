@@ -130,7 +130,7 @@ class WiFiNetworkScanner extends Component<WiFiNetworkScannerProps, WiFiNetworkS
         <div className={classes.scanningSettings}>
           <LinearProgress className={classes.scanningSettingsDetails} />
           <Typography variant="h6" className={classes.scanningProgress}>
-            Scanning...
+            Scanning&hellip;
           </Typography>
         </div>
       );
@@ -156,7 +156,7 @@ class WiFiNetworkScanner extends Component<WiFiNetworkScannerProps, WiFiNetworkS
         {this.renderNetworkScanner()}
         <FormActions>
           <FormButton startIcon={<PermScanWifiIcon />} variant="contained" color="secondary" onClick={this.requestNetworkScan} disabled={scanningForNetworks}>
-            Scan again...
+            Scan again&hellip;
           </FormButton>
         </FormActions>
       </SectionContent>
