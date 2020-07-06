@@ -279,7 +279,7 @@ const theme = createMuiTheme({
       main: '#666',
     },
     info: {
-      main: blueGrey[900]
+      main: blueGrey[500]
     },
     warning: {
       main: orange[500]
