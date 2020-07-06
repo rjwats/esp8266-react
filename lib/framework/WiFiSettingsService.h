@@ -16,7 +16,7 @@
 #endif
 
 #ifndef FACTORY_WIFI_HOSTNAME
-#define FACTORY_WIFI_HOSTNAME "{platform}-{chip_id}"
+#define FACTORY_WIFI_HOSTNAME "#{platform}-#{chip_id}"
 #endif
 
 #define WIFI_SETTINGS_FILE "/config/wifiSettings.json"
