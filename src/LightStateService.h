@@ -7,7 +7,7 @@
 #include <MqttPubSub.h>
 #include <WebSocketTxRx.h>
 
-#define BLINK_LED 2
+#define LED_PIN 2
 #define PRINT_DELAY 5000
 
 #define DEFAULT_LED_STATE false
