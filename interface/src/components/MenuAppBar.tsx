@@ -1,7 +1,7 @@
-import React, { RefObject } from 'react';
+import React, { RefObject, Fragment } from 'react';
 import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
 
-import { Drawer, AppBar, Toolbar, Avatar, Divider, Button, IconButton } from '@material-ui/core';
+import { Drawer, AppBar, Toolbar, Avatar, Divider, Button, Box, IconButton } from '@material-ui/core';
 import { ClickAwayListener, Popper, Hidden, Typography } from '@material-ui/core';
 import { List, ListItem, ListItemIcon, ListItemText, ListItemAvatar } from '@material-ui/core';
 import { Card, CardContent, CardActions } from '@material-ui/core';
@@ -20,6 +20,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ProjectMenu from '../project/ProjectMenu';
 import { PROJECT_NAME } from '../api';
 import { withAuthenticatedContext, AuthenticatedContextProps } from '../authentication';
+import { withFeatures, WithFeaturesProps } from '../features/FeaturesContext';
 
 const drawerWidth = 290;
 
@@ -40,6 +41,16 @@ const styles = (theme: Theme) => createStyles({
     marginLeft: drawerWidth,
     [theme.breakpoints.up('md')]: {
       width: `calc(100% - ${drawerWidth}px)`,
+    },
+  },
+  toolbarImage: {
+    [theme.breakpoints.up('xs')]: {
+      height: 24,
+      marginRight: theme.spacing(2)
+    },
+    [theme.breakpoints.up('sm')]: {
+      height: 36,
+      marginRight: theme.spacing(3)
     },
   },
   menuButton: {
@@ -64,7 +75,7 @@ const styles = (theme: Theme) => createStyles({
     "& > * + *": {
       marginLeft: theme.spacing(2),
     }
-  }
+  },
 });
 
 interface MenuAppBarState {
@@ -72,7 +83,7 @@ interface MenuAppBarState {
   authMenuOpen: boolean;
 }
 
-interface MenuAppBarProps extends AuthenticatedContextProps, WithTheme, WithStyles<typeof styles>, RouteComponentProps {
+interface MenuAppBarProps extends WithFeaturesProps, AuthenticatedContextProps, WithTheme, WithStyles<typeof styles>, RouteComponentProps {
   sectionTitle: string;
 }
 
@@ -104,20 +115,26 @@ class MenuAppBar extends React.Component<MenuAppBarProps, MenuAppBarState> {
   };
 
   render() {
-    const { classes, theme, children, sectionTitle, authenticatedContext } = this.props;
+    const { classes, theme, children, sectionTitle, authenticatedContext, features } = this.props;
     const { mobileOpen, authMenuOpen } = this.state;
     const path = this.props.match.url;
     const drawer = (
       <div>
         <Toolbar>
+          <Box display="flex">
+            <img src="/app/icon.png" className={classes.toolbarImage} alt={PROJECT_NAME} />
+          </Box>
           <Typography variant="h6" color="textPrimary">
             {PROJECT_NAME}
           </Typography>
           <Divider absolute />
         </Toolbar>
-        <Divider />
-        <ProjectMenu />
-        <Divider />
+        {features.project && (
+          <Fragment>
+            <ProjectMenu />
+            <Divider />
+          </Fragment>
+        )}
         <List>
           <ListItem to='/wifi/' selected={path.startsWith('/wifi/')} button component={Link}>
             <ListItemIcon>
@@ -131,24 +148,30 @@ class MenuAppBar extends React.Component<MenuAppBarProps, MenuAppBarState> {
             </ListItemIcon>
             <ListItemText primary="Access Point" />
           </ListItem>
+          {features.ntp && (
           <ListItem to='/ntp/' selected={path.startsWith('/ntp/')} button component={Link}>
             <ListItemIcon>
               <AccessTimeIcon />
             </ListItemIcon>
             <ListItemText primary="Network Time" />
           </ListItem>
-          <ListItem to='/mqtt/' selected={path.startsWith('/mqtt/')} button component={Link}>
-            <ListItemIcon>
-              <DeviceHubIcon />
-            </ListItemIcon>
-            <ListItemText primary="MQTT" />
-          </ListItem>          
-          <ListItem to='/security/' selected={path.startsWith('/security/')} button component={Link} disabled={!authenticatedContext.me.admin}>
-            <ListItemIcon>
-              <LockIcon />
-            </ListItemIcon>
-            <ListItemText primary="Security" />
-          </ListItem>
+          )}
+          {features.mqtt && (
+            <ListItem to='/mqtt/' selected={path.startsWith('/mqtt/')} button component={Link}>
+              <ListItemIcon>
+                <DeviceHubIcon />
+              </ListItemIcon>
+              <ListItemText primary="MQTT" />
+            </ListItem>
+          )}
+          {features.security && (
+            <ListItem to='/security/' selected={path.startsWith('/security/')} button component={Link} disabled={!authenticatedContext.me.admin}>
+              <ListItemIcon>
+                <LockIcon />
+              </ListItemIcon>
+              <ListItemText primary="Security" />
+            </ListItem>
+          )}
           <ListItem to='/system/' selected={path.startsWith('/system/')} button component={Link} >
             <ListItemIcon>
               <SettingsIcon />
@@ -156,6 +179,42 @@ class MenuAppBar extends React.Component<MenuAppBarProps, MenuAppBarState> {
             <ListItemText primary="System" />
           </ListItem>
         </List>
+      </div>
+    );
+
+    const userMenu = (
+      <div>
+        <IconButton
+          ref={this.anchorRef}
+          aria-owns={authMenuOpen ? 'menu-list-grow' : undefined}
+          aria-haspopup="true"
+          onClick={this.handleToggle}
+          color="inherit"
+        >
+          <AccountCircleIcon />
+        </IconButton>
+        <Popper open={authMenuOpen} anchorEl={this.anchorRef.current} transition className={classes.authMenu}>
+          <ClickAwayListener onClickAway={this.handleClose}>
+            <Card id="menu-list-grow">
+              <CardContent>
+                <List disablePadding>
+                  <ListItem disableGutters>
+                    <ListItemAvatar>
+                      <Avatar>
+                        <AccountCircleIcon />
+                      </Avatar>
+                    </ListItemAvatar>
+                    <ListItemText primary={"Signed in as: " + authenticatedContext.me.username} secondary={authenticatedContext.me.admin ? "Admin User" : undefined} />
+                  </ListItem>
+                </List>
+              </CardContent>
+              <Divider />
+              <CardActions className={classes.authMenuActions}>
+                <Button variant="contained" fullWidth color="primary" onClick={authenticatedContext.signOut}>Sign Out</Button>
+              </CardActions>
+            </Card>
+          </ClickAwayListener>
+        </Popper>
       </div>
     );
 
@@ -175,39 +234,7 @@ class MenuAppBar extends React.Component<MenuAppBarProps, MenuAppBarState> {
             <Typography variant="h6" color="inherit" noWrap className={classes.title}>
               {sectionTitle}
             </Typography>
-            <div>
-              <IconButton
-                ref={this.anchorRef}
-                aria-owns={authMenuOpen ? 'menu-list-grow' : undefined}
-                aria-haspopup="true"
-                onClick={this.handleToggle}
-                color="inherit"
-              >
-                <AccountCircleIcon />
-              </IconButton>
-              <Popper open={authMenuOpen} anchorEl={this.anchorRef.current} transition className={classes.authMenu}>
-                <ClickAwayListener onClickAway={this.handleClose}>
-                  <Card id="menu-list-grow">
-                    <CardContent>
-                      <List disablePadding>
-                        <ListItem disableGutters>
-                          <ListItemAvatar>
-                            <Avatar>
-                              <AccountCircleIcon />
-                            </Avatar>
-                          </ListItemAvatar>
-                          <ListItemText primary={"Signed in as: " + authenticatedContext.me.username} secondary={authenticatedContext.me.admin ? "Admin User" : undefined} />
-                        </ListItem>
-                      </List>
-                    </CardContent>
-                    <Divider />
-                    <CardActions className={classes.authMenuActions}>
-                      <Button variant="contained" fullWidth color="primary" onClick={authenticatedContext.signOut}>Sign Out</Button>
-                    </CardActions>
-                  </Card>
-                </ClickAwayListener>
-              </Popper>
-            </div>
+            {features.security && userMenu}
           </Toolbar>
         </AppBar>
         <nav className={classes.drawer}>
@@ -250,8 +277,10 @@ class MenuAppBar extends React.Component<MenuAppBarProps, MenuAppBarState> {
 
 export default withRouter(
   withTheme(
-    withAuthenticatedContext(
-      withStyles(styles)(MenuAppBar)
+    withFeatures(
+      withAuthenticatedContext(
+        withStyles(styles)(MenuAppBar)
+      )
     )
   )
 );

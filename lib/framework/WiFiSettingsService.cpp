@@ -1,13 +1,9 @@
 #include <WiFiSettingsService.h>
 
 WiFiSettingsService::WiFiSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) :
-    _httpEndpoint(WiFiSettings::serialize,
-                  WiFiSettings::deserialize,
-                  this,
-                  server,
-                  WIFI_SETTINGS_SERVICE_PATH,
-                  securityManager),
-    _fsPersistence(WiFiSettings::serialize, WiFiSettings::deserialize, this, fs, WIFI_SETTINGS_FILE) {
+    _httpEndpoint(WiFiSettings::read, WiFiSettings::update, this, server, WIFI_SETTINGS_SERVICE_PATH, securityManager),
+    _fsPersistence(WiFiSettings::read, WiFiSettings::update, this, fs, WIFI_SETTINGS_FILE),
+    _lastConnectionAttempt(0) {
   // We want the device to come up in opmode=0 (WIFI_OFF), when erasing the flash this is not the default.
   // If needed, we save opmode=0 before disabling persistence so the device boots with WiFi disabled in the future.
   if (WiFi.getMode() != WIFI_OFF) {
@@ -31,7 +27,7 @@ WiFiSettingsService::WiFiSettingsService(AsyncWebServer* server, FS* fs, Securit
       std::bind(&WiFiSettingsService::onStationModeDisconnected, this, std::placeholders::_1));
 #endif
 
-  addUpdateHandler([&](String originId) { reconfigureWiFiConnection(); }, false);
+  addUpdateHandler([&](const String& originId) { reconfigureWiFiConnection(); }, false);
 }
 
 void WiFiSettingsService::begin() {
@@ -68,7 +64,7 @@ void WiFiSettingsService::manageSTA() {
   }
   // Connect or reconnect as required
   if ((WiFi.getMode() & WIFI_STA) == 0) {
-    Serial.println("Connecting to WiFi.");
+    Serial.println(F("Connecting to WiFi."));
     if (_state.staticIPConfig) {
       // configure for static IP
       WiFi.config(_state.localIP, _state.gatewayIP, _state.subnetMask, _state.dnsIP1, _state.dnsIP2);

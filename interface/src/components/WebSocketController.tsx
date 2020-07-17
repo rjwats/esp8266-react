@@ -119,13 +119,13 @@ export function webSocketController<D, P extends WebSocketControllerProps<D>>(ws
 
       render() {
         return <WebSocketController
+          {...this.props as P}
           handleValueChange={this.handleValueChange}
           setData={this.setData}
           saveData={this.saveData}
           saveDataAndClear={this.saveDataAndClear}
           connected={this.state.connected}
           data={this.state.data}
-          {...this.props as P}
         />;
       }
 

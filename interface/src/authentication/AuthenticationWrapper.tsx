@@ -2,37 +2,21 @@ import * as React from 'react';
 import { withSnackbar, WithSnackbarProps } from 'notistack';
 import jwtDecode from 'jwt-decode';
 
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Typography from '@material-ui/core/Typography';
-import { withStyles, Theme, createStyles, WithStyles } from '@material-ui/core/styles';
-
 import history from '../history'
 import { VERIFY_AUTHORIZATION_ENDPOINT } from '../api';
 import { ACCESS_TOKEN, authorizedFetch, getStorage } from './Authentication';
 import { AuthenticationContext, Me } from './AuthenticationContext';
+import FullScreenLoading from '../components/FullScreenLoading';
+import { withFeatures, WithFeaturesProps } from '../features/FeaturesContext';
 
 export const decodeMeJWT = (accessToken: string): Me => jwtDecode(accessToken);
-
-const styles = (theme: Theme) => createStyles({
-  loadingPanel: {
-    padding: theme.spacing(2),
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    height: "100vh",
-    flexDirection: "column"
-  },
-  progress: {
-    margin: theme.spacing(4),
-  }
-});
 
 interface AuthenticationWrapperState {
   context: AuthenticationContext;
   initialized: boolean;
 }
 
-type AuthenticationWrapperProps = WithSnackbarProps & WithStyles<typeof styles>;
+type AuthenticationWrapperProps = WithSnackbarProps & WithFeaturesProps;
 
 class AuthenticationWrapper extends React.Component<AuthenticationWrapperProps, AuthenticationWrapperState> {
 
@@ -69,18 +53,16 @@ class AuthenticationWrapper extends React.Component<AuthenticationWrapperProps, 
   }
 
   renderContentLoading() {
-    const { classes } = this.props;
     return (
-      <div className={classes.loadingPanel}>
-        <CircularProgress className={classes.progress} size={100} />
-        <Typography variant="h4" >
-          Loading...
-        </Typography>
-      </div>
+      <FullScreenLoading />
     );
   }
 
   refresh = () => {
+    if (!this.props.features.security) {
+      this.setState({ initialized: true, context: { ...this.state.context, me: { admin: true, username: "admin" } } });
+      return;
+    }
     const accessToken = getStorage().getItem(ACCESS_TOKEN)
     if (accessToken) {
       authorizedFetch(VERIFY_AUTHORIZATION_ENDPOINT)
@@ -124,4 +106,4 @@ class AuthenticationWrapper extends React.Component<AuthenticationWrapperProps, 
 
 }
 
-export default withStyles(styles)(withSnackbar(AuthenticationWrapper))
+export default withFeatures(withSnackbar(AuthenticationWrapper))

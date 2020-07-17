@@ -4,16 +4,16 @@ LightStateService::LightStateService(AsyncWebServer* server,
                                      SecurityManager* securityManager,
                                      AsyncMqttClient* mqttClient,
                                      LightMqttSettingsService* lightMqttSettingsService) :
-    _httpEndpoint(LightState::serialize,
-                  LightState::deserialize,
+    _httpEndpoint(LightState::read,
+                  LightState::update,
                   this,
                   server,
                   LIGHT_SETTINGS_ENDPOINT_PATH,
                   securityManager,
                   AuthenticationPredicates::IS_AUTHENTICATED),
-    _mqttPubSub(LightState::haSerialize, LightState::haDeserialize, this, mqttClient),
-    _webSocket(LightState::serialize,
-               LightState::deserialize,
+    _mqttPubSub(LightState::haRead, LightState::haUpdate, this, mqttClient),
+    _webSocket(LightState::read,
+               LightState::update,
                this,
                server,
                LIGHT_SETTINGS_SOCKET_PATH,
@@ -21,17 +21,17 @@ LightStateService::LightStateService(AsyncWebServer* server,
                AuthenticationPredicates::IS_AUTHENTICATED),
     _mqttClient(mqttClient),
     _lightMqttSettingsService(lightMqttSettingsService) {
-  // configure blink led to be output
-  pinMode(BLINK_LED, OUTPUT);
+  // configure led to be output
+  pinMode(LED_PIN, OUTPUT);
 
   // configure MQTT callback
   _mqttClient->onConnect(std::bind(&LightStateService::registerConfig, this));
 
   // configure update handler for when the light settings change
-  _lightMqttSettingsService->addUpdateHandler([&](String originId) { registerConfig(); }, false);
+  _lightMqttSettingsService->addUpdateHandler([&](const String& originId) { registerConfig(); }, false);
 
   // configure settings service update handler to update LED state
-  addUpdateHandler([&](String originId) { onConfigUpdated(); }, false);
+  addUpdateHandler([&](const String& originId) { onConfigUpdated(); }, false);
 }
 
 void LightStateService::begin() {
@@ -40,7 +40,7 @@ void LightStateService::begin() {
 }
 
 void LightStateService::onConfigUpdated() {
-  digitalWrite(BLINK_LED, _state.ledOn ? LED_ON : LED_OFF);
+  digitalWrite(LED_PIN, _state.ledOn ? LED_ON : LED_OFF);
 }
 
 void LightStateService::registerConfig() {
@@ -48,14 +48,14 @@ void LightStateService::registerConfig() {
     return;
   }
   String configTopic;
-  String setTopic;
-  String stateTopic;
+  String subTopic;
+  String pubTopic;
 
   DynamicJsonDocument doc(256);
   _lightMqttSettingsService->read([&](LightMqttSettings& settings) {
     configTopic = settings.mqttPath + "/config";
-    setTopic = settings.mqttPath + "/set";
-    stateTopic = settings.mqttPath + "/state";
+    subTopic = settings.mqttPath + "/set";
+    pubTopic = settings.mqttPath + "/state";
     doc["~"] = settings.mqttPath;
     doc["name"] = settings.name;
     doc["unique_id"] = settings.uniqueId;
@@ -69,5 +69,5 @@ void LightStateService::registerConfig() {
   serializeJson(doc, payload);
   _mqttClient->publish(configTopic.c_str(), 0, false, payload.c_str());
 
-  _mqttPubSub.configureTopics(stateTopic, setTopic);
+  _mqttPubSub.configureTopics(pubTopic, subTopic);
 }
