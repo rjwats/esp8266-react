@@ -28,7 +28,6 @@ void FactoryResetService::factoryReset() {
   Dir configDirectory = fs->openDir(FS_CONFIG_DIRECTORY);
   while (configDirectory.next()) {
     fs->remove(FS_CONFIG_DIRECTORY + configDirectory.fileName());
-    Serial.println(FS_CONFIG_DIRECTORY + configDirectory.fileName());
   }
 #endif
   RestartService::restartNow();
