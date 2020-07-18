@@ -63,7 +63,7 @@ ESP8266React::ESP8266React(AsyncWebServer* server, FS* fs) :
   // OPTIONS get a straight up 200 response
   server->onNotFound([](AsyncWebServerRequest* request) {
     if (request->method() == HTTP_GET) {
-      request->send(SPIFFS, "/www/index.html");
+      request->send(DeviceFS, "/www/index.html");
     } else if (request->method() == HTTP_OPTIONS) {
       request->send(200);
     } else {
