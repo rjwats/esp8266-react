@@ -28,6 +28,7 @@
 #include <WiFiScanner.h>
 #include <WiFiSettingsService.h>
 #include <WiFiStatus.h>
+#include <DeviceFS.h>
 
 #ifdef PROGMEM_WWW
 #include <WWWData.h>

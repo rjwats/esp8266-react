@@ -15,6 +15,7 @@
 #include <AsyncJson.h>
 #include <ESPAsyncWebServer.h>
 #include <SecurityManager.h>
+#include <DeviceFS.h>
 
 #define MAX_ESP_STATUS_SIZE 1024
 #define SYSTEM_STATUS_SERVICE_PATH "/rest/systemStatus"
