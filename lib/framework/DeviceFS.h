@@ -1,5 +1,5 @@
 #ifdef ESP32
-#include <FS.h>
+#include <SPIFFS.h>
 #define DeviceFS SPIFFS
 #elif defined(ESP8266)
 #include <LittleFS.h>
