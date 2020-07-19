@@ -5,9 +5,9 @@
 #define SERIAL_BAUD_RATE 115200
 
 AsyncWebServer server(80);
-ESP8266React esp8266React(&server, &DeviceFS);
+ESP8266React esp8266React(&server);
 LightMqttSettingsService lightMqttSettingsService =
-    LightMqttSettingsService(&server, &DeviceFS, esp8266React.getSecurityManager());
+    LightMqttSettingsService(&server, esp8266React.getFS(), esp8266React.getSecurityManager());
 LightStateService lightStateService = LightStateService(&server,
                                                         esp8266React.getSecurityManager(),
                                                         esp8266React.getMqttClient(),
@@ -16,13 +16,6 @@ LightStateService lightStateService = LightStateService(&server,
 void setup() {
   // start serial and filesystem
   Serial.begin(SERIAL_BAUD_RATE);
-
-  // start the file system (must be done before starting the framework)
-#ifdef ESP32
-  DeviceFS.begin(true);
-#elif defined(ESP8266)
-  DeviceFS.begin();
-#endif
 
   // start the framework and demo project
   esp8266React.begin();

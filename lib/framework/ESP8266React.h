@@ -28,7 +28,7 @@
 #include <WiFiScanner.h>
 #include <WiFiSettingsService.h>
 #include <WiFiStatus.h>
-#include <DeviceFS.h>
+#include <ESPFS.h>
 
 #ifdef PROGMEM_WWW
 #include <WWWData.h>
@@ -36,10 +36,14 @@
 
 class ESP8266React {
  public:
-  ESP8266React(AsyncWebServer* server, FS* fs);
+  ESP8266React(AsyncWebServer* server);
 
   void begin();
   void loop();
+
+  FS* getFS() {
+    return &ESPFS;
+  }
 
   SecurityManager* getSecurityManager() {
     return &_securitySettingsService;

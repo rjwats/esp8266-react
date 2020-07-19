@@ -340,7 +340,7 @@ The following code creates the web server and esp8266React framework:
 
 ```cpp
 AsyncWebServer server(80);
-ESP8266React esp8266React(&server, &DeviceFS);
+ESP8266React esp8266React(&server);
 ```
 
 Now in the `setup()` function the initialization is performed:
@@ -349,13 +349,6 @@ Now in the `setup()` function the initialization is performed:
 void setup() {
   // start serial and filesystem
   Serial.begin(SERIAL_BAUD_RATE);
-
-  // start the file system (must be done before starting the framework)
-#ifdef ESP32
-  DeviceFS.begin(true);
-#elif defined(ESP8266)
-  DeviceFS.begin();
-#endif
 
   // start the framework and demo project
   esp8266React.begin();
@@ -615,6 +608,7 @@ The framework supplies access to various features via getter functions:
 
 SettingsService              | Description
 ---------------------------- | ----------------------------------------------
+getFS()                      | The filesystem used by the framework
 getSecurityManager()         | The security manager - detailed above
 getSecuritySettingsService() | Configures the users and other security settings
 getWiFiSettingsService()     | Configures and manages the WiFi network connection
