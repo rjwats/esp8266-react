@@ -54,11 +54,11 @@ ESP8266React::ESP8266React(AsyncWebServer* server) :
       });
 #else
   // Serve static resources from /www/
-  server->serveStatic("/js/", *fs, "/www/js/");
-  server->serveStatic("/css/", *fs, "/www/css/");
-  server->serveStatic("/fonts/", *fs, "/www/fonts/");
-  server->serveStatic("/app/", *fs, "/www/app/");
-  server->serveStatic("/favicon.ico", *fs, "/www/favicon.ico");
+  server->serveStatic("/js/", ESPFS, "/www/js/");
+  server->serveStatic("/css/", ESPFS, "/www/css/");
+  server->serveStatic("/fonts/", ESPFS, "/www/fonts/");
+  server->serveStatic("/app/", ESPFS, "/www/app/");
+  server->serveStatic("/favicon.ico", ESPFS, "/www/favicon.ico");
   // Serving all other get requests with "/www/index.htm"
   // OPTIONS get a straight up 200 response
   server->onNotFound([](AsyncWebServerRequest* request) {
