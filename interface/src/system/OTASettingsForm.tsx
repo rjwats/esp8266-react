@@ -57,9 +57,6 @@ class OTASettingsForm extends React.Component<OTASettingsFormProps> {
           <FormButton startIcon={<SaveIcon />} variant="contained" color="primary" type="submit">
             Save
           </FormButton>
-          <FormButton variant="contained" color="secondary" onClick={loadData}>
-            Reset
-          </FormButton>
         </FormActions>
       </ValidatorForm>
     );

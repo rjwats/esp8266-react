@@ -166,9 +166,6 @@ class ManageUsersForm extends React.Component<ManageUsersFormProps, ManageUsersF
             <FormButton startIcon={<SaveIcon />} variant="contained" color="primary" type="submit" disabled={this.noAdminConfigured()}>
               Save
             </FormButton>
-            <FormButton variant="contained" color="secondary" onClick={loadData}>
-              Reset
-            </FormButton>
           </FormActions>
         </ValidatorForm>
         {
