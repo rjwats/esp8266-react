@@ -106,7 +106,7 @@ class ManageUsersForm extends React.Component<ManageUsersFormProps, ManageUsersF
   }
 
   render() {
-    const { width, data, loadData } = this.props;
+    const { width, data } = this.props;
     const { user, creating } = this.state;
     return (
       <Fragment>

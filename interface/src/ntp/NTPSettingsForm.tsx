@@ -28,7 +28,7 @@ class NTPSettingsForm extends React.Component<NTPSettingsFormProps> {
   }
 
   render() {
-    const { data, handleValueChange, saveData, loadData } = this.props;
+    const { data, handleValueChange, saveData } = this.props;
     return (
       <ValidatorForm onSubmit={saveData}>
         <BlockFormControlLabel

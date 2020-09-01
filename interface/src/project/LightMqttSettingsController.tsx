@@ -39,7 +39,7 @@ export default restController(LIGHT_BROKER_SETTINGS_ENDPOINT, LightMqttSettingsC
 type LightMqttSettingsControllerFormProps = RestFormProps<LightMqttSettings>;
 
 function LightMqttSettingsControllerForm(props: LightMqttSettingsControllerFormProps) {
-  const { data, saveData, loadData, handleValueChange } = props;
+  const { data, saveData, handleValueChange } = props;
   return (
     <ValidatorForm onSubmit={saveData}>
       <Box bgcolor="primary.main" color="primary.contrastText" p={2} mt={2} mb={2}>
