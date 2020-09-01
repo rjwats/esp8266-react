@@ -19,7 +19,7 @@ class APSettingsForm extends React.Component<APSettingsFormProps> {
   }
 
   render() {
-    const { data, handleValueChange, saveData, loadData } = this.props;
+    const { data, handleValueChange, saveData } = this.props;
     return (
       <ValidatorForm onSubmit={saveData} ref="APSettingsForm">
         <SelectValidator name="provision_mode"

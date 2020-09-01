@@ -19,7 +19,7 @@ class SecuritySettingsForm extends React.Component<SecuritySettingsFormProps> {
   }
 
   render() {
-    const { data, handleValueChange, loadData } = this.props;
+    const { data, handleValueChange } = this.props;
     return (
       <ValidatorForm onSubmit={this.onSubmit}>
         <PasswordValidator
