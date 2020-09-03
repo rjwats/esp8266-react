@@ -46,7 +46,7 @@ export default function RestFormLoader<D>(props: RestFormLoaderProps<D>) {
         <Typography variant="h6" className={classes.loadingSettingsDetails}>
           {errorMessage}
         </Typography>
-        <Button variant="contained" color="secondary" className={classes.button} onClick={loadData}>
+        <Button variant="contained" color="secondary" className={classes.button} onClick={() => loadData}>
           Retry
         </Button>
       </div>

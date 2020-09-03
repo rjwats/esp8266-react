@@ -8,7 +8,7 @@ export interface RestControllerProps<D> extends WithSnackbarProps {
 
   setData: (data: D, callback?: () => void) => void;
   saveData: () => void;
-  loadData: () => void;
+  loadData: (showIndicator?: boolean) => void;
 
   data?: D;
   loading: boolean;
@@ -50,10 +50,9 @@ export function restController<D, P extends RestControllerProps<D>>(endpointUrl:
         }, callback);
       }
 
-      loadData = () => {
+      loadData = (showIndicator: boolean = true) => {
         this.setState({
-          data: undefined,
-          loading: true,
+          loading: showIndicator,
           errorMessage: undefined
         });
         redirectingAuthorizedFetch(endpointUrl).then(response => {
