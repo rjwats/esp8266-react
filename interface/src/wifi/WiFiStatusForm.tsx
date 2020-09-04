@@ -104,7 +104,7 @@ class WiFiStatusForm extends Component<WiFiStatusFormProps> {
           {this.createListItems()}
         </List>
         <FormActions>
-          <FormButton startIcon={<RefreshIcon />} variant="contained" color="secondary" onClick={() => this.props.loadData}>
+          <FormButton startIcon={<RefreshIcon />} variant="contained" color="secondary" onClick={() => this.props.loadData()}>
             Refresh
           </FormButton>
         </FormActions>

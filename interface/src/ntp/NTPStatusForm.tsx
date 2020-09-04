@@ -177,7 +177,7 @@ class NTPStatusForm extends Component<NTPStatusFormProps, NTPStatusFormState> {
         </List>
         <Box display="flex" flexWrap="wrap">
           <Box flexGrow={1} padding={1}>
-            <FormButton startIcon={<RefreshIcon />} variant="contained" color="secondary" onClick={() => this.props.loadData}>
+            <FormButton startIcon={<RefreshIcon />} variant="contained" color="secondary" onClick={() => this.props.loadData()}>
               Refresh
             </FormButton>
           </Box>
