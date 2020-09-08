@@ -3,9 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@lingui/react": "^2.9.1",
     "@material-ui/core": "^4.9.8",
     "@material-ui/icons": "^4.9.1",
     "@types/jwt-decode": "^2.2.1",
+    "@types/lingui__macro": "^2.7.3",
+    "@types/lingui__react": "^2.8.2",
     "@types/lodash": "^4.14.157",
     "@types/node": "^12.12.32",
     "@types/react": "^16.9.27",
@@ -34,7 +37,10 @@
   "scripts": {
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "add-locale": "lingui add-locale",
+    "extract": "lingui extract",
+    "compile": "lingui compile"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -52,6 +58,10 @@
     ]
   },
   "devDependencies": {
+    "@babel/core": "^7.11.6",
+    "@lingui/cli": "^2.9.1",
+    "@lingui/macro": "^2.9.1",
+    "babel-core": "^7.0.0-bridge.0",
     "react-app-rewired": "^2.1.6"
   }
 }

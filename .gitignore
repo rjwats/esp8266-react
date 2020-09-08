@@ -7,3 +7,4 @@
 /interface/build
 /interface/node_modules
 .vscode
+interface/src/locales/_build/

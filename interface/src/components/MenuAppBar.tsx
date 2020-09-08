@@ -1,7 +1,7 @@
 import React, { RefObject, Fragment } from 'react';
 import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
 
-import { Drawer, AppBar, Toolbar, Avatar, Divider, Button, Box, IconButton } from '@material-ui/core';
+import { Drawer, AppBar, Toolbar, Avatar, Divider, Button, Box, IconButton, Select, MenuItem } from '@material-ui/core';
 import { ClickAwayListener, Popper, Hidden, Typography } from '@material-ui/core';
 import { List, ListItem, ListItemIcon, ListItemText, ListItemAvatar } from '@material-ui/core';
 import { Card, CardContent, CardActions } from '@material-ui/core';
@@ -21,6 +21,8 @@ import ProjectMenu from '../project/ProjectMenu';
 import { PROJECT_NAME } from '../api';
 import { withAuthenticatedContext, AuthenticatedContextProps } from '../authentication';
 import { withFeatures, WithFeaturesProps } from '../features/FeaturesContext';
+import { withLanguage, WithLanguageProps } from '../i18n/LanguageContext';
+import { locales } from '../i18n';
 
 const drawerWidth = 290;
 
@@ -83,7 +85,13 @@ interface MenuAppBarState {
   authMenuOpen: boolean;
 }
 
-interface MenuAppBarProps extends WithFeaturesProps, AuthenticatedContextProps, WithTheme, WithStyles<typeof styles>, RouteComponentProps {
+interface MenuAppBarProps extends
+  WithLanguageProps,
+  WithFeaturesProps,
+  AuthenticatedContextProps,
+  WithTheme,
+  WithStyles<typeof styles>,
+  RouteComponentProps {
   sectionTitle: string;
 }
 
@@ -115,7 +123,7 @@ class MenuAppBar extends React.Component<MenuAppBarProps, MenuAppBarState> {
   };
 
   render() {
-    const { classes, theme, children, sectionTitle, authenticatedContext, features } = this.props;
+    const { classes, theme, children, sectionTitle, authenticatedContext, features, language, selectLanguage } = this.props;
     const { mobileOpen, authMenuOpen } = this.state;
     const path = this.props.match.url;
     const drawer = (
@@ -149,12 +157,12 @@ class MenuAppBar extends React.Component<MenuAppBarProps, MenuAppBarState> {
             <ListItemText primary="Access Point" />
           </ListItem>
           {features.ntp && (
-          <ListItem to='/ntp/' selected={path.startsWith('/ntp/')} button component={Link}>
-            <ListItemIcon>
-              <AccessTimeIcon />
-            </ListItemIcon>
-            <ListItemText primary="Network Time" />
-          </ListItem>
+            <ListItem to='/ntp/' selected={path.startsWith('/ntp/')} button component={Link}>
+              <ListItemIcon>
+                <AccessTimeIcon />
+              </ListItemIcon>
+              <ListItemText primary="Network Time" />
+            </ListItem>
           )}
           {features.mqtt && (
             <ListItem to='/mqtt/' selected={path.startsWith('/mqtt/')} button component={Link}>
@@ -234,6 +242,19 @@ class MenuAppBar extends React.Component<MenuAppBarProps, MenuAppBarState> {
             <Typography variant="h6" color="inherit" noWrap className={classes.title}>
               {sectionTitle}
             </Typography>
+            <Select name="language"
+              label="Language"
+              value={language}
+              variant="outlined"
+              onChange={e => selectLanguage(e.target.value as string)}>
+              {
+                Object.entries(locales).map(([locale, label]) =>
+                  <MenuItem value={locale}>
+                    {label}
+                  </MenuItem>
+                )
+              }
+            </Select>
             {features.security && userMenu}
           </Toolbar>
         </AppBar>
@@ -270,16 +291,18 @@ class MenuAppBar extends React.Component<MenuAppBarProps, MenuAppBarState> {
           <div className={classes.toolbar} />
           {children}
         </main>
-      </div>
+      </div >
     );
   }
 }
 
 export default withRouter(
-  withTheme(
-    withFeatures(
-      withAuthenticatedContext(
-        withStyles(styles)(MenuAppBar)
+  withLanguage(
+    withTheme(
+      withFeatures(
+        withAuthenticatedContext(
+          withStyles(styles)(MenuAppBar)
+        )
       )
     )
   )

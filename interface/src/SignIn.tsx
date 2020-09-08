@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
 import { withSnackbar, WithSnackbarProps } from 'notistack';
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
+import { t, Trans } from "@lingui/macro"
 
 import { withStyles, createStyles, Theme, WithStyles } from '@material-ui/core/styles';
 import { Paper, Typography, Fab } from '@material-ui/core';
 import ForwardIcon from '@material-ui/icons/Forward';
 
 import { withAuthenticationContext, AuthenticationContextProps } from './authentication/AuthenticationContext';
-import {PasswordValidator} from './components';
+import { PasswordValidator } from './components';
 import { PROJECT_NAME, SIGN_IN_ENDPOINT } from './api';
+import i18n from './i18n';
 
 const styles = (theme: Theme) => createStyles({
   signInPage: {
@@ -81,9 +83,9 @@ class SignIn extends Component<SignInProps, SignInState> {
         if (response.status === 200) {
           return response.json();
         } else if (response.status === 401) {
-          throw Error("Invalid credentials.");
+          throw Error(i18n._(t`Invalid credentials`));
         } else {
-          throw Error("Invalid status code: " + response.status);
+          throw Error(i18n._(t`Invalid status code: ${response.status}`));
         }
       }).then(json => {
         authenticationContext.signIn(json.access_token);
@@ -107,9 +109,9 @@ class SignIn extends Component<SignInProps, SignInState> {
             <TextValidator
               disabled={processing}
               validators={['required']}
-              errorMessages={['Username is required']}
+              errorMessages={[i18n._(t`Username is required`)]}
               name="username"
-              label="Username"
+              label={i18n._(t`Username`)}
               fullWidth
               variant="outlined"
               value={username}
@@ -123,9 +125,9 @@ class SignIn extends Component<SignInProps, SignInState> {
             <PasswordValidator
               disabled={processing}
               validators={['required']}
-              errorMessages={['Password is required']}
+              errorMessages={[i18n._(t`Password is required`)]}
               name="password"
-              label="Password"
+              label={i18n._(t`Password`)}
               fullWidth
               variant="outlined"
               value={password}
@@ -134,7 +136,7 @@ class SignIn extends Component<SignInProps, SignInState> {
             />
             <Fab variant="extended" color="primary" className={classes.button} type="submit" disabled={processing}>
               <ForwardIcon className={classes.extendedIcon} />
-              Sign In
+              <Trans>Sign In</Trans>
             </Fab>
           </ValidatorForm>
         </Paper>
