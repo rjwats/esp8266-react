@@ -9,6 +9,7 @@ import AppRouting from './AppRouting';
 import CustomMuiTheme from './CustomMuiTheme';
 import { PROJECT_NAME } from './api';
 import FeaturesWrapper from './features/FeaturesWrapper';
+import I18n from './i18n/I18n';
 
 // this redirect forces a call to authenticationContext.refresh() which invalidates the JWT if it is invalid.
 const unauthorizedRedirect = () => <Redirect to="/" />;
@@ -35,12 +36,14 @@ class App extends Component {
               <CloseIcon />
             </IconButton>
           )}>
-          <FeaturesWrapper>
-            <Switch>
-              <Route exact path="/unauthorized" component={unauthorizedRedirect} />
-              <Route component={AppRouting} />
-            </Switch>
-          </FeaturesWrapper>
+          <I18n>
+            <FeaturesWrapper>
+              <Switch>
+                <Route exact path="/unauthorized" component={unauthorizedRedirect} />
+                <Route component={AppRouting} />
+              </Switch>
+            </FeaturesWrapper>
+          </I18n>
         </SnackbarProvider>
       </CustomMuiTheme>
     );

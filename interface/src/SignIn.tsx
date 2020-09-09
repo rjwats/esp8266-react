@@ -7,8 +7,9 @@ import { Paper, Typography, Fab } from '@material-ui/core';
 import ForwardIcon from '@material-ui/icons/Forward';
 
 import { withAuthenticationContext, AuthenticationContextProps } from './authentication/AuthenticationContext';
-import {PasswordValidator} from './components';
+import { PasswordValidator } from './components';
 import { PROJECT_NAME, SIGN_IN_ENDPOINT } from './api';
+import { FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl';
 
 const styles = (theme: Theme) => createStyles({
   signInPage: {
@@ -39,7 +40,7 @@ const styles = (theme: Theme) => createStyles({
   }
 });
 
-type SignInProps = WithSnackbarProps & WithStyles<typeof styles> & AuthenticationContextProps;
+type SignInProps = WrappedComponentProps & WithSnackbarProps & WithStyles<typeof styles> & AuthenticationContextProps;
 
 interface SignInState {
   username: string,
@@ -68,7 +69,7 @@ class SignIn extends Component<SignInProps, SignInState> {
 
   onSubmit = () => {
     const { username, password } = this.state;
-    const { authenticationContext } = this.props;
+    const { authenticationContext, intl } = this.props;
     this.setState({ processing: true });
     fetch(SIGN_IN_ENDPOINT, {
       method: 'POST',
@@ -81,9 +82,14 @@ class SignIn extends Component<SignInProps, SignInState> {
         if (response.status === 200) {
           return response.json();
         } else if (response.status === 401) {
-          throw Error("Invalid credentials.");
+          throw Error(intl.formatMessage(
+            { id: 'signIn.invalidCredentials', defaultMessage: 'Invalid credentials' })
+          );
         } else {
-          throw Error("Invalid status code: " + response.status);
+          throw Error(intl.formatMessage(
+            { id: 'signIn.invalidStatusCode', defaultMessage: 'Invalid status code: {code}' },
+            { code: response.status })
+          );
         }
       }).then(json => {
         authenticationContext.signIn(json.access_token);
@@ -98,7 +104,7 @@ class SignIn extends Component<SignInProps, SignInState> {
 
   render() {
     const { username, password, processing } = this.state;
-    const { classes } = this.props;
+    const { classes, intl } = this.props;
     return (
       <div className={classes.signInPage}>
         <Paper className={classes.signInPanel}>
@@ -107,9 +113,9 @@ class SignIn extends Component<SignInProps, SignInState> {
             <TextValidator
               disabled={processing}
               validators={['required']}
-              errorMessages={['Username is required']}
+              errorMessages={[intl.formatMessage({ id: 'signIn.usernameRequired', defaultMessage: 'Username is required' })]}
               name="username"
-              label="Username"
+              label={[intl.formatMessage({ id: 'signIn.username', defaultMessage: 'Username' })]}
               fullWidth
               variant="outlined"
               value={username}
@@ -123,9 +129,9 @@ class SignIn extends Component<SignInProps, SignInState> {
             <PasswordValidator
               disabled={processing}
               validators={['required']}
-              errorMessages={['Password is required']}
+              errorMessages={[intl.formatMessage({ id: 'signIn.passwordRequired', defaultMessage: 'Password is required' })]}
               name="password"
-              label="Password"
+              label={[intl.formatMessage({ id: 'signIn.password', defaultMessage: 'Password' })]}
               fullWidth
               variant="outlined"
               value={password}
@@ -134,7 +140,7 @@ class SignIn extends Component<SignInProps, SignInState> {
             />
             <Fab variant="extended" color="primary" className={classes.button} type="submit" disabled={processing}>
               <ForwardIcon className={classes.extendedIcon} />
-              Sign In
+              <FormattedMessage id="signIn.signIn" defaultMessage="Sign In" />
             </Fab>
           </ValidatorForm>
         </Paper>
@@ -144,4 +150,4 @@ class SignIn extends Component<SignInProps, SignInState> {
 
 }
 
-export default withAuthenticationContext(withSnackbar(withStyles(styles)(SignIn)));
+export default injectIntl(withAuthenticationContext(withSnackbar(withStyles(styles)(SignIn))));
