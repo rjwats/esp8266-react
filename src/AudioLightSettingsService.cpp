@@ -71,6 +71,7 @@ StateUpdateResult AudioLightSettingsService::update(JsonObject& root, AudioLight
   settings.modeId = modeId;
   _currentMode = mode;
   _currentMode->enable();
+  return StateUpdateResult::CHANGED;
 }
 
 void AudioLightSettingsService::saveModeConfig(AsyncWebServerRequest* request) {
