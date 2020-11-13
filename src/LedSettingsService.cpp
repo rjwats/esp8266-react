@@ -10,7 +10,7 @@ LedSettingsService::LedSettingsService(AsyncWebServer* server, FS* fs, SecurityM
                   AuthenticationPredicates::IS_AUTHENTICATED),
     _fsPersistence(LedSettings::read, LedSettings::update, this, fs, LED_SETTINGS_FILE) {
   _ledController = &FastLED.addLeds<LED_TYPE, LED_DATA_PIN, COLOR_ORDER>(_leds, NUM_LEDS);
-  addUpdateHandler([&](const String& originId) { showLeds(); }, false);
+  addUpdateHandler([&](const String& originId) { configureLeds(); }, false);
 }
 
 void LedSettingsService::begin() {
@@ -18,10 +18,9 @@ void LedSettingsService::begin() {
 }
 
 void LedSettingsService::update(LedUpdateCallback updateCallback) {
-  updateCallback(NUM_LEDS, _leds);
-  showLeds();
+  updateCallback(_leds, _ledController, NUM_LEDS);
 }
 
-void LedSettingsService::showLeds() {
-  _ledController->showLeds(_state.brightness);
+void LedSettingsService::configureLeds() {
+  FastLED.setBrightness(_state.brightness);
 }

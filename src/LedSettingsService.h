@@ -18,7 +18,11 @@
 #define FACTORY_LED_BRIGHTNESS 128
 #endif
 
-typedef std::function<void(const uint16_t numLeds, CRGB* _leds)> LedUpdateCallback;
+#ifndef FACTORY_LED_SMOOTHING_FACTOR
+#define FACTORY_LED_SMOOTHING_FACTOR 0.15
+#endif
+
+typedef std::function<void(CRGB* _leds, CLEDController* _ledController, const uint16_t numLeds)> LedUpdateCallback;
 
 // should be extended to allow number of LEDS to be modified
 // should be extended to allow leds to be switched off
@@ -27,13 +31,16 @@ typedef std::function<void(const uint16_t numLeds, CRGB* _leds)> LedUpdateCallba
 class LedSettings {
  public:
   uint8_t brightness;
+  float smoothingFactor;
 
   static void read(LedSettings& settings, JsonObject& root) {
     root["brightness"] = settings.brightness;
+    root["smoothing_factor"] = settings.smoothingFactor;
   }
 
   static StateUpdateResult update(JsonObject& root, LedSettings& settings) {
     settings.brightness = root["brightness"] | FACTORY_LED_BRIGHTNESS;
+    settings.smoothingFactor = root["smoothing_factor"] | FACTORY_LED_SMOOTHING_FACTOR;
     return StateUpdateResult::CHANGED;
   }
 };
@@ -44,13 +51,13 @@ class LedSettingsService : public StatefulService<LedSettings> {
 
   void begin();
   void update(LedUpdateCallback updateCallback);
-  void showLeds();
 
  private:
   CRGB _leds[NUM_LEDS];
   CLEDController* _ledController;
   HttpEndpoint<LedSettings> _httpEndpoint;
   FSPersistence<LedSettings> _fsPersistence;
+  void configureLeds();
 };
 
 #endif  // end LedSettingsService_h

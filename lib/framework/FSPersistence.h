@@ -11,7 +11,7 @@ class FSPersistence {
                 JsonStateUpdater<T> stateUpdater,
                 StatefulService<T>* statefulService,
                 FS* fs,
-                char const* filePath,
+                const char* filePath,
                 size_t bufferSize = DEFAULT_BUFFER_SIZE) :
       _stateReader(stateReader),
       _stateUpdater(stateUpdater),

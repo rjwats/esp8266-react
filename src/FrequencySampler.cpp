@@ -27,20 +27,18 @@ void FrequencySampler::loop() {
             delayMicroseconds(36);
 
             // read frequency for pin
-            frequencyData.bands[i] = analogRead(FREQUENCY_SAMPLER_ANALOG_PIN);
+            uint16_t value = analogRead(FREQUENCY_SAMPLER_ANALOG_PIN);
 
             // re-map frequency to eliminate low level noise
-            frequencyData.bands[i] = frequencyData.bands[i] > FREQUENCY_SAMPLER_DEAD_ZONE
-                                         ? map(frequencyData.bands[i] - FREQUENCY_SAMPLER_DEAD_ZONE,
-                                               0,
-                                               ADC_MAX_VALUE - FREQUENCY_SAMPLER_DEAD_ZONE,
-                                               0,
-                                               ADC_MAX_VALUE)
-                                         : 0;
+            value = value > FREQUENCY_SAMPLER_DEAD_ZONE ? map(value - FREQUENCY_SAMPLER_DEAD_ZONE,
+                                                              0,
+                                                              ADC_MAX_VALUE - FREQUENCY_SAMPLER_DEAD_ZONE,
+                                                              0,
+                                                              ADC_MAX_VALUE)
+                                                        : 0;
 
-            // crappy rolling values
-            frequencyData.rolling[i] =
-                _rollingAverageFactor * frequencyData.bands[i] + (1 - _rollingAverageFactor) * frequencyData.rolling[i];
+            // crappy smoothing to avoid crazy flickering
+            frequencyData.bands[i] = _smoothingFactor * frequencyData.bands[i] + (1 - _smoothingFactor) * value;
 
             // strobe pin high again for next loop
             digitalWrite(FREQUENCY_SAMPLER_STROBE_PIN, HIGH);
@@ -52,4 +50,8 @@ void FrequencySampler::loop() {
         },
         "loop");
   }
+}
+
+FrequencyData* FrequencySampler::getFrequencyData() {
+  return &_state;
 }

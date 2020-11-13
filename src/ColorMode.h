@@ -13,26 +13,32 @@
 #define FACTORY_COLOR_MODE_AUDIO_ENABLED false
 #endif
 
-#define COLOR_FILE_PATH "/modes/color.json"
-#define COLOR_SERVICE_PATH "/rest/modes/color.json"
+#ifndef FACTORY_COLOR_MODE_BRIGHTNESS
+#define FACTORY_COLOR_MODE_BRIGHTNESS 128
+#endif
+
+#define COLOR_MODE_ID "color"
 
 class ColorModeSettings {
  public:
   ColorModeSettings() {
   }
 
-  CRGB color = FACTORY_COLOR_MODE_COLOR;
-  bool audioEnabled = FACTORY_COLOR_MODE_AUDIO_ENABLED;
+  CRGB color;
+  uint8_t brightness;
+  bool audioEnabled;
   bool includedBands[NUM_BANDS];
 
   static void read(ColorModeSettings& settings, JsonObject& root) {
     writeColorToJson(root, &settings.color);
+    writeByteToJson(root, &settings.brightness, "brightness");
     writeBoolToJson(root, &settings.audioEnabled, "audio_enabled");
     writeBooleanArrayToJson(root, settings.includedBands, NUM_BANDS, "included_bands");
   }
 
   static StateUpdateResult update(JsonObject& root, ColorModeSettings& settings) {
     updateColorFromJson(root, &settings.color, FACTORY_COLOR_MODE_COLOR);
+    updateByteFromJson(root, &settings.brightness, FACTORY_COLOR_MODE_BRIGHTNESS, "brightness");
     updateBoolFromJson(root, &settings.audioEnabled, FACTORY_COLOR_MODE_AUDIO_ENABLED, "audio_enabled");
     updateBooleanArrayFromJson(root, settings.includedBands, NUM_BANDS, "included_bands");
     return StateUpdateResult::CHANGED;
@@ -44,16 +50,11 @@ class ColorMode : public AudioLightMode<ColorModeSettings> {
   boolean _refresh = true;
 
  public:
-  ColorMode(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) :
-      AudioLightMode(server,
-                     fs,
-                     securityManager,
-                     ColorModeSettings::read,
-                     ColorModeSettings::update,
-                     COLOR_SERVICE_PATH,
-                     COLOR_FILE_PATH) {
-    addUpdateHandler([&](const String& originId) { enable(); }, false);
-  };
+  ColorMode(AsyncWebServer* server,
+            FS* fs,
+            SecurityManager* securityManager,
+            LedSettingsService* ledSettingsService,
+            FrequencySampler* frequencySampler);
   String getId();
   void tick();
   void enable();
