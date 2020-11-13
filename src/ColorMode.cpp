@@ -5,7 +5,7 @@ ColorMode::ColorMode(AsyncWebServer* server,
                      SecurityManager* securityManager,
                      LedSettingsService* ledSettingsService,
                      FrequencySampler* frequencySampler) :
-    AudioLightMode(server,
+    AudioLightModeImpl(server,
                    fs,
                    securityManager,
                    ledSettingsService,

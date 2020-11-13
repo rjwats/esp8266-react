@@ -45,7 +45,7 @@ class ColorModeSettings {
   }
 };
 
-class ColorMode : public AudioLightMode<ColorModeSettings> {
+class ColorMode : public AudioLightModeImpl<ColorModeSettings> {
  private:
   boolean _refresh = true;
 
@@ -55,7 +55,7 @@ class ColorMode : public AudioLightMode<ColorModeSettings> {
             SecurityManager* securityManager,
             LedSettingsService* ledSettingsService,
             FrequencySampler* frequencySampler);
-  String getId();
+  const String& getId();
   void tick();
   void enable();
 };

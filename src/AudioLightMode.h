@@ -10,8 +10,19 @@
 #define AUDIO_LIGHT_MODE_FILE_PATH_SUFFIX ".json"
 #define AUDIO_LIGHT_MODE_SERVICE_PATH_PREFIX "/rest/modes/"
 
+class AudioLightMode {
+ public:
+  virtual const String& getId() = 0;
+  virtual void begin() = 0;
+  virtual void readFromFS() = 0;
+  virtual void writeToFS() = 0;
+  virtual void tick() = 0;
+  virtual void enable() = 0;
+  virtual void sampleComplete(){};
+};
+
 template <class T>
-class AudioLightMode : public StatefulService<T> {
+class AudioLightModeImpl : public StatefulService<T>, public AudioLightMode {
  protected:
   String _id;
   LedSettingsService* _ledSettingsService;
@@ -20,7 +31,7 @@ class AudioLightMode : public StatefulService<T> {
   FSPersistence<T> _fsPersistence;
 
  public:
-  AudioLightMode(AsyncWebServer* server,
+  AudioLightModeImpl(AsyncWebServer* server,
                  FS* fs,
                  SecurityManager* securityManager,
                  LedSettingsService* ledSettingsService,
@@ -45,23 +56,27 @@ class AudioLightMode : public StatefulService<T> {
   const String& getId() {
     return _id;
   }
+  /*
+   * Read the config from the file system and disable the update handler
+   */
+  void begin() {
+    _fsPersistence.disableUpdateHandler();
+    _fsPersistence.readFromFS();
+  }
 
   /*
-   * Allow the mode to animate the LEDs - called by the main loop.
+   * Load the mode config from the file system
    */
-  virtual void tick() = 0;
+  void readFromFS() {
+    _fsPersistence.readFromFS();
+  }
 
-  /**
-   * Called when the mode is enabled.
+  /*
+   * Save the mode config to the file system
    */
-  virtual void enable() = 0;
-
-  /**
-   * Called when new frequency data is sampled so the mode can update as required.
-   *
-   * Will only be called for the active mode.
-   */
-  virtual void sampleComplete(){};
+  void writeToFS() {
+    _fsPersistence.writeToFS();
+  }
 };
 
 #endif  // end AudioLightMode_h
