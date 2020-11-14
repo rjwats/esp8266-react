@@ -6,13 +6,13 @@ ColorMode::ColorMode(AsyncWebServer* server,
                      LedSettingsService* ledSettingsService,
                      FrequencySampler* frequencySampler) :
     AudioLightModeImpl(server,
-                   fs,
-                   securityManager,
-                   ledSettingsService,
-                   frequencySampler,
-                   ColorModeSettings::read,
-                   ColorModeSettings::update,
-                   COLOR_MODE_ID) {
+                       fs,
+                       securityManager,
+                       ledSettingsService,
+                       frequencySampler,
+                       ColorModeSettings::read,
+                       ColorModeSettings::update,
+                       COLOR_MODE_ID) {
   addUpdateHandler([&](const String& originId) { enable(); }, false);
 };
 

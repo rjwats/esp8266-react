@@ -12,7 +12,9 @@ LightningMode::LightningMode(AsyncWebServer* server,
                        frequencySampler,
                        LightningModeSettings::read,
                        LightningModeSettings::update,
-                       LIGHTNING_MODE_ID){};
+                       LIGHTNING_MODE_ID) {
+  addUpdateHandler([&](const String& originId) { enable(); }, false);
+};
 
 void LightningMode::tick() {
   _ledSettingsService->update([&](CRGB* leds, CLEDController* ledController, const uint16_t numLeds) {
