@@ -6,8 +6,9 @@
 #include <HttpEndpoint.h>
 #include <RainbowMode.h>
 #include <LightningMode.h>
+#include <ConfettiMode.h>
 
-#define NUM_MODES 3
+#define NUM_MODES 4
 
 #define AUDIO_LIGHT_SERVICE_PATH "/rest/mode"
 #define AUDIO_LIGHT_SAVE_MODE_PATH "/rest/mode/save"
