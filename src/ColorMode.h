@@ -1,5 +1,5 @@
-#ifndef COLOR_MODE_H
-#define COLOR_MODE_H
+#ifndef ColorMode_h
+#define ColorMode_h
 
 #include <AudioLightMode.h>
 #include <FrequencySampler.h>
@@ -37,7 +37,7 @@ class ColorModeSettings {
     updateColorFromJson(root, &settings.color, FACTORY_COLOR_MODE_COLOR);
     updateByteFromJson(root, &settings.brightness, FACTORY_COLOR_MODE_BRIGHTNESS, "brightness");
     updateBoolFromJson(root, &settings.audioEnabled, FACTORY_COLOR_MODE_AUDIO_ENABLED, "audio_enabled");
-    updateBooleanArrayFromJson(root, settings.includedBands, NUM_BANDS, "included_bands");
+    updateBooleanArrayFromJson(root, settings.includedBands, NUM_BANDS, true, "included_bands");
     return StateUpdateResult::CHANGED;
   }
 };

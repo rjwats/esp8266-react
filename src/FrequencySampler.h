@@ -27,7 +27,7 @@ class FrequencyData {
         numBands++;
       }
     }
-    return (float)currentLevel / (NUM_BANDS * ADC_MAX_VALUE);
+    return (float)currentLevel / (numBands * ADC_MAX_VALUE);
   }
 
   uint8_t calculateEnergyByte(bool* includedBands = NULL) {

@@ -1,10 +1,10 @@
-#ifndef COLOR_UTIL_H
-#define COLOR_UTIL_H
+#ifndef JsonUtil_h
+#define JsonUtil_h
 
 #include <ArduinoJson.h>
 #include <FastLed.h>
 
-void updateBooleanArrayFromJson(JsonObject& root, bool booleanArray[], uint16_t maxSize, String key);
+void updateBooleanArrayFromJson(JsonObject& root, bool booleanArray[], uint16_t len, bool def, String key);
 void writeBooleanArrayToJson(JsonObject& root, bool booleanArray[], uint16_t maxSize, String key);
 
 void updateColorFromJson(JsonObject& root, CRGB* color, CRGB def, String key = "color");

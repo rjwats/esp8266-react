@@ -1,5 +1,5 @@
-#ifndef RAINBOW_MODE_H
-#define RAINBOW_MODE_H
+#ifndef RainbowMode_h
+#define RainbowMode_h
 
 #include <AudioLightMode.h>
 #include <JsonUtil.h>

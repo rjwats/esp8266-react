@@ -5,8 +5,9 @@
 #include <StatefulService.h>
 #include <HttpEndpoint.h>
 #include <RainbowMode.h>
+#include <LightningMode.h>
 
-#define NUM_MODES 2
+#define NUM_MODES 3
 
 #define AUDIO_LIGHT_SERVICE_PATH "/rest/mode"
 #define AUDIO_LIGHT_SAVE_MODE_PATH "/rest/mode/save"
