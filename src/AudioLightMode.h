@@ -23,6 +23,8 @@ template <class T>
 class AudioLightModeImpl : public StatefulService<T>, public AudioLightMode {
  protected:
   String _id;
+  String _filePath;
+  String _servicePath;  
   LedSettingsService* _ledSettingsService;
   FrequencySampler* _frequencySampler;
   HttpEndpoint<T> _httpEndpoint;
@@ -38,19 +40,12 @@ class AudioLightModeImpl : public StatefulService<T>, public AudioLightMode {
                      JsonStateUpdater<T> stateUpdater,
                      const String& id) :
       _id(id),
+      _filePath(AUDIO_LIGHT_MODE_SERVICE_PATH_PREFIX + id),
+      _servicePath(AUDIO_LIGHT_MODE_FILE_PATH_PREFIX + id + AUDIO_LIGHT_MODE_FILE_PATH_SUFFIX),
       _ledSettingsService(ledSettingsService),
       _frequencySampler(frequencySampler),
-      _httpEndpoint(stateReader,
-                    stateUpdater,
-                    this,
-                    server,
-                    AUDIO_LIGHT_MODE_SERVICE_PATH_PREFIX + id,
-                    securityManager),
-      _fsPersistence(stateReader,
-                     stateUpdater,
-                     this,
-                     fs,
-                     String(AUDIO_LIGHT_MODE_FILE_PATH_PREFIX + id + AUDIO_LIGHT_MODE_FILE_PATH_SUFFIX).c_str()) {
+      _httpEndpoint(stateReader, stateUpdater, this, server, _filePath, securityManager),
+      _fsPersistence(stateReader, stateUpdater, this, fs, _servicePath.c_str()) {
   }
 
   /*
