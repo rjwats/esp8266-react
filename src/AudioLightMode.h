@@ -2,8 +2,6 @@
 #define AudioLightMode_h
 
 #include <LedSettingsService.h>
-#include <LedSettingsService.h>
-#include <LedSettingsService.h>
 #include <FrequencySampler.h>
 
 #define AUDIO_LIGHT_MODE_FILE_PATH_PREFIX "/modes/"
@@ -42,7 +40,7 @@ class AudioLightModeImpl : public StatefulService<T>, public AudioLightMode {
       _id(id),
       _ledSettingsService(ledSettingsService),
       _frequencySampler(frequencySampler),
-      _httpEndpoint(stateReader, stateUpdater, this, server, AUDIO_LIGHT_MODE_FILE_PATH_PREFIX + id, securityManager),
+      _httpEndpoint(stateReader, stateUpdater, this, server, AUDIO_LIGHT_MODE_SERVICE_PATH_PREFIX + id, securityManager),
       _fsPersistence(stateReader,
                      stateUpdater,
                      this,

@@ -21,9 +21,6 @@
 
 class ColorModeSettings {
  public:
-  ColorModeSettings() {
-  }
-
   CRGB color;
   uint8_t brightness;
   bool audioEnabled;
@@ -55,7 +52,6 @@ class ColorMode : public AudioLightModeImpl<ColorModeSettings> {
             SecurityManager* securityManager,
             LedSettingsService* ledSettingsService,
             FrequencySampler* frequencySampler);
-  const String& getId();
   void tick();
   void enable();
 };

@@ -4,8 +4,9 @@
 #include <ColorMode.h>
 #include <StatefulService.h>
 #include <HttpEndpoint.h>
+#include <RainbowMode.h>
 
-#define NUM_MODES 1
+#define NUM_MODES 2
 
 #define AUDIO_LIGHT_SERVICE_PATH "/rest/mode"
 #define AUDIO_LIGHT_SAVE_MODE_PATH "/rest/mode/save"
@@ -15,15 +16,12 @@
 
 class AudioLightSettings {
  public:
-  String modeId;
+  AudioLightMode* currentMode = nullptr;
 
   static void read(AudioLightSettings& settings, JsonObject& root) {
-    root["mode_id"] = settings.modeId;
-  }
-
-  static StateUpdateResult update(JsonObject& root, AudioLightSettings& settings) {
-    settings.modeId = root["mode_id"] | AUDIO_LIGHT_DEFAULT_MODE;
-    return StateUpdateResult::CHANGED;
+    if (settings.currentMode) {
+      root["mode_id"] = settings.currentMode->getId();
+    }
   }
 };
 
@@ -41,10 +39,10 @@ class AudioLightSettingsService : public StatefulService<AudioLightSettings> {
  private:
   HttpEndpoint<AudioLightSettings> _httpEndpoint;
   AudioLightMode* _modes[NUM_MODES];
-  AudioLightMode* _currentMode;
 
   StateUpdateResult update(JsonObject& root, AudioLightSettings& settings);
   AudioLightMode* getMode(const String& modeId);
+  void modeChanged();
   void sampleComplete();
   void saveModeConfig(AsyncWebServerRequest* request);
   void loadModeConfig(AsyncWebServerRequest* request);

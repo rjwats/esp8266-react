@@ -1,9 +1,9 @@
 #ifndef FrequencySampler_h
 #define FrequencySampler_h
 
+#include <Arduino.h>
 #include <StatefulService.h>
 #include <FastLED.h>
-#include <Arduino.h>
 
 #define FREQUENCY_SAMPLER_DEAD_ZONE 700
 #define FREQUENCY_SAMPLER_RESET_PIN 4

@@ -14,7 +14,7 @@ AudioLightSettingsService::AudioLightSettingsService(AsyncWebServer* server,
                                                      LedSettingsService* ledSettingsService,
                                                      FrequencySampler* frequencySampler) :
     _httpEndpoint(AudioLightSettings::read,
-                  AudioLightSettings::update,
+                  std::bind(&AudioLightSettingsService::update, this, std::placeholders::_1, std::placeholders::_2),
                   this,
                   server,
                   AUDIO_LIGHT_SERVICE_PATH,
@@ -29,18 +29,23 @@ AudioLightSettingsService::AudioLightSettingsService(AsyncWebServer* server,
              std::bind(&AudioLightSettingsService::loadModeConfig, this, std::placeholders::_1),
              junkBodyHandler);
   frequencySampler->addUpdateHandler([&](const String& originId) { sampleComplete(); }, false);
+  addUpdateHandler([&](const String& originId) { modeChanged(); }, false);
   _modes[0] = new ColorMode(server, fs, securityManager, ledSettingsService, frequencySampler);
-  _currentMode = _modes[0];
+  _modes[1] = new RainbowMode(server, fs, securityManager, ledSettingsService, frequencySampler);
 }
 
 void AudioLightSettingsService::begin() {
+  // configure current mode
+  _state.currentMode = _modes[0];
+
+  // initialize all modes
   for (uint8_t i = 0; i < NUM_MODES; i++) {
     _modes[i]->begin();
   }
 }
 
 void AudioLightSettingsService::loop() {
-  _currentMode->tick();
+  _state.currentMode->tick();
 }
 
 AudioLightMode* AudioLightSettingsService::getMode(const String& modeId) {
@@ -53,34 +58,34 @@ AudioLightMode* AudioLightSettingsService::getMode(const String& modeId) {
   return nullptr;
 }
 
+void AudioLightSettingsService::modeChanged() {
+  _state.currentMode->enable();
+}
+
 void AudioLightSettingsService::sampleComplete() {
-  _currentMode->sampleComplete();
+  _state.currentMode->sampleComplete();
 }
 
 StateUpdateResult AudioLightSettingsService::update(JsonObject& root, AudioLightSettings& settings) {
   String modeId = root["mode_id"] | AUDIO_LIGHT_DEFAULT_MODE;
-  if (settings.modeId == modeId) {
+  if (settings.currentMode->getId() == modeId) {
     return StateUpdateResult::UNCHANGED;
   }
-
   AudioLightMode* mode = getMode(modeId);
   if (!mode) {
     return StateUpdateResult::ERROR;
   }
-
-  settings.modeId = modeId;
-  _currentMode = mode;
-  _currentMode->enable();
+  settings.currentMode = mode;
   return StateUpdateResult::CHANGED;
 }
 
 void AudioLightSettingsService::saveModeConfig(AsyncWebServerRequest* request) {
-  _currentMode->writeToFS();
+  _state.currentMode->writeToFS();
   request->send(200, "text/plain", "Saved");
 }
 
 void AudioLightSettingsService::loadModeConfig(AsyncWebServerRequest* request) {
-  _currentMode->readFromFS();
-  _currentMode->enable();
+  _state.currentMode->readFromFS();
+  _state.currentMode->enable();
   request->send(200, "text/plain", "Loaded");
 }
