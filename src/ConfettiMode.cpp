@@ -12,7 +12,9 @@ ConfettiMode::ConfettiMode(AsyncWebServer* server,
                        frequencySampler,
                        ConfettiModeSettings::read,
                        ConfettiModeSettings::update,
-                       CONFETTI_MODE_ID){};
+                       CONFETTI_MODE_ID) {
+  addUpdateHandler([&](const String& originId) { enable(); }, false);
+};
 
 void ConfettiMode::tick() {
   _ledSettingsService->update([&](CRGB* leds, CLEDController* ledController, const uint16_t numLeds) {
