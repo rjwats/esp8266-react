@@ -26,5 +26,5 @@ void LedSettingsService::configureLeds() {
 }
 
 float LedSettingsService::getSmoothingFactor() {
-  return _state.brightness;
+  return _state.smoothingFactor;
 }
