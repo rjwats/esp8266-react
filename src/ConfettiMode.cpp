@@ -17,48 +17,51 @@ ConfettiMode::ConfettiMode(AsyncWebServer* server,
 };
 
 void ConfettiMode::tick() {
-  _ledSettingsService->update([&](CRGB* leds, CLEDController* ledController, const uint16_t numLeds) {
-    if (_refresh) {
+  if (_refresh) {
+    _ledSettingsService->update([&](CRGB* leds, CLEDController* ledController, const uint16_t numLeds) {
       fill_solid(leds, numLeds, CHSV(255, 0, 0));
       ledController->showLeds();
-      _refresh = false;
-    }
+    });
+    _refresh = false;
+  }
 
-    EVERY_N_MILLISECONDS(100) {
-      nblendPaletteTowardPalette(_currentPalette, _targetPalette, _state.maxChanges);
-    }
-    uint8_t secondHand = (millis() / 1000) % 15;
-    static uint8_t lastSecond = 99;
-    if (lastSecond != secondHand) {
-      lastSecond = secondHand;
-      switch (secondHand) {
-        case 0:
-          _targetPalette = OceanColors_p;
-          _inc = 1;
-          _hue = 192;
-          _fade = 2;
-          _hueDelta = 255;
-          break;
-        case 5:
-          _targetPalette = LavaColors_p;
-          _inc = 2;
-          _hue = 128;
-          _fade = 8;
-          _hueDelta = 64;
-          break;
-        case 10:
-          _targetPalette = ForestColors_p;
-          _inc = 1;
-          _hue = random16(255);
-          _fade = 1;
-          _hueDelta = 16;
-          break;
-        case 15:
-          break;
-      }
-    }
+  EVERY_N_MILLISECONDS(100) {
+    nblendPaletteTowardPalette(_currentPalette, _targetPalette, _state.maxChanges);
+  }
 
-    EVERY_N_MILLIS_I(confettiTimer, FACTORY_CONFETTI_MODE_DELAY) {
+  uint8_t secondHand = (millis() / 1000) % 15;
+  static uint8_t lastSecond = 99;
+  if (lastSecond != secondHand) {
+    lastSecond = secondHand;
+    switch (secondHand) {
+      case 0:
+        _targetPalette = OceanColors_p;
+        _inc = 1;
+        _hue = 192;
+        _fade = 2;
+        _hueDelta = 255;
+        break;
+      case 5:
+        _targetPalette = LavaColors_p;
+        _inc = 2;
+        _hue = 128;
+        _fade = 8;
+        _hueDelta = 64;
+        break;
+      case 10:
+        _targetPalette = ForestColors_p;
+        _inc = 1;
+        _hue = random16(255);
+        _fade = 1;
+        _hueDelta = 16;
+        break;
+      case 15:
+        break;
+    }
+  }
+
+  EVERY_N_MILLIS_I(confettiTimer, FACTORY_CONFETTI_MODE_DELAY) {
+    _ledSettingsService->update([&](CRGB* leds, CLEDController* ledController, const uint16_t numLeds) {
       fadeToBlackBy(leds, numLeds, _fade);
       int pos = random16(numLeds);
       leds[pos] =
@@ -66,8 +69,8 @@ void ConfettiMode::tick() {
       _hue = _hue + _inc;
       ledController->showLeds();
       confettiTimer.setPeriod(_state.delay);
-    }
-  });
+    });
+  }
 }
 
 void ConfettiMode::enable() {
