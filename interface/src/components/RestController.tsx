@@ -4,7 +4,7 @@ import { withSnackbar, WithSnackbarProps } from 'notistack';
 import { redirectingAuthorizedFetch } from '../authentication';
 
 export interface RestControllerProps<D> extends WithSnackbarProps {
-  handleValueChange: (name: keyof D) => (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleValueChange: (name: keyof D, callback?: () => void) => (event: React.ChangeEvent<HTMLInputElement>) => void;
 
   setData: (data: D, callback?: () => void) => void;
   saveData: () => void;
@@ -93,9 +93,9 @@ export function restController<D, P extends RestControllerProps<D>>(endpointUrl:
         });
       }
 
-      handleValueChange = (name: keyof D) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      handleValueChange = (name: keyof D, callback?: () => void) => (event: React.ChangeEvent<HTMLInputElement>) => {
         const data = { ...this.state.data!, [name]: extractEventValue(event) };
-        this.setState({ data });
+        this.setState({ data }, callback);
       }
 
       render() {
