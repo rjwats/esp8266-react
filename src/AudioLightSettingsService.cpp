@@ -30,8 +30,9 @@ AudioLightSettingsService::AudioLightSettingsService(AsyncWebServer* server,
       HTTP_POST,
       securityManager->wrapRequest(std::bind(&AudioLightSettingsService::loadModeConfig, this, std::placeholders::_1),
                                    AuthenticationPredicates::IS_AUTHENTICATED));
-  frequencySampler->addUpdateHandler([&](const String& originId) { sampleComplete(); }, false);
-  addUpdateHandler([&](const String& originId) { modeChanged(); }, false);
+  addUpdateHandler([&](const String& originId) { enableMode(); }, false);
+  frequencySampler->addUpdateHandler([&](const String& originId) { handleSample(); }, false);
+  ledSettingsService->addUpdateHandler([&](const String& originId) { enableMode(); }, false);
   _modes[0] = new ColorMode(server, fs, securityManager, ledSettingsService, frequencySampler);
   _modes[1] = new RainbowMode(server, fs, securityManager, ledSettingsService, frequencySampler);
   _modes[2] = new LightningMode(server, fs, securityManager, ledSettingsService, frequencySampler);
@@ -63,11 +64,11 @@ AudioLightMode* AudioLightSettingsService::getMode(const String& modeId) {
   return nullptr;
 }
 
-void AudioLightSettingsService::modeChanged() {
+void AudioLightSettingsService::enableMode() {
   _state.currentMode->enable();
 }
 
-void AudioLightSettingsService::sampleComplete() {
+void AudioLightSettingsService::handleSample() {
   _state.currentMode->sampleComplete();
 }
 

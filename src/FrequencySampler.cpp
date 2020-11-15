@@ -1,5 +1,8 @@
 #include <FrequencySampler.h>
 
+FrequencySampler::FrequencySampler(FrequencySamplerSettings* settings) : _settings(settings) {
+}
+
 void FrequencySampler::begin() {
   pinMode(FREQUENCY_SAMPLER_RESET_PIN, OUTPUT);
   pinMode(FREQUENCY_SAMPLER_STROBE_PIN, OUTPUT);
@@ -11,6 +14,7 @@ void FrequencySampler::begin() {
 void FrequencySampler::loop() {
   // take samples 100 times a second (max)
   EVERY_N_MILLIS(10) {
+    float smoothingFactor = _settings->getSmoothingFactor();
     update(
         [&](FrequencyData& frequencyData) {
           // Reset MSGEQ7 IC
@@ -38,7 +42,7 @@ void FrequencySampler::loop() {
                                                         : 0;
 
             // crappy smoothing to avoid crazy flickering
-            frequencyData.bands[i] = _smoothingFactor * frequencyData.bands[i] + (1 - _smoothingFactor) * value;
+            frequencyData.bands[i] = smoothingFactor * frequencyData.bands[i] + (1 - smoothingFactor) * value;
 
             // strobe pin high again for next loop
             digitalWrite(FREQUENCY_SAMPLER_STROBE_PIN, HIGH);

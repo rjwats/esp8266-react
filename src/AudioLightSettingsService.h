@@ -45,8 +45,8 @@ class AudioLightSettingsService : public StatefulService<AudioLightSettings> {
 
   StateUpdateResult update(JsonObject& root, AudioLightSettings& settings);
   AudioLightMode* getMode(const String& modeId);
-  void modeChanged();
-  void sampleComplete();
+  void enableMode();
+  void handleSample();
   void saveModeConfig(AsyncWebServerRequest* request);
   void loadModeConfig(AsyncWebServerRequest* request);
 };

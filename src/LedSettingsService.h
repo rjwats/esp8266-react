@@ -4,10 +4,12 @@
 #define LED_SETTINGS_FILE "/config/ledSettings.json"
 #define LED_SETTINGS_SERVICE_PATH "/rest/ledSettings"
 
+#include <FrequencySampler.h>
 #include <StatefulService.h>
 #include <HttpEndpoint.h>
 #include <FSPersistence.h>
 #include <FastLED.h>
+
 /*
 #define LED_DATA_PIN 21
 #define COLOR_ORDER GRB
@@ -16,7 +18,7 @@
 */
 
 #define LED_DATA_PIN 21
-#define COLOR_ORDER GRB // GBR
+#define COLOR_ORDER GRB  // GBR
 #define LED_TYPE WS2812B
 #define NUM_LEDS 9
 
@@ -51,10 +53,11 @@ class LedSettings {
   }
 };
 
-class LedSettingsService : public StatefulService<LedSettings> {
+class LedSettingsService : public StatefulService<LedSettings>, public FrequencySamplerSettings {
  public:
   LedSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager);
 
+  float getSmoothingFactor();
   void begin();
   void update(LedUpdateCallback updateCallback);
 

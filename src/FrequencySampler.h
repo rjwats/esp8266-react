@@ -9,10 +9,14 @@
 #define FREQUENCY_SAMPLER_RESET_PIN 4
 #define FREQUENCY_SAMPLER_STROBE_PIN 5
 #define FREQUENCY_SAMPLER_ANALOG_PIN 36
-#define FREQUENCY_SAMPLER_DEFAULT_SMOOTHING_FACTOR 0.15
 
 #define NUM_BANDS 7
 #define ADC_MAX_VALUE 4096
+
+class FrequencySamplerSettings {
+ public:
+  virtual float getSmoothingFactor() = 0;
+};
 
 class FrequencyData {
  public:
@@ -40,17 +44,18 @@ class FrequencyData {
       array.add(settings.bands[i]);
     }
   }
-  
 };
 
 class FrequencySampler : public StatefulService<FrequencyData> {
  public:
+  FrequencySampler(FrequencySamplerSettings* _settings);
+
   void begin();
   void loop();
   FrequencyData* getFrequencyData();
 
  private:
-  float _smoothingFactor = FREQUENCY_SAMPLER_DEFAULT_SMOOTHING_FACTOR;
+  FrequencySamplerSettings* _settings;
 };
 
 #endif  // end FrequencySampler_h

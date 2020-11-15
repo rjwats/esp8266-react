@@ -24,3 +24,7 @@ void LedSettingsService::update(LedUpdateCallback updateCallback) {
 void LedSettingsService::configureLeds() {
   FastLED.setBrightness(_state.brightness);
 }
+
+float LedSettingsService::getSmoothingFactor() {
+  return _state.brightness;
+}
