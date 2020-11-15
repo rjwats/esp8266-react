@@ -1,13 +1,14 @@
 #include <JsonUtil.h>
 
 void updateBooleanArrayFromJson(JsonObject& root, bool booleanArray[], uint16_t len, bool def, String key) {
+  for (uint8_t i = 0; i < len; i++) {
+    booleanArray[i] = def;
+  }
   if (root.containsKey(key) && root[key].is<JsonArray>()) {
     JsonArray jsonArray = root[key];
-    for (uint8_t i = 0; i < len; i++) {
-      if (i < jsonArray.size() && jsonArray[i].is<bool>()) {
+    for (uint8_t i = 0; i < len && i < jsonArray.size(); i++) {
+      if (jsonArray[i].is<bool>()) {
         booleanArray[i] = jsonArray[i];
-      } else {
-        booleanArray[i] = def;
       }
     }
   }
