@@ -20,14 +20,16 @@ AudioLightSettingsService::AudioLightSettingsService(AsyncWebServer* server,
                   AUDIO_LIGHT_SERVICE_PATH,
                   securityManager,
                   AuthenticationPredicates::IS_AUTHENTICATED) {
-  server->on(AUDIO_LIGHT_SAVE_MODE_PATH,
-             HTTP_POST,
-             std::bind(&AudioLightSettingsService::saveModeConfig, this, std::placeholders::_1),
-             junkBodyHandler);
-  server->on(AUDIO_LIGHT_LOAD_MODE_PATH,
-             HTTP_POST,
-             std::bind(&AudioLightSettingsService::loadModeConfig, this, std::placeholders::_1),
-             junkBodyHandler);
+  server->on(
+      AUDIO_LIGHT_SAVE_MODE_PATH,
+      HTTP_POST,
+      securityManager->wrapRequest(std::bind(&AudioLightSettingsService::saveModeConfig, this, std::placeholders::_1),
+                                   AuthenticationPredicates::IS_AUTHENTICATED));
+  server->on(
+      AUDIO_LIGHT_LOAD_MODE_PATH,
+      HTTP_POST,
+      securityManager->wrapRequest(std::bind(&AudioLightSettingsService::loadModeConfig, this, std::placeholders::_1),
+                                   AuthenticationPredicates::IS_AUTHENTICATED));
   frequencySampler->addUpdateHandler([&](const String& originId) { sampleComplete(); }, false);
   addUpdateHandler([&](const String& originId) { modeChanged(); }, false);
   _modes[0] = new ColorMode(server, fs, securityManager, ledSettingsService, frequencySampler);

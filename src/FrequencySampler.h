@@ -33,6 +33,14 @@ class FrequencyData {
   uint8_t calculateEnergyByte(bool* includedBands = NULL) {
     return calculateEnergyFloat(includedBands) * 255;
   }
+
+  static void read(FrequencyData& settings, JsonObject& root) {
+    JsonArray array = root.createNestedArray("bands");
+    for (uint16_t i = 0; i < NUM_BANDS; i++) {
+      array.add(settings.bands[i]);
+    }
+  }
+  
 };
 
 class FrequencySampler : public StatefulService<FrequencyData> {

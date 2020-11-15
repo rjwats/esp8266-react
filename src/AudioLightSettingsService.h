@@ -12,8 +12,8 @@
 #define NUM_MODES 5
 
 #define AUDIO_LIGHT_SERVICE_PATH "/rest/mode"
-#define AUDIO_LIGHT_SAVE_MODE_PATH "/rest/mode/save"
-#define AUDIO_LIGHT_LOAD_MODE_PATH "/rest/mode/load"
+#define AUDIO_LIGHT_SAVE_MODE_PATH "/rest/saveMode"
+#define AUDIO_LIGHT_LOAD_MODE_PATH "/rest/loadMode"
 
 #define AUDIO_LIGHT_DEFAULT_MODE "color"
 

@@ -2,6 +2,7 @@
 #include <LedSettingsService.h>
 #include <FrequencySampler.h>
 #include <AudioLightSettingsService.h>
+#include <FrequencyTransmitter.h>
 
 #define SERIAL_BAUD_RATE 115200
 
@@ -10,6 +11,7 @@ ESP8266React esp8266React(&server);
 
 LedSettingsService ledSettingsService(&server, esp8266React.getFS(), esp8266React.getSecurityManager());
 FrequencySampler frequencySampler;
+FrequencyTransmitter frequencyTransmitter(&server, esp8266React.getSecurityManager(), &frequencySampler);
 AudioLightSettingsService audioLightSettingsService(&server,
                                                     esp8266React.getFS(),
                                                     esp8266React.getSecurityManager(),
