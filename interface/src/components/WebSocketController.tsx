@@ -7,7 +7,7 @@ import { addAccessTokenParameter } from '../authentication';
 import { extractEventValue } from '.';
 
 export interface WebSocketControllerProps<D> extends WithSnackbarProps {
-  handleValueChange: (name: keyof D) => (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleValueChange: (name: keyof D, callback?: () => void) => (event: React.ChangeEvent<HTMLInputElement>) => void;
 
   setData: (data: D, callback?: () => void) => void;
   saveData: () => void;
@@ -112,9 +112,9 @@ export function webSocketController<D, P extends WebSocketControllerProps<D>>(ws
         }
       }, wsThrottle);
 
-      handleValueChange = (name: keyof D) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      handleValueChange = (name: keyof D, callback?: () => void) => (event: React.ChangeEvent<HTMLInputElement>) => {
         const data = { ...this.state.data!, [name]: extractEventValue(event) };
-        this.setState({ data });
+        this.setState({ data }, callback);
       }
 
       render() {

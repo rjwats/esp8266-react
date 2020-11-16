@@ -1,24 +1,20 @@
 import React, { Component } from 'react';
-import { ENDPOINT_ROOT } from '../api';
+import { WEB_SOCKET_ROOT } from '../api';
 
-import { restController, RestControllerProps, RestFormLoader, SectionContent } from '../components';
+import { SectionContent, webSocketController, WebSocketControllerProps, WebSocketFormLoader } from '../components';
 import AudioLightSettingsForm from './AudioLightSettingsForm';
 import { AudioLightSettings } from './types';
 
-export const AUDIO_LIGHT_SETTINGS_ENDPOINT = ENDPOINT_ROOT + "audioLightSettings";
+export const AUDIO_LIGHT_SETTINGS_ENDPOINT = WEB_SOCKET_ROOT + "audioLightSettings";
 
-type AudioLightSettingsControllerProps = RestControllerProps<AudioLightSettings>;
+type AudioLightSettingsControllerProps = WebSocketControllerProps<AudioLightSettings>;
 
 class AudioLightSettingsController extends Component<AudioLightSettingsControllerProps> {
-
-  componentDidMount() {
-    this.props.loadData();
-  }
 
   render() {
     return (
       <SectionContent title="Lighting Settings">
-        <RestFormLoader
+        <WebSocketFormLoader
           {...this.props}
           render={formProps => <AudioLightSettingsForm {...formProps} />}
         />
@@ -28,4 +24,4 @@ class AudioLightSettingsController extends Component<AudioLightSettingsControlle
 
 }
 
-export default restController(AUDIO_LIGHT_SETTINGS_ENDPOINT, AudioLightSettingsController);
+export default webSocketController(AUDIO_LIGHT_SETTINGS_ENDPOINT, 100, AudioLightSettingsController);

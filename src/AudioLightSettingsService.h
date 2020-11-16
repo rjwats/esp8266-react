@@ -14,9 +14,10 @@
 #define NUM_MODES 6
 
 #define AUDIO_LIGHT_SERVICE_PATH "/rest/audioLightSettings"
+#define AUDIO_LIGHT_WS_PATH "/ws/audioLightSettings"
+
 #define AUDIO_LIGHT_SAVE_MODE_PATH "/rest/saveModeSettings"
 #define AUDIO_LIGHT_LOAD_MODE_PATH "/rest/loadModeSettings"
-#define AUDIO_LIGHT_MODE_WS_PATH "/ws/audioLightMode"
 
 #define LOCAL_ORIGIN "local"
 

@@ -55,4 +55,4 @@ export interface FireMode {
   reverse: boolean;
 }
 
-export type AudioLightMode = OffMode | ColorMode | RainbowMode | LightningMode | ConfettiMode | FireMode;
+export type AudioLightSettings = OffMode | ColorMode | RainbowMode | LightningMode | ConfettiMode | FireMode;

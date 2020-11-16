@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { RestFormProps } from '../components';
-import { AudioLightMode, AudioLightSettings } from './types';
+import { WebSocketFormProps } from '../components';
+import { AudioLightModeType, AudioLightSettings } from './types';
 import { TextField, MenuItem } from '@material-ui/core';
 
-type AudioLightSettingsFormProps = RestFormProps<AudioLightSettings>;
+type AudioLightSettingsFormProps = WebSocketFormProps<AudioLightSettings>;
 
 class AudioLightSettingsForm extends React.Component<AudioLightSettingsFormProps> {
 
@@ -21,12 +21,12 @@ class AudioLightSettingsForm extends React.Component<AudioLightSettingsFormProps
         margin="normal"
         variant="outlined"
         select>
-        <MenuItem value={AudioLightMode.OFF}>Off</MenuItem>
-        <MenuItem value={AudioLightMode.COLOR}>Single Color</MenuItem>
-        <MenuItem value={AudioLightMode.RAINBOW}>Rainbow</MenuItem>
-        <MenuItem value={AudioLightMode.LIGHTNING}>Lightning</MenuItem>
-        <MenuItem value={AudioLightMode.CONFETTI}>Confetti</MenuItem>
-        <MenuItem value={AudioLightMode.FIRE}>Fire</MenuItem>
+        <MenuItem value={AudioLightModeType.OFF}>Off</MenuItem>
+        <MenuItem value={AudioLightModeType.COLOR}>Single Color</MenuItem>
+        <MenuItem value={AudioLightModeType.RAINBOW}>Rainbow</MenuItem>
+        <MenuItem value={AudioLightModeType.LIGHTNING}>Lightning</MenuItem>
+        <MenuItem value={AudioLightModeType.CONFETTI}>Confetti</MenuItem>
+        <MenuItem value={AudioLightModeType.FIRE}>Fire</MenuItem>
       </TextField>
     );
   }

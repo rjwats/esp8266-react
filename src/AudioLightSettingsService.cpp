@@ -17,7 +17,7 @@ AudioLightSettingsService::AudioLightSettingsService(AsyncWebServer* server,
         std::bind(&AudioLightSettingsService::update, this, std::placeholders::_1, std::placeholders::_2),
         this,
         server,
-        AUDIO_LIGHT_MODE_WS_PATH,
+        AUDIO_LIGHT_WS_PATH,
         securityManager,
         AuthenticationPredicates::IS_AUTHENTICATED) {
   server->on(
