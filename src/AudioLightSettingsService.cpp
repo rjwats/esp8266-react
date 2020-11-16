@@ -1,13 +1,5 @@
 #include <AudioLightSettingsService.h>
 
-void junkBodyHandler(AsyncWebServerRequest* request,
-                     String filename,
-                     size_t index,
-                     uint8_t* data,
-                     size_t len,
-                     bool final) {
-}
-
 AudioLightSettingsService::AudioLightSettingsService(AsyncWebServer* server,
                                                      FS* fs,
                                                      SecurityManager* securityManager,
@@ -38,6 +30,7 @@ AudioLightSettingsService::AudioLightSettingsService(AsyncWebServer* server,
   _modes[2] = new LightningMode(server, fs, securityManager, ledSettingsService, frequencySampler);
   _modes[3] = new ConfettiMode(server, fs, securityManager, ledSettingsService, frequencySampler);
   _modes[4] = new FireMode(server, fs, securityManager, ledSettingsService, frequencySampler);
+  _modes[5] = new OffMode(server, fs, securityManager, ledSettingsService, frequencySampler);
 }
 
 void AudioLightSettingsService::begin() {

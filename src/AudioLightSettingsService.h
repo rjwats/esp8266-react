@@ -8,8 +8,9 @@
 #include <LightningMode.h>
 #include <ConfettiMode.h>
 #include <FireMode.h>
+#include <OffMode.h>
 
-#define NUM_MODES 5
+#define NUM_MODES 6
 
 #define AUDIO_LIGHT_SERVICE_PATH "/rest/audioLightSettings"
 #define AUDIO_LIGHT_SAVE_MODE_PATH "/rest/saveModeSettings"
