@@ -9,24 +9,20 @@
 #include <ConfettiMode.h>
 #include <FireMode.h>
 #include <OffMode.h>
+#include <WebSocketTxRx.h>
 
 #define NUM_MODES 6
 
 #define AUDIO_LIGHT_SERVICE_PATH "/rest/audioLightSettings"
 #define AUDIO_LIGHT_SAVE_MODE_PATH "/rest/saveModeSettings"
 #define AUDIO_LIGHT_LOAD_MODE_PATH "/rest/loadModeSettings"
+#define AUDIO_LIGHT_MODE_WS_PATH "/ws/audioLightMode"
 
-#define AUDIO_LIGHT_DEFAULT_MODE "color"
+#define LOCAL_ORIGIN "local"
 
 class AudioLightSettings {
  public:
   AudioLightMode* currentMode = nullptr;
-
-  static void read(AudioLightSettings& settings, JsonObject& root) {
-    if (settings.currentMode) {
-      root["mode_id"] = settings.currentMode->getId();
-    }
-  }
 };
 
 class AudioLightSettingsService : public StatefulService<AudioLightSettings> {
@@ -42,9 +38,12 @@ class AudioLightSettingsService : public StatefulService<AudioLightSettings> {
 
  private:
   HttpEndpoint<AudioLightSettings> _httpEndpoint;
+  WebSocketTxRx<AudioLightSettings> _audioLightModeTxRx;
   AudioLightMode* _modes[NUM_MODES];
 
+  void read(AudioLightSettings& settings, JsonObject& root);
   StateUpdateResult update(JsonObject& root, AudioLightSettings& settings);
+
   AudioLightMode* getMode(const String& modeId);
   void enableMode();
   void handleSample();

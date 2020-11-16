@@ -5,13 +5,21 @@ AudioLightSettingsService::AudioLightSettingsService(AsyncWebServer* server,
                                                      SecurityManager* securityManager,
                                                      LedSettingsService* ledSettingsService,
                                                      FrequencySampler* frequencySampler) :
-    _httpEndpoint(AudioLightSettings::read,
+    _httpEndpoint(std::bind(&AudioLightSettingsService::read, this, std::placeholders::_1, std::placeholders::_2),
                   std::bind(&AudioLightSettingsService::update, this, std::placeholders::_1, std::placeholders::_2),
                   this,
                   server,
                   AUDIO_LIGHT_SERVICE_PATH,
                   securityManager,
-                  AuthenticationPredicates::IS_AUTHENTICATED) {
+                  AuthenticationPredicates::IS_AUTHENTICATED),
+    _audioLightModeTxRx(
+        std::bind(&AudioLightSettingsService::read, this, std::placeholders::_1, std::placeholders::_2),
+        std::bind(&AudioLightSettingsService::update, this, std::placeholders::_1, std::placeholders::_2),
+        this,
+        server,
+        AUDIO_LIGHT_MODE_WS_PATH,
+        securityManager,
+        AuthenticationPredicates::IS_AUTHENTICATED) {
   server->on(
       AUDIO_LIGHT_SAVE_MODE_PATH,
       HTTP_POST,
@@ -65,17 +73,28 @@ void AudioLightSettingsService::handleSample() {
   _state.currentMode->sampleComplete();
 }
 
+void AudioLightSettingsService::read(AudioLightSettings& settings, JsonObject& root) {
+  if (settings.currentMode) {
+    root["mode_id"] = settings.currentMode->getId();
+    settings.currentMode->readAsJson(root);
+  }
+}
+
 StateUpdateResult AudioLightSettingsService::update(JsonObject& root, AudioLightSettings& settings) {
-  String modeId = root["mode_id"] | AUDIO_LIGHT_DEFAULT_MODE;
-  if (settings.currentMode->getId() == modeId) {
-    return StateUpdateResult::UNCHANGED;
+  String modeId = root["mode_id"];
+
+  // change mode if required
+  if (settings.currentMode->getId() != modeId) {
+    AudioLightMode* mode = getMode(modeId);
+    if (!mode) {
+      return StateUpdateResult::ERROR;
+    }
+    settings.currentMode = mode;
+    return StateUpdateResult::CHANGED;
   }
-  AudioLightMode* mode = getMode(modeId);
-  if (!mode) {
-    return StateUpdateResult::ERROR;
-  }
-  settings.currentMode = mode;
-  return StateUpdateResult::CHANGED;
+
+  // update mode settings
+  return settings.currentMode->updateFromJson(root, LOCAL_ORIGIN);
 }
 
 void AudioLightSettingsService::saveModeConfig(AsyncWebServerRequest* request) {

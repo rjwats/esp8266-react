@@ -17,6 +17,8 @@ class AudioLightMode {
   virtual void tick() = 0;
   virtual void enable() = 0;
   virtual void sampleComplete(){};
+  virtual void readAsJson(JsonObject& root) = 0;
+  virtual StateUpdateResult updateFromJson(JsonObject& root, const String& originId) = 0;
 };
 
 template <class T>
@@ -24,7 +26,9 @@ class AudioLightModeImpl : public StatefulService<T>, public AudioLightMode {
  protected:
   String _id;
   String _filePath;
-  String _servicePath;  
+  String _servicePath;
+  JsonStateReader<T> _stateReader;
+  JsonStateUpdater<T> _stateUpdater;
   LedSettingsService* _ledSettingsService;
   FrequencySampler* _frequencySampler;
   HttpEndpoint<T> _httpEndpoint;
@@ -42,6 +46,8 @@ class AudioLightModeImpl : public StatefulService<T>, public AudioLightMode {
       _id(id),
       _filePath(AUDIO_LIGHT_MODE_SERVICE_PATH_PREFIX + id),
       _servicePath(AUDIO_LIGHT_MODE_FILE_PATH_PREFIX + id + AUDIO_LIGHT_MODE_FILE_PATH_SUFFIX),
+      _stateReader(stateReader),
+      _stateUpdater(stateUpdater),
       _ledSettingsService(ledSettingsService),
       _frequencySampler(frequencySampler),
       _httpEndpoint(stateReader, stateUpdater, this, server, _filePath, securityManager),
@@ -54,6 +60,7 @@ class AudioLightModeImpl : public StatefulService<T>, public AudioLightMode {
   const String& getId() {
     return _id;
   }
+
   /*
    * Read the config from the file system and disable the update handler
    */
@@ -74,6 +81,20 @@ class AudioLightModeImpl : public StatefulService<T>, public AudioLightMode {
    */
   void writeToFS() {
     _fsPersistence.writeToFS();
+  }
+
+  /*
+   * Read the mode settings as json
+   */
+  void readAsJson(JsonObject& root) {
+    StatefulService<T>::read(root, _stateReader);
+  }
+
+  /*
+   * Update the mode settings from json
+   */
+  StateUpdateResult updateFromJson(JsonObject& root, const String& originId) {
+    return StatefulService<T>::update(root, _stateUpdater, originId);
   }
 };
 
