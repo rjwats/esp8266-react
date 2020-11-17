@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 
 import { Box } from '@material-ui/core';
 import { ColorChangeHandler, HuePicker, TwitterPicker } from 'react-color'
@@ -17,20 +17,24 @@ class ColorPicker extends React.Component<ColorPickerProps> {
       onChange
     } = this.props;
     return (
-      <Box>
-        <HuePicker
-          width="100%"
-          color={color}
-          onChange={onChange}
-        />
-        <TwitterPicker
-          width="100%"
-          triangle="hide"
-          color={color}
-          onChange={onChange}
-          colors={SimpleColors}
-        />
-      </Box>
+      <Fragment>
+        <Box my={2}>
+          <HuePicker
+            width="100%"
+            color={color}
+            onChange={onChange}
+          />
+        </Box>
+        <Box my={2}>
+          <TwitterPicker
+            width="100%"
+            triangle="hide"
+            color={color}
+            onChange={onChange}
+            colors={SimpleColors}
+          />
+        </Box>
+      </Fragment>
     );
   }
 }
