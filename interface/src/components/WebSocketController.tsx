@@ -11,7 +11,7 @@ export interface WebSocketControllerProps<D> extends WithSnackbarProps {
 
   setData: (data: D, callback?: () => void) => void;
   saveData: () => void;
-  saveDataAndClear(): () => void;
+  saveDataAndClear(newData?: D): () => void;
 
   connected: boolean;
   data?: D;
@@ -103,12 +103,12 @@ export function webSocketController<D, P extends WebSocketControllerProps<D>>(ws
         }
       }, wsThrottle);
 
-      saveDataAndClear = throttle(() => {
+      saveDataAndClear = throttle((newData?: D) => {
         const { ws, connected, data } = this.state;
         if (connected) {
           this.setState({
             data: undefined
-          }, () => ws.json(data));
+          }, () => ws.json(newData || data));
         }
       }, wsThrottle);
 
@@ -118,14 +118,15 @@ export function webSocketController<D, P extends WebSocketControllerProps<D>>(ws
       }
 
       render() {
+        const { connected, data } = this.state;
         return <WebSocketController
           {...this.props as P}
           handleValueChange={this.handleValueChange}
           setData={this.setData}
           saveData={this.saveData}
           saveDataAndClear={this.saveDataAndClear}
-          connected={this.state.connected}
-          data={this.state.data}
+          connected={connected}
+          data={data}
         />;
       }
 

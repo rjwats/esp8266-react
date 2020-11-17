@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export type WebSocketFormProps<D> = Omit<WebSocketControllerProps<D>, "connected"> & { data: D };
+export type WebSocketFormProps<D> = Omit<WebSocketControllerProps<D>, "connected" | "data"> & { data: D };
 
 interface WebSocketFormLoaderProps<D> extends WebSocketControllerProps<D> {
   render: (props: WebSocketFormProps<D>) => JSX.Element;

@@ -3,11 +3,11 @@ import { WEB_SOCKET_ROOT } from '../api';
 
 import { SectionContent, webSocketController, WebSocketControllerProps, WebSocketFormLoader } from '../components';
 import AudioLightSettingsForm from './AudioLightSettingsForm';
-import { AudioLightSettings } from './types';
+import { AudioLightMode } from './types';
 
 export const AUDIO_LIGHT_SETTINGS_ENDPOINT = WEB_SOCKET_ROOT + "audioLightSettings";
 
-type AudioLightSettingsControllerProps = WebSocketControllerProps<AudioLightSettings>;
+type AudioLightSettingsControllerProps = WebSocketControllerProps<Partial<AudioLightMode>>;
 
 class AudioLightSettingsController extends Component<AudioLightSettingsControllerProps> {
 
