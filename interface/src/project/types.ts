@@ -51,7 +51,7 @@ export interface ConfettiMode {
 export interface FireMode {
   mode_id: AudioLightModeType.FIRE;
   cooling: number;
-  spaking: number;
+  sparking: number;
   reverse: boolean;
 }
 

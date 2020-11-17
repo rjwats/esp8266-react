@@ -7,6 +7,7 @@ import { LightningMode } from '../types';
 import IncludedBands from '../components/IncludedBands';
 import ColorPicker from '../components/ColorPicker';
 import { audioLightMode, AudioLightModeProps } from './AudioLightMode';
+import { Box } from '@material-ui/core';
 
 type AudioLightLightningModeProps = AudioLightModeProps<LightningMode>;
 
@@ -17,44 +18,46 @@ class AudioLightLightningMode extends React.Component<AudioLightLightningModePro
 
     return (
       <div>
-        <FormLabel>Color</FormLabel>
-        <ColorPicker
-          color={data.color}
-          onChange={handleColorChange("color")}
-        />
-
-        <FormLabel>Brightness</FormLabel>
-        <Slider
-          min={0}
-          max={255}
-          step={1}
-          value={data.brightness}
-          onChange={handleSliderChange('brightness')}
-        />
-
-        <FormLabel>Flashes</FormLabel>
-        <Slider
-          min={1}
-          max={20}
-          step={1}
-          value={data.flashes}
-          onChange={handleSliderChange('flashes')}
-        />
-
-        <FormLabel>Threshold</FormLabel>
-        <Slider
-          min={0}
-          max={255}
-          step={1}
-          value={data.threshold}
-          onChange={handleSliderChange('threshold')}
-        />
-
-        <FormLabel>Included Bands</FormLabel>
-        <IncludedBands
-          value={data.included_bands}
-          onChange={handleChange('included_bands')}
-        />
+        <Box my={2}>
+          <FormLabel>Color</FormLabel>
+          <ColorPicker
+            color={data.color}
+            onChange={handleColorChange("color")}
+          />
+        </Box>
+        <Box my={2}>
+          <FormLabel>Brightness</FormLabel>
+          <Slider
+            min={0}
+            max={255}
+            step={1}
+            value={data.brightness}
+            onChange={handleSliderChange('brightness')}
+          />
+          <FormLabel>Flashes</FormLabel>
+          <Slider
+            min={1}
+            max={20}
+            step={1}
+            value={data.flashes}
+            onChange={handleSliderChange('flashes')}
+          />
+          <FormLabel>Threshold</FormLabel>
+          <Slider
+            min={0}
+            max={255}
+            step={1}
+            value={data.threshold}
+            onChange={handleSliderChange('threshold')}
+          />
+        </Box>
+        <Box my={2}>
+          <FormLabel>Included Bands</FormLabel>
+          <IncludedBands
+            value={data.included_bands}
+            onChange={handleChange('included_bands')}
+          />
+        </Box>
       </div>
     );
   }
