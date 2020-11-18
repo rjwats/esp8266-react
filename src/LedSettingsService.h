@@ -10,17 +10,17 @@
 #include <FSPersistence.h>
 #include <FastLED.h>
 
-/*
 #define LED_DATA_PIN 21
-#define COLOR_ORDER GRB
-#define LED_TYPE WS2812
-#define NUM_LEDS 64
-*/
+#define COLOR_ORDER RGB
+#define LED_TYPE WS2811
+#define NUM_LEDS 50
 
+/*
 #define LED_DATA_PIN 21
 #define COLOR_ORDER GRB  // GBR
 #define LED_TYPE WS2812B
 #define NUM_LEDS 9
+*/
 
 #ifndef FACTORY_LED_BRIGHTNESS
 #define FACTORY_LED_BRIGHTNESS 128
