@@ -8,7 +8,8 @@ export enum AudioLightModeType {
   RAINBOW = "rainbow",
   LIGHTNING = "lightning",
   CONFETTI = "confetti",
-  FIRE = "fire"
+  FIRE = "fire",
+  PACIFICA="pacifica"
 }
 
 export interface OffMode {

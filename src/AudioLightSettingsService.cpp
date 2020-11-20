@@ -39,6 +39,7 @@ AudioLightSettingsService::AudioLightSettingsService(AsyncWebServer* server,
   _modes[3] = new ConfettiMode(server, fs, securityManager, ledSettingsService, frequencySampler);
   _modes[4] = new FireMode(server, fs, securityManager, ledSettingsService, frequencySampler);
   _modes[5] = new OffMode(server, fs, securityManager, ledSettingsService, frequencySampler);
+  _modes[6] = new PacificaMode(server, fs, securityManager, ledSettingsService, frequencySampler);
 }
 
 void AudioLightSettingsService::begin() {
