@@ -52,6 +52,7 @@ class AudioLightSettingsForm extends React.Component<AudioLightSettingsFormProps
           <MenuItem value={AudioLightModeType.CONFETTI}>Confetti</MenuItem>
           <MenuItem value={AudioLightModeType.FIRE}>Fire</MenuItem>
           <MenuItem value={AudioLightModeType.PACIFICA}>Pacifica</MenuItem>
+          <MenuItem value={AudioLightModeType.PRIDE}>Pride</MenuItem>
         </TextField>
         { ModeComponent && <ModeComponent {...this.props} />}
       </Fragment>

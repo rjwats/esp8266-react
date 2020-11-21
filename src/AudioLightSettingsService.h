@@ -10,9 +10,10 @@
 #include <FireMode.h>
 #include <OffMode.h>
 #include <PacificaMode.h>
+#include <PrideMode.h>
 #include <WebSocketTxRx.h>
 
-#define NUM_MODES 7
+#define NUM_MODES 8
 
 #define AUDIO_LIGHT_SERVICE_PATH "/rest/audioLightSettings"
 #define AUDIO_LIGHT_WS_PATH "/ws/audioLightSettings"

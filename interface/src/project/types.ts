@@ -9,7 +9,8 @@ export enum AudioLightModeType {
   LIGHTNING = "lightning",
   CONFETTI = "confetti",
   FIRE = "fire",
-  PACIFICA="pacifica"
+  PACIFICA = "pacifica",
+  PRIDE = "pride"
 }
 
 export interface OffMode {
@@ -56,4 +57,12 @@ export interface FireMode {
   reverse: boolean;
 }
 
-export type AudioLightMode = OffMode | ColorMode | RainbowMode | LightningMode | ConfettiMode | FireMode;
+export interface PacificaMode {
+  mode_id: AudioLightModeType.PACIFICA;
+}
+
+export interface PrideMode {
+  mode_id: AudioLightModeType.PRIDE;
+}
+
+export type AudioLightMode = OffMode | ColorMode | RainbowMode | LightningMode | ConfettiMode | FireMode | PacificaMode | PrideMode;
