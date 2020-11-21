@@ -3,6 +3,7 @@
 
 #include <AudioLightMode.h>
 #include <JsonUtil.h>
+#include <PaletteManager.h>
 
 #ifndef FACTORY_FIRE_MODE_SPARKING
 #define FACTORY_FIRE_MODE_SPARKING 120
@@ -16,6 +17,10 @@
 #define FACTORY_FIRE_MODE_COOLING 80
 #endif
 
+#ifndef FACTORY_FIRE_MODE_PALETTE
+#define FACTORY_FIRE_MODE_PALETTE "heat"
+#endif
+
 #define FIRE_MODE_ID "fire"
 
 // audio enable
@@ -25,27 +30,34 @@ class FireModeSettings {
   bool reverse;
   uint8_t cooling;
   uint8_t sparking;
-
-  static void read(FireModeSettings& settings, JsonObject& root) {
-    writeByteToJson(root, &settings.cooling, "cooling");
-    writeByteToJson(root, &settings.sparking, "sparking");
-    writeBoolToJson(root, &settings.reverse, "reverse");
-  }
-
-  static StateUpdateResult update(JsonObject& root, FireModeSettings& settings) {
-    updateByteFromJson(root, &settings.sparking, FACTORY_FIRE_MODE_SPARKING, "sparking");
-    updateByteFromJson(root, &settings.cooling, FACTORY_FIRE_MODE_COOLING, "cooling");
-    updateBoolFromJson(root, &settings.reverse, FACTORY_FIRE_MODE_REVERSE, "reverse");
-    return StateUpdateResult::CHANGED;
-  }
+  Palette palette;
 };
 
 class FireMode : public AudioLightModeImpl<FireModeSettings> {
  private:
-  bool _refresh = true;                               // For applying config updates or enabling the mode
-  uint8_t _heatMap[NUM_LEDS];                         // Intensity map the led strip - statically allocated ATM
-  CRGBPalette16 _heat = CRGBPalette16(HeatColors_p);  // The heat palette, which looks like fire
-  CRGBPalette16* _firePalette = &_heat;               // The current palette we are using, set to heat ATM
+  bool _refresh = true;            // For applying config updates or enabling the mode
+  uint8_t _heatMap[NUM_LEDS];      // Intensity map the led strip - statically allocated ATM
+  PaletteManager _paletteManager;  // The palette manager to load the chosen palettes
+
+  void read(FireModeSettings& settings, JsonObject& root) {
+    writeByteToJson(root, &settings.cooling, "cooling");
+    writeByteToJson(root, &settings.sparking, "sparking");
+    writeBoolToJson(root, &settings.reverse, "reverse");
+    root["palette"] = settings.palette.id;
+  }
+
+  StateUpdateResult update(JsonObject& root, FireModeSettings& settings) {
+    updateByteFromJson(root, &settings.sparking, FACTORY_FIRE_MODE_SPARKING, "sparking");
+    updateByteFromJson(root, &settings.cooling, FACTORY_FIRE_MODE_COOLING, "cooling");
+    updateBoolFromJson(root, &settings.reverse, FACTORY_FIRE_MODE_REVERSE, "reverse");
+
+    // select the palette
+    settings.palette = _paletteManager.getPalette(root["palette"] | FACTORY_FIRE_MODE_PALETTE);
+    // we make one change to the selected palette
+    // we assert that the first color is black to create the fire effect
+    settings.palette.palette[0] = 0x000000;
+    return StateUpdateResult::CHANGED;
+  }
 
  public:
   FireMode(AsyncWebServer* server,

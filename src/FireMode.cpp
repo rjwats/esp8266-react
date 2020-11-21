@@ -10,8 +10,8 @@ FireMode::FireMode(AsyncWebServer* server,
                        securityManager,
                        ledSettingsService,
                        frequencySampler,
-                       FireModeSettings::read,
-                       FireModeSettings::update,
+                       std::bind(&FireMode::read, this, std::placeholders::_1, std::placeholders::_2),
+                       std::bind(&FireMode::update, this, std::placeholders::_1, std::placeholders::_2),
                        FIRE_MODE_ID){};
 
 void FireMode::enable() {
@@ -51,7 +51,7 @@ void FireMode::tick() {
         // Scale the heat value from 0-255 down to 0-240
         // for best results with color palettes.
         byte colorindex = scale8(_heatMap[j], 240);
-        CRGB color = ColorFromPalette(*_firePalette, colorindex);
+        CRGB color = ColorFromPalette(_state.palette.palette, colorindex);
         int pixelnumber;
         if (_state.reverse) {
           pixelnumber = (numLeds - 1) - j;

@@ -38,7 +38,7 @@ class SecuritySettings {
 
     // users
     JsonArray users = root.createNestedArray("users");
-    for (User user : settings.users) {
+    for (const User& user : settings.users) {
       JsonObject userRoot = users.createNestedObject();
       userRoot["username"] = user.username;
       userRoot["password"] = user.password;
@@ -103,7 +103,7 @@ class SecuritySettingsService : public SecurityManager {
   SecuritySettingsService(AsyncWebServer* server, FS* fs);
   ~SecuritySettingsService();
 
-  // minimal set of functions to support framework with security settings disabled  
+  // minimal set of functions to support framework with security settings disabled
   Authentication authenticateRequest(AsyncWebServerRequest* request);
   ArRequestFilterFunction filterRequest(AuthenticationPredicate predicate);
   ArRequestHandlerFunction wrapRequest(ArRequestHandlerFunction onRequest, AuthenticationPredicate predicate);
