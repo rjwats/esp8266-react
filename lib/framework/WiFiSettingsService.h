@@ -19,7 +19,7 @@
 #endif
 
 #ifndef FACTORY_WIFI_HOSTNAME
-#define FACTORY_WIFI_HOSTNAME ""
+#define FACTORY_WIFI_HOSTNAME ESPUtils::defaultDeviceValue("esp-react-")
 #endif
 
 class WiFiSettings {
