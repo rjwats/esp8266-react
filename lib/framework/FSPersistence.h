@@ -81,7 +81,7 @@ class FSPersistence {
   JsonStateUpdater<T> _stateUpdater;
   StatefulService<T>* _statefulService;
   FS* _fs;
-  char const* _filePath;
+  const char* _filePath;
   size_t _bufferSize;
   update_handler_id_t _updateHandlerId;
 
