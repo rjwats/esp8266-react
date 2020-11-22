@@ -34,6 +34,7 @@ class AudioLightSettingsService : public StatefulService<AudioLightSettings> {
                             FS* fs,
                             SecurityManager* securityManager,
                             LedSettingsService* ledSettingsService,
+                            PaletteSettingsService* paletteSettingsService,
                             FrequencySampler* frequencySampler);
 
   void begin();

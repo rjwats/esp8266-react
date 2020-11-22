@@ -21,6 +21,33 @@ void writeBooleanArrayToJson(JsonObject& root, bool booleanArray[], uint16_t len
   }
 }
 
+void updatePaletteFromJson(JsonObject& root, CRGBPalette16* palette, CRGB def, String key) {
+  for (uint8_t i = 0; i < 16; i++) {
+    palette->entries[i] = def;
+  }
+  if (root.containsKey(key) && root[key].is<JsonArray>()) {
+    JsonArray jsonArray = root[key];
+    for (uint8_t i = 0; i < 16 && i < jsonArray.size(); i++) {
+      if (jsonArray[i].is<String>()) {
+        String colorString = jsonArray[i];
+        if (colorString.length() == 7) {
+          palette->entries[i] = CRGB(strtoll(&colorString[1], NULL, 16));
+        }
+      }
+    }
+  }
+}
+
+void writePaletteToJson(JsonObject& root, const CRGBPalette16* palette, String key) {
+  JsonArray array = root.createNestedArray(key);
+  for (uint8_t i = 0; i < 16; i++) {
+    CRGB color = palette->entries[i];
+    char colorString[8];
+    sprintf(colorString, "#%02x%02x%02x", color.r, color.g, color.b);
+    array.add(colorString);
+  }
+}
+
 void updateColorFromJson(JsonObject& root, CRGB* color, CRGB def, String key) {
   if (root.containsKey(key) && root[key].is<const char*>()) {
     String colorString = root[key];

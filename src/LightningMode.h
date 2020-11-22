@@ -77,6 +77,7 @@ class LightningMode : public AudioLightModeImpl<LightningModeSettings> {
                 FS* fs,
                 SecurityManager* securityManager,
                 LedSettingsService* ledSettingsService,
+                PaletteSettingsService* paletteSettingsService,
                 FrequencySampler* frequencySampler);
   void tick();
   void enable();

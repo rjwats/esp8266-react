@@ -9,10 +9,9 @@ import AudioLightFireMode from './modes/AudioLightFireMode';
 import AudioLightColorMode from './modes/AudioLightColorMode';
 
 import { FormActions, FormButton, WebSocketFormProps } from '../components';
-import { AudioLightModeType, AudioLightMode } from './types';
+import { AudioLightModeType, AudioLightMode, AUDIO_LIGHT_LOAD_SETTINGS_ENDPOINT, AUDIO_LIGHT_SAVE_SETTINGS_ENDPOINT } from './types';
 import AudioLightConfettiMode from './modes/AudioLightConfettiMode';
 import { redirectingAuthorizedFetch } from '../authentication';
-import { AUDIO_LIGHT_LOAD_SETTINGS_ENDPOINT, AUDIO_LIGHT_SAVE_SETTINGS_ENDPOINT } from './AudioLightSettingsController';
 
 type AudioLightSettingsFormProps = WebSocketFormProps<Partial<AudioLightMode>>;
 

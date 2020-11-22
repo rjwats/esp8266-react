@@ -4,11 +4,13 @@ PrideMode::PrideMode(AsyncWebServer* server,
                      FS* fs,
                      SecurityManager* securityManager,
                      LedSettingsService* ledSettingsService,
+                     PaletteSettingsService* paletteSettingsService,
                      FrequencySampler* frequencySampler) :
     AudioLightModeImpl(server,
                        fs,
                        securityManager,
                        ledSettingsService,
+                       paletteSettingsService,
                        frequencySampler,
                        PrideModeSettings::read,
                        PrideModeSettings::update,
@@ -59,7 +61,7 @@ void PrideMode::tick() {
 
       nblend(leds[pixelnumber], newcolor, 64);
     }
-    
+
     // Show the leds
     ledController->showLeds();
   });

@@ -51,6 +51,7 @@ class ColorMode : public AudioLightModeImpl<ColorModeSettings> {
             FS* fs,
             SecurityManager* securityManager,
             LedSettingsService* ledSettingsService,
+            PaletteSettingsService* paletteSettingsService,
             FrequencySampler* frequencySampler);
   void tick();
   void enable();

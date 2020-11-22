@@ -58,6 +58,7 @@ class ConfettiMode : public AudioLightModeImpl<ConfettiModeSettings> {
                FS* fs,
                SecurityManager* securityManager,
                LedSettingsService* ledSettingsService,
+               PaletteSettingsService* paletteSettingsService,
                FrequencySampler* frequencySampler);
   void tick();
   void enable();

@@ -1,10 +1,13 @@
-#ifndef PaletteManager_h
-#define PaletteManager_h
+#ifndef PaletteSettingsService_h
+#define PaletteSettingsService_h
 
 #include <AudioLightMode.h>
 #include <FrequencySampler.h>
 #include <JsonUtil.h>
 #include <map>
+
+#define PALETTE_SETTINGS_FILE "/config/paletteSettings.json"
+#define PALETTE_SETTINGS_SERVICE_PATH "/rest/paletteSettings"
 
 const TProgmemRGBPalette16 PacificaColors1_p FL_PROGMEM = {0x000507,
                                                            0x000409,
@@ -60,28 +63,24 @@ const TProgmemRGBPalette16 PacificaColors3_p FL_PROGMEM = {0x000208,
 class Palette {
  public:
   String id;
-  CRGBPalette16 palette;
+  CRGBPalette16 colors;
 
   // the default palette - rainbow
-  Palette() : id("rainbow"), palette(RainbowColors_p) {
+  Palette() : id("rainbow"), colors(RainbowColors_p) {
   }
 
   // custom palettes
-  Palette(String id, CRGBPalette16 palette) : id(id), palette(palette) {
+  Palette(String id, CRGBPalette16 colors) : id(id), colors(colors) {
   }
 };
 
-/**
- * May be extended to support a palette editor in the UI.
- */
-class PaletteManager {
- private:
+class PaletteSettings {
+ public:
   std::list<Palette> palettes;
 
- public:
-  PaletteManager() {
+  PaletteSettings() {
     palettes.push_back(Palette());
-    palettes.push_back(Palette("partycolors", PartyColors_p));
+    palettes.push_back(Palette("party", PartyColors_p));
     palettes.push_back(Palette("heat", HeatColors_p));
     palettes.push_back(Palette("rainbowstripe", RainbowStripeColors_p));
     palettes.push_back(Palette("cloud", CloudColors_p));
@@ -93,8 +92,59 @@ class PaletteManager {
     palettes.push_back(Palette("pacifica3", PacificaColors3_p));
   }
 
+  static void read(PaletteSettings& settings, JsonObject& root) {
+    JsonArray palettes = root.createNestedArray("palettes");
+    for (Palette palette : settings.palettes) {
+      JsonObject paletteRoot = palettes.createNestedObject();
+      paletteRoot["id"] = palette.id;
+      writePaletteToJson(paletteRoot, &palette.colors);
+    }
+  }
+
+  static StateUpdateResult update(JsonObject& root, PaletteSettings& settings) {
+    settings.palettes.clear();
+    if (root["palettes"].is<JsonArray>()) {
+      for (JsonObject paletteRoot : root["palettes"].as<JsonArray>()) {
+        String id = paletteRoot["id"];
+        if (!id.isEmpty()) {
+          Palette palette = Palette();
+          palette.id = id;
+          updatePaletteFromJson(paletteRoot, &palette.colors, CRGB::Black);
+          settings.palettes.push_back(palette);
+        }
+      }
+    }
+    return StateUpdateResult::CHANGED;
+  }
+};
+
+/**
+ * May be extended to support a palette editor in the UI.
+ */
+class PaletteSettingsService : public StatefulService<PaletteSettings> {
+ private:
+  HttpEndpoint<PaletteSettings> _httpEndpoint;
+  FSPersistence<PaletteSettings> _fsPersistence;
+
+ public:
+  PaletteSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) :
+      _httpEndpoint(PaletteSettings::read,
+                    PaletteSettings::update,
+                    this,
+                    server,
+                    PALETTE_SETTINGS_SERVICE_PATH,
+                    securityManager,
+                    AuthenticationPredicates::IS_AUTHENTICATED,
+                    10240),
+      _fsPersistence(PaletteSettings::read, PaletteSettings::update, this, fs, PALETTE_SETTINGS_FILE, 10240) {
+  }
+
+  void refreshPalette(Palette& palette) {
+    palette = getPalette(palette.id);
+  }
+
   Palette getPalette(const String& paletteId) {
-    for (const Palette& palette : palettes) {
+    for (Palette palette : _state.palettes) {
       if (palette.id == paletteId) {
         return palette;
       }

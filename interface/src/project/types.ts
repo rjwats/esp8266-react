@@ -1,3 +1,5 @@
+import { ENDPOINT_ROOT, WEB_SOCKET_ROOT } from "../api";
+
 export interface FrequencyData {
   bands: number[];
 }
@@ -52,6 +54,7 @@ export interface ConfettiMode {
 
 export interface FireMode {
   mode_id: AudioLightModeType.FIRE;
+  palette: string;
   cooling: number;
   sparking: number;
   reverse: boolean;
@@ -65,4 +68,41 @@ export interface PrideMode {
   mode_id: AudioLightModeType.PRIDE;
 }
 
+export interface PaletteSettings {
+  palettes: Palette[];
+}
+
+export interface Palette {
+  id: string;
+  colors: string[];
+};
+
 export type AudioLightMode = OffMode | ColorMode | RainbowMode | LightningMode | ConfettiMode | FireMode | PacificaMode | PrideMode;
+
+export const PALETTE_SETTINGS_ENDPOINT = ENDPOINT_ROOT + "paletteSettings";
+export const AUDIO_LIGHT_SAVE_SETTINGS_ENDPOINT = ENDPOINT_ROOT + "saveModeSettings";
+export const AUDIO_LIGHT_LOAD_SETTINGS_ENDPOINT = ENDPOINT_ROOT + "loadModeSettings";
+export const AUDIO_LIGHT_SETTINGS_ENDPOINT = WEB_SOCKET_ROOT + "audioLightSettings";
+
+export const generateGradient = (palette: Palette) => {
+  return `linear-gradient(0.25turn, ${palette.colors.join(', ')})`;
+};
+
+export const DEFAULT_PALETTE = [
+  "#ff0000",
+  "#d52a00",
+  "#ab5500",
+  "#ab7f00",
+  "#abab00",
+  "#56d500",
+  "#00ff00",
+  "#00d52a",
+  "#00ab55",
+  "#0056aa",
+  "#0000ff",
+  "#2a00d5",
+  "#5500ab",
+  "#7f0081",
+  "#ab0055",
+  "#d5002b"
+];

@@ -4,6 +4,7 @@ AudioLightSettingsService::AudioLightSettingsService(AsyncWebServer* server,
                                                      FS* fs,
                                                      SecurityManager* securityManager,
                                                      LedSettingsService* ledSettingsService,
+                                                     PaletteSettingsService* paletteSettingsService,
                                                      FrequencySampler* frequencySampler) :
     _httpEndpoint(std::bind(&AudioLightSettingsService::read, this, std::placeholders::_1, std::placeholders::_2),
                   std::bind(&AudioLightSettingsService::update, this, std::placeholders::_1, std::placeholders::_2),
@@ -33,14 +34,18 @@ AudioLightSettingsService::AudioLightSettingsService(AsyncWebServer* server,
   addUpdateHandler([&](const String& originId) { enableMode(); }, false);
   frequencySampler->addUpdateHandler([&](const String& originId) { handleSample(); }, false);
   ledSettingsService->addUpdateHandler([&](const String& originId) { enableMode(); }, false);
-  _modes[0] = new ColorMode(server, fs, securityManager, ledSettingsService, frequencySampler);
-  _modes[1] = new RainbowMode(server, fs, securityManager, ledSettingsService, frequencySampler);
-  _modes[2] = new LightningMode(server, fs, securityManager, ledSettingsService, frequencySampler);
-  _modes[3] = new ConfettiMode(server, fs, securityManager, ledSettingsService, frequencySampler);
-  _modes[4] = new FireMode(server, fs, securityManager, ledSettingsService, frequencySampler);
-  _modes[5] = new OffMode(server, fs, securityManager, ledSettingsService, frequencySampler);
-  _modes[6] = new PacificaMode(server, fs, securityManager, ledSettingsService, frequencySampler);
-  _modes[7] = new PrideMode(server, fs, securityManager, ledSettingsService, frequencySampler);
+  _modes[0] = new ColorMode(server, fs, securityManager, ledSettingsService, paletteSettingsService, frequencySampler);
+  _modes[1] =
+      new RainbowMode(server, fs, securityManager, ledSettingsService, paletteSettingsService, frequencySampler);
+  _modes[2] =
+      new LightningMode(server, fs, securityManager, ledSettingsService, paletteSettingsService, frequencySampler);
+  _modes[3] =
+      new ConfettiMode(server, fs, securityManager, ledSettingsService, paletteSettingsService, frequencySampler);
+  _modes[4] = new FireMode(server, fs, securityManager, ledSettingsService, paletteSettingsService, frequencySampler);
+  _modes[5] = new OffMode(server, fs, securityManager, ledSettingsService, paletteSettingsService, frequencySampler);
+  _modes[6] =
+      new PacificaMode(server, fs, securityManager, ledSettingsService, paletteSettingsService, frequencySampler);
+  _modes[7] = new PrideMode(server, fs, securityManager, ledSettingsService, paletteSettingsService, frequencySampler);
 }
 
 void AudioLightSettingsService::begin() {

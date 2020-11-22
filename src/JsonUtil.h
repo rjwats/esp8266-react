@@ -10,6 +10,9 @@ void writeBooleanArrayToJson(JsonObject& root, bool booleanArray[], uint16_t max
 void updateColorFromJson(JsonObject& root, CRGB* color, CRGB def, String key = "color");
 void writeColorToJson(JsonObject& root, CRGB* color, String key = "color");
 
+void updatePaletteFromJson(JsonObject& root, CRGBPalette16* palette, CRGB def, String key = "colors");
+void writePaletteToJson(JsonObject& root, const CRGBPalette16* palette, String key = "colors");
+
 void updateByteFromJson(JsonObject& root, uint8_t* value, uint8_t def, String key);
 void writeByteToJson(JsonObject& root, uint8_t* value, String key);
 

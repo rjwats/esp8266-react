@@ -24,6 +24,7 @@ class OffMode : public AudioLightModeImpl<OffModeSettings> {
           FS* fs,
           SecurityManager* securityManager,
           LedSettingsService* ledSettingsService,
+          PaletteSettingsService* paletteSettingsService,
           FrequencySampler* frequencySampler);
   void tick();
   void enable();

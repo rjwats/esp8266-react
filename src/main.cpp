@@ -10,12 +10,14 @@ AsyncWebServer server(80);
 ESP8266React esp8266React(&server);
 
 LedSettingsService ledSettingsService(&server, esp8266React.getFS(), esp8266React.getSecurityManager());
+PaletteSettingsService paletteSettingsService(&server, esp8266React.getFS(), esp8266React.getSecurityManager());
 FrequencySampler frequencySampler(&ledSettingsService);
 FrequencyTransmitter frequencyTransmitter(&server, esp8266React.getSecurityManager(), &frequencySampler);
 AudioLightSettingsService audioLightSettingsService(&server,
                                                     esp8266React.getFS(),
                                                     esp8266React.getSecurityManager(),
                                                     &ledSettingsService,
+                                                    &paletteSettingsService,
                                                     &frequencySampler);
 
 void setup() {

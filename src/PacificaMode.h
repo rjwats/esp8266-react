@@ -85,6 +85,7 @@ class PacificaMode : public AudioLightModeImpl<PacificaModeSettings> {
                FS* fs,
                SecurityManager* securityManager,
                LedSettingsService* ledSettingsService,
+               PaletteSettingsService* paletteSettingsService,
                FrequencySampler* frequencySampler);
   void tick();
   void enable();

@@ -19,15 +19,15 @@ class PrideModeSettings {
 
 class PrideMode : public AudioLightModeImpl<PrideModeSettings> {
  private:
-
   boolean _refresh = true;
 
  public:
   PrideMode(AsyncWebServer* server,
-               FS* fs,
-               SecurityManager* securityManager,
-               LedSettingsService* ledSettingsService,
-               FrequencySampler* frequencySampler);
+            FS* fs,
+            SecurityManager* securityManager,
+            LedSettingsService* ledSettingsService,
+            PaletteSettingsService* paletteSettingsService,
+            FrequencySampler* frequencySampler);
   void tick();
   void enable();
 };

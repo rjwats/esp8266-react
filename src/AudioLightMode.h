@@ -2,6 +2,7 @@
 #define AudioLightMode_h
 
 #include <LedSettingsService.h>
+#include <PaletteSettingsService.h>
 #include <FrequencySampler.h>
 
 #define AUDIO_LIGHT_MODE_FILE_PATH_PREFIX "/modes/"
@@ -16,6 +17,7 @@ class AudioLightMode {
   virtual void writeToFS() = 0;
   virtual void tick() = 0;
   virtual void enable() = 0;
+  virtual void refreshPalettes(const String& originId){};
   virtual void sampleComplete(){};
   virtual void readAsJson(JsonObject& root) = 0;
   virtual StateUpdateResult updateFromJson(JsonObject& root, const String& originId) = 0;
@@ -30,6 +32,7 @@ class AudioLightModeImpl : public StatefulService<T>, public AudioLightMode {
   JsonStateReader<T> _stateReader;
   JsonStateUpdater<T> _stateUpdater;
   LedSettingsService* _ledSettingsService;
+  PaletteSettingsService* _paletteSettingsService;
   FrequencySampler* _frequencySampler;
   HttpEndpoint<T> _httpEndpoint;
   FSPersistence<T> _fsPersistence;
@@ -39,6 +42,7 @@ class AudioLightModeImpl : public StatefulService<T>, public AudioLightMode {
                      FS* fs,
                      SecurityManager* securityManager,
                      LedSettingsService* ledSettingsService,
+                     PaletteSettingsService* paletteSettingsService,
                      FrequencySampler* frequencySampler,
                      JsonStateReader<T> stateReader,
                      JsonStateUpdater<T> stateUpdater,
@@ -49,6 +53,7 @@ class AudioLightModeImpl : public StatefulService<T>, public AudioLightMode {
       _stateReader(stateReader),
       _stateUpdater(stateUpdater),
       _ledSettingsService(ledSettingsService),
+      _paletteSettingsService(paletteSettingsService),
       _frequencySampler(frequencySampler),
       _httpEndpoint(stateReader, stateUpdater, this, server, _filePath, securityManager),
       _fsPersistence(stateReader, stateUpdater, this, fs, _servicePath.c_str()) {

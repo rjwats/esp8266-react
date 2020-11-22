@@ -4,11 +4,13 @@ FireMode::FireMode(AsyncWebServer* server,
                    FS* fs,
                    SecurityManager* securityManager,
                    LedSettingsService* ledSettingsService,
+                   PaletteSettingsService* paletteSettingsService,
                    FrequencySampler* frequencySampler) :
     AudioLightModeImpl(server,
                        fs,
                        securityManager,
                        ledSettingsService,
+                       paletteSettingsService,
                        frequencySampler,
                        std::bind(&FireMode::read, this, std::placeholders::_1, std::placeholders::_2),
                        std::bind(&FireMode::update, this, std::placeholders::_1, std::placeholders::_2),
@@ -16,6 +18,16 @@ FireMode::FireMode(AsyncWebServer* server,
 
 void FireMode::enable() {
   _refresh = true;
+}
+
+void FireMode::refreshPalettes(const String& originId) {
+  _refresh = true;
+  StatefulService::update(
+      [&](FireModeSettings& settings) {
+        _paletteSettingsService->refreshPalette(settings.palette);
+        return StateUpdateResult::CHANGED; 
+      },
+      originId);
 }
 
 void FireMode::tick() {
@@ -51,7 +63,7 @@ void FireMode::tick() {
         // Scale the heat value from 0-255 down to 0-240
         // for best results with color palettes.
         byte colorindex = scale8(_heatMap[j], 240);
-        CRGB color = ColorFromPalette(_state.palette.palette, colorindex);
+        CRGB color = ColorFromPalette(_state.palette.colors, colorindex);
         int pixelnumber;
         if (_state.reverse) {
           pixelnumber = (numLeds - 1) - j;
