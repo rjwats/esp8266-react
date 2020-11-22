@@ -25,7 +25,7 @@ class PaletteSettingsForm extends React.Component<PaletteSettingsFormProps, Pale
   };
 
   uniqueId = (id: string) => {
-    return !this.props.data.palettes.find(p => p.id = id);
+    return !this.props.data.palettes.find(p => p.id === id);
   }
 
   removePalette = (palette: Palette) => {
@@ -80,7 +80,7 @@ class PaletteSettingsForm extends React.Component<PaletteSettingsFormProps, Pale
       <TableRow key={palette.id}>
         <TableCell component="th" scope="row">
           {palette.id}
-         </TableCell>
+        </TableCell>
         <TableCell component="th" scope="row" style={{ background: generateGradient(palette) }} />
         <TableCell align="center">
           <IconButton size="small" aria-label="Delete" onClick={() => this.removePalette(palette)}>
@@ -104,8 +104,8 @@ class PaletteSettingsForm extends React.Component<PaletteSettingsFormProps, Pale
           <Table size="small" padding={isWidthDown('xs', width!) ? "none" : "default"}>
             <TableHead>
               <TableRow>
+                <TableCell>Id</TableCell>
                 <TableCell>Palette</TableCell>
-                <TableCell>Gradient</TableCell>
                 <TableCell />
               </TableRow>
             </TableHead>

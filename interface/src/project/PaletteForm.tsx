@@ -1,5 +1,5 @@
 import React, { RefObject } from 'react';
-import { ValidatorForm } from 'react-material-ui-form-validator';
+import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 
 import { Dialog, DialogTitle, DialogContent, DialogActions, Box, Slider } from '@material-ui/core';
 
@@ -40,6 +40,11 @@ class PaletteForm extends React.Component<PaletteFormProps, PaletteFormState> {
     this.setState({ color: value as number });
   }
 
+  updateId = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { updatePalette, palette } = this.props;
+    updatePalette({ ...palette, id: event.target.value });
+  }
+
   changeColor = (result: ColorResult) => {
     const { color } = this.state;
     const { updatePalette, palette } = this.props;
@@ -57,6 +62,18 @@ class PaletteForm extends React.Component<PaletteFormProps, PaletteFormState> {
         <Dialog onClose={onCancelEditing} aria-labelledby="palette-form-dialog-title" open maxWidth="sm" fullWidth>
           <DialogTitle id="palette-form-dialog-title">{creating ? 'Add' : 'Modify'} Palette</DialogTitle>
           <DialogContent dividers>
+            <TextValidator
+              validators={creating ? ['required', 'uniqueId', 'matchRegexp:^[a-zA-Z0-9 ]{1,24}$'] : []}
+              errorMessages={creating ? ['Id is required', "Id already in use", "Must be 1-24 characters: alpha numeric"] : []}
+              name="id"
+              label="Id"
+              fullWidth
+              variant="outlined"
+              value={palette.id}
+              disabled={!creating}
+              onChange={this.updateId}
+              margin="normal"
+            />
             <Box height={30} width="100%" style={{ background: generateGradient(palette) }} />
             <Slider
               min={0}
