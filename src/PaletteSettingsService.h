@@ -78,20 +78,6 @@ class PaletteSettings {
  public:
   std::list<Palette> palettes;
 
-  PaletteSettings() {
-    palettes.push_back(Palette());
-    palettes.push_back(Palette("Party", PartyColors_p));
-    palettes.push_back(Palette("Heat", HeatColors_p));
-    palettes.push_back(Palette("Rainbow Stripe", RainbowStripeColors_p));
-    palettes.push_back(Palette("Cloud", CloudColors_p));
-    palettes.push_back(Palette("Lava", LavaColors_p));
-    palettes.push_back(Palette("Ocean", OceanColors_p));
-    palettes.push_back(Palette("Forest", ForestColors_p));
-    palettes.push_back(Palette("Pacifica 1", PacificaColors1_p));
-    palettes.push_back(Palette("Pacifica 2", PacificaColors2_p));
-    palettes.push_back(Palette("Pacifica 3", PacificaColors3_p));
-  }
-
   static void read(PaletteSettings& settings, JsonObject& root) {
     JsonArray palettes = root.createNestedArray("palettes");
     for (Palette palette : settings.palettes) {
@@ -113,6 +99,18 @@ class PaletteSettings {
           settings.palettes.push_back(palette);
         }
       }
+    } else {
+      settings.palettes.push_back(Palette());
+      settings.palettes.push_back(Palette("Party", PartyColors_p));
+      settings.palettes.push_back(Palette("Heat", HeatColors_p));
+      settings.palettes.push_back(Palette("Rainbow Stripe", RainbowStripeColors_p));
+      settings.palettes.push_back(Palette("Cloud", CloudColors_p));
+      settings.palettes.push_back(Palette("Lava", LavaColors_p));
+      settings.palettes.push_back(Palette("Ocean", OceanColors_p));
+      settings.palettes.push_back(Palette("Forest", ForestColors_p));
+      settings.palettes.push_back(Palette("Pacifica 1", PacificaColors1_p));
+      settings.palettes.push_back(Palette("Pacifica 2", PacificaColors2_p));
+      settings.palettes.push_back(Palette("Pacifica 3", PacificaColors3_p));
     }
     return StateUpdateResult::CHANGED;
   }
