@@ -34,6 +34,7 @@ AudioLightSettingsService::AudioLightSettingsService(AsyncWebServer* server,
   addUpdateHandler([&](const String& originId) { enableMode(); }, false);
   frequencySampler->addUpdateHandler([&](const String& originId) { handleSample(); }, false);
   ledSettingsService->addUpdateHandler([&](const String& originId) { enableMode(); }, false);
+  paletteSettingsService->addUpdateHandler([&](const String& originId) { enableMode(); }, false);
   _modes[0] = new ColorMode(server, fs, securityManager, ledSettingsService, paletteSettingsService, frequencySampler);
   _modes[1] =
       new RainbowMode(server, fs, securityManager, ledSettingsService, paletteSettingsService, frequencySampler);

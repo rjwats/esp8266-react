@@ -48,13 +48,13 @@ class FireMode : public AudioLightModeImpl<FireModeSettings> {
     updateByteFromJson(root, &settings.sparking, FACTORY_FIRE_MODE_SPARKING, "sparking");
     updateByteFromJson(root, &settings.cooling, FACTORY_FIRE_MODE_COOLING, "cooling");
     updateBoolFromJson(root, &settings.reverse, FACTORY_FIRE_MODE_REVERSE, "reverse");
-
-    // select the palette
-    settings.palette = _paletteSettingsService->getPalette(root["palette"] | FACTORY_FIRE_MODE_PALETTE);
-    // we make one change to the selected palette
-    // we assert that the first color is black to create the fire effect
-    settings.palette.colors[0] = 0x000000;
+    selectPalette(root["palette"] | FACTORY_FIRE_MODE_PALETTE, settings);
     return StateUpdateResult::CHANGED;
+  }
+
+  void selectPalette(const String& paletteId, FireModeSettings& settings) {
+    settings.palette = _paletteSettingsService->getPalette(paletteId);
+    settings.palette.colors[0] = 0x000000;
   }
 
  public:

@@ -18,16 +18,10 @@ FireMode::FireMode(AsyncWebServer* server,
 
 void FireMode::enable() {
   _refresh = true;
-}
-
-void FireMode::refreshPalettes(const String& originId) {
-  _refresh = true;
-  StatefulService::update(
-      [&](FireModeSettings& settings) {
-        _paletteSettingsService->refreshPalette(settings.palette);
-        return StateUpdateResult::CHANGED; 
-      },
-      originId);
+  updateWithoutPropagation([&](FireModeSettings& settings) {
+    selectPalette(settings.palette.id, settings);
+    return StateUpdateResult::CHANGED;
+  });
 }
 
 void FireMode::tick() {

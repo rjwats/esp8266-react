@@ -17,7 +17,6 @@ class AudioLightMode {
   virtual void writeToFS() = 0;
   virtual void tick() = 0;
   virtual void enable() = 0;
-  virtual void refreshPalettes(const String& originId){};
   virtual void sampleComplete(){};
   virtual void readAsJson(JsonObject& root) = 0;
   virtual StateUpdateResult updateFromJson(JsonObject& root, const String& originId) = 0;
