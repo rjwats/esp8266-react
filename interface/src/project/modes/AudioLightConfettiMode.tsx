@@ -6,16 +6,32 @@ import { Box } from '@material-ui/core';
 
 import { ConfettiMode } from '../types';
 import { audioLightMode, AudioLightModeProps } from './AudioLightMode';
+import PalettePicker from '../components/PalettePicker';
 
 type AudioLightConfettiModeProps = AudioLightModeProps<ConfettiMode>;
 
 class AudioLightConfettiMode extends React.Component<AudioLightConfettiModeProps> {
 
   render() {
-    const { data, handleSliderChange } = this.props;
+    const { data, handleSliderChange, handleValueChange } = this.props;
 
     return (
       <div>
+        <PalettePicker
+          name="palette1"
+          label="Palette 1&hellip;"
+          value={data.palette1}
+          onChange={handleValueChange('palette1')} />
+        <PalettePicker
+          name="palette2"
+          label="Palette 2&hellip;"
+          value={data.palette2}
+          onChange={handleValueChange('palette2')} />
+        <PalettePicker
+          name="palette3"
+          label="Palette 3&hellip;"
+          value={data.palette3}
+          onChange={handleValueChange('palette3')} />
         <Box my={2}>
           <FormLabel>Palette Changes (per cycle)</FormLabel>
           <Slider

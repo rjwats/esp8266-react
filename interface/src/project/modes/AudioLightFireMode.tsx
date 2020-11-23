@@ -5,7 +5,7 @@ import Slider from '@material-ui/core/Slider';
 
 import { FireMode } from '../types';
 import { audioLightMode, AudioLightModeProps } from './AudioLightMode';
-import { Box, MenuItem, Switch, TextField } from '@material-ui/core';
+import { Box, Switch } from '@material-ui/core';
 import PalettePicker from '../components/PalettePicker';
 
 type AudioLightFireModeProps = AudioLightModeProps<FireMode>;

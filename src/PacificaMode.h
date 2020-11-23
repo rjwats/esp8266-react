@@ -5,9 +5,17 @@
 #include <FrequencySampler.h>
 #include <JsonUtil.h>
 
-#define PACIFICA_MODE_PALETTE1 "Pacifica 1"
-#define PACIFICA_MODE_PALETTE2 "Pacifica 2"
-#define PACIFICA_MODE_PALETTE3 "Pacifica 3"
+#ifndef FACTORY_PACIFICA_MODE_PALETTE1
+#define FACTORY_PACIFICA_MODE_PALETTE1 "Pacifica 1"
+#endif
+
+#ifndef FACTORY_PACIFICA_MODE_PALETTE2
+#define FACTORY_PACIFICA_MODE_PALETTE2 "Pacifica 2"
+#endif
+
+#ifndef FACTORY_PACIFICA_MODE_PALETTE3
+#define FACTORY_PACIFICA_MODE_PALETTE3 "Pacifica 3"
+#endif
 
 #define PACIFICA_MODE_ID "pacifica"
 
@@ -29,9 +37,9 @@ class PacificaMode : public AudioLightModeImpl<PacificaModeSettings> {
   }
 
   StateUpdateResult update(JsonObject& root, PacificaModeSettings& settings) {
-    settings.palette1 = _paletteSettingsService->getPalette(root["palette1"] | PACIFICA_MODE_PALETTE1);
-    settings.palette2 = _paletteSettingsService->getPalette(root["palette2"] | PACIFICA_MODE_PALETTE2);
-    settings.palette3 = _paletteSettingsService->getPalette(root["palette3"] | PACIFICA_MODE_PALETTE3);
+    settings.palette1 = _paletteSettingsService->getPalette(root["palette1"] | FACTORY_PACIFICA_MODE_PALETTE1);
+    settings.palette2 = _paletteSettingsService->getPalette(root["palette2"] | FACTORY_PACIFICA_MODE_PALETTE2);
+    settings.palette3 = _paletteSettingsService->getPalette(root["palette3"] | FACTORY_PACIFICA_MODE_PALETTE3);
     return StateUpdateResult::CHANGED;
   }
 

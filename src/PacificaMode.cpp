@@ -20,6 +20,12 @@ PacificaMode::PacificaMode(AsyncWebServer* server,
 
 void PacificaMode::enable() {
   _refresh = true;
+  updateWithoutPropagation([&](PacificaModeSettings& settings) {
+    _paletteSettingsService->refreshPalette(settings.palette1);
+    _paletteSettingsService->refreshPalette(settings.palette2);
+    _paletteSettingsService->refreshPalette(settings.palette3);
+    return StateUpdateResult::CHANGED;
+  });
 }
 
 void PacificaMode::tick() {
@@ -52,8 +58,13 @@ void PacificaMode::tick() {
                        beatsin16(3, 11 * 256, 14 * 256),
                        beatsin8(10, 70, 130),
                        0 - beat16(301));
-    pacifica_one_layer(
-        leds, numLeds, _state.palette2.colors, sCIStart2, beatsin16(4, 6 * 256, 9 * 256), beatsin8(17, 40, 80), beat16(401));
+    pacifica_one_layer(leds,
+                       numLeds,
+                       _state.palette2.colors,
+                       sCIStart2,
+                       beatsin16(4, 6 * 256, 9 * 256),
+                       beatsin8(17, 40, 80),
+                       beat16(401));
     pacifica_one_layer(leds, numLeds, _state.palette3.colors, sCIStart3, 6 * 256, beatsin8(9, 10, 38), 0 - beat16(503));
     pacifica_one_layer(leds, numLeds, _state.palette3.colors, sCIStart4, 5 * 256, beatsin8(8, 10, 28), beat16(601));
 

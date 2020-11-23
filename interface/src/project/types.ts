@@ -47,6 +47,9 @@ export interface LightningMode {
 
 export interface ConfettiMode {
   mode_id: AudioLightModeType.CONFETTI;
+  palette1: string;
+  palette2: string;
+  palette3: string;
   max_changes: number;
   brightness: number;
   delay: number;

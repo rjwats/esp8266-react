@@ -12,11 +12,21 @@ ConfettiMode::ConfettiMode(AsyncWebServer* server,
                        ledSettingsService,
                        paletteSettingsService,
                        frequencySampler,
-                       ConfettiModeSettings::read,
-                       ConfettiModeSettings::update,
+                       std::bind(&ConfettiMode::read, this, std::placeholders::_1, std::placeholders::_2),
+                       std::bind(&ConfettiMode::update, this, std::placeholders::_1, std::placeholders::_2),
                        CONFETTI_MODE_ID) {
   addUpdateHandler([&](const String& originId) { enable(); }, false);
 };
+
+void ConfettiMode::enable() {
+  _refresh = true;
+  updateWithoutPropagation([&](ConfettiModeSettings& settings) {
+    _paletteSettingsService->refreshPalette(settings.palette1);
+    _paletteSettingsService->refreshPalette(settings.palette2);
+    _paletteSettingsService->refreshPalette(settings.palette3);
+    return StateUpdateResult::CHANGED;
+  });
+}
 
 void ConfettiMode::tick() {
   if (_refresh) {
@@ -37,21 +47,21 @@ void ConfettiMode::tick() {
     lastSecond = secondHand;
     switch (secondHand) {
       case 0:
-        _targetPalette = OceanColors_p;
+        _targetPalette = _state.palette1.colors;
         _inc = 1;
         _hue = 192;
         _fade = 2;
         _hueDelta = 255;
         break;
       case 5:
-        _targetPalette = LavaColors_p;
+        _targetPalette = _state.palette2.colors;
         _inc = 2;
         _hue = 128;
         _fade = 8;
         _hueDelta = 64;
         break;
       case 10:
-        _targetPalette = ForestColors_p;
+        _targetPalette = _state.palette3.colors;
         _inc = 1;
         _hue = random16(255);
         _fade = 1;
@@ -73,10 +83,6 @@ void ConfettiMode::tick() {
       confettiTimer.setPeriod(_state.delay);
     });
   }
-}
-
-void ConfettiMode::enable() {
-  _refresh = true;
 }
 
 void ConfettiMode::sampleComplete() {

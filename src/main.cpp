@@ -36,6 +36,9 @@ void setup() {
   // configure the LED strip
   ledSettingsService.begin();
 
+  // load the palettes
+  paletteSettingsService.begin();
+
   // load all of the defaults
   audioLightSettingsService.begin();
 }

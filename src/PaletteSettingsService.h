@@ -139,6 +139,10 @@ class PaletteSettingsService : public StatefulService<PaletteSettings> {
       _fsPersistence(PaletteSettings::read, PaletteSettings::update, this, fs, PALETTE_SETTINGS_FILE, 10240) {
   }
 
+  void begin() {
+    _fsPersistence.readFromFS();
+  }
+
   void refreshPalette(Palette& palette) {
     palette = getPalette(palette.id);
   }
