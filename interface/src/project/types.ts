@@ -62,6 +62,9 @@ export interface FireMode {
 
 export interface PacificaMode {
   mode_id: AudioLightModeType.PACIFICA;
+  palette1: string;
+  palette2: string;
+  palette3: string;
 }
 
 export interface PrideMode {

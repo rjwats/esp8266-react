@@ -5,70 +5,35 @@
 #include <FrequencySampler.h>
 #include <JsonUtil.h>
 
+#define PACIFICA_MODE_PALETTE1 "Pacifica 1"
+#define PACIFICA_MODE_PALETTE2 "Pacifica 2"
+#define PACIFICA_MODE_PALETTE3 "Pacifica 3"
+
 #define PACIFICA_MODE_ID "pacifica"
 
 class PacificaModeSettings {
  public:
-  static void read(PacificaModeSettings& settings, JsonObject& root) {
-  }
-
-  static StateUpdateResult update(JsonObject& root, PacificaModeSettings& settings) {
-    return StateUpdateResult::CHANGED;
-  }
+  Palette palette1;
+  Palette palette2;
+  Palette palette3;
 };
 
 class PacificaMode : public AudioLightModeImpl<PacificaModeSettings> {
  private:
-  CRGBPalette16 pacifica_palette_1 = {0x000507,
-                                      0x000409,
-                                      0x00030B,
-                                      0x00030D,
-                                      0x000210,
-                                      0x000212,
-                                      0x000114,
-                                      0x000117,
-                                      0x000019,
-                                      0x00001C,
-                                      0x000026,
-                                      0x000031,
-                                      0x00003B,
-                                      0x000046,
-                                      0x14554B,
-                                      0x28AA50};
-  CRGBPalette16 pacifica_palette_2 = {0x000507,
-                                      0x000409,
-                                      0x00030B,
-                                      0x00030D,
-                                      0x000210,
-                                      0x000212,
-                                      0x000114,
-                                      0x000117,
-                                      0x000019,
-                                      0x00001C,
-                                      0x000026,
-                                      0x000031,
-                                      0x00003B,
-                                      0x000046,
-                                      0x0C5F52,
-                                      0x19BE5F};
-  CRGBPalette16 pacifica_palette_3 = {0x000208,
-                                      0x00030E,
-                                      0x000514,
-                                      0x00061A,
-                                      0x000820,
-                                      0x000927,
-                                      0x000B2D,
-                                      0x000C33,
-                                      0x000E39,
-                                      0x001040,
-                                      0x001450,
-                                      0x001860,
-                                      0x001C70,
-                                      0x002080,
-                                      0x1040BF,
-                                      0x2060FF};
-
   boolean _refresh = true;
+
+  void read(PacificaModeSettings& settings, JsonObject& root) {
+    root["palette1"] = settings.palette1.id;
+    root["palette2"] = settings.palette2.id;
+    root["palette3"] = settings.palette3.id;
+  }
+
+  StateUpdateResult update(JsonObject& root, PacificaModeSettings& settings) {
+    settings.palette1 = _paletteSettingsService->getPalette(root["palette1"] | PACIFICA_MODE_PALETTE1);
+    settings.palette2 = _paletteSettingsService->getPalette(root["palette2"] | PACIFICA_MODE_PALETTE2);
+    settings.palette3 = _paletteSettingsService->getPalette(root["palette3"] | PACIFICA_MODE_PALETTE3);
+    return StateUpdateResult::CHANGED;
+  }
 
   void pacifica_one_layer(CRGB* leds,
                           const uint16_t numLeds,

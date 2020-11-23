@@ -12,8 +12,8 @@ PacificaMode::PacificaMode(AsyncWebServer* server,
                        ledSettingsService,
                        paletteSettingsService,
                        frequencySampler,
-                       PacificaModeSettings::read,
-                       PacificaModeSettings::update,
+                       std::bind(&PacificaMode::read, this, std::placeholders::_1, std::placeholders::_2),
+                       std::bind(&PacificaMode::update, this, std::placeholders::_1, std::placeholders::_2),
                        PACIFICA_MODE_ID) {
   addUpdateHandler([&](const String& originId) { enable(); }, false);
 };
@@ -47,20 +47,15 @@ void PacificaMode::tick() {
     // Render each of four layers, with different scales and speeds, that vary over time
     pacifica_one_layer(leds,
                        numLeds,
-                       pacifica_palette_1,
+                       _state.palette1.colors,
                        sCIStart1,
                        beatsin16(3, 11 * 256, 14 * 256),
                        beatsin8(10, 70, 130),
                        0 - beat16(301));
-    pacifica_one_layer(leds,
-                       numLeds,
-                       pacifica_palette_2,
-                       sCIStart2,
-                       beatsin16(4, 6 * 256, 9 * 256),
-                       beatsin8(17, 40, 80),
-                       beat16(401));
-    pacifica_one_layer(leds, numLeds, pacifica_palette_3, sCIStart3, 6 * 256, beatsin8(9, 10, 38), 0 - beat16(503));
-    pacifica_one_layer(leds, numLeds, pacifica_palette_3, sCIStart4, 5 * 256, beatsin8(8, 10, 28), beat16(601));
+    pacifica_one_layer(
+        leds, numLeds, _state.palette2.colors, sCIStart2, beatsin16(4, 6 * 256, 9 * 256), beatsin8(17, 40, 80), beat16(401));
+    pacifica_one_layer(leds, numLeds, _state.palette3.colors, sCIStart3, 6 * 256, beatsin8(9, 10, 38), 0 - beat16(503));
+    pacifica_one_layer(leds, numLeds, _state.palette3.colors, sCIStart4, 5 * 256, beatsin8(8, 10, 28), beat16(601));
 
     // Add brighter 'whitecaps' where the waves lines up more
     pacifica_add_whitecaps(leds, numLeds);

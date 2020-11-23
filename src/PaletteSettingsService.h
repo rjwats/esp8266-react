@@ -66,7 +66,7 @@ class Palette {
   CRGBPalette16 colors;
 
   // the default palette - rainbow
-  Palette() : id("rainbow"), colors(RainbowColors_p) {
+  Palette() : id("Rainbow"), colors(RainbowColors_p) {
   }
 
   // custom palettes
@@ -80,16 +80,16 @@ class PaletteSettings {
 
   PaletteSettings() {
     palettes.push_back(Palette());
-    palettes.push_back(Palette("party", PartyColors_p));
-    palettes.push_back(Palette("heat", HeatColors_p));
-    palettes.push_back(Palette("rainbowstripe", RainbowStripeColors_p));
-    palettes.push_back(Palette("cloud", CloudColors_p));
-    palettes.push_back(Palette("lava", LavaColors_p));
-    palettes.push_back(Palette("ocean", OceanColors_p));
-    palettes.push_back(Palette("forest", ForestColors_p));
-    palettes.push_back(Palette("pacifica1", PacificaColors1_p));
-    palettes.push_back(Palette("pacifica2", PacificaColors2_p));
-    palettes.push_back(Palette("pacifica3", PacificaColors3_p));
+    palettes.push_back(Palette("Party", PartyColors_p));
+    palettes.push_back(Palette("Heat", HeatColors_p));
+    palettes.push_back(Palette("Rainbow Stripe", RainbowStripeColors_p));
+    palettes.push_back(Palette("Cloud", CloudColors_p));
+    palettes.push_back(Palette("Lava", LavaColors_p));
+    palettes.push_back(Palette("Ocean", OceanColors_p));
+    palettes.push_back(Palette("Forest", ForestColors_p));
+    palettes.push_back(Palette("Pacifica 1", PacificaColors1_p));
+    palettes.push_back(Palette("Pacifica 2", PacificaColors2_p));
+    palettes.push_back(Palette("Pacifica 3", PacificaColors3_p));
   }
 
   static void read(PaletteSettings& settings, JsonObject& root) {
