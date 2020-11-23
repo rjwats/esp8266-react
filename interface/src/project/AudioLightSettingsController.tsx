@@ -1,3 +1,4 @@
+import { Container } from '@material-ui/core';
 import React, { Component } from 'react';
 
 import { SectionContent, webSocketController, WebSocketControllerProps, WebSocketFormLoader } from '../components';
@@ -10,12 +11,14 @@ class AudioLightSettingsController extends Component<AudioLightSettingsControlle
 
   render() {
     return (
-      <SectionContent title="Lighting Settings">
-        <WebSocketFormLoader
-          {...this.props}
-          render={formProps => <AudioLightSettingsForm {...formProps} />}
-        />
-      </SectionContent>
+      <Container maxWidth="md" disableGutters>
+        <SectionContent title="Lighting Settings">
+          <WebSocketFormLoader
+            {...this.props}
+            render={formProps => <AudioLightSettingsForm {...formProps} />}
+          />
+        </SectionContent>
+      </Container>
     );
   }
 

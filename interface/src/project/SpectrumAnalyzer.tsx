@@ -1,3 +1,4 @@
+import { Container } from '@material-ui/core';
 import React, { Component } from 'react';
 import { WEB_SOCKET_ROOT } from '../api';
 import { SectionContent, webSocketController, WebSocketControllerProps, WebSocketFormLoader, WebSocketFormProps } from '../components';
@@ -42,14 +43,16 @@ class SpectrumAnalyzerWebSocketController extends Component<SpectrumAnalyzerWebS
 
   render() {
     return (
-      <SectionContent title='Spectrum Analyzer' titleGutter>
-        <WebSocketFormLoader
-          {...this.props}
-          render={props => (
-            <SpectrumAnalyzer {...props} />
-          )}
-        />
-      </SectionContent>
+      <Container maxWidth="md" disableGutters>
+        <SectionContent title='Spectrum Analyzer' titleGutter>
+          <WebSocketFormLoader
+            {...this.props}
+            render={props => (
+              <SpectrumAnalyzer {...props} />
+            )}
+          />
+        </SectionContent>
+      </Container>
     )
   }
 

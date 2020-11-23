@@ -1,6 +1,7 @@
 import React, { FC, useContext } from 'react';
-import { MenuItem, TextField } from '@material-ui/core';
+import { Box, ListItemText, MenuItem, TextField } from '@material-ui/core';
 import { PaletteSettingsContext } from '../PaletteSettingsContext';
+import { generateGradient } from '../types';
 
 interface PalettePickerProps {
   name: string;
@@ -22,7 +23,14 @@ const PalettePicker: FC<PalettePickerProps> = ({ name, label, value, onChange })
       variant="outlined"
       select>
       {context.paletteSettings.palettes.map(palette => (
-        <MenuItem id={palette.id} value={palette.id}>{palette.id}</MenuItem>
+        <MenuItem id={palette.id} value={palette.id} >
+          <Box display="flex" width="100%">
+            <Box flex="1">
+              <ListItemText primary={palette.id} />
+            </Box>
+            <Box flex="1" style={{ background: generateGradient(palette) }} />
+          </Box>
+        </MenuItem>
       ))}
     </TextField>
   );
