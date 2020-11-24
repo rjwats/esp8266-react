@@ -74,7 +74,7 @@ class AudioLightSettingsForm extends React.Component<AudioLightSettingsFormProps
       <Fragment>
         <TextField
           name="mode_id"
-          label="Select Mode&hellip;"
+          label="Select Mode"
           value={data.mode_id}
           onChange={event => saveDataAndClear({ mode_id: event.target.value as AudioLightModeType })}
           fullWidth

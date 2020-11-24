@@ -15,17 +15,17 @@ class AudioLightPacificaMode extends React.Component<AudioLightPacificaModeProps
       <div>
         <PalettePicker
           name="palette1"
-          label="Palette 1&hellip;"
+          label="Palette 1"
           value={data.palette1}
           onChange={handleValueChange('palette1')} />
         <PalettePicker
           name="palette2"
-          label="Palette 2&hellip;"
+          label="Palette 2"
           value={data.palette2}
           onChange={handleValueChange('palette2')} />
         <PalettePicker
           name="palette3"
-          label="Palette 3&hellip;"
+          label="Palette 3"
           value={data.palette3}
           onChange={handleValueChange('palette3')} />
       </div>

@@ -19,7 +19,7 @@ class AudioLightFireMode extends React.Component<AudioLightFireModeProps> {
       <div>
         <PalettePicker
           name="palette"
-          label="Palette&hellip;"
+          label="Palette"
           value={data.palette}
           onChange={handleValueChange('palette')} />
         <Box my={2}>
