@@ -13,6 +13,7 @@ import { AudioLightModeType, AudioLightMode, AUDIO_LIGHT_LOAD_SETTINGS_ENDPOINT,
 import AudioLightConfettiMode from './modes/AudioLightConfettiMode';
 import { redirectingAuthorizedFetch } from '../authentication';
 import AudioLightPacificaMode from './modes/AudioLightPacificaMode';
+import AudioLightPrideMode from './modes/AudioLightPrideMode';
 
 type AudioLightSettingsFormProps = WebSocketFormProps<Partial<AudioLightMode>>;
 
@@ -63,6 +64,8 @@ class AudioLightSettingsForm extends React.Component<AudioLightSettingsFormProps
         return AudioLightFireMode;
       case AudioLightModeType.PACIFICA:
         return AudioLightPacificaMode;
+      case AudioLightModeType.PRIDE:
+        return AudioLightPrideMode;
     }
     return null;
   }

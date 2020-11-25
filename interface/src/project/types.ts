@@ -72,6 +72,12 @@ export interface PacificaMode {
 
 export interface PrideMode {
   mode_id: AudioLightModeType.PRIDE;
+  brightness_bpm: number;
+  brightness_freq_min: number;
+  brightness_freq_max: number;
+  hue_bpm: number;
+  hue_delta_min: number;
+  hue_delta_max: number;
 }
 
 export interface PaletteSettings {

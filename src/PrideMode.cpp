@@ -31,10 +31,10 @@ void PrideMode::tick() {
     uint8_t sat8 = beatsin88(87, 220, 250);
     uint8_t brightdepth = beatsin88(341, 96, 224);
     uint16_t brightnessthetainc16 = beatsin88(203, (25 * 256), (40 * 256));
-    uint8_t msmultiplier = beatsin88(147, 23, 60);
+    uint8_t msmultiplier = beatsin88( _state.brightnessBpm, _state.brightnessFreqMin, _state.brightnessFreqMax);
 
     uint16_t hue16 = sHue16;  // gHue * 256;
-    uint16_t hueinc16 = beatsin88(113, 1, 3000);
+    uint16_t hueinc16 = beatsin88(_state.hueBpm, _state.hueDeltaMin, _state.hueDeltaMax);
 
     uint16_t ms = millis();
     uint16_t deltams = ms - sLastMillis;
