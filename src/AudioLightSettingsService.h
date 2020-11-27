@@ -11,9 +11,10 @@
 #include <OffMode.h>
 #include <PacificaMode.h>
 #include <PrideMode.h>
+#include <RotateMode.h>
 #include <WebSocketTxRx.h>
 
-#define NUM_MODES 8
+#define NUM_MODES 9
 
 #define AUDIO_LIGHT_SERVICE_PATH "/rest/audioLightSettings"
 #define AUDIO_LIGHT_WS_PATH "/ws/audioLightSettings"
@@ -40,6 +41,7 @@ class AudioLightSettingsService : public StatefulService<AudioLightSettings> {
   void begin();
   void loop();
 
+
  private:
   HttpEndpoint<AudioLightSettings> _httpEndpoint;
   WebSocketTxRx<AudioLightSettings> _audioLightModeTxRx;
@@ -47,8 +49,8 @@ class AudioLightSettingsService : public StatefulService<AudioLightSettings> {
 
   void read(AudioLightSettings& settings, JsonObject& root);
   StateUpdateResult update(JsonObject& root, AudioLightSettings& settings);
-
   AudioLightMode* getMode(const String& modeId);
+
   void enableMode();
   void handleSample();
   void saveModeConfig(AsyncWebServerRequest* request);

@@ -47,6 +47,13 @@ AudioLightSettingsService::AudioLightSettingsService(AsyncWebServer* server,
   _modes[6] =
       new PacificaMode(server, fs, securityManager, ledSettingsService, paletteSettingsService, frequencySampler);
   _modes[7] = new PrideMode(server, fs, securityManager, ledSettingsService, paletteSettingsService, frequencySampler);
+  _modes[8] = new RotateMode(server,
+                             fs,
+                             securityManager,
+                             ledSettingsService,
+                             paletteSettingsService,
+                             frequencySampler,
+                             std::bind(&AudioLightSettingsService::getMode, this, std::placeholders::_1));
 }
 
 void AudioLightSettingsService::begin() {

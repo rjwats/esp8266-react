@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 
 import { SectionContent, webSocketController, WebSocketControllerProps, WebSocketFormLoader } from '../components';
 import AudioLightSettingsForm from './AudioLightSettingsForm';
+import PaletteSettingsLoader from './PaletteSettingsLoader';
 import { AudioLightMode, AUDIO_LIGHT_SETTINGS_ENDPOINT } from './types';
 
 type AudioLightSettingsControllerProps = WebSocketControllerProps<Partial<AudioLightMode>>;
@@ -13,10 +14,12 @@ class AudioLightSettingsController extends Component<AudioLightSettingsControlle
     return (
       <Container maxWidth="md" disableGutters>
         <SectionContent title="Lighting Settings">
-          <WebSocketFormLoader
-            {...this.props}
-            render={formProps => <AudioLightSettingsForm {...formProps} />}
-          />
+          <PaletteSettingsLoader>
+            <WebSocketFormLoader
+              {...this.props}
+              render={formProps => <AudioLightSettingsForm {...formProps} />}
+            />
+          </PaletteSettingsLoader>
         </SectionContent>
       </Container>
     );

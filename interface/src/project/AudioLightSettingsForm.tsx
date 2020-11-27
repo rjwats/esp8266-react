@@ -3,17 +3,9 @@ import { TextField, MenuItem } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
 import LoadIcon from '@material-ui/icons/SaveAlt';
 
-import AudioLightLightningMode from './modes/AudioLightLightningMode';
-import AudioLightRainbowMode from './modes/AudioLightRainbowMode';
-import AudioLightFireMode from './modes/AudioLightFireMode';
-import AudioLightColorMode from './modes/AudioLightColorMode';
-
 import { FormActions, FormButton, WebSocketFormProps } from '../components';
-import { AudioLightModeType, AudioLightMode, AUDIO_LIGHT_LOAD_SETTINGS_ENDPOINT, AUDIO_LIGHT_SAVE_SETTINGS_ENDPOINT } from './types';
-import AudioLightConfettiMode from './modes/AudioLightConfettiMode';
+import { AudioLightModeType, AudioLightMode, AUDIO_LIGHT_LOAD_SETTINGS_ENDPOINT, AUDIO_LIGHT_SAVE_SETTINGS_ENDPOINT, AUDIO_LIGHT_MODE_METADATA } from './types';
 import { redirectingAuthorizedFetch } from '../authentication';
-import AudioLightPacificaMode from './modes/AudioLightPacificaMode';
-import AudioLightPrideMode from './modes/AudioLightPrideMode';
 
 type AudioLightSettingsFormProps = WebSocketFormProps<Partial<AudioLightMode>>;
 
@@ -49,25 +41,9 @@ class AudioLightSettingsForm extends React.Component<AudioLightSettingsFormProps
     }
   }
 
-  selectModeComponent(): React.ElementType | null {
-    const mode_id = this.props.data.mode_id;
-    switch (mode_id) {
-      case AudioLightModeType.COLOR:
-        return AudioLightColorMode;
-      case AudioLightModeType.RAINBOW:
-        return AudioLightRainbowMode;
-      case AudioLightModeType.LIGHTNING:
-        return AudioLightLightningMode;
-      case AudioLightModeType.CONFETTI:
-        return AudioLightConfettiMode;
-      case AudioLightModeType.FIRE:
-        return AudioLightFireMode;
-      case AudioLightModeType.PACIFICA:
-        return AudioLightPacificaMode;
-      case AudioLightModeType.PRIDE:
-        return AudioLightPrideMode;
-    }
-    return null;
+  selectModeComponent(): React.ElementType | undefined {
+    const { mode_id } = this.props.data;
+    return mode_id && AUDIO_LIGHT_MODE_METADATA[mode_id].renderer;
   }
 
   render() {
@@ -84,14 +60,13 @@ class AudioLightSettingsForm extends React.Component<AudioLightSettingsFormProps
           margin="normal"
           variant="outlined"
           select>
-          <MenuItem value={AudioLightModeType.OFF}>Off</MenuItem>
-          <MenuItem value={AudioLightModeType.COLOR}>Single Color</MenuItem>
-          <MenuItem value={AudioLightModeType.RAINBOW}>Rainbow</MenuItem>
-          <MenuItem value={AudioLightModeType.LIGHTNING}>Lightning</MenuItem>
-          <MenuItem value={AudioLightModeType.CONFETTI}>Confetti</MenuItem>
-          <MenuItem value={AudioLightModeType.FIRE}>Fire</MenuItem>
-          <MenuItem value={AudioLightModeType.PACIFICA}>Pacifica</MenuItem>
-          <MenuItem value={AudioLightModeType.PRIDE}>Pride</MenuItem>
+          {
+            Object.entries(AudioLightModeType).map(([, mode_id]) => (
+              <MenuItem key={mode_id} value={mode_id}>
+                {AUDIO_LIGHT_MODE_METADATA[mode_id].label}
+              </MenuItem>
+            ))
+          }
         </TextField>
         { ModeComponent && <ModeComponent {...this.props} />}
         <FormActions>

@@ -5,7 +5,7 @@ import Slider from '@material-ui/core/Slider';
 
 import { PrideMode } from '../types';
 import { audioLightMode, AudioLightModeProps } from './AudioLightMode';
-import { Box, Switch } from '@material-ui/core';
+import { Box } from '@material-ui/core';
 
 type AudioLightPrideModeProps = AudioLightModeProps<PrideMode>;
 
