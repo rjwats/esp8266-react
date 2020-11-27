@@ -28,6 +28,7 @@ class OffMode : public AudioLightModeImpl<OffModeSettings> {
           FrequencySampler* frequencySampler);
   void tick();
   void enable();
+  bool canRotate();
 };
 
 #endif

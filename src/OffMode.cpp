@@ -29,3 +29,7 @@ void OffMode::tick() {
     });
   }
 }
+
+bool OffMode::canRotate() {
+  return false;
+};

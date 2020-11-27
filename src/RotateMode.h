@@ -35,6 +35,7 @@ class RotateMode : public AudioLightModeImpl<RotateModeSettings> {
 
   void read(RotateModeSettings& settings, JsonObject& root);
   StateUpdateResult update(JsonObject& root, RotateModeSettings& settings);
+  bool canRotate();
 };
 
 #endif

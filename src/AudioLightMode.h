@@ -18,6 +18,9 @@ class AudioLightMode {
   virtual void tick() = 0;
   virtual void enable() = 0;
   virtual void sampleComplete(){};
+  virtual bool canRotate() {
+    return true;
+  };
   virtual void readAsJson(JsonObject& root) = 0;
   virtual StateUpdateResult updateFromJson(JsonObject& root, const String& originId) = 0;
 };

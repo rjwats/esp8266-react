@@ -31,9 +31,8 @@ StateUpdateResult RotateMode::update(JsonObject& root, RotateModeSettings& setti
   settings.modes.clear();
   if (root["modes"].is<JsonArray>()) {
     for (String mode : root["modes"].as<JsonArray>()) {
-      // do not allow self - that would be bad!
-      // check the mode exists
-      if (mode != ROTATE_MODE_ID && _modeFetcher(mode)) {
+      AudioLightMode* candidateMode = _modeFetcher(mode);
+      if (candidateMode && candidateMode->canRotate()) {
         settings.modes.push_back(mode);
       }
     }
@@ -86,3 +85,7 @@ void RotateMode::selectMode(uint8_t newMode) {
     }
   }
 }
+
+bool RotateMode::canRotate() {
+  return false;
+};

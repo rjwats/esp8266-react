@@ -26,14 +26,12 @@ class LightsProject extends Component<RouteComponentProps> {
           <Tab value={`/${PROJECT_PATH}/lights/palettes`} label="Palettes" />
           <Tab value={`/${PROJECT_PATH}/lights/spectrum`} label="Spectrum Analyzer" />
         </Tabs>
-        <PaletteSettingsLoader>
-          <Switch>
-            <AuthenticatedRoute exact path={`/${PROJECT_PATH}/lights/settings`} component={AudioLightSettingsController} />
-            <AuthenticatedRoute exact path={`/${PROJECT_PATH}/lights/palettes`} component={PaletteSettingsController} />
-            <AuthenticatedRoute exact path={`/${PROJECT_PATH}/lights/spectrum`} component={SpectrumAnalyzer} />
-            <Redirect to={`/${PROJECT_PATH}/lights/settings`} />
-          </Switch>
-        </PaletteSettingsLoader>
+        <Switch>
+          <AuthenticatedRoute exact path={`/${PROJECT_PATH}/lights/settings`} component={AudioLightSettingsController} />
+          <AuthenticatedRoute exact path={`/${PROJECT_PATH}/lights/palettes`} component={PaletteSettingsController} />
+          <AuthenticatedRoute exact path={`/${PROJECT_PATH}/lights/spectrum`} component={SpectrumAnalyzer} />
+          <Redirect to={`/${PROJECT_PATH}/lights/settings`} />
+        </Switch>
       </MenuAppBar>
     )
   }
