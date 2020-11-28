@@ -26,16 +26,16 @@ void FireMode::enable() {
 
 void FireMode::tick() {
   if (_refresh) {
-    _ledSettingsService->update([&](CRGB* leds, CLEDController* ledController, const uint16_t numLeds) {
+    _ledSettingsService->update([&](CRGB* leds, const uint16_t numLeds) {
       fill_solid(leds, numLeds, CHSV(255, 0, 0));      // clear leds
-      ledController->showLeds();                       // render all leds black
+      FastLED.show();                                  // render all leds black
       memset(_heatMap, 0, sizeof(uint8_t) * numLeds);  // clear heat map
       _refresh = false;                                // clear refresh flag
     });
   }
   // make firey stuff at ~100FPS
   EVERY_N_MILLIS(10) {
-    _ledSettingsService->update([&](CRGB* leds, CLEDController* ledController, const uint16_t numLeds) {
+    _ledSettingsService->update([&](CRGB* leds, const uint16_t numLeds) {
       // Step 1.  Cool down every cell a little
       for (int i = 0; i < numLeds; i++) {
         _heatMap[i] = qsub8(_heatMap[i], random8(0, ((_state.cooling * 10) / numLeds) + 2));
@@ -66,7 +66,9 @@ void FireMode::tick() {
         }
         leds[pixelnumber] = color;
       }
-      ledController->showLeds();
+
+      // Step 5. Render the update
+      FastLED.show();
     });
   }
 }

@@ -30,9 +30,9 @@ void ConfettiMode::enable() {
 
 void ConfettiMode::tick() {
   if (_refresh) {
-    _ledSettingsService->update([&](CRGB* leds, CLEDController* ledController, const uint16_t numLeds) {
+    _ledSettingsService->update([&](CRGB* leds, const uint16_t numLeds) {
       fill_solid(leds, numLeds, CHSV(255, 0, 0));
-      ledController->showLeds();
+      FastLED.show();
     });
     _refresh = false;
   }
@@ -73,13 +73,13 @@ void ConfettiMode::tick() {
   }
 
   EVERY_N_MILLIS_I(confettiTimer, FACTORY_CONFETTI_MODE_DELAY) {
-    _ledSettingsService->update([&](CRGB* leds, CLEDController* ledController, const uint16_t numLeds) {
+    _ledSettingsService->update([&](CRGB* leds, const uint16_t numLeds) {
       fadeToBlackBy(leds, numLeds, _fade);
       int pos = random16(numLeds);
       leds[pos] =
           ColorFromPalette(_currentPalette, _hue + random16(_hueDelta) / 4, _state.brightness, _currentBlending);
       _hue = _hue + _inc;
-      ledController->showLeds();
+      FastLED.show();
       confettiTimer.setPeriod(_state.delay);
     });
   }

@@ -85,9 +85,9 @@ void RotateMode::selectMode(uint8_t newMode) {
       _selectedMode->enable();
     } else {
       // no mode selected, clear LEDs
-      _ledSettingsService->update([&](CRGB* leds, CLEDController* ledController, const uint16_t numLeds) {
+      _ledSettingsService->update([&](CRGB* leds, const uint16_t numLeds) {
         fill_solid(leds, numLeds, CHSV(255, 0, 0));  // clear leds
-        ledController->showLeds();                   // render all leds black
+        FastLED.show();                              // render all leds black
       });
     }
   }

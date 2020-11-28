@@ -34,23 +34,20 @@
 #define FACTORY_LED_DEAD_ZONE 700
 #endif
 
-typedef std::function<void(CRGB* _leds, CLEDController* _ledController, const uint16_t numLeds)> LedUpdateCallback;
+typedef std::function<void(CRGB* _leds, const uint16_t numLeds)> LedUpdateCallback;
 
 /**
- * Should be extended to support:
- *
- * - multiple led strips of differnt types
- * - configurable data pins
- * - configuration of number of leds per strip
+ * May be extended to support configuration of number of leds per strip.
  *
  * This is slightly tricky in the current state of the code as some effects rely on NUM_LEDS constant to set up data
  * arrays.
  *
- * - Effects could be made to dynamically generate their arrays and alter them when required
+ * - Effects could be made to dynamically generate their data arrays and alter them when required
  * - Effects could be destroyed and re-configured via a factory pattern which may allow for greater flexibility.
+ * - The callback approach could be abandoned in favor of direct access (static variable or singleton)
  *
  * The latter approach would mean effects must be destructor friendly but it would be much more memory efficent that way
- * too as only the "active" effect need be memory resident.
+ * too because only the "active" effect needs be memory resident.
  */
 class LedSettings {
  public:

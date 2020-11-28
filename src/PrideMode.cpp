@@ -23,7 +23,7 @@ void PrideMode::enable() {
 }
 
 void PrideMode::tick() {
-  _ledSettingsService->update([&](CRGB* leds, CLEDController* ledController, const uint16_t numLeds) {
+  _ledSettingsService->update([&](CRGB* leds, const uint16_t numLeds) {
     static uint16_t sPseudotime = 0;
     static uint16_t sLastMillis = 0;
     static uint16_t sHue16 = 0;
@@ -31,7 +31,7 @@ void PrideMode::tick() {
     uint8_t sat8 = beatsin88(87, 220, 250);
     uint8_t brightdepth = beatsin88(341, 96, 224);
     uint16_t brightnessthetainc16 = beatsin88(203, (25 * 256), (40 * 256));
-    uint8_t msmultiplier = beatsin88( _state.brightnessBpm, _state.brightnessFreqMin, _state.brightnessFreqMax);
+    uint8_t msmultiplier = beatsin88(_state.brightnessBpm, _state.brightnessFreqMin, _state.brightnessFreqMax);
 
     uint16_t hue16 = sHue16;  // gHue * 256;
     uint16_t hueinc16 = beatsin88(_state.hueBpm, _state.hueDeltaMin, _state.hueDeltaMax);
@@ -63,6 +63,6 @@ void PrideMode::tick() {
     }
 
     // Show the leds
-    ledController->showLeds();
+    FastLED.show();
   });
 }

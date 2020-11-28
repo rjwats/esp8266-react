@@ -18,11 +18,10 @@ void LedSettingsService::begin() {
 }
 
 void LedSettingsService::update(LedUpdateCallback updateCallback) {
-  updateCallback(_leds, _ledController, NUM_LEDS);
+  updateCallback(_leds, NUM_LEDS);
 }
 
 void LedSettingsService::configureLeds() {
-  // zero means "unlimited"
   FastLED.setMaxPowerInMilliWatts(_state.maxPowerMilliwatts == 0 ? 0xFFFFFFFF : _state.maxPowerMilliwatts);
 }
 

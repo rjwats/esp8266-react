@@ -24,7 +24,7 @@ void RainbowMode::enable() {
 }
 
 void RainbowMode::tick() {
-  _ledSettingsService->update([&](CRGB* leds, CLEDController* ledController, const uint16_t numLeds) {
+  _ledSettingsService->update([&](CRGB* leds, const uint16_t numLeds) {
     FrequencyData* frequencyData = _frequencySampler->getFrequencyData();
 
     // rotate hue in time based manner
@@ -51,7 +51,9 @@ void RainbowMode::tick() {
       }
     }
 
+
+
     // update the leds
-    ledController->showLeds(_state.brightness);
+    FastLED.show(_state.brightness);
   });
 }

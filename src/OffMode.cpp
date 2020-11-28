@@ -22,9 +22,9 @@ void OffMode::enable() {
 
 void OffMode::tick() {
   if (_refresh) {
-    _ledSettingsService->update([&](CRGB* leds, CLEDController* ledController, const uint16_t numLeds) {
+    _ledSettingsService->update([&](CRGB* leds, const uint16_t numLeds) {
       fill_solid(leds, numLeds, CHSV(255, 0, 0));  // clear leds
-      ledController->showLeds();                   // render all leds black
+      FastLED.show();                         // render all leds black
       _refresh = false;                            // clear refresh flag
     });
   }

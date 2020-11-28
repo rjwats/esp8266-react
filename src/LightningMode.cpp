@@ -19,11 +19,11 @@ LightningMode::LightningMode(AsyncWebServer* server,
 };
 
 void LightningMode::tick() {
-  _ledSettingsService->update([&](CRGB* leds, CLEDController* ledController, const uint16_t numLeds) {
+  _ledSettingsService->update([&](CRGB* leds, const uint16_t numLeds) {
     if (_refresh) {
       _status = Status::IDLE;                      // assert idle mode
       fill_solid(leds, numLeds, CHSV(255, 0, 0));  // clear leds
-      ledController->showLeds();                   // render all leds black
+      FastLED.show();                              // render all leds black
       _refresh = false;                            // clear refresh flag
       return;                                      // eager return
     }
@@ -39,10 +39,10 @@ void LightningMode::tick() {
     if (_status == Status::RUNNING && isWaitTimeElapsed()) {
       _dimmer = (_flashCounter == 0) ? 5 : random8(1, 3);      // leader scaled by a 5, return strokes brighter
       fill_solid(leds + _ledstart, _ledlen, _state.color);     // draw the flash
-      ledController->showLeds(_state.brightness / _dimmer);    // show the flash
+      FastLED.show(_state.brightness / _dimmer);               // show the flash
       delay(random8(4, 10));                                   // wait a small amount of time (use non blocking delay?)
       fill_solid(leds + _ledstart, _ledlen, CHSV(255, 0, 0));  // hide flash
-      ledController->showLeds();                               // draw hidden leds
+      FastLED.show();                                          // draw hidden leds
       resetWaitTime();                                         // reset wait time for next flash
 
       // decrement flash counter, and reset to idle if done

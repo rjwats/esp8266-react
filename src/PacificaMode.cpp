@@ -29,7 +29,7 @@ void PacificaMode::enable() {
 }
 
 void PacificaMode::tick() {
-  _ledSettingsService->update([&](CRGB* leds, CLEDController* ledController, const uint16_t numLeds) {
+  _ledSettingsService->update([&](CRGB* leds, const uint16_t numLeds) {
     // Increment the four "color index start" counters, one for each wave layer.
     // Each is incremented at a different speed, and the speeds vary over time.
     static uint16_t sCIStart1, sCIStart2, sCIStart3, sCIStart4;
@@ -75,7 +75,7 @@ void PacificaMode::tick() {
     pacifica_deepen_colors(leds, numLeds);
 
     // Show the leds
-    ledController->showLeds();
+    FastLED.show();
   });
 }
 

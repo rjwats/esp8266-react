@@ -24,12 +24,11 @@ void ColorMode::enable() {
 
 void ColorMode::tick() {
   if (_refresh || _state.audioEnabled) {
-    _ledSettingsService->update([&](CRGB* leds, CLEDController* ledController, const uint16_t numLeds) {
+    _ledSettingsService->update([&](CRGB* leds, const uint16_t numLeds) {
       FrequencyData* frequencyData = _frequencySampler->getFrequencyData();
       fill_solid(leds, numLeds, _state.color);
-      ledController->showLeds(_state.audioEnabled
-                                  ? frequencyData->calculateEnergyFloat(_state.includedBands) * _state.brightness
-                                  : _state.brightness);
+      FastLED.show(_state.audioEnabled ? frequencyData->calculateEnergyFloat(_state.includedBands) * _state.brightness
+                                       : _state.brightness);
     });
     _refresh = false;
   }
