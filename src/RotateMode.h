@@ -26,21 +26,20 @@ class RotateMode : public AudioLightModeImpl<RotateModeSettings> {
   unsigned long _modeChangedAt = 0;
   ModeFetcher _modeFetcher;
   AudioLightMode* _selectedMode;
-  void selectMode(uint8_t modeOrdinal);
+
+  void read(RotateModeSettings& settings, JsonObject& root);
+  StateUpdateResult update(JsonObject& root, RotateModeSettings& settings);
+  void selectMode(uint8_t newMode, CRGB* leds, const uint16_t numLeds);
 
  public:
   RotateMode(AsyncWebServer* server,
              FS* fs,
              SecurityManager* securityManager,
-             LedSettingsService* ledSettingsService,
              PaletteSettingsService* paletteSettingsService,
              FrequencySampler* frequencySampler,
              ModeFetcher modeFetcher);
-  void tick();
+  void tick(CRGB* leds, const uint16_t numLeds);
   void enable();
-
-  void read(RotateModeSettings& settings, JsonObject& root);
-  StateUpdateResult update(JsonObject& root, RotateModeSettings& settings);
   bool canRotate();
 };
 

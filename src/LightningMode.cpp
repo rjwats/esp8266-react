@@ -3,13 +3,11 @@
 LightningMode::LightningMode(AsyncWebServer* server,
                              FS* fs,
                              SecurityManager* securityManager,
-                             LedSettingsService* ledSettingsService,
                              PaletteSettingsService* paletteSettingsService,
                              FrequencySampler* frequencySampler) :
     AudioLightModeImpl(server,
                        fs,
                        securityManager,
-                       ledSettingsService,
                        paletteSettingsService,
                        frequencySampler,
                        LightningModeSettings::read,
@@ -18,39 +16,37 @@ LightningMode::LightningMode(AsyncWebServer* server,
   addUpdateHandler([&](const String& originId) { enable(); }, false);
 };
 
-void LightningMode::tick() {
-  _ledSettingsService->update([&](CRGB* leds, const uint16_t numLeds) {
-    if (_refresh) {
-      _status = Status::IDLE;                      // assert idle mode
-      fill_solid(leds, numLeds, CHSV(255, 0, 0));  // clear leds
-      FastLED.show();                              // render all leds black
-      _refresh = false;                            // clear refresh flag
-      return;                                      // eager return
-    }
+void LightningMode::tick(CRGB* leds, const uint16_t numLeds) {
+  if (_refresh) {
+    _status = Status::IDLE;                      // assert idle mode
+    fill_solid(leds, numLeds, CHSV(255, 0, 0));  // clear leds
+    FastLED.show();                              // render all leds black
+    _refresh = false;                            // clear refresh flag
+    return;                                      // eager return
+  }
 
-    if (_status == Status::TRIGGERED) {
-      _ledstart = random8(numLeds);              // Determine starting location of flash
-      _ledlen = random8(numLeds - _ledstart);    // Determine length of flash (not to go beyond numLeds-1)
-      _numFlashes = random8(3, _state.flashes);  // Calculate the random number of flashes we will show
-      _flashCounter = 0;                         // The number of flashes we have shown
-      _status = Status::RUNNING;
-    }
+  if (_status == Status::TRIGGERED) {
+    _ledstart = random8(numLeds);              // Determine starting location of flash
+    _ledlen = random8(numLeds - _ledstart);    // Determine length of flash (not to go beyond numLeds-1)
+    _numFlashes = random8(3, _state.flashes);  // Calculate the random number of flashes we will show
+    _flashCounter = 0;                         // The number of flashes we have shown
+    _status = Status::RUNNING;
+  }
 
-    if (_status == Status::RUNNING && isWaitTimeElapsed()) {
-      _dimmer = (_flashCounter == 0) ? 5 : random8(1, 3);      // leader scaled by a 5, return strokes brighter
-      fill_solid(leds + _ledstart, _ledlen, _state.color);     // draw the flash
-      FastLED.show(_state.brightness / _dimmer);               // show the flash
-      delay(random8(4, 10));                                   // wait a small amount of time (use non blocking delay?)
-      fill_solid(leds + _ledstart, _ledlen, CHSV(255, 0, 0));  // hide flash
-      FastLED.show();                                          // draw hidden leds
-      resetWaitTime();                                         // reset wait time for next flash
+  if (_status == Status::RUNNING && isWaitTimeElapsed()) {
+    _dimmer = (_flashCounter == 0) ? 5 : random8(1, 3);      // leader scaled by a 5, return strokes brighter
+    fill_solid(leds + _ledstart, _ledlen, _state.color);     // draw the flash
+    FastLED.show(_state.brightness / _dimmer);               // show the flash
+    delay(random8(4, 10));                                   // wait a small amount of time (use non blocking delay?)
+    fill_solid(leds + _ledstart, _ledlen, CHSV(255, 0, 0));  // hide flash
+    FastLED.show();                                          // draw hidden leds
+    resetWaitTime();                                         // reset wait time for next flash
 
-      // decrement flash counter, and reset to idle if done
-      if (++_flashCounter >= _numFlashes) {
-        _status = Status::IDLE;
-      }
+    // decrement flash counter, and reset to idle if done
+    if (++_flashCounter >= _numFlashes) {
+      _status = Status::IDLE;
     }
-  });
+  }
 }
 
 void LightningMode::enable() {

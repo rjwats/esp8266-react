@@ -1,6 +1,7 @@
 #include <FrequencySampler.h>
 
-FrequencySampler::FrequencySampler(FrequencySamplerSettings* settings) : _settings(settings) {
+FrequencySampler::FrequencySampler(LedSettingsService* ledSettingsService) : _ledSettingsService(ledSettingsService) {
+  ledSettingsService->addUpdateHandler([&](const String& originId) { updateSettings(); }, false);
 }
 
 void FrequencySampler::begin() {
@@ -9,13 +10,12 @@ void FrequencySampler::begin() {
   pinMode(FREQUENCY_SAMPLER_ANALOG_PIN, INPUT);
   digitalWrite(FREQUENCY_SAMPLER_RESET_PIN, LOW);
   digitalWrite(FREQUENCY_SAMPLER_STROBE_PIN, HIGH);
+  updateSettings();
 }
 
 void FrequencySampler::loop() {
   // take samples 100 times a second (max)
   EVERY_N_MILLIS(10) {
-    float smoothingFactor = _settings->getSmoothingFactor();
-    uint16_t deadZone = _settings->getDeadZone();
     update(
         [&](FrequencyData& frequencyData) {
           // Reset MSGEQ7 IC
@@ -35,10 +35,10 @@ void FrequencySampler::loop() {
             uint16_t value = analogRead(FREQUENCY_SAMPLER_ANALOG_PIN);
 
             // re-map frequency to eliminate low level noise
-            value = value > deadZone ? map(value - deadZone, 0, ADC_MAX_VALUE - deadZone, 0, ADC_MAX_VALUE) : 0;
+            value = value > _deadZone ? map(value - _deadZone, 0, ADC_MAX_VALUE - _deadZone, 0, ADC_MAX_VALUE) : 0;
 
             // crappy smoothing to avoid crazy flickering
-            frequencyData.bands[i] = smoothingFactor * frequencyData.bands[i] + (1 - smoothingFactor) * value;
+            frequencyData.bands[i] = _smoothingFactor * frequencyData.bands[i] + (1 - _smoothingFactor) * value;
 
             // strobe pin high again for next loop
             digitalWrite(FREQUENCY_SAMPLER_STROBE_PIN, HIGH);
@@ -50,6 +50,13 @@ void FrequencySampler::loop() {
         },
         "loop");
   }
+}
+
+void FrequencySampler::updateSettings() {
+  _ledSettingsService->read([&](LedSettings& ledSettings) {
+    _smoothingFactor = ledSettings.smoothingFactor;
+    _deadZone = ledSettings.deadZone;
+  });
 }
 
 FrequencyData* FrequencySampler::getFrequencyData() {

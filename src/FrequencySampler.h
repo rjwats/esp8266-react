@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include <StatefulService.h>
 #include <FastLED.h>
+#include <LedSettingsService.h>
 
 #define FREQUENCY_SAMPLER_DEAD_ZONE 700
 #define FREQUENCY_SAMPLER_RESET_PIN 4
@@ -12,12 +13,6 @@
 
 #define NUM_BANDS 7
 #define ADC_MAX_VALUE 4096
-
-class FrequencySamplerSettings {
- public:
-  virtual float getSmoothingFactor() = 0;
-  virtual uint16_t getDeadZone() = 0;
-};
 
 class FrequencyData {
  public:
@@ -49,14 +44,18 @@ class FrequencyData {
 
 class FrequencySampler : public StatefulService<FrequencyData> {
  public:
-  FrequencySampler(FrequencySamplerSettings* _settings);
+  FrequencySampler(LedSettingsService* ledSettingsService);
 
   void begin();
   void loop();
   FrequencyData* getFrequencyData();
 
  private:
-  FrequencySamplerSettings* _settings;
+  LedSettingsService* _ledSettingsService;
+  float _smoothingFactor = 0;
+  float _deadZone = 0;
+
+  void updateSettings();
 };
 
 #endif  // end FrequencySampler_h

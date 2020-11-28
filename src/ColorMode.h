@@ -50,10 +50,9 @@ class ColorMode : public AudioLightModeImpl<ColorModeSettings> {
   ColorMode(AsyncWebServer* server,
             FS* fs,
             SecurityManager* securityManager,
-            LedSettingsService* ledSettingsService,
             PaletteSettingsService* paletteSettingsService,
             FrequencySampler* frequencySampler);
-  void tick();
+  void tick(CRGB* leds, const uint16_t numLeds);
   void enable();
 };
 

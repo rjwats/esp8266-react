@@ -3,13 +3,11 @@
 OffMode::OffMode(AsyncWebServer* server,
                  FS* fs,
                  SecurityManager* securityManager,
-                 LedSettingsService* ledSettingsService,
                  PaletteSettingsService* paletteSettingsService,
                  FrequencySampler* frequencySampler) :
     AudioLightModeImpl(server,
                        fs,
                        securityManager,
-                       ledSettingsService,
                        paletteSettingsService,
                        frequencySampler,
                        OffModeSettings::read,
@@ -20,13 +18,11 @@ void OffMode::enable() {
   _refresh = true;
 }
 
-void OffMode::tick() {
+void OffMode::tick(CRGB* leds, const uint16_t numLeds) {
   if (_refresh) {
-    _ledSettingsService->update([&](CRGB* leds, const uint16_t numLeds) {
-      fill_solid(leds, numLeds, CHSV(255, 0, 0));  // clear leds
-      FastLED.show();                         // render all leds black
-      _refresh = false;                            // clear refresh flag
-    });
+    fill_solid(leds, numLeds, CHSV(255, 0, 0));  // clear leds
+    FastLED.show();                              // render all leds black
+    _refresh = false;                            // clear refresh flag
   }
 }
 

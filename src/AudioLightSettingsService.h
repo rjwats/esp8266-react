@@ -1,9 +1,13 @@
 #ifndef AudioLightSettingsService_h
 #define AudioLightSettingsService_h
 
+#include <WebSocketTxRx.h>
+#include <FastLEDSettings.h>
+#include <LedSettingsService.h>
+#include <PaletteSettingsService.h>
+#include <FrequencySampler.h>
+
 #include <ColorMode.h>
-#include <StatefulService.h>
-#include <HttpEndpoint.h>
 #include <RainbowMode.h>
 #include <LightningMode.h>
 #include <ConfettiMode.h>
@@ -12,7 +16,6 @@
 #include <PacificaMode.h>
 #include <PrideMode.h>
 #include <RotateMode.h>
-#include <WebSocketTxRx.h>
 
 #define NUM_MODES 9
 
@@ -41,16 +44,19 @@ class AudioLightSettingsService : public StatefulService<AudioLightSettings> {
   void begin();
   void loop();
 
-
  private:
   HttpEndpoint<AudioLightSettings> _httpEndpoint;
   WebSocketTxRx<AudioLightSettings> _audioLightModeTxRx;
+  LedSettingsService* _ledSettingsService;
+  CRGB _leds[NUM_LEDS];
+  CLEDController* _ledController;
   AudioLightMode* _modes[NUM_MODES];
 
   void read(AudioLightSettings& settings, JsonObject& root);
   StateUpdateResult update(JsonObject& root, AudioLightSettings& settings);
   AudioLightMode* getMode(const String& modeId);
 
+  void updateSettings();
   void enableMode();
   void handleSample();
   void saveModeConfig(AsyncWebServerRequest* request);

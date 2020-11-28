@@ -3,14 +3,12 @@
 RotateMode::RotateMode(AsyncWebServer* server,
                        FS* fs,
                        SecurityManager* securityManager,
-                       LedSettingsService* ledSettingsService,
                        PaletteSettingsService* paletteSettingsService,
                        FrequencySampler* frequencySampler,
                        ModeFetcher modeFetcher) :
     AudioLightModeImpl(server,
                        fs,
                        securityManager,
-                       ledSettingsService,
                        paletteSettingsService,
                        frequencySampler,
                        std::bind(&RotateMode::read, this, std::placeholders::_1, std::placeholders::_2),
@@ -46,29 +44,29 @@ void RotateMode::enable() {
   _refresh = true;
 }
 
-void RotateMode::tick() {
+void RotateMode::tick(CRGB* leds, const uint16_t numLeds) {
   unsigned long currentMillis = millis();
 
   // refresh if we are required to
   if (_refresh) {
-    selectMode(0);
+    selectMode(0, leds, numLeds);
     _modeChangedAt = millis();
     _refresh = false;
   }
 
   // hand off to the selected mode to do its thing
   if (_selectedMode) {
-    _selectedMode->tick();
+    _selectedMode->tick(leds, numLeds);
   }
 
   // change mode if it's time
   if ((unsigned long)(currentMillis - _modeChangedAt) >= _state.delay) {
-    selectMode(_currentMode + 1);
+    selectMode(_currentMode + 1, leds, numLeds);
     _modeChangedAt = millis();
   }
 }
 
-void RotateMode::selectMode(uint8_t newMode) {
+void RotateMode::selectMode(uint8_t newMode, CRGB* leds, const uint16_t numLeds) {
   AudioLightMode* nextMode = nullptr;
   // select the next mode
   if (_state.modes.size() > 0) {
@@ -85,10 +83,8 @@ void RotateMode::selectMode(uint8_t newMode) {
       _selectedMode->enable();
     } else {
       // no mode selected, clear LEDs
-      _ledSettingsService->update([&](CRGB* leds, const uint16_t numLeds) {
-        fill_solid(leds, numLeds, CHSV(255, 0, 0));  // clear leds
-        FastLED.show();                              // render all leds black
-      });
+      fill_solid(leds, numLeds, CHSV(255, 0, 0));  // clear leds
+      FastLED.show();                              // render all leds black
     }
   }
 }

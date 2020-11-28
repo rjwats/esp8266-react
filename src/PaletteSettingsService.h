@@ -1,10 +1,12 @@
 #ifndef PaletteSettingsService_h
 #define PaletteSettingsService_h
 
-#include <AudioLightMode.h>
-#include <FrequencySampler.h>
+#include <StatefulService.h>
+#include <FSPersistence.h>
+#include <HttpEndpoint.h>
 #include <JsonUtil.h>
-#include <map>
+#include <FastLED.h>
+#include <list>
 
 #define PALETTE_SETTINGS_FILE "/config/paletteSettings.json"
 #define PALETTE_SETTINGS_SERVICE_PATH "/rest/paletteSettings"

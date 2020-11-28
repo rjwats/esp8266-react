@@ -3,13 +3,11 @@
 PrideMode::PrideMode(AsyncWebServer* server,
                      FS* fs,
                      SecurityManager* securityManager,
-                     LedSettingsService* ledSettingsService,
                      PaletteSettingsService* paletteSettingsService,
                      FrequencySampler* frequencySampler) :
     AudioLightModeImpl(server,
                        fs,
                        securityManager,
-                       ledSettingsService,
                        paletteSettingsService,
                        frequencySampler,
                        PrideModeSettings::read,
@@ -22,8 +20,7 @@ void PrideMode::enable() {
   _refresh = true;
 }
 
-void PrideMode::tick() {
-  _ledSettingsService->update([&](CRGB* leds, const uint16_t numLeds) {
+void PrideMode::tick(CRGB* leds, const uint16_t numLeds) {
     static uint16_t sPseudotime = 0;
     static uint16_t sLastMillis = 0;
     static uint16_t sHue16 = 0;
@@ -62,7 +59,5 @@ void PrideMode::tick() {
       nblend(leds[pixelnumber], newcolor, 64);
     }
 
-    // Show the leds
     FastLED.show();
-  });
 }

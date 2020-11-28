@@ -3,13 +3,11 @@
 ConfettiMode::ConfettiMode(AsyncWebServer* server,
                            FS* fs,
                            SecurityManager* securityManager,
-                           LedSettingsService* ledSettingsService,
                            PaletteSettingsService* paletteSettingsService,
                            FrequencySampler* frequencySampler) :
     AudioLightModeImpl(server,
                        fs,
                        securityManager,
-                       ledSettingsService,
                        paletteSettingsService,
                        frequencySampler,
                        std::bind(&ConfettiMode::read, this, std::placeholders::_1, std::placeholders::_2),
@@ -28,12 +26,10 @@ void ConfettiMode::enable() {
   });
 }
 
-void ConfettiMode::tick() {
+void ConfettiMode::tick(CRGB* leds, const uint16_t numLeds) {
   if (_refresh) {
-    _ledSettingsService->update([&](CRGB* leds, const uint16_t numLeds) {
-      fill_solid(leds, numLeds, CHSV(255, 0, 0));
-      FastLED.show();
-    });
+    fill_solid(leds, numLeds, CHSV(255, 0, 0));
+    FastLED.show();
     _refresh = false;
   }
 
@@ -73,17 +69,11 @@ void ConfettiMode::tick() {
   }
 
   EVERY_N_MILLIS_I(confettiTimer, FACTORY_CONFETTI_MODE_DELAY) {
-    _ledSettingsService->update([&](CRGB* leds, const uint16_t numLeds) {
-      fadeToBlackBy(leds, numLeds, _fade);
-      int pos = random16(numLeds);
-      leds[pos] =
-          ColorFromPalette(_currentPalette, _hue + random16(_hueDelta) / 4, _state.brightness, _currentBlending);
-      _hue = _hue + _inc;
-      FastLED.show();
-      confettiTimer.setPeriod(_state.delay);
-    });
+    fadeToBlackBy(leds, numLeds, _fade);
+    int pos = random16(numLeds);
+    leds[pos] = ColorFromPalette(_currentPalette, _hue + random16(_hueDelta) / 4, _state.brightness, _currentBlending);
+    _hue = _hue + _inc;
+    FastLED.show();
+    confettiTimer.setPeriod(_state.delay);
   }
-}
-
-void ConfettiMode::sampleComplete() {
 }

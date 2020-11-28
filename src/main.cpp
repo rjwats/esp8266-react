@@ -27,20 +27,20 @@ void setup() {
   // start the framework and demo project
   esp8266React.begin();
 
-  // start the server
-  server.begin();
+  // load general settings
+  ledSettingsService.begin();
 
   // set up the sampler
   frequencySampler.begin();
-
-  // configure the LED strip
-  ledSettingsService.begin();
 
   // load the palettes
   paletteSettingsService.begin();
 
   // load all of the defaults
   audioLightSettingsService.begin();
+
+  // start the server
+  server.begin();
 }
 
 void loop() {

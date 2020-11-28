@@ -1,7 +1,7 @@
 #ifndef AudioLightMode_h
 #define AudioLightMode_h
 
-#include <LedSettingsService.h>
+#include <FastLEDSettings.h>
 #include <PaletteSettingsService.h>
 #include <FrequencySampler.h>
 
@@ -15,7 +15,7 @@ class AudioLightMode {
   virtual void begin() = 0;
   virtual void readFromFS() = 0;
   virtual void writeToFS() = 0;
-  virtual void tick() = 0;
+  virtual void tick(CRGB* leds, const uint16_t numLeds) = 0;
   virtual void enable() = 0;
   virtual void sampleComplete(){};
   virtual bool canRotate() {
@@ -33,7 +33,6 @@ class AudioLightModeImpl : public StatefulService<T>, public AudioLightMode {
   String _servicePath;
   JsonStateReader<T> _stateReader;
   JsonStateUpdater<T> _stateUpdater;
-  LedSettingsService* _ledSettingsService;
   PaletteSettingsService* _paletteSettingsService;
   FrequencySampler* _frequencySampler;
   HttpEndpoint<T> _httpEndpoint;
@@ -43,7 +42,6 @@ class AudioLightModeImpl : public StatefulService<T>, public AudioLightMode {
   AudioLightModeImpl(AsyncWebServer* server,
                      FS* fs,
                      SecurityManager* securityManager,
-                     LedSettingsService* ledSettingsService,
                      PaletteSettingsService* paletteSettingsService,
                      FrequencySampler* frequencySampler,
                      JsonStateReader<T> stateReader,
@@ -54,7 +52,6 @@ class AudioLightModeImpl : public StatefulService<T>, public AudioLightMode {
       _servicePath(AUDIO_LIGHT_MODE_FILE_PATH_PREFIX + id + AUDIO_LIGHT_MODE_FILE_PATH_SUFFIX),
       _stateReader(stateReader),
       _stateUpdater(stateUpdater),
-      _ledSettingsService(ledSettingsService),
       _paletteSettingsService(paletteSettingsService),
       _frequencySampler(frequencySampler),
       _httpEndpoint(stateReader, stateUpdater, this, server, _filePath, securityManager),

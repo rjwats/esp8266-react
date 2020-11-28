@@ -3,13 +3,11 @@
 PacificaMode::PacificaMode(AsyncWebServer* server,
                            FS* fs,
                            SecurityManager* securityManager,
-                           LedSettingsService* ledSettingsService,
                            PaletteSettingsService* paletteSettingsService,
                            FrequencySampler* frequencySampler) :
     AudioLightModeImpl(server,
                        fs,
                        securityManager,
-                       ledSettingsService,
                        paletteSettingsService,
                        frequencySampler,
                        std::bind(&PacificaMode::read, this, std::placeholders::_1, std::placeholders::_2),
@@ -28,55 +26,53 @@ void PacificaMode::enable() {
   });
 }
 
-void PacificaMode::tick() {
-  _ledSettingsService->update([&](CRGB* leds, const uint16_t numLeds) {
-    // Increment the four "color index start" counters, one for each wave layer.
-    // Each is incremented at a different speed, and the speeds vary over time.
-    static uint16_t sCIStart1, sCIStart2, sCIStart3, sCIStart4;
-    static uint32_t sLastms = 0;
-    uint32_t ms = millis();
-    uint32_t deltams = ms - sLastms;
-    sLastms = ms;
-    uint16_t speedfactor1 = beatsin16(3, 179, 269);
-    uint16_t speedfactor2 = beatsin16(4, 179, 269);
-    uint32_t deltams1 = (deltams * speedfactor1) / 256;
-    uint32_t deltams2 = (deltams * speedfactor2) / 256;
-    uint32_t deltams21 = (deltams1 + deltams2) / 2;
-    sCIStart1 += (deltams1 * beatsin88(1011, 10, 13));
-    sCIStart2 -= (deltams21 * beatsin88(777, 8, 11));
-    sCIStart3 -= (deltams1 * beatsin88(501, 5, 7));
-    sCIStart4 -= (deltams2 * beatsin88(257, 4, 6));
+void PacificaMode::tick(CRGB* leds, const uint16_t numLeds) {
+  // Increment the four "color index start" counters, one for each wave layer.
+  // Each is incremented at a different speed, and the speeds vary over time.
+  static uint16_t sCIStart1, sCIStart2, sCIStart3, sCIStart4;
+  static uint32_t sLastms = 0;
+  uint32_t ms = millis();
+  uint32_t deltams = ms - sLastms;
+  sLastms = ms;
+  uint16_t speedfactor1 = beatsin16(3, 179, 269);
+  uint16_t speedfactor2 = beatsin16(4, 179, 269);
+  uint32_t deltams1 = (deltams * speedfactor1) / 256;
+  uint32_t deltams2 = (deltams * speedfactor2) / 256;
+  uint32_t deltams21 = (deltams1 + deltams2) / 2;
+  sCIStart1 += (deltams1 * beatsin88(1011, 10, 13));
+  sCIStart2 -= (deltams21 * beatsin88(777, 8, 11));
+  sCIStart3 -= (deltams1 * beatsin88(501, 5, 7));
+  sCIStart4 -= (deltams2 * beatsin88(257, 4, 6));
 
-    // Clear out the LED array to a dim background blue-green
-    fill_solid(leds, numLeds, CRGB(2, 6, 10));
+  // Clear out the LED array to a dim background blue-green
+  fill_solid(leds, numLeds, CRGB(2, 6, 10));
 
-    // Render each of four layers, with different scales and speeds, that vary over time
-    pacifica_one_layer(leds,
-                       numLeds,
-                       _state.palette1.colors,
-                       sCIStart1,
-                       beatsin16(3, 11 * 256, 14 * 256),
-                       beatsin8(10, 70, 130),
-                       0 - beat16(301));
-    pacifica_one_layer(leds,
-                       numLeds,
-                       _state.palette2.colors,
-                       sCIStart2,
-                       beatsin16(4, 6 * 256, 9 * 256),
-                       beatsin8(17, 40, 80),
-                       beat16(401));
-    pacifica_one_layer(leds, numLeds, _state.palette3.colors, sCIStart3, 6 * 256, beatsin8(9, 10, 38), 0 - beat16(503));
-    pacifica_one_layer(leds, numLeds, _state.palette3.colors, sCIStart4, 5 * 256, beatsin8(8, 10, 28), beat16(601));
+  // Render each of four layers, with different scales and speeds, that vary over time
+  pacifica_one_layer(leds,
+                     numLeds,
+                     _state.palette1.colors,
+                     sCIStart1,
+                     beatsin16(3, 11 * 256, 14 * 256),
+                     beatsin8(10, 70, 130),
+                     0 - beat16(301));
+  pacifica_one_layer(leds,
+                     numLeds,
+                     _state.palette2.colors,
+                     sCIStart2,
+                     beatsin16(4, 6 * 256, 9 * 256),
+                     beatsin8(17, 40, 80),
+                     beat16(401));
+  pacifica_one_layer(leds, numLeds, _state.palette3.colors, sCIStart3, 6 * 256, beatsin8(9, 10, 38), 0 - beat16(503));
+  pacifica_one_layer(leds, numLeds, _state.palette3.colors, sCIStart4, 5 * 256, beatsin8(8, 10, 28), beat16(601));
 
-    // Add brighter 'whitecaps' where the waves lines up more
-    pacifica_add_whitecaps(leds, numLeds);
+  // Add brighter 'whitecaps' where the waves lines up more
+  pacifica_add_whitecaps(leds, numLeds);
 
-    // Deepen the blues and greens a bit
-    pacifica_deepen_colors(leds, numLeds);
+  // Deepen the blues and greens a bit
+  pacifica_deepen_colors(leds, numLeds);
 
-    // Show the leds
-    FastLED.show();
-  });
+  // Show the leds
+  FastLED.show();
 }
 
 // Add one layer of waves into the led array
