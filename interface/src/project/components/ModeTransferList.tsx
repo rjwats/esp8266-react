@@ -13,17 +13,15 @@ import Paper from '@material-ui/core/Paper';
 import { ROTATE_AUDIO_LIGHT_MODES, AudioLightModeType, AUDIO_LIGHT_MODE_METADATA } from '../types';
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    margin: 'auto',
-  },
   paper: {
-    width: 200,
+    width: 180,
     height: 230,
     overflow: 'auto',
   },
   button: {
     margin: theme.spacing(0.5, 0),
-  },
+    minWidth: 35
+  }
 }));
 
 function not(a: AudioLightModeType[], b: AudioLightModeType[]) {
@@ -109,7 +107,7 @@ const ModeTransferList: FC<TranserListProps> = ({ selected, onSelectionChanged }
   );
 
   return (
-    <Grid container spacing={2} justify="center" alignItems="center" className={classes.root}>
+    <Grid container spacing={2} justify="center" alignItems="center">
       <Grid item>{customList(left)}</Grid>
       <Grid item>
         <Grid container direction="column" alignItems="center">

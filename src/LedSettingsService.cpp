@@ -22,9 +22,14 @@ void LedSettingsService::update(LedUpdateCallback updateCallback) {
 }
 
 void LedSettingsService::configureLeds() {
-  FastLED.setBrightness(_state.brightness);
+  // zero means "unlimited"
+  FastLED.setMaxPowerInMilliWatts(_state.maxPowerMilliwatts == 0 ? 0xFFFFFFFF : _state.maxPowerMilliwatts);
 }
 
 float LedSettingsService::getSmoothingFactor() {
   return _state.smoothingFactor;
+}
+
+uint16_t LedSettingsService::getDeadZone() {
+  return _state.deadZone;
 }

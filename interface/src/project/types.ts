@@ -160,6 +160,12 @@ export interface PaletteSettings {
   palettes: Palette[];
 }
 
+export interface LedSettings {
+  max_power_milliwatts: number;
+  dead_zone: number;
+  smoothing_factor: number;
+}
+
 export interface Palette {
   id: string;
   colors: string[];
@@ -177,6 +183,7 @@ export type AudioLightMode = (
   RotateMode
 );
 
+export const LED_SETTINGS_ENDPOINT = ENDPOINT_ROOT + "ledSettings";
 export const PALETTE_SETTINGS_ENDPOINT = ENDPOINT_ROOT + "paletteSettings";
 export const AUDIO_LIGHT_SAVE_SETTINGS_ENDPOINT = ENDPOINT_ROOT + "saveModeSettings";
 export const AUDIO_LIGHT_LOAD_SETTINGS_ENDPOINT = ENDPOINT_ROOT + "loadModeSettings";

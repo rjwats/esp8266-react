@@ -48,7 +48,7 @@ void PacificaMode::tick() {
     sCIStart4 -= (deltams2 * beatsin88(257, 4, 6));
 
     // Clear out the LED array to a dim background blue-green
-    fill_solid(leds, NUM_LEDS, CRGB(2, 6, 10));
+    fill_solid(leds, numLeds, CRGB(2, 6, 10));
 
     // Render each of four layers, with different scales and speeds, that vary over time
     pacifica_one_layer(leds,

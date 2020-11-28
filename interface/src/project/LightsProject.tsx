@@ -10,6 +10,7 @@ import { AuthenticatedRoute } from '../authentication';
 import SpectrumAnalyzer from './SpectrumAnalyzer';
 import AudioLightSettingsController from './AudioLightSettingsController';
 import PaletteSettingsController from './PaletteSettingsController';
+import LedSettingsController from './LedSettingsController';
 
 class LightsProject extends Component<RouteComponentProps> {
 
@@ -23,11 +24,13 @@ class LightsProject extends Component<RouteComponentProps> {
         <Tabs value={this.props.match.url} onChange={this.handleTabChange} variant="fullWidth">
           <Tab value={`/${PROJECT_PATH}/lights/settings`} label="Lighting Settings" />
           <Tab value={`/${PROJECT_PATH}/lights/palettes`} label="Palettes" />
+          <Tab value={`/${PROJECT_PATH}/lights/led`} label="LED Settings" />
           <Tab value={`/${PROJECT_PATH}/lights/spectrum`} label="Spectrum Analyzer" />
         </Tabs>
         <Switch>
           <AuthenticatedRoute exact path={`/${PROJECT_PATH}/lights/settings`} component={AudioLightSettingsController} />
           <AuthenticatedRoute exact path={`/${PROJECT_PATH}/lights/palettes`} component={PaletteSettingsController} />
+          <AuthenticatedRoute exact path={`/${PROJECT_PATH}/lights/led`} component={LedSettingsController} />
           <AuthenticatedRoute exact path={`/${PROJECT_PATH}/lights/spectrum`} component={SpectrumAnalyzer} />
           <Redirect to={`/${PROJECT_PATH}/lights/settings`} />
         </Switch>

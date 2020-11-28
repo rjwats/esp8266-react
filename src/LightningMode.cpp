@@ -30,7 +30,7 @@ void LightningMode::tick() {
 
     if (_status == Status::TRIGGERED) {
       _ledstart = random8(numLeds);              // Determine starting location of flash
-      _ledlen = random8(numLeds - _ledstart);    // Determine length of flash (not to go beyond NUM_LEDS-1)
+      _ledlen = random8(numLeds - _ledstart);    // Determine length of flash (not to go beyond numLeds-1)
       _numFlashes = random8(3, _state.flashes);  // Calculate the random number of flashes we will show
       _flashCounter = 0;                         // The number of flashes we have shown
       _status = Status::RUNNING;

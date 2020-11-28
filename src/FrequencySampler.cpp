@@ -15,6 +15,7 @@ void FrequencySampler::loop() {
   // take samples 100 times a second (max)
   EVERY_N_MILLIS(10) {
     float smoothingFactor = _settings->getSmoothingFactor();
+    uint16_t deadZone = _settings->getDeadZone();
     update(
         [&](FrequencyData& frequencyData) {
           // Reset MSGEQ7 IC
@@ -34,12 +35,7 @@ void FrequencySampler::loop() {
             uint16_t value = analogRead(FREQUENCY_SAMPLER_ANALOG_PIN);
 
             // re-map frequency to eliminate low level noise
-            value = value > FREQUENCY_SAMPLER_DEAD_ZONE ? map(value - FREQUENCY_SAMPLER_DEAD_ZONE,
-                                                              0,
-                                                              ADC_MAX_VALUE - FREQUENCY_SAMPLER_DEAD_ZONE,
-                                                              0,
-                                                              ADC_MAX_VALUE)
-                                                        : 0;
+            value = value > deadZone ? map(value - deadZone, 0, ADC_MAX_VALUE - deadZone, 0, ADC_MAX_VALUE) : 0;
 
             // crappy smoothing to avoid crazy flickering
             frequencyData.bands[i] = smoothingFactor * frequencyData.bands[i] + (1 - smoothingFactor) * value;

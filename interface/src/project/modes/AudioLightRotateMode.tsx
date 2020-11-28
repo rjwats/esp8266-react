@@ -35,6 +35,7 @@ class AudioLightRotateMode extends React.Component<AudioLightRotateModeProps> {
           />
         </Box>
         <Box my={2}>
+          <FormLabel>Modes</FormLabel>
           <ModeTransferList selected={data.modes} onSelectionChanged={this.changeModes} />
         </Box>
       </div>

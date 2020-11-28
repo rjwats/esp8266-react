@@ -16,6 +16,7 @@
 class FrequencySamplerSettings {
  public:
   virtual float getSmoothingFactor() = 0;
+  virtual uint16_t getDeadZone() = 0;
 };
 
 class FrequencyData {
