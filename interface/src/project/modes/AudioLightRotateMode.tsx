@@ -1,41 +1,41 @@
-import { Box, FormLabel, Input, MenuItem, Select } from '@material-ui/core';
+import { Box, FormLabel, Slider } from '@material-ui/core';
 import React from 'react';
+import ModeTransferList from '../components/ModeTransferList';
 
-import { AudioLightModeType, AUDIO_LIGHT_MODE_METADATA, RotateMode } from '../types';
+import { RotateMode } from '../types';
 import { audioLightMode, AudioLightModeProps } from './AudioLightMode';
 
 type AudioLightRotateModeProps = AudioLightModeProps<RotateMode>;
+
+const millisToMinutesAndSeconds = (millis: number) => {
+  var minutes = Math.floor(millis / 60000);
+  var seconds = Math.floor((millis % 60000) / 1000);
+  return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
+}
 
 class AudioLightRotateMode extends React.Component<AudioLightRotateModeProps> {
 
   changeModes = this.props.handleChange("modes");
 
   render() {
-    const { data } = this.props;
+    const { data, handleSliderChange } = this.props;
     return (
       <div>
         <Box my={2}>
-          <FormLabel>Audio Enabled</FormLabel>
-          <Select
-            labelId="demo-mutiple-chip-label"
-            id="demo-mutiple-chip"
-            multiple
-            value={data.modes}
-            onChange={(e) => this.changeModes(e.target.value)}
-            input={<Input id="select-multiple-chip" />}
-            fullWidth
-            variant="outlined"
-          >
-            {
-              Object.entries(AudioLightModeType)
-                .filter(([, mode_id]) => AUDIO_LIGHT_MODE_METADATA[mode_id].rotate)
-                .map(([, mode_id]) => (
-                  <MenuItem key={mode_id} value={mode_id}>
-                    {AUDIO_LIGHT_MODE_METADATA[mode_id].label}
-                  </MenuItem>
-                ))
-            }
-          </Select>
+          <FormLabel>Delay</FormLabel>
+          <Slider
+            min={10000}
+            max={600000}
+            step={10000}
+            value={data.delay}
+            marks={true}
+            onChange={handleSliderChange('delay')}
+            valueLabelDisplay="on"
+            valueLabelFormat={millisToMinutesAndSeconds}
+          />
+        </Box>
+        <Box my={2}>
+          <ModeTransferList selected={data.modes} onSelectionChanged={this.changeModes} />
         </Box>
       </div>
     );

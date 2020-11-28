@@ -25,6 +25,7 @@ void RotateMode::read(RotateModeSettings& settings, JsonObject& root) {
   for (String mode : settings.modes) {
     modes.add(mode);
   }
+  root["delay"] = settings.delay;
 }
 
 StateUpdateResult RotateMode::update(JsonObject& root, RotateModeSettings& settings) {
@@ -37,6 +38,7 @@ StateUpdateResult RotateMode::update(JsonObject& root, RotateModeSettings& setti
       }
     }
   }
+  settings.delay = root["delay"] | FACTORY_ROTATE_MODE_DELAY;
   return StateUpdateResult::CHANGED;
 }
 
@@ -45,8 +47,12 @@ void RotateMode::enable() {
 }
 
 void RotateMode::tick() {
+  unsigned long currentMillis = millis();
+
+  // refresh if we are required to
   if (_refresh) {
     selectMode(0);
+    _modeChangedAt = millis();
     _refresh = false;
   }
 
@@ -55,9 +61,10 @@ void RotateMode::tick() {
     _selectedMode->tick();
   }
 
-  // select the next mode
-  EVERY_N_MILLISECONDS(5000) {
+  // change mode if it's time
+  if ((unsigned long)(currentMillis - _modeChangedAt) >= _state.delay) {
     selectMode(_currentMode + 1);
+    _modeChangedAt = millis();
   }
 }
 

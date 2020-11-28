@@ -10,7 +10,6 @@ import { AuthenticatedRoute } from '../authentication';
 import SpectrumAnalyzer from './SpectrumAnalyzer';
 import AudioLightSettingsController from './AudioLightSettingsController';
 import PaletteSettingsController from './PaletteSettingsController';
-import PaletteSettingsLoader from './PaletteSettingsLoader';
 
 class LightsProject extends Component<RouteComponentProps> {
 

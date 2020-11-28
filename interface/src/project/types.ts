@@ -147,6 +147,7 @@ export const PRIDE_MODE_METADATA: AudioLightModeMetadata<PrideMode> = {
 export interface RotateMode {
   mode_id: AudioLightModeType.ROTATE;
   modes: AudioLightModeType[];
+  delay: number;
 }
 
 export const ROTATE_MODE_METADATA: AudioLightModeMetadata<RotateMode> = {
@@ -215,3 +216,6 @@ export const AUDIO_LIGHT_MODE_METADATA: { [type in AudioLightModeType]: AudioLig
   pride: PRIDE_MODE_METADATA,
   rotate: ROTATE_MODE_METADATA
 }
+
+export const AUDIO_LIGHT_MODES = Object.entries(AudioLightModeType).map(value => value[1]);
+export const ROTATE_AUDIO_LIGHT_MODES = Object.entries(AudioLightModeType).map(value => value[1]).filter(value => AUDIO_LIGHT_MODE_METADATA[value].rotate);
