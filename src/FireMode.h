@@ -41,7 +41,7 @@ class FireMode : public AudioLightModeImpl<FireModeSettings> {
     writeByteToJson(root, &settings.cooling, "cooling");
     writeByteToJson(root, &settings.sparking, "sparking");
     writeBoolToJson(root, &settings.reverse, "reverse");
-    root["palette"] = settings.palette.id;
+    root["palette"] = settings.palette.name;
   }
 
   StateUpdateResult update(JsonObject& root, FireModeSettings& settings) {
@@ -52,8 +52,8 @@ class FireMode : public AudioLightModeImpl<FireModeSettings> {
     return StateUpdateResult::CHANGED;
   }
 
-  void selectPalette(const String& paletteId, FireModeSettings& settings) {
-    settings.palette = _paletteSettingsService->getPalette(paletteId);
+  void selectPalette(const String& name, FireModeSettings& settings) {
+    settings.palette = _paletteSettingsService->getPalette(name);
     settings.palette.colors[0] = 0x000000;
   }
 

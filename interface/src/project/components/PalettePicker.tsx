@@ -23,10 +23,10 @@ const PalettePicker: FC<PalettePickerProps> = ({ name, label, value, onChange })
       variant="outlined"
       select>
       {context.paletteSettings.palettes.map(palette => (
-        <MenuItem id={palette.id} value={palette.id} >
+        <MenuItem key={palette.name} value={palette.name} >
           <Box display="flex" width="100%">
             <Box flex="1">
-              <ListItemText primary={palette.id} />
+              <ListItemText primary={palette.name} />
             </Box>
             <Box flex="1" style={{ background: generateGradient(palette) }} />
           </Box>

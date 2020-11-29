@@ -31,9 +31,9 @@ class PacificaMode : public AudioLightModeImpl<PacificaModeSettings> {
   boolean _refresh = true;
 
   void read(PacificaModeSettings& settings, JsonObject& root) {
-    root["palette1"] = settings.palette1.id;
-    root["palette2"] = settings.palette2.id;
-    root["palette3"] = settings.palette3.id;
+    root["palette1"] = settings.palette1.name;
+    root["palette2"] = settings.palette2.name;
+    root["palette3"] = settings.palette3.name;
   }
 
   StateUpdateResult update(JsonObject& root, PacificaModeSettings& settings) {

@@ -64,15 +64,15 @@ const TProgmemRGBPalette16 PacificaColors3_p FL_PROGMEM = {0x000208,
 
 class Palette {
  public:
-  String id;
+  String name;
   CRGBPalette16 colors;
 
   // the default palette - rainbow
-  Palette() : id("Rainbow"), colors(RainbowColors_p) {
+  Palette() : name("Rainbow"), colors(RainbowColors_p) {
   }
 
   // custom palettes
-  Palette(String id, CRGBPalette16 colors) : id(id), colors(colors) {
+  Palette(String name, CRGBPalette16 colors) : name(name), colors(colors) {
   }
 };
 
@@ -84,7 +84,7 @@ class PaletteSettings {
     JsonArray palettes = root.createNestedArray("palettes");
     for (Palette palette : settings.palettes) {
       JsonObject paletteRoot = palettes.createNestedObject();
-      paletteRoot["id"] = palette.id;
+      paletteRoot["name"] = palette.name;
       writePaletteToJson(paletteRoot, &palette.colors);
     }
   }
@@ -93,10 +93,10 @@ class PaletteSettings {
     settings.palettes.clear();
     if (root["palettes"].is<JsonArray>()) {
       for (JsonObject paletteRoot : root["palettes"].as<JsonArray>()) {
-        String id = paletteRoot["id"];
-        if (!id.isEmpty()) {
+        String name = paletteRoot["name"];
+        if (!name.isEmpty()) {
           Palette palette = Palette();
-          palette.id = id;
+          palette.name = name;
           updatePaletteFromJson(paletteRoot, &palette.colors, CRGB::Black);
           settings.palettes.push_back(palette);
         }
@@ -144,12 +144,12 @@ class PaletteSettingsService : public StatefulService<PaletteSettings> {
   }
 
   void refreshPalette(Palette& palette) {
-    palette = getPalette(palette.id);
+    palette = getPalette(palette.name);
   }
 
-  Palette getPalette(const String& paletteId) {
+  Palette getPalette(const String& name) {
     for (Palette palette : _state.palettes) {
-      if (palette.id == paletteId) {
+      if (palette.name == name) {
         return palette;
       }
     }

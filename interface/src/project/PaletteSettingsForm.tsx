@@ -24,13 +24,13 @@ class PaletteSettingsForm extends React.Component<PaletteSettingsFormProps, Pale
     creating: false
   };
 
-  uniqueId = (id: string) => {
-    return !this.props.data.palettes.find(p => p.id === id);
+  uniqueName = (name: string) => {
+    return !this.props.data.palettes.find(p => p.name === name);
   }
 
   removePalette = (palette: Palette) => {
     const { data } = this.props;
-    const palettes = data.palettes.filter(p => p.id !== palette.id);
+    const palettes = data.palettes.filter(p => p.name !== palette.name);
     this.props.setData({ ...data, palettes });
   }
 
@@ -51,7 +51,7 @@ class PaletteSettingsForm extends React.Component<PaletteSettingsFormProps, Pale
     const { palette } = this.state;
     if (palette) {
       const { data } = this.props;
-      const palettes = data.palettes.filter(p => p.id !== palette.id);
+      const palettes = data.palettes.filter(p => p.name !== palette.name);
       palettes.push(palette);
       this.props.setData({ ...data, palettes });
       this.setState({
@@ -64,7 +64,7 @@ class PaletteSettingsForm extends React.Component<PaletteSettingsFormProps, Pale
     this.setState({
       creating: true,
       palette: {
-        id: "",
+        name: "",
         colors: [...DEFAULT_PALETTE]
       }
     });
@@ -76,10 +76,10 @@ class PaletteSettingsForm extends React.Component<PaletteSettingsFormProps, Pale
 
   renderPalettes = () => {
     const { data } = this.props;
-    return data.palettes.sort((a, b) => a.id.localeCompare(b.id)).map(palette => (
-      <TableRow key={palette.id}>
+    return data.palettes.sort((a, b) => a.name.localeCompare(b.name)).map(palette => (
+      <TableRow key={palette.name}>
         <TableCell component="th" scope="row">
-          {palette.id}
+          {palette.name}
         </TableCell>
         <TableCell component="th" scope="row" style={{ background: generateGradient(palette) }} />
         <TableCell align="center">
@@ -104,7 +104,7 @@ class PaletteSettingsForm extends React.Component<PaletteSettingsFormProps, Pale
           <Table size="small" padding={isWidthDown('xs', width!) ? "none" : "default"}>
             <TableHead>
               <TableRow>
-                <TableCell>Id</TableCell>
+                <TableCell>Name</TableCell>
                 <TableCell>Palette</TableCell>
                 <TableCell />
               </TableRow>
@@ -137,7 +137,7 @@ class PaletteSettingsForm extends React.Component<PaletteSettingsFormProps, Pale
             onDoneEditing={this.doneEditingPalette}
             onCancelEditing={this.cancelEditingPalette}
             updatePalette={this.updatePalette}
-            uniqueId={this.uniqueId}
+            uniqueName={this.uniqueName}
           />
         }
       </Fragment>

@@ -17,7 +17,7 @@ FireMode::FireMode(AsyncWebServer* server,
 void FireMode::enable() {
   _refresh = true;
   updateWithoutPropagation([&](FireModeSettings& settings) {
-    selectPalette(settings.palette.id, settings);
+    selectPalette(settings.palette.name, settings);
     return StateUpdateResult::CHANGED;
   });
 }

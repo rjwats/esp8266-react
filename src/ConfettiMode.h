@@ -61,9 +61,9 @@ class ConfettiMode : public AudioLightModeImpl<ConfettiModeSettings> {
     writeByteToJson(root, &settings.brightness, "brightness");
     writeByteToJson(root, &settings.delay, "delay");
 
-    root["palette1"] = settings.palette1.id;
-    root["palette2"] = settings.palette2.id;
-    root["palette3"] = settings.palette3.id;
+    root["palette1"] = settings.palette1.name;
+    root["palette2"] = settings.palette2.name;
+    root["palette3"] = settings.palette3.name;
   }
 
   StateUpdateResult update(JsonObject& root, ConfettiModeSettings& settings) {

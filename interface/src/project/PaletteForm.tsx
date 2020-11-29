@@ -10,7 +10,7 @@ import { ChromePicker, ColorResult } from 'react-color';
 interface PaletteFormProps {
   creating: boolean;
   palette: Palette;
-  uniqueId: (value: any) => boolean;
+  uniqueName: (name: any) => boolean;
   updatePalette: (palette: Palette) => void;
   onDoneEditing: () => void;
   onCancelEditing: () => void;
@@ -29,7 +29,7 @@ class PaletteForm extends React.Component<PaletteFormProps, PaletteFormState> {
   formRef: RefObject<any> = React.createRef();
 
   componentDidMount() {
-    ValidatorForm.addValidationRule('uniqueId', this.props.uniqueId);
+    ValidatorForm.addValidationRule('uniqueName', this.props.uniqueName);
   }
 
   submit = () => {
@@ -40,9 +40,9 @@ class PaletteForm extends React.Component<PaletteFormProps, PaletteFormState> {
     this.setState({ color: value as number });
   }
 
-  updateId = (event: React.ChangeEvent<HTMLInputElement>) => {
+  updateName = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { updatePalette, palette } = this.props;
-    updatePalette({ ...palette, id: event.target.value });
+    updatePalette({ ...palette, name: event.target.value });
   }
 
   changeColor = (result: ColorResult) => {
@@ -63,15 +63,15 @@ class PaletteForm extends React.Component<PaletteFormProps, PaletteFormState> {
           <DialogTitle id="palette-form-dialog-title">{creating ? 'Add' : 'Modify'} Palette</DialogTitle>
           <DialogContent dividers>
             <TextValidator
-              validators={creating ? ['required', 'uniqueId', 'matchRegexp:^[a-zA-Z0-9 ]{1,24}$'] : []}
-              errorMessages={creating ? ['Id is required', "Id already in use", "Must be 1-24 characters: alpha numeric"] : []}
-              name="id"
-              label="Id"
+              validators={creating ? ['required', 'uniqueName', 'matchRegexp:^[a-zA-Z0-9 ]{1,24}$'] : []}
+              errorMessages={creating ? ['Name is required', "Name already in use", "Must be 1-24 characters: alpha numeric"] : []}
+              name="name"
+              label="Name"
               fullWidth
               variant="outlined"
-              value={palette.id}
+              value={palette.name}
               disabled={!creating}
-              onChange={this.updateId}
+              onChange={this.updateName}
               margin="normal"
             />
             <Box height={30} width="100%" style={{ background: generateGradient(palette) }} />
