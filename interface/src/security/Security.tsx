@@ -20,7 +20,7 @@ class Security extends Component<SecurityProps> {
   render() {
     return (
       <MenuAppBar sectionTitle="Security">
-        <Tabs value={this.props.match.url} onChange={this.handleTabChange} variant="fullWidth">
+        <Tabs value={this.props.match.url} onChange={this.handleTabChange} variant="scrollable">
           <Tab value="/security/users" label="Manage Users" />
           <Tab value="/security/settings" label="Security Settings" />
         </Tabs>

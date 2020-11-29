@@ -20,7 +20,7 @@ class Mqtt extends Component<MqttProps> {
     const { authenticatedContext } = this.props;
     return (
       <MenuAppBar sectionTitle="MQTT">
-        <Tabs value={this.props.match.url} onChange={this.handleTabChange} variant="fullWidth">
+        <Tabs value={this.props.match.url} onChange={this.handleTabChange} variant="scrollable">
           <Tab value="/mqtt/status" label="MQTT Status" />
           <Tab value="/mqtt/settings" label="MQTT Settings" disabled={!authenticatedContext.me.admin} />
         </Tabs>

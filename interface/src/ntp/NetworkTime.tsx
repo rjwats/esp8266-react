@@ -21,7 +21,7 @@ class NetworkTime extends Component<NetworkTimeProps> {
     const { authenticatedContext } = this.props;
     return (
       <MenuAppBar sectionTitle="Network Time">
-        <Tabs value={this.props.match.url} onChange={this.handleTabChange} variant="fullWidth">
+        <Tabs value={this.props.match.url} onChange={this.handleTabChange} variant="scrollable">
           <Tab value="/ntp/status" label="NTP Status" />
           <Tab value="/ntp/settings" label="NTP Settings" disabled={!authenticatedContext.me.admin} />
         </Tabs>

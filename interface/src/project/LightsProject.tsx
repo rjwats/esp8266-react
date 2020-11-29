@@ -21,7 +21,7 @@ class LightsProject extends Component<RouteComponentProps> {
   render() {
     return (
       <MenuAppBar sectionTitle="Christmas Lights">
-        <Tabs value={this.props.match.url} onChange={this.handleTabChange} variant="fullWidth">
+        <Tabs value={this.props.match.url} onChange={this.handleTabChange} variant="scrollable">
           <Tab value={`/${PROJECT_PATH}/lights/settings`} label="Lighting Settings" />
           <Tab value={`/${PROJECT_PATH}/lights/palettes`} label="Palettes" />
           <Tab value={`/${PROJECT_PATH}/lights/led`} label="LED Settings" />

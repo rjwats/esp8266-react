@@ -25,9 +25,6 @@ import { withFeatures, WithFeaturesProps } from '../features/FeaturesContext';
 const drawerWidth = 290;
 
 const styles = (theme: Theme) => createStyles({
-  root: {
-    display: 'flex',
-  },
   drawer: {
     [theme.breakpoints.up('md')]: {
       width: drawerWidth,
@@ -64,7 +61,10 @@ const styles = (theme: Theme) => createStyles({
     width: drawerWidth,
   },
   content: {
-    flexGrow: 1
+    flexGrow: 1,
+    [theme.breakpoints.up('md')]: {
+      marginLeft: drawerWidth,
+    },
   },
   authMenu: {
     zIndex: theme.zIndex.tooltip,
@@ -219,7 +219,7 @@ class MenuAppBar extends React.Component<MenuAppBarProps, MenuAppBarState> {
     );
 
     return (
-      <div className={classes.root}>
+      <div>
         <AppBar position="fixed" className={classes.appBar} elevation={0}>
           <Toolbar>
             <IconButton

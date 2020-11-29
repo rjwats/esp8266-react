@@ -21,7 +21,7 @@ class AccessPoint extends Component<AccessPointProps> {
     const { authenticatedContext } = this.props;
     return (
       <MenuAppBar sectionTitle="Access Point">
-        <Tabs value={this.props.match.url} onChange={this.handleTabChange} variant="fullWidth">
+        <Tabs value={this.props.match.url} onChange={this.handleTabChange} variant="scrollable">
           <Tab value="/ap/status" label="Access Point Status" />
           <Tab value="/ap/settings" label="Access Point Settings" disabled={!authenticatedContext.me.admin} />
         </Tabs>
