@@ -3,11 +3,11 @@ import React from 'react';
 import FormLabel from '@material-ui/core/FormLabel';
 import Slider from '@material-ui/core/Slider';
 
-import { PrideMode } from '../types';
+import { PrideModeSettings } from '../types';
 import { audioLightMode, AudioLightModeProps } from './AudioLightMode';
 import { Box } from '@material-ui/core';
 
-type AudioLightPrideModeProps = AudioLightModeProps<PrideMode>;
+type AudioLightPrideModeProps = AudioLightModeProps<PrideModeSettings>;
 
 class AudioLightPrideMode extends React.Component<AudioLightPrideModeProps> {
   render() {

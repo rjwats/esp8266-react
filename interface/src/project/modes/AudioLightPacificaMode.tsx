@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { PacificaMode } from '../types';
+import { PacificaModeSettings } from '../types';
 import { audioLightMode, AudioLightModeProps } from './AudioLightMode';
 import PalettePicker from '../components/PalettePicker';
 
-type AudioLightPacificaModeProps = AudioLightModeProps<PacificaMode>;
+type AudioLightPacificaModeProps = AudioLightModeProps<PacificaModeSettings>;
 
 class AudioLightPacificaMode extends React.Component<AudioLightPacificaModeProps> {
 

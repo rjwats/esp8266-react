@@ -3,11 +3,11 @@ import React from 'react';
 import FormLabel from '@material-ui/core/FormLabel';
 import Slider from '@material-ui/core/Slider';
 
-import { RainbowMode } from '../types';
+import { RainbowModeSettings } from '../types';
 import { audioLightMode, AudioLightModeProps } from './AudioLightMode';
 import { Box, Switch } from '@material-ui/core';
 
-type AudioLightRainbowModeProps = AudioLightModeProps<RainbowMode>;
+type AudioLightRainbowModeProps = AudioLightModeProps<RainbowModeSettings>;
 
 class AudioLightRainbowMode extends React.Component<AudioLightRainbowModeProps> {
 

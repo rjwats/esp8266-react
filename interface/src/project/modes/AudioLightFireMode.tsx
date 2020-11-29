@@ -3,12 +3,12 @@ import React from 'react';
 import FormLabel from '@material-ui/core/FormLabel';
 import Slider from '@material-ui/core/Slider';
 
-import { FireMode } from '../types';
+import { FireModeSettings } from '../types';
 import { audioLightMode, AudioLightModeProps } from './AudioLightMode';
 import { Box, Switch } from '@material-ui/core';
 import PalettePicker from '../components/PalettePicker';
 
-type AudioLightFireModeProps = AudioLightModeProps<FireMode>;
+type AudioLightFireModeProps = AudioLightModeProps<FireModeSettings>;
 
 class AudioLightFireMode extends React.Component<AudioLightFireModeProps> {
 

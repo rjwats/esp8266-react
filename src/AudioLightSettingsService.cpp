@@ -98,25 +98,43 @@ void AudioLightSettingsService::handleSample() {
 void AudioLightSettingsService::read(AudioLightSettings& settings, JsonObject& root) {
   if (settings.currentMode) {
     root["mode_id"] = settings.currentMode->getId();
-    settings.currentMode->readAsJson(root);
+    JsonObject settingsRoot = root.createNestedObject("settings");
+    settings.currentMode->readAsJson(settingsRoot);
   }
 }
 
 StateUpdateResult AudioLightSettingsService::update(JsonObject& root, AudioLightSettings& settings) {
-  String modeId = root["mode_id"];
+  // we must have a mode id
+  if (!root["mode_id"].is<String>()) {
+    return StateUpdateResult::ERROR;
+  }
 
-  // change mode if required
+  // change mode if required, exit early on error
+  StateUpdateResult modeUpdateResult = StateUpdateResult::UNCHANGED;
+  String modeId = root["mode_id"];
   if (settings.currentMode->getId() != modeId) {
     AudioLightMode* mode = getMode(modeId);
     if (!mode) {
       return StateUpdateResult::ERROR;
     }
     settings.currentMode = mode;
-    return StateUpdateResult::CHANGED;
+    modeUpdateResult = StateUpdateResult::CHANGED;
   }
 
-  // update mode settings
-  return settings.currentMode->updateFromJson(root, LOCAL_ORIGIN);
+  // change settings, exit early on error
+  StateUpdateResult settingsUpdateResult = StateUpdateResult::UNCHANGED;
+  if (root["settings"].is<JsonObject>()) {
+    JsonObject modeSettings = root["settings"].as<JsonObject>();
+    settingsUpdateResult = settings.currentMode->updateFromJson(modeSettings, LOCAL_ORIGIN);
+    if (settingsUpdateResult == StateUpdateResult::ERROR) {
+      return StateUpdateResult::ERROR;
+    }
+  }
+
+  // calculate update state
+  return modeUpdateResult == StateUpdateResult::CHANGED || settingsUpdateResult == StateUpdateResult::CHANGED
+             ? StateUpdateResult::CHANGED
+             : StateUpdateResult::UNCHANGED;
 }
 
 void AudioLightSettingsService::saveModeConfig(AsyncWebServerRequest* request) {

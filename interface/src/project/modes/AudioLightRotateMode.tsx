@@ -2,10 +2,10 @@ import { Box, FormLabel, Slider } from '@material-ui/core';
 import React from 'react';
 import ModeTransferList from '../components/ModeTransferList';
 
-import { RotateMode } from '../types';
+import { RotateModeSettings } from '../types';
 import { audioLightMode, AudioLightModeProps } from './AudioLightMode';
 
-type AudioLightRotateModeProps = AudioLightModeProps<RotateMode>;
+type AudioLightRotateModeProps = AudioLightModeProps<RotateModeSettings>;
 
 const millisToMinutesAndSeconds = (millis: number) => {
   var minutes = Math.floor(millis / 60000);

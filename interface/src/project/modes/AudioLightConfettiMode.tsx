@@ -4,11 +4,11 @@ import FormLabel from '@material-ui/core/FormLabel';
 import Slider from '@material-ui/core/Slider';
 import { Box } from '@material-ui/core';
 
-import { ConfettiMode } from '../types';
+import { ConfettiModeSettings } from '../types';
 import { audioLightMode, AudioLightModeProps } from './AudioLightMode';
 import PalettePicker from '../components/PalettePicker';
 
-type AudioLightConfettiModeProps = AudioLightModeProps<ConfettiMode>;
+type AudioLightConfettiModeProps = AudioLightModeProps<ConfettiModeSettings>;
 
 class AudioLightConfettiMode extends React.Component<AudioLightConfettiModeProps> {
 

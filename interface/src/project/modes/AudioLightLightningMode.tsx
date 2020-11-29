@@ -3,13 +3,13 @@ import React from 'react';
 import FormLabel from '@material-ui/core/FormLabel';
 import Slider from '@material-ui/core/Slider';
 
-import { LightningMode } from '../types';
+import { LightningModeSettings } from '../types';
 import IncludedBands from '../components/IncludedBands';
 import ColorPicker from '../components/ColorPicker';
 import { audioLightMode, AudioLightModeProps } from './AudioLightMode';
 import { Box } from '@material-ui/core';
 
-type AudioLightLightningModeProps = AudioLightModeProps<LightningMode>;
+type AudioLightLightningModeProps = AudioLightModeProps<LightningModeSettings>;
 
 class AudioLightLightningMode extends React.Component<AudioLightLightningModeProps> {
 

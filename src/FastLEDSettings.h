@@ -6,15 +6,15 @@
 #endif
 
 #ifndef COLOR_ORDER
-#define COLOR_ORDER RGB
-#endif
+#define COLOR_ORDER GRB
+#endif // RGB
 
 #ifndef LED_TYPE
-#define LED_TYPE WS2811
-#endif
+#define LED_TYPE WS2812
+#endif // WS2811
 
 #ifndef NUM_LEDS
-#define NUM_LEDS 100
-#endif
+#define NUM_LEDS 9
+#endif // 100
 
 #endif
