@@ -76,7 +76,7 @@ void RotateMode::selectMode(uint8_t newMode, CRGB* leds, const uint16_t numLeds)
     nextMode = _modeFetcher(*std::next(_state.modes.begin(), _currentMode));
   }
   // activate the next mode if it's differnt from the selected mode
-  if (nextMode != _selectedMode) {
+  if (nextMode != _selectedMode || _refresh) {
     _selectedMode = nextMode;
     if (_selectedMode) {
       // new mode selected, enable it

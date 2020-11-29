@@ -14,7 +14,7 @@
 #endif
 
 #ifndef NUM_LEDS
-#define NUM_LEDS 50
+#define NUM_LEDS 100
 #endif
 
 #endif
