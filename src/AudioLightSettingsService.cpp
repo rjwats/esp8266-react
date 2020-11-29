@@ -55,7 +55,7 @@ AudioLightSettingsService::AudioLightSettingsService(AsyncWebServer* server,
 
 void AudioLightSettingsService::begin() {
   // configure current mode
-  _state.currentMode = _modes[7];
+  _state.currentMode = _modes[8];
 
   // initialize all modes
   for (uint8_t i = 0; i < NUM_MODES; i++) {
