@@ -4,7 +4,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Checkbox from '@material-ui/core/Checkbox';
 import Button from '@material-ui/core/Button';
@@ -14,7 +13,7 @@ import { ROTATE_AUDIO_LIGHT_MODES, AudioLightModeType, AUDIO_LIGHT_MODE_METADATA
 
 const useStyles = makeStyles((theme) => ({
   paper: {
-    width: 180,
+    width: 160,
     height: 230,
     overflow: 'auto',
   },
@@ -89,14 +88,12 @@ const ModeTransferList: FC<TranserListProps> = ({ selected, onSelectionChanged }
       <List dense component="div" role="list">
         {items.map((value) => {
           return (
-            <ListItem key={value} role="listitem" button onClick={handleToggle(value)}>
-              <ListItemIcon>
-                <Checkbox
-                  checked={checked.indexOf(value) !== -1}
-                  tabIndex={-1}
-                  disableRipple
-                />
-              </ListItemIcon>
+            <ListItem disableGutters key={value} role="listitem" button onClick={handleToggle(value)}>
+              <Checkbox
+                checked={checked.indexOf(value) !== -1}
+                tabIndex={-1}
+                disableRipple
+              />
               <ListItemText primary={AUDIO_LIGHT_MODE_METADATA[value].label} />
             </ListItem>
           );
