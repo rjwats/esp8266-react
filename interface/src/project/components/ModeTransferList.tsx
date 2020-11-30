@@ -13,7 +13,8 @@ import { ROTATE_AUDIO_LIGHT_MODES, AudioLightModeType, AUDIO_LIGHT_MODE_METADATA
 
 const useStyles = makeStyles((theme) => ({
   paper: {
-    width: 160,
+    marginTop: theme.spacing(2),
+    width: 170,
     height: 230,
     overflow: 'auto',
   },
