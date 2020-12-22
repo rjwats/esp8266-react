@@ -19,9 +19,9 @@ RobotStateService::RobotStateService(AsyncWebServer* server, SecurityManager* se
 }
 
 void RobotStateService::begin() {
-  camXServo.attach(CAM_X_SERVO_PIN);
-  camYServo.attach(CAM_Y_SERVO_PIN);
-  clawServo.attach(CLAW_SERVO_PIN);
+  camXServo.attach(CAM_X_SERVO_PIN, 2);
+  camYServo.attach(CAM_Y_SERVO_PIN, 3);
+  clawServo.attach(CLAW_SERVO_PIN, 4);
 
   // configure the default state
   _state.camX = DEFAULT_CAM_X;

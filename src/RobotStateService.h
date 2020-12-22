@@ -4,16 +4,16 @@
 #include <HttpEndpoint.h>
 #include <WebSocketTxRx.h>
 #include <Arduino.h>
-#include <ESP32Servo.h>
+#include <Servo.h>
 
 #define LED_PIN 2
 
 #define DEFAULT_CAM_Y 90
-#define DEFAULT_CAM_X 90
+#define DEFAULT_CAM_X 135
 #define DEFAULT_CLAW 90
 
-#define CAM_X_SERVO_PIN 16
-#define CAM_Y_SERVO_PIN 2
+#define CAM_X_SERVO_PIN 2
+#define CAM_Y_SERVO_PIN 16
 #define CLAW_SERVO_PIN 4
 
 #define ROBOT_SETTINGS_ENDPOINT_PATH "/rest/robotState"
