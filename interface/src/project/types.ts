@@ -1,9 +1,7 @@
-export interface LightState {
-  led_on: boolean;
-}
-
-export interface LightMqttSettings { 
-  unique_id : string;
-  name: string;
-  mqtt_path : string;
+export interface RobotState {
+  cam_x: number,
+  cam_y: number,
+  claw: number,
+  drive_x: number,
+  drive_y: number
 }
