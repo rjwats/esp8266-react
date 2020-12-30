@@ -7,6 +7,10 @@ SecuritySettingsService::SecuritySettingsService(AsyncWebServer* server, FS* fs)
     _fsPersistence(SecuritySettings::read, SecuritySettings::update, this, fs, SECURITY_SETTINGS_FILE),
     _jwtHandler(FACTORY_JWT_SECRET) {
   addUpdateHandler([&](const String& originId) { configureJWTHandler(); }, false);
+  server->on(GENERATE_TOKEN_PATH,
+             HTTP_GET,
+             wrapRequest(std::bind(&SecuritySettingsService::generateToken, this, std::placeholders::_1),
+                                          AuthenticationPredicates::IS_ADMIN));
 }
 
 void SecuritySettingsService::begin() {
@@ -32,6 +36,21 @@ Authentication SecuritySettingsService::authenticateRequest(AsyncWebServerReques
 
 void SecuritySettingsService::configureJWTHandler() {
   _jwtHandler.setSecret(_state.jwtSecret);
+}
+
+void SecuritySettingsService::generateToken(AsyncWebServerRequest* request) {
+  AsyncWebParameter* usernameParam = request->getParam("username");
+  for (User _user : _state.users) {
+    if (_user.username == usernameParam->value()) {
+      AsyncJsonResponse* response = new AsyncJsonResponse(false, GENERATE_TOKEN_SIZE);
+      JsonObject root = response->getRoot();
+      root["token"] = generateJWT(&_user);
+      response->setLength();
+      request->send(response);
+      return;
+    }
+  }
+  request->send(401);
 }
 
 Authentication SecuritySettingsService::authenticateJWT(String& jwt) {
