@@ -14,7 +14,7 @@
 #endif
 
 #ifndef FACTORY_AP_SSID
-#define FACTORY_AP_SSID "ESP8266 React (#{chip_id})"
+#define FACTORY_AP_SSID "ESP8266 React (#{unique_id})"
 #endif
 
 #ifndef FACTORY_AP_PASSWORD

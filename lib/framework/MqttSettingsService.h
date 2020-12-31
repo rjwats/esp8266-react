@@ -28,7 +28,7 @@
 #endif
 
 #ifndef FACTORY_MQTT_CLIENT_ID
-#define FACTORY_MQTT_CLIENT_ID "#{platform}-#{chip_id}"
+#define FACTORY_MQTT_CLIENT_ID "#{platform}-#{unique_id}"
 #endif
 
 #ifndef FACTORY_MQTT_KEEP_ALIVE

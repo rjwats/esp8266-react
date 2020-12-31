@@ -232,15 +232,15 @@ Various settings support placeholder substitution, indicated by comments in [fac
 Placeholder | Substituted value 
 ----------- | -----------------
 #{platform}  | The microcontroller platform, e.g. "esp32" or "esp8266"
-#{chip_id}   | The chip identifier, e.g. "4334a"
+#{unique_id}   | A unique identifier derived from the MAC address, e.g. "0b0a859d6816"
 
 You may use SettingValue::format in your own code if you require the use of these placeholders. This is demonstrated in the demo project:
 
 ```cpp
   static StateUpdateResult update(JsonObject& root, LightMqttSettings& settings) {
-    settings.mqttPath = root["mqtt_path"] | SettingValue::format("homeassistant/light/#{chip_id}");
-    settings.name = root["name"] | SettingValue::format("light-#{chip_id}");
-    settings.uniqueId = root["unique_id"] | SettingValue::format("light-#{chip_id}");
+    settings.mqttPath = root["mqtt_path"] | SettingValue::format("homeassistant/light/#{unique_id}");
+    settings.name = root["name"] | SettingValue::format("light-#{unique_id}");
+    settings.uniqueId = root["unique_id"] | SettingValue::format("light-#{unique_id}");
     return StateUpdateResult::CHANGED;
   }
 };
