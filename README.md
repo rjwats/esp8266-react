@@ -232,7 +232,8 @@ Various settings support placeholder substitution, indicated by comments in [fac
 Placeholder | Substituted value 
 ----------- | -----------------
 #{platform}  | The microcontroller platform, e.g. "esp32" or "esp8266"
-#{unique_id}   | A unique identifier derived from the MAC address, e.g. "0b0a859d6816"
+#{unique_id} | A unique identifier derived from the MAC address, e.g. "0b0a859d6816"
+#{chip_id}   | The chip batch identifier, e.g. "4334a"
 
 You may use SettingValue::format in your own code if you require the use of these placeholders. This is demonstrated in the demo project:
 
