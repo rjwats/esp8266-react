@@ -13,7 +13,7 @@ import SaveIcon from '@material-ui/icons/Save';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 
 import { withAuthenticatedContext, AuthenticatedContextProps } from '../authentication';
-import { RestFormProps, FormActions, FormButton } from '../components';
+import { RestFormProps, FormActions, FormButton, extractEventValue } from '../components';
 
 import UserForm from './UserForm';
 import { SecuritySettings, User } from './types';
@@ -93,12 +93,8 @@ class ManageUsersForm extends React.Component<ManageUsersFormProps, ManageUsersF
   };
 
   handleUserValueChange = (name: keyof User) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ user: { ...this.state.user!, [name]: event.target.value } });
+    this.setState({ user: { ...this.state.user!, [name]: extractEventValue(event) } });
   };
-
-  handleUserCheckboxChange = (name: keyof User) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ user: { ...this.state.user!, [name]: event.target.checked } });
-  }
 
   onSubmit = () => {
     this.props.saveData();
@@ -106,7 +102,7 @@ class ManageUsersForm extends React.Component<ManageUsersFormProps, ManageUsersF
   }
 
   render() {
-    const { width, data, loadData } = this.props;
+    const { width, data } = this.props;
     const { user, creating } = this.state;
     return (
       <Fragment>
@@ -165,9 +161,6 @@ class ManageUsersForm extends React.Component<ManageUsersFormProps, ManageUsersF
           <FormActions>
             <FormButton startIcon={<SaveIcon />} variant="contained" color="primary" type="submit" disabled={this.noAdminConfigured()}>
               Save
-            </FormButton>
-            <FormButton variant="contained" color="secondary" onClick={loadData}>
-              Reset
             </FormButton>
           </FormActions>
         </ValidatorForm>

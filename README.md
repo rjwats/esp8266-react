@@ -76,13 +76,13 @@ platformio run -t upload
 
 The interface has been configured with create-react-app and react-app-rewired so the build can customized for the target device. The large artefacts are gzipped and source maps and service worker are excluded from the production build. This reduces the production build to around ~150k, which easily fits on the device.
 
-The interface will be automatically built by PlatformIO before it builds the firmware. The project can be configured to serve the interface from either PROGMEM or SPIFFS as your project requires. The default configuration is to serve the content from PROGMEM, serving from SPIFFS requires an additional upload step which is documented below.
+The interface will be automatically built by PlatformIO before it builds the firmware. The project can be configured to serve the interface from either PROGMEM or the filesystem as your project requires. The default configuration is to serve the content from PROGMEM, serving from the filesystem requires an additional upload step which is [documented below](#serving-the-interface-from-the-filesystem).
 
 #### Serving the interface from PROGMEM
 
 By default, the project is configured to serve the interface from PROGMEM. 
 
-> **Tip**: You do not need to upload a file system image unless you configure the framework to [serve the interface from SPIFFS](#serving-the-interface-from-spiffs).
+> **Tip**: You do not need to upload a file system image unless you configure the framework to [serve the interface from the filesystem](#serving-the-interface-from-the-filesystem).
 
 The interface will consume ~150k of program space which can be problematic if you already have a large binary artefact or if you have added large dependencies to the interface. The ESP32 binaries are fairly large in there simplest form so the addition of the interface resources requires us to use special partitioning for the ESP32.
 
@@ -96,9 +96,9 @@ platform = espressif32
 board = node32s
 ```
 
-#### Serving the interface from SPIFFS
+#### Serving the interface from the filesystem
 
-If you choose to serve the interface from SPIFFS you will need to change the default configuration and upload the file system image manually. 
+If you choose to serve the interface from the filesystem you will need to change the default configuration and upload the file system image manually. 
 
 Disable `-D PROGMEM_WWW build` flag in ['platformio.ini'](platformio.ini) and re-build the firmware. The build process will now copy the compiled interface to the `data/` directory and it may be uploaded to the device by pressing the "Upload File System image" button:
 
@@ -355,7 +355,7 @@ The following code creates the web server and esp8266React framework:
 
 ```cpp
 AsyncWebServer server(80);
-ESP8266React esp8266React(&server, &SPIFFS);
+ESP8266React esp8266React(&server);
 ```
 
 Now in the `setup()` function the initialization is performed:
@@ -364,13 +364,6 @@ Now in the `setup()` function the initialization is performed:
 void setup() {
   // start serial and filesystem
   Serial.begin(SERIAL_BAUD_RATE);
-
-  // start the file system (must be done before starting the framework)
-#ifdef ESP32
-  SPIFFS.begin(true);
-#elif defined(ESP8266)
-  SPIFFS.begin();
-#endif
 
   // start the framework and demo project
   esp8266React.begin();
@@ -630,6 +623,7 @@ The framework supplies access to various features via getter functions:
 
 SettingsService              | Description
 ---------------------------- | ----------------------------------------------
+getFS()                      | The filesystem used by the framework
 getSecurityManager()         | The security manager - detailed above
 getSecuritySettingsService() | Configures the users and other security settings
 getWiFiSettingsService()     | Configures and manages the WiFi network connection

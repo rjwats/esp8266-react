@@ -9,7 +9,7 @@ import { AuthenticationContext, Me } from './AuthenticationContext';
 import FullScreenLoading from '../components/FullScreenLoading';
 import { withFeatures, WithFeaturesProps } from '../features/FeaturesContext';
 
-export const decodeMeJWT = (accessToken: string): Me => jwtDecode(accessToken);
+export const decodeMeJWT = (accessToken: string): Me => jwtDecode(accessToken) as Me;
 
 interface AuthenticationWrapperState {
   context: AuthenticationContext;

@@ -18,7 +18,7 @@ class MqttSettingsForm extends React.Component<MqttSettingsFormProps> {
   }
 
   render() {
-    const { data, handleValueChange, saveData, loadData } = this.props;
+    const { data, handleValueChange, saveData } = this.props;
     return (
       <ValidatorForm onSubmit={saveData}>
         <BlockFormControlLabel
@@ -118,9 +118,6 @@ class MqttSettingsForm extends React.Component<MqttSettingsFormProps> {
         <FormActions>
           <FormButton startIcon={<SaveIcon />} variant="contained" color="primary" type="submit">
             Save
-          </FormButton>
-          <FormButton variant="contained" color="secondary" onClick={loadData}>
-            Reset
           </FormButton>
         </FormActions>
       </ValidatorForm>

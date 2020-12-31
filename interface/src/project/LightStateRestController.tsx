@@ -39,7 +39,7 @@ export default restController(LIGHT_SETTINGS_ENDPOINT, LightStateRestController)
 type LightStateRestControllerFormProps = RestFormProps<LightState>;
 
 function LightStateRestControllerForm(props: LightStateRestControllerFormProps) {
-  const { data, saveData, loadData, handleValueChange } = props;
+  const { data, saveData, handleValueChange } = props;
   return (
     <ValidatorForm onSubmit={saveData}>
       <Box bgcolor="primary.main" color="primary.contrastText" p={2} mt={2} mb={2}>
@@ -60,9 +60,6 @@ function LightStateRestControllerForm(props: LightStateRestControllerFormProps) 
       <FormActions>
         <FormButton startIcon={<SaveIcon />} variant="contained" color="primary" type="submit">
           Save
-        </FormButton>
-        <FormButton variant="contained" color="secondary" onClick={loadData}>
-          Reset
         </FormButton>
       </FormActions>
     </ValidatorForm>
