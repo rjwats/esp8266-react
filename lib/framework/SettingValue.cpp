@@ -9,7 +9,7 @@ const String PLATFORM = "esp8266";
 #endif
 
 /**
- * Uses the station's MAC address to create a unique id for each device.
+ * Obtains the factory set chip id, which is usually a batch indicator.
  */
 String getChipId() {
 #ifdef ESP32
