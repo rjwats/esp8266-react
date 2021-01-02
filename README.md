@@ -229,11 +229,11 @@ Changing factory time zone setting is a common requirement. This requires a litt
 
 Various settings support placeholder substitution, indicated by comments in [factory_settings.ini](factory_settings.ini). This can be particularly useful where settings need to be unique, such as the Access Point SSID or MQTT client id. The following placeholders are supported:
 
-Placeholder | Substituted value 
------------ | -----------------
+Placeholder  | Substituted value 
+-----------  | -----------------
 #{platform}  | The microcontroller platform, e.g. "esp32" or "esp8266"
 #{unique_id} | A unique identifier derived from the MAC address, e.g. "0b0a859d6816"
-#{chip_id}   | The chip batch identifier, e.g. "4334a"
+#{random}    | A random number encoded as a hex string, e.g. "55722f94"
 
 You may use SettingValue::format in your own code if you require the use of these placeholders. This is demonstrated in the demo project:
 
