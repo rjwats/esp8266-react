@@ -1,14 +1,17 @@
 import React, { Fragment } from 'react';
-import { TextValidator, ValidatorForm, SelectValidator } from 'react-material-ui-form-validator';
+import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
+import { range } from 'lodash';
 
 import MenuItem from '@material-ui/core/MenuItem';
+import Checkbox from '@material-ui/core/Checkbox';
 import SaveIcon from '@material-ui/icons/Save';
 
-import { PasswordValidator, RestFormProps, FormActions, FormButton } from '../components';
+import { PasswordValidator, RestFormProps, FormActions, FormButton, BlockFormControlLabel } from '../components';
 
 import { isAPEnabled } from './APModes';
 import { APSettings, APProvisionMode } from './types';
 import { isIP } from '../validators';
+import { TextField } from '@material-ui/core';
 
 type APSettingsFormProps = RestFormProps<APSettings>;
 
@@ -22,17 +25,18 @@ class APSettingsForm extends React.Component<APSettingsFormProps> {
     const { data, handleValueChange, saveData } = this.props;
     return (
       <ValidatorForm onSubmit={saveData} ref="APSettingsForm">
-        <SelectValidator name="provision_mode"
+        <TextField name="provision_mode"
           label="Provide Access Point&hellip;"
           value={data.provision_mode}
           fullWidth
+          select
           variant="outlined"
           onChange={handleValueChange('provision_mode')}
           margin="normal">
           <MenuItem value={APProvisionMode.AP_MODE_ALWAYS}>Always</MenuItem>
           <MenuItem value={APProvisionMode.AP_MODE_DISCONNECTED}>When WiFi Disconnected</MenuItem>
           <MenuItem value={APProvisionMode.AP_NEVER}>Never</MenuItem>
-        </SelectValidator>
+        </TextField>
         {
           isAPEnabled(data) &&
           <Fragment>
@@ -58,6 +62,43 @@ class APSettingsForm extends React.Component<APSettingsFormProps> {
               onChange={handleValueChange('password')}
               margin="normal"
             />
+            <TextField name="channel"
+              label="Preferred Channel"
+              value={data.channel}
+              fullWidth
+              select
+              type="number"
+              variant="outlined"
+              onChange={handleValueChange('channel')}
+              margin="normal">
+              {
+                range(1, 14).map(i => <MenuItem value={i}>{i}</MenuItem>)
+              }
+            </TextField>
+            <BlockFormControlLabel
+              control={
+                <Checkbox
+                  value="ssid_hidden"
+                  checked={data.ssid_hidden}
+                  onChange={handleValueChange("ssid_hidden")}
+                />
+              }
+              label="Hide SSID?"
+            />
+            <TextField name="max_clients"
+              label="Max Clients"
+              value={data.max_clients}
+              fullWidth
+              select
+              type="number"
+              variant="outlined"
+              onChange={handleValueChange('max_clients')}
+              margin="normal"
+            >
+              {
+                range(1, 9).map(i => <MenuItem value={i}>{i}</MenuItem>)
+              }
+            </TextField>
             <TextValidator
               validators={['required', 'isIP']}
               errorMessages={['Local IP is required', 'Must be an IP address']}
