@@ -21,8 +21,10 @@ export interface APSettings {
   provision_mode: APProvisionMode;
   ssid: string;
   password: string;
+  channel: number;
+  ssid_hidden: boolean;
+  max_clients: number;
   local_ip: string;
   gateway_ip: string;
   subnet_mask: string;
-  network_visible: boolean;
 }
