@@ -33,6 +33,10 @@
 #define FACTORY_AP_SUBNET_MASK "255.255.255.0"
 #endif
 
+#ifndef FACTORY_AP_VISIBLE
+#define FACTORY_AP_VISIBLE true
+#endif
+
 #define AP_SETTINGS_FILE "/config/apSettings.json"
 #define AP_SETTINGS_SERVICE_PATH "/rest/apSettings"
 
@@ -54,10 +58,11 @@ class APSettings {
   IPAddress localIP;
   IPAddress gatewayIP;
   IPAddress subnetMask;
+  bool networkVisible;
 
   bool operator==(const APSettings& settings) const {
     return provisionMode == settings.provisionMode && ssid == settings.ssid && password == settings.password &&
-           localIP == settings.localIP && gatewayIP == settings.gatewayIP && subnetMask == settings.subnetMask;
+           localIP == settings.localIP && gatewayIP == settings.gatewayIP && subnetMask == settings.subnetMask && networkVisible == settings.networkVisible;
   }
 
   static void read(APSettings& settings, JsonObject& root) {
@@ -67,6 +72,7 @@ class APSettings {
     root["local_ip"] = settings.localIP.toString();
     root["gateway_ip"] = settings.gatewayIP.toString();
     root["subnet_mask"] = settings.subnetMask.toString();
+    root["network_visible"] = settings.networkVisible;
   }
 
   static StateUpdateResult update(JsonObject& root, APSettings& settings) {
@@ -82,6 +88,7 @@ class APSettings {
     }
     newSettings.ssid = root["ssid"] | SettingValue::format(FACTORY_AP_SSID);
     newSettings.password = root["password"] | FACTORY_AP_PASSWORD;
+    newSettings.networkVisible = root["network_visible"] | FACTORY_AP_VISIBLE;
 
     JsonUtils::readIP(root, "local_ip", newSettings.localIP, FACTORY_AP_LOCAL_IP);
     JsonUtils::readIP(root, "gateway_ip", newSettings.gatewayIP, FACTORY_AP_GATEWAY_IP);

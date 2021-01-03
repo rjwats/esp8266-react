@@ -3,8 +3,9 @@ import { TextValidator, ValidatorForm, SelectValidator } from 'react-material-ui
 
 import MenuItem from '@material-ui/core/MenuItem';
 import SaveIcon from '@material-ui/icons/Save';
+import Checkbox from '@material-ui/core/Checkbox';
 
-import { PasswordValidator, RestFormProps, FormActions, FormButton } from '../components';
+import {PasswordValidator, RestFormProps, FormActions, FormButton, BlockFormControlLabel} from '../components';
 
 import { isAPEnabled } from './APModes';
 import { APSettings, APProvisionMode } from './types';
@@ -90,6 +91,16 @@ class APSettingsForm extends React.Component<APSettingsFormProps> {
               value={data.subnet_mask}
               onChange={handleValueChange('subnet_mask')}
               margin="normal"
+            />
+            <BlockFormControlLabel
+              control={
+                <Checkbox
+                  value="network_visible"
+                  checked={data.network_visible}
+                  onChange={handleValueChange("network_visible")}
+                />
+              }
+              label="Network Visible?"
             />
           </Fragment>
         }

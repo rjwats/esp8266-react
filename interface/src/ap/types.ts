@@ -24,4 +24,5 @@ export interface APSettings {
   local_ip: string;
   gateway_ip: string;
   subnet_mask: string;
+  network_visible: boolean;
 }
