@@ -1,10 +1,15 @@
 #ifndef SecuritySettingsService_h
 #define SecuritySettingsService_h
 
+#include <SettingValue.h>
 #include <Features.h>
 #include <SecurityManager.h>
 #include <HttpEndpoint.h>
 #include <FSPersistence.h>
+
+#ifndef FACTORY_JWT_SECRET
+#define FACTORY_JWT_SECRET "#{random}-#{random}"
+#endif
 
 #ifndef FACTORY_ADMIN_USERNAME
 #define FACTORY_ADMIN_USERNAME "admin"
@@ -48,7 +53,7 @@ class SecuritySettings {
 
   static StateUpdateResult update(JsonObject& root, SecuritySettings& settings) {
     // secret
-    settings.jwtSecret = root["jwt_secret"] | FACTORY_JWT_SECRET;
+    settings.jwtSecret = root["jwt_secret"] | SettingValue::format(FACTORY_JWT_SECRET);
 
     // users
     settings.users.clear();
@@ -103,7 +108,7 @@ class SecuritySettingsService : public SecurityManager {
   SecuritySettingsService(AsyncWebServer* server, FS* fs);
   ~SecuritySettingsService();
 
-  // minimal set of functions to support framework with security settings disabled  
+  // minimal set of functions to support framework with security settings disabled
   Authentication authenticateRequest(AsyncWebServerRequest* request);
   ArRequestFilterFunction filterRequest(AuthenticationPredicate predicate);
   ArRequestHandlerFunction wrapRequest(ArRequestHandlerFunction onRequest, AuthenticationPredicate predicate);

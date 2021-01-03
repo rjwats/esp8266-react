@@ -1,6 +1,7 @@
 #ifndef APSettingsConfig_h
 #define APSettingsConfig_h
 
+#include <SettingValue.h>
 #include <HttpEndpoint.h>
 #include <FSPersistence.h>
 #include <JsonUtils.h>
@@ -8,20 +9,12 @@
 #include <DNSServer.h>
 #include <IPAddress.h>
 
-#define MANAGE_NETWORK_DELAY 10000
-
-#define AP_MODE_ALWAYS 0
-#define AP_MODE_DISCONNECTED 1
-#define AP_MODE_NEVER 2
-
-#define DNS_PORT 53
-
 #ifndef FACTORY_AP_PROVISION_MODE
 #define FACTORY_AP_PROVISION_MODE AP_MODE_DISCONNECTED
 #endif
 
 #ifndef FACTORY_AP_SSID
-#define FACTORY_AP_SSID "ESP8266-React"
+#define FACTORY_AP_SSID "ESP8266-React-#{unique_id}"
 #endif
 
 #ifndef FACTORY_AP_PASSWORD
@@ -42,6 +35,14 @@
 
 #define AP_SETTINGS_FILE "/config/apSettings.json"
 #define AP_SETTINGS_SERVICE_PATH "/rest/apSettings"
+
+#define MANAGE_NETWORK_DELAY 10000
+
+#define AP_MODE_ALWAYS 0
+#define AP_MODE_DISCONNECTED 1
+#define AP_MODE_NEVER 2
+
+#define DNS_PORT 53
 
 enum APNetworkStatus { ACTIVE = 0, INACTIVE, LINGERING };
 
@@ -79,7 +80,7 @@ class APSettings {
       default:
         newSettings.provisionMode = AP_MODE_ALWAYS;
     }
-    newSettings.ssid = root["ssid"] | FACTORY_AP_SSID;
+    newSettings.ssid = root["ssid"] | SettingValue::format(FACTORY_AP_SSID);
     newSettings.password = root["password"] | FACTORY_AP_PASSWORD;
 
     JsonUtils::readIP(root, "local_ip", newSettings.localIP, FACTORY_AP_LOCAL_IP);
