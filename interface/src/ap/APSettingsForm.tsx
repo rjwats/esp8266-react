@@ -17,7 +17,7 @@ type APSettingsFormProps = RestFormProps<APSettings>;
 
 class APSettingsForm extends React.Component<APSettingsFormProps> {
 
-  componentWillMount() {
+  componentDidMount() {
     ValidatorForm.addValidationRule('isIP', isIP);
   }
 

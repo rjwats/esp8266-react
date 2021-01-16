@@ -13,7 +13,7 @@ import SaveIcon from '@material-ui/icons/Save';
 import { RestFormProps, PasswordValidator, BlockFormControlLabel, FormActions, FormButton } from '../components';
 import { isIP, isHostname, optional } from '../validators';
 
-import { WiFiConnectionContext } from './WiFiConnectionContext';
+import { WiFiConnectionContext, WiFiConnectionContextValue } from './WiFiConnectionContext';
 import { isNetworkOpen, networkSecurityMode } from './WiFiSecurityModes';
 import { WiFiSettings } from './types';
 
@@ -24,7 +24,7 @@ class WiFiSettingsForm extends React.Component<WiFiStatusFormProps> {
   static contextType = WiFiConnectionContext;
   context!: React.ContextType<typeof WiFiConnectionContext>;
 
-  constructor(props: WiFiStatusFormProps, context: WiFiConnectionContext) {
+  constructor(props: WiFiStatusFormProps, context: WiFiConnectionContextValue) {
     super(props);
 
     const { selectedNetwork } = context;
@@ -39,7 +39,7 @@ class WiFiSettingsForm extends React.Component<WiFiStatusFormProps> {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     ValidatorForm.addValidationRule('isIP', isIP);
     ValidatorForm.addValidationRule('isHostname', isHostname);
     ValidatorForm.addValidationRule('isOptionalIP', optional(isIP));
