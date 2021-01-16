@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import moment from 'moment';
+import { DateTime } from 'luxon';
 
 import { WithTheme, withTheme } from '@material-ui/core/styles';
 import { Avatar, Divider, List, ListItem, ListItemAvatar, ListItemText, Button } from '@material-ui/core';
@@ -14,7 +14,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 
 import { RestFormProps, FormButton, HighlightAvatar } from '../components';
 import { isNtpActive, ntpStatusHighlight, ntpStatus } from './NTPStatus';
-import { formatIsoDateTime, formatLocalDateTime } from './TimeFormat';
+import { formatDuration, formatIsoDateTime, formatLocalDateTime, fromISOWithOffset, toISOWithOffset } from './TimeFormat';
 import { NTPStatus, Time } from './types';
 import { redirectingAuthorizedFetch, withAuthenticatedContext, AuthenticatedContextProps } from '../authentication';
 import { TIME_ENDPOINT } from '../api';
@@ -43,7 +43,7 @@ class NTPStatusForm extends Component<NTPStatusFormProps, NTPStatusFormState> {
   }
 
   openSetTime = () => {
-    this.setState({ localTime: formatLocalDateTime(moment()), settingTime: true, });
+    this.setState({ localTime: formatLocalDateTime(DateTime.local()), settingTime: true, });
   }
 
   closeSetTime = () => {
@@ -51,13 +51,10 @@ class NTPStatusForm extends Component<NTPStatusFormProps, NTPStatusFormState> {
   }
 
   createAdjustedTime = (): Time => {
-    const currentLocalTime = moment(this.props.data.time_local);
-    const newLocalTime = moment(this.state.localTime);
-    newLocalTime.subtract(currentLocalTime.utcOffset())
-    newLocalTime.milliseconds(0);
-    newLocalTime.utc();
+    const currentLocalTime = fromISOWithOffset(this.props.data.time_local);
+    const newLocalTime = fromISOWithOffset(this.state.localTime).minus(currentLocalTime.offset).toUTC();
     return {
-      time_utc: newLocalTime.format()
+      time_utc: toISOWithOffset(newLocalTime)
     }
   }
 
@@ -171,7 +168,7 @@ class NTPStatusForm extends Component<NTPStatusFormProps, NTPStatusFormState> {
                 <AvTimerIcon />
               </Avatar>
             </ListItemAvatar>
-            <ListItemText primary="Uptime" secondary={moment.duration(data.uptime, 'seconds').humanize()} />
+            <ListItemText primary="Uptime" secondary={formatDuration(data.uptime)} />
           </ListItem>
           <Divider variant="inset" component="li" />
         </List>
