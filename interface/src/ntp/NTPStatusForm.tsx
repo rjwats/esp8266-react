@@ -14,7 +14,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 
 import { RestFormProps, FormButton, HighlightAvatar } from '../components';
 import { isNtpActive, ntpStatusHighlight, ntpStatus } from './NTPStatus';
-import { formatDuration, formatIsoDateTime, formatLocalDateTime, fromISOWithOffset, toISOWithOffset } from './TimeFormat';
+import { formatDuration, toLocaleFormat, toLocalDateTime, toUtcIso, fromOffsetIso } from './TimeFormat';
 import { NTPStatus, Time } from './types';
 import { redirectingAuthorizedFetch, withAuthenticatedContext, AuthenticatedContextProps } from '../authentication';
 import { TIME_ENDPOINT } from '../api';
@@ -43,7 +43,7 @@ class NTPStatusForm extends Component<NTPStatusFormProps, NTPStatusFormState> {
   }
 
   openSetTime = () => {
-    this.setState({ localTime: formatLocalDateTime(DateTime.local()), settingTime: true, });
+    this.setState({ localTime: toLocalDateTime(DateTime.local()), settingTime: true, });
   }
 
   closeSetTime = () => {
@@ -51,10 +51,13 @@ class NTPStatusForm extends Component<NTPStatusFormProps, NTPStatusFormState> {
   }
 
   createAdjustedTime = (): Time => {
-    const currentLocalTime = fromISOWithOffset(this.props.data.time_local);
-    const newLocalTime = fromISOWithOffset(this.state.localTime).minus(currentLocalTime.offset).toUTC();
+    const currentLocalTime = fromOffsetIso(this.props.data.time_local);
+    const newLocalTime = fromOffsetIso(this.state.localTime)
+      .minus(currentLocalTime.offset)
+      .set({ millisecond: 0 })
+      .toUTC();
     return {
-      time_utc: toISOWithOffset(newLocalTime)
+      time_utc: toUtcIso(newLocalTime)
     }
   }
 
@@ -150,7 +153,7 @@ class NTPStatusForm extends Component<NTPStatusFormProps, NTPStatusFormState> {
                 <AccessTimeIcon />
               </Avatar>
             </ListItemAvatar>
-            <ListItemText primary="Local Time" secondary={formatIsoDateTime(data.time_local)} />
+            <ListItemText primary="Local Time" secondary={toLocaleFormat(data.time_local)} />
           </ListItem>
           <Divider variant="inset" component="li" />
           <ListItem>
@@ -159,7 +162,7 @@ class NTPStatusForm extends Component<NTPStatusFormProps, NTPStatusFormState> {
                 <SwapVerticalCircleIcon />
               </Avatar>
             </ListItemAvatar>
-            <ListItemText primary="UTC Time" secondary={formatIsoDateTime(data.time_utc)} />
+            <ListItemText primary="UTC Time" secondary={toLocaleFormat(data.time_utc)} />
           </ListItem>
           <Divider variant="inset" component="li" />
           <ListItem>
