@@ -13,7 +13,6 @@
     "@types/react-router": "^5.1.8",
     "@types/react-router-dom": "^5.1.6",
     "compression-webpack-plugin": "^4.0.0",
-    "date-fns": "^2.16.1",
     "jwt-decode": "^3.1.2",
     "lodash": "^4.17.20",
     "mime-types": "^2.1.28",
