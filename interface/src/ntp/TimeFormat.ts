@@ -6,11 +6,11 @@ export const formatDateTime = (dateTime: string) => {
 }
 
 export const formatLocalDateTimeNow = () => {
-  return format(new Date(), 'yyyy-MM-ddTHH:mm');
+  return format(new Date(), "yyyy-MM-dd'T'HH:mm");
 }
 
 export const formatLocalDateTime = (dateTime: string) => {
-  return format(parseISO(dateTime), 'yyyy-MM-ddTHH:mm:ss');
+  return format(parseISO(dateTime), "yyyy-MM-dd'T'HH:mm:ss");
 }
 
 export const formatDuration = (duration: number) => {
