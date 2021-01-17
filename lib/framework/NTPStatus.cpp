@@ -43,7 +43,7 @@ void NTPStatus::ntpStatus(AsyncWebServerRequest* request) {
   // the current time in UTC
   root["time_utc"] = toUTCTimeString(gmtime(&now));
 
-  // local time with offset separate
+  // local time with offset
   struct tm* ltm = localtime(&now);
   root["time_local"] = toLocalTimeString(ltm);
   root["time_offset"] = offsetString(ltm);

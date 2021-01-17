@@ -1,5 +1,32 @@
-import moment, { Moment } from 'moment';
+import { parseISO, format } from 'date-fns';
+import parseMilliseconds from 'parse-ms';
 
-export const formatIsoDateTime = (isoDateString: string) => moment.parseZone(isoDateString).format('ll @ HH:mm:ss');
+export const formatDateTime = (dateTime: string) => {
+  return format(parseISO(dateTime.substr(0, 19)), 'PP @ HH:mm:ss');
+}
 
-export const formatLocalDateTime = (moment: Moment) => moment.format('YYYY-MM-DDTHH:mm');
+export const formatLocalDateTimeNow = () => {
+  return format(new Date(), 'yyyy-MM-ddTHH:mm');
+}
+
+export const formatLocalDateTime = (dateTime: string) => {
+  return format(parseISO(dateTime), 'yyyy-MM-ddTHH:mm:ss');
+}
+
+export const formatDuration = (duration: number) => {
+  const { days, hours, minutes, seconds } = parseMilliseconds(duration * 1000);
+  var formatted = '';
+  if (days) {
+    formatted += days + ' days ';
+  }
+  if (formatted || hours) {
+    formatted += hours + ' hours ';
+  }
+  if (formatted || minutes) {
+    formatted += minutes + ' minutes ';
+  }
+  if (formatted || seconds) {
+    formatted += seconds + ' seconds';
+  }
+  return formatted;
+}

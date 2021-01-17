@@ -19,5 +19,5 @@ export interface NTPSettings {
 }
 
 export interface Time {
-  time_utc: string;
+  time_local: string;
 }
