@@ -52,10 +52,7 @@ class NTPStatusForm extends Component<NTPStatusFormProps, NTPStatusFormState> {
 
   createAdjustedTime = (): Time => {
     const currentLocalTime = fromOffsetIso(this.props.data.time_local);
-    const newLocalTime = fromOffsetIso(this.state.localTime)
-      .minus(currentLocalTime.offset)
-      .set({ millisecond: 0 })
-      .toUTC();
+    const newLocalTime = fromOffsetIso(this.state.localTime).minus(currentLocalTime.offset);
     return {
       time_utc: toUtcIso(newLocalTime)
     }
