@@ -49,18 +49,14 @@ class NTPStatusForm extends Component<NTPStatusFormProps, NTPStatusFormState> {
     this.setState({ settingTime: false });
   }
 
-  createAdjustedTime = (): Time => {
-    return {
-      local_time: formatLocalDateTime(this.state.localTime)
-    }
-  }
+  createTime = (): Time => ({ local_time: formatLocalDateTime(this.state.localTime) });
 
   configureTime = () => {
     this.setState({ processing: true });
     redirectingAuthorizedFetch(TIME_ENDPOINT,
       {
         method: 'POST',
-        body: JSON.stringify(this.createAdjustedTime()),
+        body: JSON.stringify(this.createTime()),
         headers: {
           'Content-Type': 'application/json'
         }
