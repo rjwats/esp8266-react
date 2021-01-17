@@ -51,7 +51,7 @@ class NTPStatusForm extends Component<NTPStatusFormProps, NTPStatusFormState> {
 
   createAdjustedTime = (): Time => {
     return {
-      time_local: formatLocalDateTime(this.state.localTime)
+      local_time: formatLocalDateTime(this.state.localTime)
     }
   }
 
@@ -147,7 +147,7 @@ class NTPStatusForm extends Component<NTPStatusFormProps, NTPStatusFormState> {
                 <AccessTimeIcon />
               </Avatar>
             </ListItemAvatar>
-            <ListItemText primary="Local Time" secondary={formatDateTime(data.time_local)} />
+            <ListItemText primary="Local Time" secondary={formatDateTime(data.local_time)} />
           </ListItem>
           <Divider variant="inset" component="li" />
           <ListItem>
@@ -156,7 +156,7 @@ class NTPStatusForm extends Component<NTPStatusFormProps, NTPStatusFormState> {
                 <SwapVerticalCircleIcon />
               </Avatar>
             </ListItemAvatar>
-            <ListItemText primary="UTC Time" secondary={formatDateTime(data.time_utc)} />
+            <ListItemText primary="UTC Time" secondary={formatDateTime(data.utc_time)} />
           </ListItem>
           <Divider variant="inset" component="li" />
           <ListItem>

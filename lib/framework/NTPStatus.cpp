@@ -26,10 +26,6 @@ String toLocalTimeString(tm* time) {
   return formatTime(time, "%FT%T");
 }
 
-String offsetString(tm* time) {
-  return formatTime(time, "%z");
-}
-
 void NTPStatus::ntpStatus(AsyncWebServerRequest* request) {
   AsyncJsonResponse* response = new AsyncJsonResponse(false, MAX_NTP_STATUS_SIZE);
   JsonObject root = response->getRoot();
@@ -41,12 +37,10 @@ void NTPStatus::ntpStatus(AsyncWebServerRequest* request) {
   root["status"] = sntp_enabled() ? 1 : 0;
 
   // the current time in UTC
-  root["time_utc"] = toUTCTimeString(gmtime(&now));
+  root["utc_time"] = toUTCTimeString(gmtime(&now));
 
   // local time with offset
-  struct tm* ltm = localtime(&now);
-  root["time_local"] = toLocalTimeString(ltm);
-  root["time_offset"] = offsetString(ltm);
+  root["local_time"] = toLocalTimeString(localtime(&now));
 
   // the sntp server name
   root["server"] = sntp_getservername(0);

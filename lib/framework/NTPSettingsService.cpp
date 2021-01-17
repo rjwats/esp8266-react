@@ -74,7 +74,7 @@ void NTPSettingsService::configureNTP() {
 void NTPSettingsService::configureTime(AsyncWebServerRequest* request, JsonVariant& json) {
   if (!sntp_enabled() && json.is<JsonObject>()) {
     struct tm tm = {0};
-    String timeLocal = json["time_local"];
+    String timeLocal = json["local_time"];
     char* s = strptime(timeLocal.c_str(), "%Y-%m-%dT%H:%M:%S", &tm);
     if (s != nullptr) {
       time_t time = mktime(&tm);
