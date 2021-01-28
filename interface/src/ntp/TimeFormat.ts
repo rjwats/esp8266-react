@@ -1,14 +1,17 @@
 import parseMilliseconds from 'parse-ms';
 
-const LOCALE_FORMAT = new Intl.DateTimeFormat('default', {
-  day: 'numeric',
-  month: 'short',
-  year: 'numeric',
-  hour: 'numeric',
-  minute: 'numeric',
-  second: 'numeric',
-  hour12: false
-});
+const LOCALE_FORMAT = new Intl.DateTimeFormat(
+  [...window.navigator.languages],
+  {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric',
+    hour12: false
+  }
+);
 
 export const formatDateTime = (dateTime: string) => {
   return LOCALE_FORMAT.format(new Date(dateTime.substr(0, 19)));
