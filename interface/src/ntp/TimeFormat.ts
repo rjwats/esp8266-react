@@ -17,16 +17,11 @@ export const formatDateTime = (dateTime: string) => {
   return LOCALE_FORMAT.format(new Date(dateTime.substr(0, 19)));
 }
 
-export const formatLocalDateTimeNow = () => {
-  return formatIsoDateTime(new Date()).substr(0, 19);
-}
-
-export const formatLocalDateTime = (dateTime: string) => {
-  return formatIsoDateTime(new Date(dateTime)).substr(0, 19);
-}
-
-export const formatIsoDateTime = (date: Date) => {
-  return new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, -1);
+export const formatLocalDateTime = (date: Date) => {
+  return new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+    .toISOString()
+    .slice(0, -1)
+    .substr(0, 19);
 }
 
 export const formatDuration = (duration: number) => {
