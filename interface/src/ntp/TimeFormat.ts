@@ -28,16 +28,18 @@ export const formatDuration = (duration: number) => {
   const { days, hours, minutes, seconds } = parseMilliseconds(duration * 1000);
   var formatted = '';
   if (days) {
-    formatted += days + ' days ';
+    formatted += pluralize(days, 'day');
   }
   if (formatted || hours) {
-    formatted += hours + ' hours ';
+    formatted += pluralize(hours, 'hour');
   }
   if (formatted || minutes) {
-    formatted += minutes + ' minutes ';
+    formatted += pluralize(minutes, 'minute');
   }
   if (formatted || seconds) {
-    formatted += seconds + ' seconds';
+    formatted += pluralize(seconds, 'second');
   }
   return formatted;
 }
+
+const pluralize = (count: number, noun: string, suffix: string = 's') => ` ${count} ${noun}${count !== 1 ? suffix : ''} `;
