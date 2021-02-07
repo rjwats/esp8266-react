@@ -14,44 +14,35 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#pragma once
+#ifndef StreamBus_h
+#define StreamBus_h
 
 #include <memory>
+#include <algorithm>
 #include <string>
 #include <vector>
 #include <Stream.h>
-#include <HardwareSerial.h>
 #include <PipedStream.h>
+#include <HardwareSerial.h>
 
-class SerialService {
+class StreamBus {
 public:
-    void setup();
-    void loop() ;
-    void dump_config() ;
-    void on_shutdown() ;
-    Stream
-
-    void set_pin(uint8_t pin) { this->pin_ = pin; }
-    void set_uart(uint8_t uart) { this->uart_ = uart; }
+    void write();
+    bool connect(std::string name, Stream* stream);
+    bool disconnect(std::string name);
+    bool disconnect(Stream* stream);
 
 protected:
-    void cleanup();
-    void read();
-    void write();
 
-    struct Client {
-        Client(Stream *stream, std::vector<uint8_t> &recv_buf);
-        ~Client();
 
-            Stream *stream_;
-        std::string identifier{};
+    struct Node {
+        Node(std::string name, Stream* stream);
+
+        Stream* stream;
+        std::string name{};
         bool disconnected{false};
     };
 
-    uint8_t uart_{2}
-    uint8_t pin_{26};
-    std::vector<uint8_t> recv_buf_{};
-    std::vector<std::unique_ptr<Client>> clients_{};
-    unsigned long baud{115200};
-    uint32_t config{SERIAL_8N1};
+    std::vector<std::unique_ptr<Node>> nodes_{};
 };
+#endif // end StreamBus_h

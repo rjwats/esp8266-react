@@ -18,7 +18,6 @@
 
 void StreamServer::setup() {
     Serial.println("Setting up stream server...");
-    this->stream_->begin(this->baud,this->config,this->rx_pin);
     this->recv_buf_.reserve(128);
 
     this->server_ = AsyncServer(this->port_);

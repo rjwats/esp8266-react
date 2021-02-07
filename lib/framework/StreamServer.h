@@ -31,6 +31,8 @@
 
 class StreamServer {
 public:
+    StreamServer(Stream *stream) : stream_{stream} {}
+    
     void setup();
     void loop() ;
     void dump_config() ;

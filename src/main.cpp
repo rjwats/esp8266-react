@@ -5,7 +5,7 @@
 
 #define SERIAL_BAUD_RATE 115200
 
-StreamServer serialServer;
+//StreamServer serialServer;
 AsyncWebServer server(80);
 ESP8266React esp8266React(&server);
 LightMqttSettingsService lightMqttSettingsService =
@@ -22,8 +22,8 @@ void setup() {
   // start the framework and demo project
   esp8266React.begin();
 
-  // start the ser2net server
-  serialServer.setup();
+  // // start the ser2net server
+  // serialServer.setup();
 
   // load the initial light settings
   lightStateService.begin();
@@ -38,5 +38,5 @@ void setup() {
 void loop() {
   // run the framework's loop function
   esp8266React.loop();
-  serialServer.loop();
+  // serialServer.loop();
 }

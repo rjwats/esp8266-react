@@ -12,6 +12,10 @@ ESP8266React::ESP8266React(AsyncWebServer* server) :
     _ntpSettingsService(server, &ESPFS, &_securitySettingsService),
     _ntpStatus(server, &_securitySettingsService),
 #endif
+#if FT_ENABLED(FT_SERIAL)
+    _serialSettingsService(server, &ESPFS, &_securitySettingsService),
+    _serialStatus(server, &_serialSettingsService, &_securitySettingsService),
+#endif
 #if FT_ENABLED(FT_OTA)
     _otaSettingsService(server, &ESPFS, &_securitySettingsService),
 #endif
@@ -100,6 +104,9 @@ void ESP8266React::begin() {
 #if FT_ENABLED(FT_SECURITY)
   _securitySettingsService.begin();
 #endif
+#if FT_ENABLED(FT_SERIAL)
+  _serialSettingsService.begin();
+#endif
 }
 
 void ESP8266React::loop() {
@@ -110,5 +117,8 @@ void ESP8266React::loop() {
 #endif
 #if FT_ENABLED(FT_MQTT)
   _mqttSettingsService.loop();
+#endif
+#if FT_ENABLED(FT_SERIAL)
+  _serialSettingsService.loop();
 #endif
 }
