@@ -53,6 +53,7 @@ public:
     void dump_config() ;
     bool isEnabled() { return this->_state.enabled; };
     bool baud() { return this->_state.baud; };
+    uint32_t returnConfig() { return this->_state.config; };
     void onConfigUpdate() {  configureSerial(); } ;
 
 private:

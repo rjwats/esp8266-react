@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 
-import { LogEvent, LogLevel } from './types';
+import { LogEvent } from './types';
 import { Theme, makeStyles, Box } from '@material-ui/core';
 import { useWindowSize } from '../components';
 import { formatIsoDateTimeToHr } from '../ntp/TimeFormat';
@@ -60,48 +60,11 @@ const LogEventConsole: FC<LogEventConsoleProps> = (props) => {
   const classes = useStyles({ topOffset, leftOffset });
   const { events } = props;
 
-  const styleLevel = (level: LogLevel) => {
-    switch (level) {
-      case LogLevel.DEBUG:
-        return classes.debug;
-      case LogLevel.INFO:
-        return classes.info;
-      case LogLevel.WARNING:
-        return classes.warning;
-      case LogLevel.ERROR:
-        return classes.error;
-      default:
-        return classes.unknown;
-    }
-  }
-
-  const levelLabel = (level: LogLevel) => {
-    switch (level) {
-      case LogLevel.DEBUG:
-        return "DEBUG";
-      case LogLevel.INFO:
-        return "INFO";
-      case LogLevel.WARNING:
-        return "WARNING";
-      case LogLevel.ERROR:
-        return "ERROR";
-      default:
-        return "UNKNOWN";
-    }
-  }
-
-  const paddedLevelLabel = (level: LogLevel) => {
-    let label = levelLabel(level);
-    return label.padStart(7, '\xa0');
-  }
-
   return (
     <Box className={classes.console}>
       {events.map(e => (
         <div className={classes.entry}>
           <span>{formatIsoDateTimeToHr(e.time)} </span>
-          <span className={styleLevel(e.level)}>{paddedLevelLabel(e.level)} </span>
-          <span className={classes.file}>{`${e.file}[${e.line}]`} </span>
           <span>{e.message}</span>
         </div>
       ))}

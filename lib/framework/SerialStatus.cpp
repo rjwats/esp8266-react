@@ -16,6 +16,7 @@ void SerialStatus::serialStatus(AsyncWebServerRequest* request) {
 
   root["enabled"] = _serialSettingsService->isEnabled();
   root["baud"]  = _serialSettingsService->baud();
+  root["config"] = _serialSettingsService->returnConfig();
 
   response->setLength();
   request->send(response);

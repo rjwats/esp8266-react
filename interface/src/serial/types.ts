@@ -28,6 +28,7 @@ export enum Config {
 export interface SerialStatus {
   enabled: boolean;
   baud: number;
+  config: Config;
 }
 
 export interface SerialSettings {
@@ -37,4 +38,9 @@ export interface SerialSettings {
   txpin: number;
   config: Config;
   invert: boolean;
+}
+
+export interface LogEvent {
+  time: string;
+  message: string;
 }

@@ -9,8 +9,8 @@ import ReportIcon from '@material-ui/icons/Report';
 
 import { RestFormProps, FormActions, FormButton, HighlightAvatar } from '../components';
 import { SectionContent, BlockFormControlLabel } from '../components';
-import { serialStatusHighlight, serialStatus, disconnectReason } from './SerialStatus';
-import { SerialStatus } from './types';
+import { serialStatusHighlight, serialStatus  } from './SerialStatus';
+import { SerialStatus, Config } from './types';
 
 type SerialStatusFormProps = RestFormProps<SerialStatus> & WithTheme;
 
@@ -20,14 +20,20 @@ class SerialStatusForm extends Component<SerialStatusFormProps> {
 
     const changeLedOn = (event: React.ChangeEvent<HTMLInputElement>) => {
     }
-    if (data.connected) {
+    if (data.enabled) {
       return (
         <Fragment>
           <ListItem>
             <ListItemAvatar>
               <Avatar>#</Avatar>
             </ListItemAvatar>
-            <ListItemText primary="Client ID" secondary={data.client_id} />
+            <ListItemText primary="Baud rate" secondary={Config[data.baud]} />
+          </ListItem>
+          <ListItem>
+            <ListItemAvatar>
+              <Avatar>#</Avatar>
+            </ListItemAvatar>
+            <ListItemText primary="Config" secondary={data.config} />
           </ListItem>
           <Divider variant="inset" component="li" />
         </Fragment>
@@ -41,8 +47,7 @@ class SerialStatusForm extends Component<SerialStatusFormProps> {
               <ReportIcon />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary="Disconnect Reason" secondary={disconnectReason(data)} />
-        </ListItem>
+        </ListItem>client_id
         <Divider variant="inset" component="li" />
       </Fragment>
     );
