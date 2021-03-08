@@ -63,10 +63,10 @@ void WiFiStatus::wifiStatus(AsyncWebServerRequest* request) {
     root["gateway_ip"] = WiFi.gatewayIP().toString();
     IPAddress dnsIP1 = WiFi.dnsIP(0);
     IPAddress dnsIP2 = WiFi.dnsIP(1);
-    if (dnsIP1 != INADDR_NONE) {
+    if (IPUtils::isSet(dnsIP1)) {
       root["dns_ip_1"] = dnsIP1.toString();
     }
-    if (dnsIP2 != INADDR_NONE) {
+    if (IPUtils::isSet(dnsIP2)) {
       root["dns_ip_2"] = dnsIP2.toString();
     }
   }
