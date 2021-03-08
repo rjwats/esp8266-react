@@ -24,6 +24,8 @@
 
 #define WIFI_RECONNECTION_DELAY 1000 * 30
 
+const IPAddress IP_NOT_SET = IPAddress(INADDR_NONE);
+
 class WiFiSettings {
  public:
   // core wifi configuration
@@ -68,7 +70,7 @@ class WiFiSettings {
     JsonUtils::readIP(root, "dns_ip_2", settings.dnsIP2);
 
     // Swap around the dns servers if 2 is populated but 1 is not
-    if (settings.dnsIP1 == INADDR_NONE && settings.dnsIP2 != INADDR_NONE) {
+    if (settings.dnsIP1 == IP_NOT_SET && settings.dnsIP2 != IP_NOT_SET) {
       settings.dnsIP1 = settings.dnsIP2;
       settings.dnsIP2 = INADDR_NONE;
     }
@@ -77,7 +79,7 @@ class WiFiSettings {
     // of ipAddress, gateway and subnet. This may change to static ip only
     // as sensible defaults can be assumed for gateway and subnet
     if (settings.staticIPConfig &&
-        (settings.localIP == INADDR_NONE || settings.gatewayIP == INADDR_NONE || settings.subnetMask == INADDR_NONE)) {
+        (settings.localIP == IP_NOT_SET || settings.gatewayIP == IP_NOT_SET || settings.subnetMask == IP_NOT_SET)) {
       settings.staticIPConfig = false;
     }
     return StateUpdateResult::CHANGED;
