@@ -2,7 +2,7 @@
 #define JsonUtils_h
 
 #include <Arduino.h>
-#include <IPAddress.h>
+#include <IPUtils.h>
 #include <ArduinoJson.h>
 
 class JsonUtils {
@@ -20,7 +20,7 @@ class JsonUtils {
     }
   }
   static void writeIP(JsonObject& root, const String& key, const IPAddress& ip) {
-    if (ip != INADDR_NONE) {
+    if (IPUtils::isSet(ip)) {
       root[key] = ip.toString();
     }
   }
