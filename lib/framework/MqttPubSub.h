@@ -33,14 +33,32 @@ class MqttPub : virtual public MqttConnector<T> {
           StatefulService<T>* statefulService,
           AsyncMqttClient* mqttClient,
           const String& pubTopic = "",
-          size_t bufferSize = DEFAULT_BUFFER_SIZE) :
-      MqttConnector<T>(statefulService, mqttClient, bufferSize), _stateReader(stateReader), _pubTopic(pubTopic) {
+          size_t bufferSize = DEFAULT_BUFFER_SIZE,
+          const bool retain = false) :
+      MqttConnector<T>(statefulService, mqttClient, bufferSize),
+      _stateReader(stateReader),
+      _pubTopic(pubTopic),
+      _retain(retain) {
     MqttConnector<T>::_statefulService->addUpdateHandler([&](const String& originId) { publish(); }, false);
+  }
+
+  void setRetain(bool retain) {
+    _retain = retain;
   }
 
   void setPubTopic(const String& pubTopic) {
     _pubTopic = pubTopic;
     publish();
+  }
+
+  void publish(const char* topic, const char* payload){
+    MqttConnector<T>::_mqttClient->publish(topic, 0, _retain, payload);
+  }
+  void publish(const char* topic, const char* payload, bool retain){
+    MqttConnector<T>::_mqttClient->publish(topic, 0, retain, payload);
+  }
+  void publish(const char* topic, const char* payload, bool retain, uint8_t qos){
+    MqttConnector<T>::_mqttClient->publish(topic, qos, retain, payload);
   }
 
  protected:
@@ -51,6 +69,7 @@ class MqttPub : virtual public MqttConnector<T> {
  private:
   JsonStateReader<T> _stateReader;
   String _pubTopic;
+  bool _retain;
 
   void publish() {
     if (_pubTopic.length() > 0 && MqttConnector<T>::_mqttClient->connected()) {
@@ -64,7 +83,7 @@ class MqttPub : virtual public MqttConnector<T> {
       serializeJson(json, payload);
 
       // publish the payload
-      MqttConnector<T>::_mqttClient->publish(_pubTopic.c_str(), 0, false, payload.c_str());
+      MqttConnector<T>::_mqttClient->publish(_pubTopic.c_str(), 0, _retain, payload.c_str());
     }
   }
 };
@@ -145,16 +164,43 @@ class MqttPubSub : public MqttPub<T>, public MqttSub<T> {
              AsyncMqttClient* mqttClient,
              const String& pubTopic = "",
              const String& subTopic = "",
-             size_t bufferSize = DEFAULT_BUFFER_SIZE) :
+             size_t bufferSize = DEFAULT_BUFFER_SIZE,
+             const bool retain = false) :
       MqttConnector<T>(statefulService, mqttClient, bufferSize),
-      MqttPub<T>(stateReader, statefulService, mqttClient, pubTopic, bufferSize),
+      MqttPub<T>(stateReader, statefulService, mqttClient, pubTopic, bufferSize, retain),
       MqttSub<T>(stateUpdater, statefulService, mqttClient, subTopic, bufferSize) {
+  }
+  MqttPubSub(JsonStateReader<T> stateReader,
+             JsonStateUpdater<T> stateUpdater,
+             StatefulService<T>* statefulService,
+             AsyncMqttClient* mqttClient,
+             const bool retain = false) :
+      MqttConnector<T>(statefulService, mqttClient, DEFAULT_BUFFER_SIZE),
+      MqttPub<T>(stateReader, statefulService, mqttClient, "", DEFAULT_BUFFER_SIZE, retain),
+      MqttSub<T>(stateUpdater, statefulService, mqttClient, "", DEFAULT_BUFFER_SIZE) {
   }
 
  public:
   void configureTopics(const String& pubTopic, const String& subTopic) {
     MqttSub<T>::setSubTopic(subTopic);
     MqttPub<T>::setPubTopic(pubTopic);
+  }
+  void configureTopics(const String& pubTopic, const String& subTopic, const bool retain) {
+    MqttSub<T>::setSubTopic(subTopic);
+    MqttPub<T>::setPubTopic(pubTopic);
+    MqttPub<T>::setRetain(retain);
+  }
+  void configureRetain(bool retain) {
+    MqttPub<T>::setRetain(retain);
+  }
+  void publish(const char* topic, const char* payload) {
+    MqttPub<T>::publish(topic, payload);
+  }
+  void publish(const char* topic, const char* payload, bool retain) {
+    MqttPub<T>::publish(topic, payload, retain);
+  }
+  void publish(const char* topic, const char* payload, bool retain, uint8_t qos) {
+    MqttPub<T>::publish(topic, payload, retain, qos);
   }
 
  protected:
