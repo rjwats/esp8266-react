@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
 import { useSnackbar } from 'notistack';
-import { redirectingAuthorizedFetch } from "../authentication";
 
-interface RestRequestOptions {
+export interface RestRequestOptions {
   endpoint: string;
+  fetchFunction?: typeof fetch;
 }
 
-const useRest = <D>({ endpoint }: RestRequestOptions) => {
+const useRest = <D>({ endpoint, fetchFunction = fetch }: RestRequestOptions) => {
   const { enqueueSnackbar } = useSnackbar();
 
   const [saving, setSaving] = useState<boolean>(false);
@@ -27,7 +27,7 @@ const useRest = <D>({ endpoint }: RestRequestOptions) => {
       setData(undefined);
       setErrorMessage(undefined);
       try {
-        const response = await redirectingAuthorizedFetch(endpoint);
+        const response = await fetchFunction(endpoint);
         if (response.status !== 200) {
           throw Error("Invalid status code: " + response.status);
         }
@@ -36,7 +36,7 @@ const useRest = <D>({ endpoint }: RestRequestOptions) => {
         handleError(error);
       }
     },
-    [handleError, endpoint],
+    [handleError, fetchFunction, endpoint],
   );
 
   const save = useCallback(
@@ -44,7 +44,7 @@ const useRest = <D>({ endpoint }: RestRequestOptions) => {
       setSaving(true);
       setErrorMessage(undefined);
       try {
-        const response = await redirectingAuthorizedFetch(endpoint, {
+        const response = await fetchFunction(endpoint, {
           method: 'POST',
           body: JSON.stringify(data),
           headers: {
@@ -54,6 +54,7 @@ const useRest = <D>({ endpoint }: RestRequestOptions) => {
         if (response.status !== 200) {
           throw Error("Invalid status code: " + response.status);
         }
+        enqueueSnackbar("Update successful.", { variant: 'success' });
         setData(await response.json());
       } catch (error) {
         handleError(error);
@@ -61,7 +62,7 @@ const useRest = <D>({ endpoint }: RestRequestOptions) => {
         setSaving(false);
       }
     },
-    [handleError, endpoint],
+    [enqueueSnackbar, handleError, fetchFunction, endpoint],
   );
 
   const saveData = () => data && save(data);

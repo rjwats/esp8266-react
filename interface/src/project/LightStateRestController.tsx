@@ -8,13 +8,13 @@ import { ENDPOINT_ROOT } from '../api';
 import { FormActions, FormButton, SectionContent, BlockFormControlLabel, FormLoader } from '../components';
 
 import { LightState } from './types';
-import { useRest } from '../hooks';
+import { useAuthorizedRest } from '../hooks';
 import { updateValue } from '../utils';
 
 export const LIGHT_SETTINGS_ENDPOINT = ENDPOINT_ROOT + "lightState";
 
 const LightStateRestController: FC = () => {
-  const { loadData, saveData, saving, setData, data, errorMessage } = useRest<LightState>({ endpoint: LIGHT_SETTINGS_ENDPOINT });
+  const { loadData, saveData, saving, setData, data, errorMessage } = useAuthorizedRest<LightState>({ endpoint: LIGHT_SETTINGS_ENDPOINT });
   const updateFormValue = updateValue(setData);
 
   const content = () => {
