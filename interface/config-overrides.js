@@ -4,9 +4,6 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const ProgmemGenerator = require('./progmem-generator.js');
 
-const path = require('path');
-const fs = require('fs');
-
 module.exports = function override(config, env) {
   if (env === "production") {
     // rename the ouput file, we need it's path to be short, for embedded FS
