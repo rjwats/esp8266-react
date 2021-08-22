@@ -9,20 +9,17 @@ interface UnauthenticatedRouteProps extends RouteProps, AuthenticationContextPro
   component: React.ComponentType<RouteComponentProps<any>> | React.ComponentType<any>;
 }
 
-type RenderComponent = (props: RouteComponentProps<any>) => React.ReactNode;
-
 class UnauthenticatedRoute extends Route<UnauthenticatedRouteProps> {
 
   public render() {
-    const { authenticationContext, component: Component, features, ...rest } = this.props;
-    const renderComponent: RenderComponent = (props) => {
-      if (authenticationContext.me) {
-        return (<Redirect to={Authentication.fetchLoginRedirect(features)} />);
-      }
-      return (<Component {...props} />);
+    const { authenticationContext, features, ...rest } = this.props;
+    if (authenticationContext.me) {
+      return (
+        <Redirect to={Authentication.fetchLoginRedirect(features)} />
+      );
     }
     return (
-      <Route {...rest} render={renderComponent} />
+      <Route {...rest} />
     );
   }
 }
