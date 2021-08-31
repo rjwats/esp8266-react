@@ -10,6 +10,11 @@ import CustomMuiTheme from './CustomMuiTheme';
 import { PROJECT_NAME } from './api';
 import FeaturesWrapper from './features/FeaturesWrapper';
 
+
+//import React, { Component } from "react";
+import { Provider } from "react-redux";
+import store from "./redux/store";
+
 // this redirect forces a call to authenticationContext.refresh() which invalidates the JWT if it is invalid.
 const unauthorizedRedirect = () => <Redirect to="/" />;
 
@@ -27,6 +32,7 @@ class App extends Component {
 
   render() {
     return (
+      <Provider store={store}>
       <CustomMuiTheme>
         <SnackbarProvider maxSnack={3} anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
           ref={this.notistackRef}
@@ -43,6 +49,7 @@ class App extends Component {
           </FeaturesWrapper>
         </SnackbarProvider>
       </CustomMuiTheme>
+      </Provider>
     );
   }
 }

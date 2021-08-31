@@ -71,3 +71,13 @@ void LightStateService::registerConfig() {
 
   _mqttPubSub.configureTopics(pubTopic, subTopic);
 }
+
+void LightStateService::sendData(DynamicJsonDocument doc) {
+  //digitalWrite(LED_PIN, _state.ledOn ? LED_ON : LED_OFF);
+  if (!_mqttClient->connected()) {
+    return;
+  }
+  //DynamicJsonDocument doc1(256);
+
+  //_mqttClient.
+}

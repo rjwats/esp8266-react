@@ -73,6 +73,7 @@ class LightStateService : public StatefulService<LightState> {
                     AsyncMqttClient* mqttClient,
                     LightMqttSettingsService* lightMqttSettingsService);
   void begin();
+  void sendData(DynamicJsonDocument doc);
 
  private:
   HttpEndpoint<LightState> _httpEndpoint;

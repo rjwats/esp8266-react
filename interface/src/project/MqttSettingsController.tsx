@@ -44,8 +44,7 @@ function LightMqttSettingsControllerForm(props: LightMqttSettingsControllerFormP
     <ValidatorForm onSubmit={saveData}>
       <Box bgcolor="primary.main" color="primary.contrastText" p={2} mt={2} mb={2}>
         <Typography variant="body1">
-          The LED is controllable via MQTT with the demo project designed to work with Home Assistant's auto discovery feature.
-        </Typography>
+          </Typography>
       </Box>
       <TextValidator
         validators={['required']}
