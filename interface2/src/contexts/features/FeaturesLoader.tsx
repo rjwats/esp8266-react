@@ -4,10 +4,9 @@ import * as FeaturesApi from '../../api/features';
 
 import { extractErrorMessage } from '../../utils';
 import { Features } from '../../types';
+import {ApplicationError, LoadingSpinner} from '../../components';
 
 import { FeaturesContext } from '.';
-import ApplicationError from '../../components/ApplicationError';
-import LoadingSpinner from '../../components/LoadingSpinner';
 
 const FeaturesLoader: FC = (props) => {
 

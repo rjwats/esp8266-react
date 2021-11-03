@@ -1,13 +1,13 @@
 import React, { FC, RefObject } from 'react';
-import { Redirect, Switch } from "react-router";
-import { Route } from 'react-router-dom';
 import { SnackbarProvider } from 'notistack';
 
 import { IconButton } from '@mui/material';
-
 import CloseIcon from '@mui/icons-material/Close';
+
 import { FeaturesLoader } from './contexts/features';
+
 import CustomTheme from './CustomTheme';
+import AppRouting from './AppRouting';
 
 const App: FC = () => {
   const notistackRef: RefObject<any> = React.createRef();
@@ -29,14 +29,7 @@ const App: FC = () => {
         )}
       >
         <FeaturesLoader>
-          <Switch>
-            <Route exact path="/unauthorized" >
-              <Redirect to="/" />
-            </Route>
-            {
-              // <Route component={AppRouting} />
-            }
-          </Switch>
+          <AppRouting />
         </FeaturesLoader>
       </SnackbarProvider>
     </CustomTheme>
