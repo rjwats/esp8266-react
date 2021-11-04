@@ -7,6 +7,8 @@ import { Route, useLocation } from 'react-router-dom';
 import { FeaturesContext } from './contexts/features';
 import { AuthenticatedRoute, UnauthenticatedRoute } from './components';
 import { PROJECT_PATH } from './api/env';
+import SignIn from './SignIn';
+import { getDefaultRoute } from './api/authentication';
 
 interface SecurityRedirectProps {
   message: string;
@@ -37,16 +39,13 @@ const AppRouting: FC = () => {
         {
           features.security && (
             <UnauthenticatedRoute exact path="/" >
-              This will be the signin page
-              {
-                //<SignIn />
-              }
+              <SignIn />
             </UnauthenticatedRoute>
           )
         }
         {
           features.project && (
-            <AuthenticatedRoute exact path={`/${PROJECT_PATH}/*`}>
+            <AuthenticatedRoute exact path={`/${PROJECT_PATH}`}>
               This will be the project screen
               {
                 //<ProjectRouting />
@@ -56,7 +55,7 @@ const AppRouting: FC = () => {
         }
         {
           features.project && (
-            <AuthenticatedRoute exact path="/wifi/*">
+            <AuthenticatedRoute exact path="/wifi">
               This will be the wifi screen
               {
                 //<WiFiConnection />
@@ -78,9 +77,9 @@ const AppRouting: FC = () => {
           <AuthenticatedRoute exact path="/security/*" component={Security} />
         )}
         <AuthenticatedRoute exact path="/system/*" component={System} />
-        <Redirect to={getDefaultRoute(features)} />
         */
         }
+        <Redirect to={getDefaultRoute(features)} />
       </Switch>
     </Authentication>
   );

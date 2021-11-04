@@ -1,3 +1,4 @@
+import { useSnackbar } from 'notistack';
 import { FC, useCallback, useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
@@ -13,13 +14,21 @@ import { AuthenticationContext } from './context';
 const Authentication: FC = ({ children }) => {
   const { features } = useContext(FeaturesContext);
   const history = useHistory();
+  const { enqueueSnackbar } = useSnackbar();
 
   const [initialized, setInitialized] = useState<boolean>(false);
   const [me, setMe] = useState<Me>();
 
-  const updateMe = (authenticatedUser?: Me) => {
-    setMe(authenticatedUser);
-    setInitialized(true);
+  const signIn = (accessToken: string) => {
+    try {
+      AuthenticationApi.getStorage().setItem(ACCESS_TOKEN, accessToken);
+      const decodedMe = AuthenticationApi.decodeMeJWT(accessToken);
+      setMe(decodedMe);
+      enqueueSnackbar(`Logged in as ${decodedMe.username}`, { variant: 'success' });
+    } catch (error: any) {
+      setMe(undefined);
+      throw new Error("Failed to parse JWT " + error.message);
+    }
   };
 
   const signOut = (redirect: boolean) => {
@@ -31,21 +40,24 @@ const Authentication: FC = ({ children }) => {
 
   const refresh = useCallback(async () => {
     if (!features.security) {
-      setInitialized(true);
       setMe({ admin: true, username: "admin" });
+      setInitialized(true);
       return;
     }
-
     const accessToken = AuthenticationApi.getStorage().getItem(ACCESS_TOKEN);
     if (accessToken) {
       try {
         await AuthenticationApi.verifyAuthorization();
-        setInitialized(true);
         setMe(AuthenticationApi.decodeMeJWT(accessToken));
-      } catch (error: any) {
         setInitialized(true);
+        return;
+      } catch (error: any) {
         setMe(undefined);
+        setInitialized(true);
       }
+    } else {
+      setMe(undefined);
+      setInitialized(true);
     }
   }, [features]);
 
@@ -57,7 +69,7 @@ const Authentication: FC = ({ children }) => {
     return (
       <AuthenticationContext.Provider
         value={{
-          updateMe,
+          signIn,
           signOut,
           me
         }}

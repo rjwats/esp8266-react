@@ -13,7 +13,6 @@ type UnauthenticatedRouteProps = Omit<RouteProps, 'component' | 'render'>;
 const UnauthenticatedRoute: FC<UnauthenticatedRouteProps> = ({ children, ...rest }) => {
   const { features } = useContext(FeaturesContext);
   const authenticationContext = useContext(AuthenticationContext);
-
   return (
     <Route
       {...rest}
