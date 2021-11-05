@@ -33,6 +33,7 @@ const Authentication: FC = ({ children }) => {
 
   const signOut = (redirect: boolean) => {
     AuthenticationApi.clearAccessToken();
+    setMe(undefined);
     if (redirect) {
       history.push('/');
     }

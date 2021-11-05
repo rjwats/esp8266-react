@@ -1,14 +1,14 @@
 import { FC, useContext, useEffect } from 'react';
+import { Route, useLocation } from 'react-router-dom';
 import { Switch, Redirect } from 'react-router';
 import { useSnackbar, VariantType } from 'notistack';
 
 import { Authentication, AuthenticationContext } from './contexts/authentication';
-import { Route, useLocation } from 'react-router-dom';
 import { FeaturesContext } from './contexts/features';
 import { AuthenticatedRoute, UnauthenticatedRoute } from './components';
-import { PROJECT_PATH } from './api/env';
+
 import SignIn from './SignIn';
-import { getDefaultRoute } from './api/authentication';
+import AuthenticatedRouting from './AuthenticatedRouting';
 
 interface SecurityRedirectProps {
   message: string;
@@ -43,26 +43,9 @@ const AppRouting: FC = () => {
             </UnauthenticatedRoute>
           )
         }
-        {
-          features.project && (
-            <AuthenticatedRoute exact path={`/${PROJECT_PATH}`}>
-              This will be the project screen
-              {
-                //<ProjectRouting />
-              }
-            </AuthenticatedRoute>
-          )
-        }
-        {
-          features.project && (
-            <AuthenticatedRoute exact path="/wifi">
-              This will be the wifi screen
-              {
-                //<WiFiConnection />
-              }
-            </AuthenticatedRoute>
-          )
-        }
+        <AuthenticatedRoute path="/" >
+          <AuthenticatedRouting />
+        </AuthenticatedRoute>
         {
           /*
         <AuthenticatedRoute exact path="/wifi/*" component={WiFiConnection} />
@@ -79,7 +62,6 @@ const AppRouting: FC = () => {
         <AuthenticatedRoute exact path="/system/*" component={System} />
         */
         }
-        <Redirect to={getDefaultRoute(features)} />
       </Switch>
     </Authentication>
   );

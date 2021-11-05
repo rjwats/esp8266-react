@@ -21,7 +21,7 @@ const theme = responsiveFontSizes(
       success: {
         main: green[500]
       }
-    },
+    }
   })
 );
 
