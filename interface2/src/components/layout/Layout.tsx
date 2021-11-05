@@ -26,7 +26,7 @@ const Layout: FC<LayoutProps> = ({ title, children }) => {
       <LayoutDrawer mobileOpen={mobileOpen} onClose={handleDrawerToggle} />
       <Box
         component="main"
-        sx={{ flexGrow: 1, width: { sm: `calc(100% - ${DRAWER_WIDTH}px)` } }}
+        sx={{ flexGrow: 1, width: { md: `calc(100% - ${DRAWER_WIDTH}px)` } }}
       >
         <Toolbar />
         {children}

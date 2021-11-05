@@ -45,7 +45,7 @@ const LayoutDrawer: FC<LayoutDrawerProps> = ({ mobileOpen, onClose }) => {
   return (
     <Box
       component="nav"
-      sx={{ width: { sm: DRAWER_WIDTH }, flexShrink: { sm: 0 } }}
+      sx={{ width: { md: DRAWER_WIDTH }, flexShrink: { md: 0 } }}
     >
       <Drawer
         variant="temporary"
@@ -55,7 +55,7 @@ const LayoutDrawer: FC<LayoutDrawerProps> = ({ mobileOpen, onClose }) => {
           keepMounted: true, // Better open performance on mobile.
         }}
         sx={{
-          display: { xs: 'block', sm: 'none' },
+          display: { sm: 'block', md: 'none' },
           '& .MuiDrawer-paper': { boxSizing: 'border-box', width: DRAWER_WIDTH },
         }}
       >
@@ -64,7 +64,7 @@ const LayoutDrawer: FC<LayoutDrawerProps> = ({ mobileOpen, onClose }) => {
       <Drawer
         variant="permanent"
         sx={{
-          display: { xs: 'none', sm: 'block' },
+          display: { xs: 'none', md: 'block' },
           '& .MuiDrawer-paper': { boxSizing: 'border-box', width: DRAWER_WIDTH },
         }}
         open

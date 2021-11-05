@@ -17,8 +17,8 @@ const LayoutAppBar: FC<LayoutAppBarProps> = ({ title,  onToggleDrawer }) => (
   <AppBar
     position="fixed"
     sx={{
-      width: { sm: `calc(100% - ${DRAWER_WIDTH}px)` },
-      ml: { sm: `${DRAWER_WIDTH}px` },
+      width: { md: `calc(100% - ${DRAWER_WIDTH}px)` },
+      ml: { md: `${DRAWER_WIDTH}px` },
       boxShadow: 'none'
     }}
   >
@@ -28,7 +28,7 @@ const LayoutAppBar: FC<LayoutAppBarProps> = ({ title,  onToggleDrawer }) => (
         aria-label="open drawer"
         edge="start"
         onClick={onToggleDrawer}
-        sx={{ mr: 2, display: { sm: 'none' } }}
+        sx={{ mr: 2, display: { md: 'none' } }}
       >
         <MenuIcon />
       </IconButton>
