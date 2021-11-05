@@ -55,7 +55,7 @@ const LayoutDrawer: FC<LayoutDrawerProps> = ({ mobileOpen, onClose }) => {
           keepMounted: true, // Better open performance on mobile.
         }}
         sx={{
-          display: { sm: 'block', md: 'none' },
+          display: { xs: 'block', md: 'none' },
           '& .MuiDrawer-paper': { boxSizing: 'border-box', width: DRAWER_WIDTH },
         }}
       >
