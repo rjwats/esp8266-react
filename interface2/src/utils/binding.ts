@@ -21,12 +21,3 @@ export const updateValue = <S>(updateEntity: UpdateEntity<S>) => (
     }));
   }
 );
-
-export const updateBooleanValue = <S>(updateEntity: UpdateEntity<S>) => (
-  (name: string, value?: boolean) => {
-    updateEntity((prevState) => ({
-      ...prevState,
-      [name]: value
-    }));
-  }
-);

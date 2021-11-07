@@ -1,6 +1,6 @@
 import { FC, useContext } from 'react';
 
-import { List, ListSubheader } from '@mui/material';
+import { Divider, List, ListSubheader } from '@mui/material';
 
 import SettingsInputAntennaIcon from '@mui/icons-material/SettingsInputAntenna';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
@@ -10,18 +10,20 @@ import LockIcon from '@mui/icons-material/Lock';
 import WifiIcon from '@mui/icons-material/Wifi';
 
 import { FeaturesContext } from '../../contexts/features';
+import ProjectMenu from '../../project/ProjectMenu';
+
 import LayoutMenuItem from './LayoutMenuItem';
 
 const LayoutMenu: FC = () => {
   const { features } = useContext(FeaturesContext);
   return (
     <>
-      <List disablePadding component="nav">
-        <ListSubheader>
-          Project
-        </ListSubheader>
-        <LayoutMenuItem icon={WifiIcon} label="TODO" to="/todo" />
-      </List>
+      {features.project && (
+        <List disablePadding component="nav">
+          <ProjectMenu />
+          <Divider />
+        </List>
+      )}
       <List disablePadding component="nav">
         <ListSubheader>
           Settings

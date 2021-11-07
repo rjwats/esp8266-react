@@ -36,32 +36,14 @@ const AppRouting: FC = () => {
         <Route exact path="/unauthorized">
           <SecurityRedirect message="Please log in to continue" />
         </Route>
-        {
-          features.security && (
-            <UnauthenticatedRoute exact path="/" >
-              <SignIn />
-            </UnauthenticatedRoute>
-          )
-        }
+        {features.security && (
+          <UnauthenticatedRoute exact path="/" >
+            <SignIn />
+          </UnauthenticatedRoute>
+        )}
         <AuthenticatedRoute path="/" >
           <AuthenticatedRouting />
         </AuthenticatedRoute>
-        {
-          /*
-        <AuthenticatedRoute exact path="/wifi/*" component={WiFiConnection} />
-        <AuthenticatedRoute exact path="/ap/*" component={AccessPoint} />
-        {features.ntp && (
-          <AuthenticatedRoute exact path="/ntp/*" component={NetworkTime} />
-        )}
-        {features.mqtt && (
-          <AuthenticatedRoute exact path="/mqtt/*" component={Mqtt} />
-        )}
-        {features.security && (
-          <AuthenticatedRoute exact path="/security/*" component={Security} />
-        )}
-        <AuthenticatedRoute exact path="/system/*" component={System} />
-        */
-        }
       </Switch>
     </Authentication>
   );
