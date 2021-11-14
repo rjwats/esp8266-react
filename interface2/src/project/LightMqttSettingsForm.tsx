@@ -8,14 +8,14 @@ import { ButtonRow, FormLoader, SectionContent, ValidatedTextField } from "../co
 import { useRest, updateValue } from "../utils";
 import { validate } from "../validators";
 
-import { readBrokerSettings, updateBrokerSettings } from "./api";
+import * as DemoApi from './api';
 import { LIGHT_MQTT_SETTINGS_VALIDATOR } from "./validators";
 import { LightMqttSettings } from "./types";
 
 const LightMqttSettingsForm: FC = () => {
   const {
     loadData, saveData, saving, setData, data, errorMessage
-  } = useRest<LightMqttSettings>({ read: readBrokerSettings, update: updateBrokerSettings });
+  } = useRest<LightMqttSettings>({ read: DemoApi.readBrokerSettings, update: DemoApi.updateBrokerSettings });
 
   const updateFormValue = updateValue(setData);
 

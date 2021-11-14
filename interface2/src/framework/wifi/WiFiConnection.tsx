@@ -9,6 +9,7 @@ import { WiFiNetwork } from '../../types';
 
 import { WiFiConnectionContext } from './WiFiConnectionContext';
 import WiFiStatusForm from './WiFiStatusForm';
+import WiFiNetworkScanner from './WiFiNetworkScanner';
 
 const WiFiConnectionRouting: FC = () => {
   useLayoutTitle("WiFi Connection");
@@ -47,11 +48,13 @@ const WiFiConnectionRouting: FC = () => {
       <Switch>
         {
           // TODO - protected routes.. "admin only route"
-          // <Route exact path="/wifi/scan" component={WiFiNetworkScanner} />
           // <Route exact path="/wifi/settings" component={WiFiSettingsController} />
         }
         <Route exact path="/wifi/status">
           <WiFiStatusForm />
+        </Route>
+        <Route exact path="/wifi/scan">
+          <WiFiNetworkScanner />
         </Route>
         <Redirect to="/wifi/status" />
       </Switch>

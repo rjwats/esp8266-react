@@ -6,13 +6,13 @@ import SaveIcon from '@mui/icons-material/Save';
 import { SectionContent, FormLoader, BlockFormControlLabel, ButtonRow } from '../components';
 import { updateValue, useRest } from '../utils';
 
-import { readLightState, updateLightState } from './api';
+import * as DemoApi from './api';
 import { LightState } from './types';
 
 const LightStateRestForm: FC = () => {
   const {
     loadData, saveData, saving, setData, data, errorMessage
-  } = useRest<LightState>({ read: readLightState, update: updateLightState });
+  } = useRest<LightState>({ read: DemoApi.readLightState, update: DemoApi.updateLightState });
 
   const updateFormValue = updateValue(setData);
 

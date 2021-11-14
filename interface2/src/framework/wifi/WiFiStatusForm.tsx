@@ -10,7 +10,7 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 
 import { useRest } from "../../utils";
 import { WiFiConnectionStatus, WiFiStatus } from "../../types";
-import { readWiFiStatus } from "../../api/wifi";
+import * as WiFiApi from "../../api/wifi";
 import { ButtonRow, FormLoader, SectionContent } from "../../components";
 
 // TODO - Move some of the below to 'types' as required
@@ -65,7 +65,7 @@ const dnsServers = ({ dns_ip_1, dns_ip_2 }: WiFiStatus) => {
 const WiFiStatusForm: FC = () => {
   const {
     loadData, data, errorMessage
-  } = useRest<WiFiStatus>({ read: readWiFiStatus });
+  } = useRest<WiFiStatus>({ read: WiFiApi.readWiFiStatus });
 
   const theme = useTheme();
 
