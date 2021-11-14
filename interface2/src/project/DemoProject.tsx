@@ -9,6 +9,7 @@ import { PROJECT_PATH } from '../api/env';
 import DemoInformation from './DemoInformation';
 import LightStateRestForm from './LightStateRestForm';
 import LightMqttSettingsForm from './LightMqttSettingsForm';
+import LightStateWebSocketForm from './LightStateWebSocketForm';
 
 const DemoProject: FC = () => {
   const history = useHistory();
@@ -22,13 +23,9 @@ const DemoProject: FC = () => {
     <>
       <Tabs value={url} onChange={handleTabChange} variant="fullWidth">
         <Tab value={`/${PROJECT_PATH}/demo/information`} label="Information" />
-        <Tab value={`/${PROJECT_PATH}/demo/rest`} label="REST Controller" />
-        {
-          /*
-          <Tab value={`/${PROJECT_PATH}/demo/socket`} label="WebSocket Controller" />
-          */
-        }
-        <Tab value={`/${PROJECT_PATH}/demo/mqtt`} label="MQTT Controller" />
+        <Tab value={`/${PROJECT_PATH}/demo/rest`} label="REST Example" />
+        <Tab value={`/${PROJECT_PATH}/demo/socket`} label="WebSocket Example" />
+        <Tab value={`/${PROJECT_PATH}/demo/mqtt`} label="MQTT Settings" />
       </Tabs>
       <Switch>
         <Route exact path={`/${PROJECT_PATH}/demo/information`}>
@@ -40,11 +37,9 @@ const DemoProject: FC = () => {
         <Route exact path={`/${PROJECT_PATH}/demo/mqtt`}>
           <LightMqttSettingsForm />
         </Route>
-        {
-          /*
-          <AuthenticatedRoute exact path={`/${PROJECT_PATH}/demo/socket`} component={LightStateWebSocketController} />
-           */
-        }
+        <Route exact path={`/${PROJECT_PATH}/demo/socket`}>
+          <LightStateWebSocketForm />
+        </Route>
         <Redirect to={`/${PROJECT_PATH}/demo/information`} />
       </Switch>
     </>

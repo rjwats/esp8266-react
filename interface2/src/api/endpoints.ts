@@ -1,7 +1,9 @@
 import axios from 'axios';
 
+export const WS_BASE_URL = '/ws/';
 export const API_BASE_URL = '/rest/';
-export const ACCESS_TOKEN = 'accessToken';
+export const ACCESS_TOKEN = 'access_token';
+export const WEB_SOCKET_ROOT = calculateWebSocketRoot(WS_BASE_URL);
 
 export const AXIOS = axios.create({
   baseURL: API_BASE_URL,
@@ -20,3 +22,9 @@ export const AXIOS = axios.create({
     return JSON.stringify(data);
   }]
 });
+
+function calculateWebSocketRoot(webSocketPath: string) {
+  const location = window.location;
+  const webProtocol = location.protocol === "https:" ? "wss:" : "ws:";
+  return webProtocol + "//" + location.host + webSocketPath;
+}

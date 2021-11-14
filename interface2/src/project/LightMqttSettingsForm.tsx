@@ -86,7 +86,7 @@ const LightMqttSettingsForm: FC = () => {
   };
 
   return (
-    <SectionContent title='MQTT Controller' titleGutter>
+    <SectionContent title='MQTT Settings' titleGutter>
       {content()}
     </SectionContent>
   );

@@ -3,20 +3,24 @@ import { FC } from 'react';
 import { Box, Button, LinearProgress, Typography } from '@mui/material';
 
 interface FormLoaderProps {
+  message?: string;
   errorMessage?: string;
-  loadData: () => void;
+  loadData?: () => void;
 }
 
-const FormLoader: FC<FormLoaderProps> = ({ errorMessage, loadData }) => {
+const FormLoader: FC<FormLoaderProps> = ({ errorMessage, loadData, message = "Loading…" }) => {
   if (errorMessage) {
     return (
       <Box m={1} display="flex" flexDirection="column">
         <Typography variant="h6" textAlign="center">
           {errorMessage}
         </Typography>
-        <Button variant="contained" color="secondary" onClick={loadData}>
-          Retry
-        </Button>
+        {
+          loadData &&
+          <Button variant="contained" color="secondary" onClick={loadData}>
+            Retry
+          </Button>
+        }
       </Box>
     );
   }
@@ -24,7 +28,7 @@ const FormLoader: FC<FormLoaderProps> = ({ errorMessage, loadData }) => {
     <Box m={1} display="flex" flexDirection="column">
       <LinearProgress />
       <Typography variant="h6" textAlign="center">
-        Loading&hellip;
+        {message}
       </Typography>
     </Box>
   );

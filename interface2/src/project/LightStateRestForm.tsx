@@ -9,7 +9,7 @@ import { updateValue, useRest } from '../utils';
 import { readLightState, updateLightState } from './api';
 import { LightState } from './types';
 
-const LightStateRest: FC = () => {
+const LightStateRestForm: FC = () => {
   const {
     loadData, saveData, saving, setData, data, errorMessage
   } = useRest<LightState>({ read: readLightState, update: updateLightState });
@@ -50,10 +50,10 @@ const LightStateRest: FC = () => {
   };
 
   return (
-    <SectionContent title='REST Controller' titleGutter>
+    <SectionContent title='REST Example' titleGutter>
       {content()}
     </SectionContent>
   );
 };
 
-export default LightStateRest;
+export default LightStateRestForm;

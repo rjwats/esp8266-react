@@ -4,17 +4,17 @@ import { Box, BoxProps } from '@mui/material';
 const ButtonRow: FC<BoxProps> = ({ children, ...rest }) => {
   return (
     <Box
-      sx={(theme) => ({
+      sx={{
         '& button, & a, & .MuiCard-root': {
-          margin: theme.spacing(0, .5),
+          mx: .5,
           '&:last-child': {
-            marginRight: 0,
+            mr: 0,
           },
-          '&:first-child': {
-            marginLeft: 0,
+          '&:first-of-type': {
+            ml: 0,
           }
         }
-      })}
+      }}
       {...rest}
     >
       {children}
