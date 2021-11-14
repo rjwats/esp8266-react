@@ -1,14 +1,16 @@
 import { FC, useCallback, useContext, useEffect } from 'react';
 import { Redirect, Switch } from 'react-router';
+import { Route, useHistory, useLocation } from 'react-router-dom';
 import { AxiosError } from 'axios';
 
+import { PROJECT_PATH } from './api/env';
 import { AXIOS } from './api/endpoints';
 import { getDefaultRoute, storeLoginRedirect } from './api/authentication';
 import { Layout } from './components/layout';
 import { FeaturesContext } from './contexts/features';
-import { Route, useHistory, useLocation } from 'react-router-dom';
-import { PROJECT_PATH } from './api/env';
+
 import ProjectRouting from './project/ProjectRouting';
+import WiFiConnection from './framework/wifi/WiFiConnection';
 
 const AuthenticatedRouting: FC = () => {
 
@@ -30,15 +32,15 @@ const AuthenticatedRouting: FC = () => {
   }, [handleApiResponseError]);
 
   return (
-    <Layout title="TODO - REPLACE ME WITH CONTEXT">
+    <Layout>
       <Switch>
         {features.project && (
-          <Route exact path={`/${PROJECT_PATH}/*`}>
+          <Route path={`/${PROJECT_PATH}`}>
             <ProjectRouting />
           </Route>
         )}
-        <Route exact path="/wifi">
-          WiFi screen
+        <Route path="/wifi">
+          <WiFiConnection />
         </Route>
         <Route exact path="/ap">
           Access point screen

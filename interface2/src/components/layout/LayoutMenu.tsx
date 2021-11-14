@@ -1,6 +1,6 @@
 import { FC, useContext } from 'react';
 
-import { Divider, List, ListSubheader } from '@mui/material';
+import { Divider, List } from '@mui/material';
 
 import SettingsInputAntennaIcon from '@mui/icons-material/SettingsInputAntenna';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
@@ -25,9 +25,6 @@ const LayoutMenu: FC = () => {
         </List>
       )}
       <List disablePadding component="nav">
-        <ListSubheader>
-          Settings
-        </ListSubheader>
         <LayoutMenuItem icon={WifiIcon} label="WiFi Connection" to="/wifi" />
         <LayoutMenuItem icon={SettingsInputAntennaIcon} label="Access Point" to="/ap" />
         {features.ntp && (

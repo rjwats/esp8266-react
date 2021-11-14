@@ -6,7 +6,7 @@ import { extractErrorMessage } from ".";
 
 export interface RestRequestOptions<D> {
   read: () => AxiosPromise<D>;
-  update: (value: D) => AxiosPromise<D>;
+  update?: (value: D) => AxiosPromise<D>;
 }
 
 export const useRest = <D>({ read, update }: RestRequestOptions<D>) => {
@@ -29,6 +29,9 @@ export const useRest = <D>({ read, update }: RestRequestOptions<D>) => {
   }, [read, enqueueSnackbar]);
 
   const save = useCallback(async (toSave: D) => {
+    if (!update) {
+      return;
+    }
     setSaving(true);
     setErrorMessage(undefined);
     try {

@@ -5,6 +5,7 @@ import { Redirect, Route, Switch, useHistory, useRouteMatch } from 'react-router
 import { Tab, Tabs } from '@mui/material';
 
 import { PROJECT_PATH } from '../api/env';
+import { useLayoutTitle } from '../components/layout';
 
 import DemoInformation from './DemoInformation';
 import LightStateRestForm from './LightStateRestForm';
@@ -14,6 +15,8 @@ import LightStateWebSocketForm from './LightStateWebSocketForm';
 const DemoProject: FC = () => {
   const history = useHistory();
   const { url } = useRouteMatch();
+
+  useLayoutTitle("Demo Project");
 
   const handleTabChange = (event: React.ChangeEvent<{}>, path: string) => {
     history.push(path);

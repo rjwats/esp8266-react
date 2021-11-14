@@ -1,37 +1,38 @@
 
-import React, { FC } from 'react';
+import { FC, useState } from 'react';
 
 import { Box, Toolbar } from '@mui/material';
 
 import LayoutDrawer from './LayoutDrawer';
 import LayoutAppBar from './LayoutAppBar';
+import { LayoutContext } from './context';
+import { PROJECT_NAME } from '../../api/env';
 
 export const DRAWER_WIDTH = 280;
 
-interface LayoutProps {
-  title: string;
-}
+const Layout: FC = ({ children }) => {
 
-const Layout: FC<LayoutProps> = ({ title, children }) => {
-
-  const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [title, setTitle] = useState(PROJECT_NAME);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
   return (
-    <Box sx={{ display: 'flex' }}>
-      <LayoutAppBar title={title} onToggleDrawer={handleDrawerToggle} />
-      <LayoutDrawer mobileOpen={mobileOpen} onClose={handleDrawerToggle} />
-      <Box
-        component="main"
-        sx={{ flexGrow: 1, width: { md: `calc(100% - ${DRAWER_WIDTH}px)` } }}
-      >
-        <Toolbar />
-        {children}
+    <LayoutContext.Provider value={{ title, setTitle }}>
+      <Box sx={{ display: 'flex' }}>
+        <LayoutAppBar title={title} onToggleDrawer={handleDrawerToggle} />
+        <LayoutDrawer mobileOpen={mobileOpen} onClose={handleDrawerToggle} />
+        <Box
+          component="main"
+          sx={{ flexGrow: 1, width: { md: `calc(100% - ${DRAWER_WIDTH}px)` } }}
+        >
+          <Toolbar />
+          {children}
+        </Box>
       </Box>
-    </Box>
+    </LayoutContext.Provider >
   );
 
 };

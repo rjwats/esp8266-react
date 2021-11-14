@@ -7,6 +7,9 @@ import { indigo, blueGrey, orange, red, green } from '@mui/material/colors';
 const theme = responsiveFontSizes(
   createTheme({
     palette: {
+      background: {
+        default: "#fafafa"
+      },
       primary: indigo,
       secondary: blueGrey,
       info: {
