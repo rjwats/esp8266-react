@@ -10,6 +10,7 @@ import { WiFiNetwork } from '../../types';
 import { WiFiConnectionContext } from './WiFiConnectionContext';
 import WiFiStatusForm from './WiFiStatusForm';
 import WiFiNetworkScanner from './WiFiNetworkScanner';
+import WiFiSettingsForm from './WiFiSettingsForm';
 
 const WiFiConnectionRouting: FC = () => {
   useLayoutTitle("WiFi Connection");
@@ -46,10 +47,9 @@ const WiFiConnectionRouting: FC = () => {
         <Tab value="/wifi/settings" label="WiFi Settings" disabled={!authenticatedContext.me.admin} />
       </Tabs>
       <Switch>
-        {
-          // TODO - protected routes.. "admin only route"
-          // <Route exact path="/wifi/settings" component={WiFiSettingsController} />
-        }
+        <Route exact path="/wifi/settings">
+          <WiFiSettingsForm />
+        </Route>
         <Route exact path="/wifi/status">
           <WiFiStatusForm />
         </Route>

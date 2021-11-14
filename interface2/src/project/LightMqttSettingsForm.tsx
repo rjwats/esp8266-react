@@ -21,11 +21,13 @@ const LightMqttSettingsForm: FC = () => {
 
   // TODO - extend the above hook to validate the input on submit and only save to the backend if valid.
   // NB: Saving must be asserted while validation takes place
+  // NB: Must also set saving to true while validating
   const [fieldErrors, setFieldErrors] = useState<ValidateFieldsError>();
 
   const validateAndSubmit = async () => {
     if (data) {
       try {
+        setFieldErrors(undefined);
         await validate(LIGHT_MQTT_SETTINGS_VALIDATOR, data);
         saveData();
       } catch (errors: any) {

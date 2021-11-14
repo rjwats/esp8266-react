@@ -8,10 +8,10 @@ import WifiIcon from '@mui/icons-material/Wifi';
 import DnsIcon from '@mui/icons-material/Dns';
 import RefreshIcon from '@mui/icons-material/Refresh';
 
-import { useRest } from "../../utils";
+import { ButtonRow, FormLoader, SectionContent } from "../../components";
 import { WiFiConnectionStatus, WiFiStatus } from "../../types";
 import * as WiFiApi from "../../api/wifi";
-import { ButtonRow, FormLoader, SectionContent } from "../../components";
+import { useRest } from "../../utils";
 
 // TODO - Move some of the below to 'types' as required
 
