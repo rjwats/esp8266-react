@@ -77,7 +77,7 @@ const WiFiStatusForm: FC = () => {
     return (
       <List>
         <ListItem>
-          <ListItemAvatar >
+          <ListItemAvatar>
             <Avatar sx={{ bgcolor: wifiStatusHighlight(data, theme) }}>
               <WifiIcon />
             </Avatar>

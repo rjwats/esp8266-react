@@ -11,6 +11,7 @@ import { FeaturesContext } from './contexts/features';
 
 import ProjectRouting from './project/ProjectRouting';
 import WiFiConnection from './framework/wifi/WiFiConnection';
+import System from './framework/system/System';
 
 const AuthenticatedRouting: FC = () => {
 
@@ -60,8 +61,8 @@ const AuthenticatedRouting: FC = () => {
             Security screen
           </Route>
         )}
-        <Route exact path="/system">
-          System screen
+        <Route path="/system">
+          <System />
         </Route>
         {
           /*

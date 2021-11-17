@@ -47,14 +47,14 @@ const WiFiConnectionRouting: FC = () => {
         <Tab value="/wifi/settings" label="WiFi Settings" disabled={!authenticatedContext.me.admin} />
       </Tabs>
       <Switch>
-        <Route exact path="/wifi/settings">
-          <WiFiSettingsForm />
-        </Route>
         <Route exact path="/wifi/status">
           <WiFiStatusForm />
         </Route>
         <Route exact path="/wifi/scan">
           <WiFiNetworkScanner />
+        </Route>
+        <Route exact path="/wifi/settings">
+          <WiFiSettingsForm />
         </Route>
         <Redirect to="/wifi/status" />
       </Switch>
@@ -63,15 +63,13 @@ const WiFiConnectionRouting: FC = () => {
 
 };
 
-const WiFiConnection: FC = () => {
-  return (
-    <Switch>
-      <Route exact path={`/wifi/*`}>
-        <WiFiConnectionRouting />
-      </Route>
-      <Redirect to="/wifi/status" />
-    </Switch>
-  );
-};
+const WiFiConnection: FC = () => (
+  <Switch>
+    <Route exact path={`/wifi/*`}>
+      <WiFiConnectionRouting />
+    </Route>
+    <Redirect to="/wifi/status" />
+  </Switch>
+);
 
 export default WiFiConnection;
