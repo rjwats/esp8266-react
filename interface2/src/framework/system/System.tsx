@@ -7,6 +7,8 @@ import { useLayoutTitle } from '../../components/layout';
 import { AuthenticatedContext } from '../../contexts/authentication';
 import { FeaturesContext } from '../../contexts/features';
 import SystemStatusForm from './SystemStatusForm';
+import OTASettingsForm from './OTASettingsForm';
+import UploadFirmwareForm from './UploadFirmwareForm';
 
 const SystemRouting: FC = () => {
   useLayoutTitle("System");
@@ -37,18 +39,12 @@ const SystemRouting: FC = () => {
         </Route>
         {features.ota && (
           <Route exact path="/system/ota">
-            ota page
-            {
-              // <OTASettingsForm />
-            }
+            <OTASettingsForm />
           </Route>
         )}
         {features.upload_firmware && (
           <Route exact path="/system/upload">
-            upload firmware form
-            {
-              // <UploadFirmwareForm />
-            }
+            <UploadFirmwareForm />
           </Route>
         )}
         <Redirect to="/system/status" />

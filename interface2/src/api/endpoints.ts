@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosPromise, CancelToken } from 'axios';
 
 export const WS_BASE_URL = '/ws/';
 export const API_BASE_URL = '/rest/';
@@ -28,3 +28,20 @@ function calculateWebSocketRoot(webSocketPath: string) {
   const webProtocol = location.protocol === "https:" ? "wss:" : "ws:";
   return webProtocol + "//" + location.host + webSocketPath;
 }
+
+export interface FileUploadConfig {
+  cancelToken?: CancelToken;
+  onUploadProgress?: (progressEvent: ProgressEvent) => void;
+}
+
+export const uploadFile = (url: string, file: File, config?: FileUploadConfig): AxiosPromise<void> => {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  return AXIOS.post(url, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    },
+    ...(config || {})
+  });
+};

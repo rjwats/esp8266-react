@@ -1,8 +1,8 @@
 import { AxiosPromise } from 'axios';
 
-import { SystemStatus } from '../types';
+import { OTASettings, SystemStatus } from '../types';
 
-import { AXIOS } from './endpoints';
+import { AXIOS, FileUploadConfig, uploadFile } from './endpoints';
 
 export function readSystemStatus(): AxiosPromise<SystemStatus> {
   return AXIOS.get('/systemStatus');
@@ -15,3 +15,15 @@ export function restart(): AxiosPromise<void> {
 export function factoryReset(): AxiosPromise<void> {
   return AXIOS.post('/factoryReset');
 }
+
+export function readOTASettings(): AxiosPromise<OTASettings> {
+  return AXIOS.get('/otaSettings');
+}
+
+export function updateOTASettings(otaSettings: OTASettings): AxiosPromise<OTASettings> {
+  return AXIOS.post('/otaSettings', otaSettings);
+}
+
+export const uploadFirmware = (file: File, config?: FileUploadConfig): AxiosPromise<void> => (
+  uploadFile('/uploadFirmware', file, config)
+);
