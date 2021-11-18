@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { Box } from '@mui/material';
 
-import { SingleUpload, useFileUpload } from '../../components';
+import { SectionContent, SingleUpload, useFileUpload } from '../../components';
 import * as SystemApi from "../../api/system";
 
 const UploadFirmwareForm: FC = () => {
@@ -9,7 +9,7 @@ const UploadFirmwareForm: FC = () => {
   const [uploadFile, cancelUpload, uploading, uploadProgress] = useFileUpload({ upload: SystemApi.uploadFirmware });
 
   return (
-    <>
+    <SectionContent title='Upload Firmware' titleGutter>
       <Box py={2}>
         Upload a new firmware (.bin) file below to replace the existing firmware.
       </Box>
@@ -20,7 +20,7 @@ const UploadFirmwareForm: FC = () => {
         uploading={uploading}
         progress={uploadProgress}
       />
-    </>
+    </SectionContent>
   );
 
 };
