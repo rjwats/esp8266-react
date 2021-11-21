@@ -68,6 +68,7 @@ const NTPStatusForm: FC = () => {
       });
       enqueueSnackbar("Time set successfully", { variant: 'success' });
       setSettingTime(false);
+      loadData();
     } catch (error: any) {
       enqueueSnackbar(extractErrorMessage(error, 'Problem updating time'), { variant: 'error' });
     } finally {
@@ -186,12 +187,13 @@ const NTPStatusForm: FC = () => {
           </Button>
         </Box>
         {
-          me.admin &&
-          <Box flexWrap="nowrap" whiteSpace="nowrap">
-            <Button onClick={openSetTime} variant="contained" color="primary" startIcon={<AccessTimeIcon />}>
-              Set Time
-            </Button>
-          </Box>
+          me.admin && data && !isNtpActive(data) && (
+            <Box flexWrap="nowrap" whiteSpace="nowrap">
+              <Button onClick={openSetTime} variant="contained" color="primary" startIcon={<AccessTimeIcon />}>
+                Set Time
+              </Button>
+            </Box>
+          )
         }
       </Box>
       {renderSetTimeDialog()}

@@ -6,6 +6,7 @@ import { Tab, Tabs } from '@mui/material';
 import { useLayoutTitle } from '../../components/layout';
 import { AuthenticatedContext } from '../../contexts/authentication';
 import NTPStatusForm from './NTPStatusForm';
+import NTPSettingsForm from './NTPSettingsForm';
 
 const NetworkTimeRouting: FC = () => {
   useLayoutTitle("Network Time");
@@ -29,7 +30,7 @@ const NetworkTimeRouting: FC = () => {
           <NTPStatusForm />
         </Route>
         <Route exact path="/ntp/settings">
-          <>stuff</>
+          <NTPSettingsForm />
         </Route>
         <Redirect to="/ntp/status" />
       </Switch>

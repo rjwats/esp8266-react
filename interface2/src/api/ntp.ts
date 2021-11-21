@@ -7,11 +7,11 @@ export function readNTPStatus(): AxiosPromise<NTPStatus> {
   return AXIOS.get('/ntpStatus');
 }
 
-export function readAPSettings(): AxiosPromise<NTPSettings> {
+export function readNTPSettings(): AxiosPromise<NTPSettings> {
   return AXIOS.get('/ntpSettings');
 }
 
-export function updateAPSettings(ntpSettings: NTPSettings): AxiosPromise<NTPSettings> {
+export function updateNTPSettings(ntpSettings: NTPSettings): AxiosPromise<NTPSettings> {
   return AXIOS.post('/ntpSettings', ntpSettings);
 }
 

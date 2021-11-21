@@ -4,14 +4,12 @@ import { HOSTNAME_VALIDATOR, IP_ADDRESS_VALIDATOR } from "./shared";
 
 export const createWiFiSettingsValidator = (wifiSettings: WiFiSettings) => new Schema({
   ssid: [
-    { required: true, message: "Please provide an SSID" },
-    { max: 32, message: "SSID must be 32 characters or less" }
+    { required: true, message: "SSID is required" },
+    { type: "string", max: 32, message: "SSID must be 32 characters or less" }
   ],
-  password: {
-    max: 64, message: "Password must be 64 characters or less"
-  },
+  password: { type: "string", max: 64, message: "Password must be 64 characters or less" },
   hostname: [
-    { required: true, message: "Please provide a hostname" },
+    { required: true, message: "Hostname is required" },
     HOSTNAME_VALIDATOR
   ],
   ...(wifiSettings.static_ip_config && {
