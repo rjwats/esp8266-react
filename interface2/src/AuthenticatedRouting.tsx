@@ -13,6 +13,7 @@ import ProjectRouting from './project/ProjectRouting';
 import WiFiConnection from './framework/wifi/WiFiConnection';
 import System from './framework/system/System';
 import AccessPoint from './framework/ap/AccessPoint';
+import NetworkTime from './framework/ntp/NetworkTime';
 
 const AuthenticatedRouting: FC = () => {
 
@@ -48,8 +49,8 @@ const AuthenticatedRouting: FC = () => {
           <AccessPoint />
         </Route>
         {features.ntp && (
-          <Route exact path="/ntp">
-            Network time protocol screen
+          <Route path="/ntp">
+            <NetworkTime />
           </Route>
         )}
         {features.mqtt && (
