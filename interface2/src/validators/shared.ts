@@ -33,7 +33,7 @@ const HOSTNAME_PATTERN_REGEXP = /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0
 export const HOSTNAME_VALIDATOR = {
   validator(rule: InternalRuleItem, value: string, callback: (error?: string) => void) {
     if (value && (!HOSTNAME_LENGTH_REGEXP.test(value) || !HOSTNAME_PATTERN_REGEXP.test(value))) {
-      callback("Must be an IP address");
+      callback("Must be a valid hostname of up to 63 characters");
     } else {
       callback();
     }

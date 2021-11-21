@@ -12,6 +12,7 @@ import { FeaturesContext } from './contexts/features';
 import ProjectRouting from './project/ProjectRouting';
 import WiFiConnection from './framework/wifi/WiFiConnection';
 import System from './framework/system/System';
+import AccessPoint from './framework/ap/AccessPoint';
 
 const AuthenticatedRouting: FC = () => {
 
@@ -43,8 +44,8 @@ const AuthenticatedRouting: FC = () => {
         <Route path="/wifi">
           <WiFiConnection />
         </Route>
-        <Route exact path="/ap">
-          Access point screen
+        <Route path="/ap">
+          <AccessPoint />
         </Route>
         {features.ntp && (
           <Route exact path="/ntp">
@@ -66,7 +67,7 @@ const AuthenticatedRouting: FC = () => {
         </Route>
         {
           /*
-            <AuthenticatedRoute exact path="/wifi/*" component={WiFiConnection} />
+
             <AuthenticatedRoute exact path="/ap/*" component={AccessPoint} />
             {features.ntp && (
               <AuthenticatedRoute exact path="/ntp/*" component={NetworkTime} />
