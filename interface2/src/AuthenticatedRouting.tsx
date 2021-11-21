@@ -14,6 +14,7 @@ import WiFiConnection from './framework/wifi/WiFiConnection';
 import System from './framework/system/System';
 import AccessPoint from './framework/ap/AccessPoint';
 import NetworkTime from './framework/ntp/NetworkTime';
+import Mqtt from './framework/mqtt/Mqtt';
 
 const AuthenticatedRouting: FC = () => {
 
@@ -54,8 +55,8 @@ const AuthenticatedRouting: FC = () => {
           </Route>
         )}
         {features.mqtt && (
-          <Route exact path="/mqtt">
-            MQTT screen
+          <Route path="/mqtt">
+            <Mqtt />
           </Route>
         )}
         {features.security && (
