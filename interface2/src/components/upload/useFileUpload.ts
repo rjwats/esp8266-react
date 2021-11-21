@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import axios, { AxiosPromise, CancelTokenSource } from 'axios';
 import { useSnackbar } from "notistack";
 import { extractErrorMessage } from '../../utils';
@@ -14,19 +14,22 @@ const useUploadFile = ({ upload }: MediaUploadOptions) => {
   const [uploadProgress, setUploadProgress] = useState<ProgressEvent>();
   const [uploadCancelToken, setUploadCancelToken] = useState<CancelTokenSource>();
 
-  useEffect(() => {
-    return () => {
-      uploadCancelToken?.cancel();
-    };
-  }, [uploadCancelToken]);
-
-  const cancelUpload = () => uploadCancelToken?.cancel();
-
   const resetUploadingStates = () => {
     setUploading(false);
     setUploadProgress(undefined);
     setUploadCancelToken(undefined);
   };
+
+  const cancelUpload = useCallback(() => {
+    uploadCancelToken?.cancel();
+    resetUploadingStates();
+  }, [uploadCancelToken]);
+
+  useEffect(() => {
+    return () => {
+      uploadCancelToken?.cancel();
+    };
+  }, [uploadCancelToken]);
 
   const uploadFile = async (images: File[]) => {
     try {
