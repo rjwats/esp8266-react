@@ -12,7 +12,7 @@ import { ValidateFieldsError } from 'async-validator';
 import { validate } from '../../validators';
 import { OTA_SETTINGS_VALIDATOR } from '../../validators/system';
 
-const WiFiSettingsForm: FC = () => {
+const OTASettingsForm: FC = () => {
 
   const {
     loadData, saving, data, setData, saveData, errorMessage
@@ -91,4 +91,4 @@ const WiFiSettingsForm: FC = () => {
   );
 };
 
-export default WiFiSettingsForm;
+export default OTASettingsForm;

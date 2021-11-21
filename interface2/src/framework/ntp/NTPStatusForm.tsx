@@ -43,7 +43,7 @@ export const ntpStatus = ({ status }: NTPStatus) => {
   }
 };
 
-const APStatusForm: FC = () => {
+const NTPStatusForm: FC = () => {
   const { loadData, data, errorMessage } = useRest<NTPStatus>({ read: NTPApi.readNTPStatus });
   const [localTime, setLocalTime] = useState<string>('');
   const [settingTime, setSettingTime] = useState<boolean>(false);
@@ -200,4 +200,4 @@ const APStatusForm: FC = () => {
 
 };
 
-export default APStatusForm;
+export default NTPStatusForm;
