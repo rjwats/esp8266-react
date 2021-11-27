@@ -51,7 +51,6 @@ const Authentication: FC = ({ children }) => {
         await AuthenticationApi.verifyAuthorization();
         setMe(AuthenticationApi.decodeMeJWT(accessToken));
         setInitialized(true);
-        return;
       } catch (error: any) {
         setMe(undefined);
         setInitialized(true);
@@ -72,7 +71,8 @@ const Authentication: FC = ({ children }) => {
         value={{
           signIn,
           signOut,
-          me
+          me,
+          refresh
         }}
       >
         {children}

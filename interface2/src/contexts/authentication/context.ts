@@ -2,6 +2,7 @@ import { createContext } from "react";
 import { Me } from "../../types";
 
 export interface AuthenticationContextValue {
+  refresh: () => Promise<void>;
   signIn: (accessToken: string) => void;
   signOut: (redirect: boolean) => void;
   me?: Me;

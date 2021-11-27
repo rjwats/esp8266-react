@@ -10,11 +10,13 @@ import { Layout } from './components/layout';
 import { FeaturesContext } from './contexts/features';
 
 import ProjectRouting from './project/ProjectRouting';
+
 import WiFiConnection from './framework/wifi/WiFiConnection';
 import System from './framework/system/System';
 import AccessPoint from './framework/ap/AccessPoint';
 import NetworkTime from './framework/ntp/NetworkTime';
 import Mqtt from './framework/mqtt/Mqtt';
+import Security from './framework/security/Security';
 
 const AuthenticatedRouting: FC = () => {
 
@@ -59,30 +61,17 @@ const AuthenticatedRouting: FC = () => {
             <Mqtt />
           </Route>
         )}
+        {
+          // TODO - Admin only route?
+        }
         {features.security && (
-          <Route exact path="/security">
-            Security screen
+          <Route path="/security">
+            <Security />
           </Route>
         )}
         <Route path="/system">
           <System />
         </Route>
-        {
-          /*
-
-            <AuthenticatedRoute exact path="/ap/*" component={AccessPoint} />
-            {features.ntp && (
-              <AuthenticatedRoute exact path="/ntp/*" component={NetworkTime} />
-            )}
-            {features.mqtt && (
-              <AuthenticatedRoute exact path="/mqtt/*" component={Mqtt} />
-            )}
-            {features.security && (
-              <AuthenticatedRoute exact path="/security/*" component={Security} />
-            )}
-            <AuthenticatedRoute exact path="/system/*" component={System} />
-          */
-        }
         <Redirect to={getDefaultRoute(features)} />
       </Switch>
     </Layout>
