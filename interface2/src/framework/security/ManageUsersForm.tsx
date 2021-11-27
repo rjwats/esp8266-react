@@ -19,8 +19,6 @@ import { useRest } from '../../utils';
 import { SecuritySettings, User } from '../../types';
 import { AuthenticatedContext } from '../../contexts/authentication';
 
-
-
 import UserForm from './UserForm';
 
 function compareUsers(a: User, b: User) {

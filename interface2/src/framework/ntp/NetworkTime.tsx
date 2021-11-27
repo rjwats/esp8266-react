@@ -7,6 +7,7 @@ import { useLayoutTitle } from '../../components/layout';
 import { AuthenticatedContext } from '../../contexts/authentication';
 import NTPStatusForm from './NTPStatusForm';
 import NTPSettingsForm from './NTPSettingsForm';
+import { AdminRoute } from '../../components';
 
 const NetworkTimeRouting: FC = () => {
   useLayoutTitle("Network Time");
@@ -29,9 +30,9 @@ const NetworkTimeRouting: FC = () => {
         <Route exact path="/ntp/status">
           <NTPStatusForm />
         </Route>
-        <Route exact path="/ntp/settings">
+        <AdminRoute exact path="/ntp/settings">
           <NTPSettingsForm />
-        </Route>
+        </AdminRoute>
         <Redirect to="/ntp/status" />
       </Switch>
     </>

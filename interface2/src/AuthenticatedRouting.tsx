@@ -17,6 +17,7 @@ import AccessPoint from './framework/ap/AccessPoint';
 import NetworkTime from './framework/ntp/NetworkTime';
 import Mqtt from './framework/mqtt/Mqtt';
 import Security from './framework/security/Security';
+import { AdminRoute } from './components';
 
 const AuthenticatedRouting: FC = () => {
 
@@ -61,13 +62,10 @@ const AuthenticatedRouting: FC = () => {
             <Mqtt />
           </Route>
         )}
-        {
-          // TODO - Admin only route?
-        }
         {features.security && (
-          <Route path="/security">
+          <AdminRoute path="/security">
             <Security />
-          </Route>
+          </AdminRoute>
         )}
         <Route path="/system">
           <System />

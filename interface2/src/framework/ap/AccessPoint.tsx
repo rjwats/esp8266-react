@@ -7,6 +7,7 @@ import { useLayoutTitle } from '../../components/layout';
 import { AuthenticatedContext } from '../../contexts/authentication';
 import APStatusForm from './APStatusForm';
 import APSettingsForm from './APSettingsForm';
+import { AdminRoute } from '../../components';
 
 const AccessPointRouting: FC = () => {
   useLayoutTitle("Access Point");
@@ -29,9 +30,9 @@ const AccessPointRouting: FC = () => {
         <Route exact path="/ap/status">
           <APStatusForm />
         </Route>
-        <Route exact path="/ap/settings">
+        <AdminRoute exact path="/ap/settings">
           <APSettingsForm />
-        </Route>
+        </AdminRoute>
         <Redirect to="/ap/status" />
       </Switch>
     </>

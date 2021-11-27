@@ -7,6 +7,7 @@ import { useLayoutTitle } from '../../components/layout';
 import { AuthenticatedContext } from '../../contexts/authentication';
 import MqttStatusForm from './MqttStatusForm';
 import MqttSettingsForm from './MqttSettingsForm';
+import { AdminRoute } from '../../components';
 
 const MqttRouting: FC = () => {
   useLayoutTitle("Network Time");
@@ -29,9 +30,9 @@ const MqttRouting: FC = () => {
         <Route exact path="/mqtt/status">
           <MqttStatusForm />
         </Route>
-        <Route exact path="/mqtt/settings">
+        <AdminRoute exact path="/mqtt/settings">
           <MqttSettingsForm />
-        </Route>
+        </AdminRoute>
         <Redirect to="/mqtt/status" />
       </Switch>
     </>

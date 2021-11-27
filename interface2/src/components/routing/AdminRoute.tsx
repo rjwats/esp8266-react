@@ -1,9 +1,11 @@
 import { FC, useContext } from 'react';
-import { RouteComponentProps, Redirect, Route } from "react-router-dom";
+import { RouteProps, Redirect, Route, RouteComponentProps } from "react-router-dom";
 
 import { AuthenticatedContext } from '../../contexts/authentication';
 
-const AdminRoute: FC = ({ children, ...rest }) => {
+type AdminRouteProps = Omit<RouteProps, 'component' | 'render'>;
+
+const AdminRoute: FC<AdminRouteProps> = ({ children, ...rest }) => {
   const authenticatedContext = useContext(AuthenticatedContext);
   const renderComponent: FC<RouteComponentProps<any>> = () => {
     if (authenticatedContext.me.admin) {

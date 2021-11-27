@@ -11,6 +11,7 @@ import { WiFiConnectionContext } from './WiFiConnectionContext';
 import WiFiStatusForm from './WiFiStatusForm';
 import WiFiNetworkScanner from './WiFiNetworkScanner';
 import WiFiSettingsForm from './WiFiSettingsForm';
+import { AdminRoute } from '../../components';
 
 const WiFiConnectionRouting: FC = () => {
   useLayoutTitle("WiFi Connection");
@@ -50,12 +51,12 @@ const WiFiConnectionRouting: FC = () => {
         <Route exact path="/wifi/status">
           <WiFiStatusForm />
         </Route>
-        <Route exact path="/wifi/scan">
+        <AdminRoute exact path="/wifi/scan">
           <WiFiNetworkScanner />
-        </Route>
-        <Route exact path="/wifi/settings">
+        </AdminRoute>
+        <AdminRoute exact path="/wifi/settings">
           <WiFiSettingsForm />
-        </Route>
+        </AdminRoute>
         <Redirect to="/wifi/status" />
       </Switch>
     </WiFiConnectionContext.Provider>
