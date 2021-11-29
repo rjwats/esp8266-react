@@ -13,8 +13,6 @@ import { WiFiConnectionStatus, WiFiStatus } from "../../types";
 import { ButtonRow, FormLoader, SectionContent } from "../../components";
 import { useRest } from "../../utils";
 
-// TODO - Move some of the below to 'types' as required
-
 const isConnected = ({ status }: WiFiStatus) => status === WiFiConnectionStatus.WIFI_STATUS_CONNECTED;
 
 const wifiStatusHighlight = ({ status }: WiFiStatus, theme: Theme) => {
@@ -33,7 +31,6 @@ const wifiStatusHighlight = ({ status }: WiFiStatus, theme: Theme) => {
   }
 };
 
-// TODO - Replace this with a metadata object
 const wifiStatus = ({ status }: WiFiStatus) => {
   switch (status) {
     case WiFiConnectionStatus.WIFI_STATUS_NO_SHIELD:

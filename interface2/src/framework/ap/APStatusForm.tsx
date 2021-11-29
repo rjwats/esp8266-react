@@ -11,8 +11,6 @@ import { APNetworkStatus, APStatus } from "../../types";
 import { ButtonRow, FormLoader, SectionContent } from "../../components";
 import { useRest } from "../../utils";
 
-// TODO - Move some of the below to 'types' as required
-
 export const apStatusHighlight = ({ status }: APStatus, theme: Theme) => {
   switch (status) {
     case APNetworkStatus.ACTIVE:
