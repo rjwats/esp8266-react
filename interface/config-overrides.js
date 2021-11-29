@@ -4,9 +4,6 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const ProgmemGenerator = require('./progmem-generator.js');
 
-const path = require('path');
-const fs = require('fs');
-
 module.exports = function override(config, env) {
   if (env === "production") {
     // rename the ouput file, we need it's path to be short, for embedded FS
@@ -14,8 +11,8 @@ module.exports = function override(config, env) {
     config.output.chunkFilename = 'js/[id].[chunkhash:4].js';
 
     // take out the manifest and service worker plugins
-    config.plugins = config.plugins.filter(plugin => !(plugin instanceof ManifestPlugin));
-    config.plugins = config.plugins.filter(plugin => !(plugin instanceof WorkboxWebpackPlugin.GenerateSW));
+    config.plugins = config.plugins.filter((plugin) => !(plugin instanceof ManifestPlugin));
+    config.plugins = config.plugins.filter((plugin) => !(plugin instanceof WorkboxWebpackPlugin.GenerateSW));
 
     // shorten css filenames
     const miniCssExtractPlugin = config.plugins.find((plugin) => plugin instanceof MiniCssExtractPlugin);
@@ -34,4 +31,4 @@ module.exports = function override(config, env) {
     }));
   }
   return config;
-}
+};

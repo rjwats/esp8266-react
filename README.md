@@ -118,37 +118,24 @@ UI development is an iterative process so it's best to run a development server 
 
 The following steps can get you up and running for local interface development:
 
-- [Enable CORS](#enabling-cors) in platformio.ini
 - Deploy firmware to device
-- [Configure endpoint root](#configuring-the-endpoint-root) with device's IP in interface/.env.development
+- [Configuring the dev proxy](#configuring-the-dev-proxy) with device's IP in interface/package.json
 - [Start the development server](#starting-the-development-server) with "npm start"
 - Develop interface locally
 
-#### Enabling CORS
+#### Configuring the dev proxy
 
-You can enable CORS on the back end by uncommenting the -D ENABLE_CORS build flag in ['platformio.ini'](platformio.ini) then re-building and uploading the firmware to the device. The default settings assume you will be accessing the development server on the default port on [http://localhost:3000](http://localhost:3000) this can also be changed if required:
+The interface has a development environment which is enabled when running the development server using `npm start`. The [package.json](interface/package.json) file defines the location of the services which the development server will proxy. This is defined by the "proxy" propery, which will need to be change to the the IP address or hostname of the device running the firmware.
 
-```ini
--D ENABLE_CORS
--D CORS_ORIGIN=\"http://localhost:3000\"
+```json
+"proxy": "http://192.168.0.77"
 ```
 
-#### Configuring the endpoint root
-
-The interface has a development environment which is enabled when running the development server using `npm start`. The environment file can be found in ['interface/.env.development'](interface/.env.development) and contains the HTTP root URL and the WebSocket root URL:
-
-```ini
-REACT_APP_HTTP_ROOT=http://192.168.0.99
-REACT_APP_WEB_SOCKET_ROOT=ws://192.168.0.99
-```
-
-The `REACT_APP_HTTP_ROOT` and `REACT_APP_WEB_SOCKET_ROOT` properties can be modified to point a ESP device running the back end.
-
-> **Tip**: You must restart the development server for changes to the environment file to come into effect.
+> **Tip**: You must restart the development server for changes to the proxy location to come into effect. Note that the proxy is configured to handle http and WebSocket connections from this location, see [setupProxy.js](interface/src/setupProxy.js) for details.
 
 #### Starting the development server
 
-Change to the ['interface'](interface) directory with your bash shell (or Git Bash) and use the standard commands you would with any react app built with create-react-app:
+Change to the [interface](interface) directory with your bash shell (or Git Bash) and use the standard commands you would with any react app built with create-react-app:
 
 ```bash
 cd interface
