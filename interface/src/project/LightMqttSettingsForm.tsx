@@ -72,7 +72,7 @@ const LightMqttSettingsForm: FC = () => {
           onChange={updateFormValue}
           margin="normal"
         />
-        <ButtonRow>
+        <ButtonRow mt={1}>
           <Button startIcon={<SaveIcon />} disabled={saving} variant="contained" color="primary" type="submit" onClick={validateAndSubmit}>
             Save
           </Button>

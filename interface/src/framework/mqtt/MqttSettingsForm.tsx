@@ -125,7 +125,7 @@ const MqttSettingsForm: FC = () => {
           onChange={updateFormValue}
           margin="normal"
         />
-        <ButtonRow>
+        <ButtonRow mt={1}>
           <Button startIcon={<SaveIcon />} disabled={saving} variant="contained" color="primary" type="submit" onClick={validateAndSubmit}>
             Save
           </Button>
@@ -135,7 +135,7 @@ const MqttSettingsForm: FC = () => {
   };
 
   return (
-    <SectionContent title='Access Point Settings' titleGutter>
+    <SectionContent title='MQTT Settings' titleGutter>
       {content()}
     </SectionContent>
   );

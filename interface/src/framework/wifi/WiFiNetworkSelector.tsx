@@ -8,6 +8,7 @@ import WifiIcon from '@mui/icons-material/Wifi';
 import { WiFiEncryptionType, WiFiNetwork, WiFiNetworkList } from '../../types';
 
 import { WiFiConnectionContext } from './WiFiConnectionContext';
+import { MessageBox } from '../../components';
 
 interface WiFiNetworkSelectorProps {
   networkList: WiFiNetworkList;
@@ -56,6 +57,12 @@ const WiFiNetworkSelector: FC<WiFiNetworkSelectorProps> = ({ networkList }) => {
       </ListItem>
     );
   };
+
+  if (networkList.networks.length === 0) {
+    return (
+      <MessageBox mt={2} mb={1} message="No WiFi networks found" level="info" />
+    );
+  }
 
   return (
     <List>

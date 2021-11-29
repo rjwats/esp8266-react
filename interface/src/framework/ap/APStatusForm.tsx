@@ -85,7 +85,7 @@ const APStatusForm: FC = () => {
           </ListItem>
           <Divider variant="inset" component="li" />
         </List>
-        <ButtonRow pt={2}>
+        <ButtonRow pt={1}>
           <Button startIcon={<RefreshIcon />} variant="contained" color="secondary" onClick={loadData}>
             Refresh
           </Button>

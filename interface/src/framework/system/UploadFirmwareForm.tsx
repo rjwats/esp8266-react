@@ -1,9 +1,7 @@
 import { FC } from 'react';
 
-import { Box } from '@mui/material';
-
 import * as SystemApi from "../../api/system";
-import { SectionContent, SingleUpload, useFileUpload } from '../../components';
+import { MessageBox, SectionContent, SingleUpload, useFileUpload } from '../../components';
 
 const UploadFirmwareForm: FC = () => {
 
@@ -11,9 +9,11 @@ const UploadFirmwareForm: FC = () => {
 
   return (
     <SectionContent title='Upload Firmware' titleGutter>
-      <Box py={2}>
-        Upload a new firmware (.bin) file below to replace the existing firmware.
-      </Box>
+      <MessageBox
+        message="Upload a new firmware (.bin) file below to replace the existing firmware."
+        level="warning"
+        my={2}
+      />
       <SingleUpload
         accept="application/octet-stream"
         onDrop={uploadFile}

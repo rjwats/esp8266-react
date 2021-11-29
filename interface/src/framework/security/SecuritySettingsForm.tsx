@@ -51,9 +51,9 @@ const SecuritySettingsForm: FC = () => {
         <MessageBox
           level="info"
           message="The JWT secret is used to sign authentication tokens. If you modify the JWT Secret, all users will be signed out."
-          my={2}
+          mt={1}
         />
-        <ButtonRow>
+        <ButtonRow mt={2}>
           <Button startIcon={<SaveIcon />} disabled={saving} variant="contained" color="primary" type="submit" onClick={validateAndSubmit}>
             Save
           </Button>

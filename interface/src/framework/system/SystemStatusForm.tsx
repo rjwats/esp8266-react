@@ -224,14 +224,16 @@ const SystemStatusForm: FC = () => {
         </List>
         <Box display="flex" flexWrap="wrap">
           <Box flexGrow={1}>
-            <Button startIcon={<RefreshIcon />} variant="contained" color="secondary" onClick={loadData}>
-              Refresh
-            </Button>
+            <ButtonRow mt={1}>
+              <Button startIcon={<RefreshIcon />} variant="contained" color="secondary" onClick={loadData}>
+                Refresh
+              </Button>
+            </ButtonRow>
           </Box>
           {
             me.admin &&
             <Box flexWrap="nowrap" whiteSpace="nowrap">
-              <ButtonRow>
+              <ButtonRow mt={1}>
                 <Button startIcon={<PowerSettingsNewIcon />} variant="contained" color="primary" onClick={() => setConfirmRestart(true)}>
                   Restart
                 </Button>

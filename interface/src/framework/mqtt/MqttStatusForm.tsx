@@ -106,7 +106,7 @@ const MqttStatusForm: FC = () => {
           <Divider variant="inset" component="li" />
           {data.enabled && renderConnectionStatus()}
         </List >
-        <ButtonRow pt={2}>
+        <ButtonRow pt={1}>
           <Button startIcon={<RefreshIcon />} variant="contained" color="secondary" onClick={loadData}>
             Refresh
           </Button>

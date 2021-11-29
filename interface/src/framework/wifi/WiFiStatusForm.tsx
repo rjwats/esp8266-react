@@ -139,7 +139,7 @@ const WiFiStatusForm: FC = () => {
             </>
           }
         </List>
-        <ButtonRow pt={2}>
+        <ButtonRow pt={1}>
           <Button startIcon={<RefreshIcon />} variant="contained" color="secondary" onClick={loadData}>
             Refresh
           </Button>

@@ -134,7 +134,7 @@ const SecuritySettingsForm: FC = () => {
             />
           )
         }
-        <ButtonRow>
+        <ButtonRow mt={2}>
           <Button
             startIcon={<SaveIcon />}
             disabled={saving || noAdminConfigured()}
