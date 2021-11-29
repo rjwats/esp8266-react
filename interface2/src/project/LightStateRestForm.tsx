@@ -1,9 +1,9 @@
 import { FC } from 'react';
 
-import { Box, Button, Checkbox, Typography } from '@mui/material';
+import { Button, Checkbox } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 
-import { SectionContent, FormLoader, BlockFormControlLabel, ButtonRow } from '../components';
+import { SectionContent, FormLoader, BlockFormControlLabel, ButtonRow, MessageBox } from '../components';
 import { updateValue, useRest } from '../utils';
 
 import * as DemoApi from './api';
@@ -23,11 +23,11 @@ const LightStateRestForm: FC = () => {
 
     return (
       <>
-        <Box bgcolor="primary.main" color="primary.contrastText" p={2} mt={2} mb={2}>
-          <Typography variant="body1">
-            The form below controls the LED via the RESTful service exposed by the ESP device.
-          </Typography>
-        </Box>
+        <MessageBox
+          level="info"
+          message="The form below controls the LED via the RESTful service exposed by the ESP device."
+          my={2}
+        />
         <BlockFormControlLabel
           control={
             <Checkbox

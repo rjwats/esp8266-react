@@ -1,12 +1,12 @@
 import React, { FC, useContext, useState } from 'react';
 import { ValidateFieldsError } from 'async-validator';
 
-import { Box, Button, Typography } from '@mui/material';
+import { Button } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 
 import * as SecurityApi from "../../api/security";
 import { SecuritySettings } from '../../types';
-import { ButtonRow, FormLoader, SectionContent, ValidatedPasswordField } from '../../components';
+import { ButtonRow, FormLoader, MessageBox, SectionContent, ValidatedPasswordField } from '../../components';
 import { SECURITY_SETTINGS_VALIDATOR, validate } from '../../validators';
 import { updateValue, useRest } from '../../utils';
 import { AuthenticatedContext } from '../../contexts/authentication';
@@ -48,11 +48,11 @@ const SecuritySettingsForm: FC = () => {
           onChange={updateFormValue}
           margin="normal"
         />
-        <Box bgcolor="primary.main" color="primary.contrastText" p={2} mt={2} mb={2}>
-          <Typography variant="body1">
-            The JWT secret is used to sign authentication tokens. If you modify the JWT Secret, all users will be signed out.
-          </Typography>
-        </Box>
+        <MessageBox
+          level="info"
+          message="The JWT secret is used to sign authentication tokens. If you modify the JWT Secret, all users will be signed out."
+          my={2}
+        />
         <ButtonRow>
           <Button startIcon={<SaveIcon />} disabled={saving} variant="contained" color="primary" type="submit" onClick={validateAndSubmit}>
             Save

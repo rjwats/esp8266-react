@@ -1,9 +1,9 @@
 import { FC } from 'react';
 
-import { Box, Switch, Typography } from '@mui/material';
+import { Switch } from '@mui/material';
 
 import { WEB_SOCKET_ROOT } from '../api/endpoints';
-import { BlockFormControlLabel, FormLoader, SectionContent } from '../components';
+import { BlockFormControlLabel, FormLoader, MessageBox, SectionContent } from '../components';
 import { updateValue, useWs } from '../utils';
 
 import { LightState } from './types';
@@ -21,11 +21,11 @@ const LightStateWebSocketForm: FC = () => {
     }
     return (
       <>
-        <Box bgcolor="primary.main" color="primary.contrastText" p={2} mt={2} mb={2}>
-          <Typography variant="body1">
-            The switch below controls the LED via the WebSocket. It will automatically update whenever the LED state changes.
-          </Typography>
-        </Box>
+        <MessageBox
+          level="info"
+          message="The switch below controls the LED via the WebSocket. It will automatically update whenever the LED state changes."
+          my={2}
+        />
         <BlockFormControlLabel
           control={
             <Switch

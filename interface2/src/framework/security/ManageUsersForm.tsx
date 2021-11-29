@@ -1,8 +1,7 @@
 import { FC, useContext, useState } from 'react';
 
 import {
-  Box, Button, IconButton, Table, TableBody, TableCell, TableFooter, TableHead, TableRow, Typography,
-  useTheme, useMediaQuery
+  Button, IconButton, Table, TableBody, TableCell, TableFooter, TableHead, TableRow, useTheme, useMediaQuery
 } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -13,7 +12,7 @@ import CloseIcon from '@mui/icons-material/Close';
 
 import * as SecurityApi from "../../api/security";
 import { SecuritySettings, User } from '../../types';
-import { ButtonRow, FormLoader, SectionContent } from '../../components';
+import { ButtonRow, FormLoader, MessageBox, SectionContent } from '../../components';
 import { createUserValidator } from '../../validators';
 import { useRest } from '../../utils';
 import { AuthenticatedContext } from '../../contexts/authentication';
@@ -132,11 +131,11 @@ const SecuritySettingsForm: FC = () => {
         {
           noAdminConfigured() &&
           (
-            <Box bgcolor="error.main" color="error.contrastText" p={2} mt={2} mb={2}>
-              <Typography variant="body1">
-                You must have at least one admin user configured.
-              </Typography>
-            </Box>
+            <MessageBox
+              level="warning"
+              message="You must have at least one admin user configured."
+              my={2}
+            />
           )
         }
         <ButtonRow>

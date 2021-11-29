@@ -1,10 +1,10 @@
 import { FC, useState } from "react";
 import { ValidateFieldsError } from "async-validator";
 
-import { Box, Button, Typography } from "@mui/material";
+import { Button } from "@mui/material";
 import SaveIcon from '@mui/icons-material/Save';
 
-import { ButtonRow, FormLoader, SectionContent, ValidatedTextField } from "../components";
+import { ButtonRow, FormLoader, MessageBox, SectionContent, ValidatedTextField } from "../components";
 import { validate } from "../validators";
 import { useRest, updateValue } from "../utils";
 
@@ -37,11 +37,11 @@ const LightMqttSettingsForm: FC = () => {
 
     return (
       <>
-        <Box bgcolor="primary.main" color="primary.contrastText" p={2} mt={2} mb={2}>
-          <Typography variant="body1">
-            The LED is controllable via MQTT with the demo project designed to work with Home Assistant's auto discovery feature.
-          </Typography>
-        </Box>
+        <MessageBox
+          level="info"
+          message="The LED is controllable via MQTT with the demo project designed to work with Home Assistant's auto discovery feature."
+          my={2}
+        />
         <ValidatedTextField
           fieldErrors={fieldErrors}
           name="unique_id"
