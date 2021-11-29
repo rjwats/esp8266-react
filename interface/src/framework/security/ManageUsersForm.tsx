@@ -1,7 +1,7 @@
 import { FC, useContext, useState } from 'react';
 
 import {
-  Button, IconButton, Table, TableBody, TableCell, TableFooter, TableHead, TableRow, useTheme, useMediaQuery
+  Button, IconButton, Table, TableBody, TableCell, TableFooter, TableHead, TableRow
 } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -30,13 +30,9 @@ function compareUsers(a: User, b: User) {
 }
 
 const SecuritySettingsForm: FC = () => {
-
   const {
     loadData, saving, data, setData, saveData, errorMessage
   } = useRest<SecuritySettings>({ read: SecurityApi.readSecuritySettings, update: SecurityApi.updateSecuritySettings });
-
-  const theme = useTheme();
-  const narrow = useMediaQuery(theme.breakpoints.down('xs'));
 
   const [user, setUser] = useState<User>();
   const [creating, setCreating] = useState<boolean>(false);
@@ -87,7 +83,7 @@ const SecuritySettingsForm: FC = () => {
 
     return (
       <>
-        <Table size="small" padding={narrow ? "none" : "normal"}>
+        <Table size="small">
           <TableHead>
             <TableRow>
               <TableCell>Username</TableCell>
