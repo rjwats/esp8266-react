@@ -13,20 +13,19 @@ import { validate } from '../../validators';
 import { OTA_SETTINGS_VALIDATOR } from '../../validators/system';
 
 const OTASettingsForm: FC = () => {
-
+  const [fieldErrors, setFieldErrors] = useState<ValidateFieldsError>();
   const {
     loadData, saving, data, setData, saveData, errorMessage
   } = useRest<OTASettings>({ read: SystemApi.readOTASettings, update: SystemApi.updateOTASettings });
 
   const updateFormValue = updateValue(setData);
 
-  // TODO - extend the above hook to validate the input on submit and only save to the backend if valid.
-  // NB: Saving must be asserted while validation takes place
-  // NB: Must also set saving to true while validating
-  const [fieldErrors, setFieldErrors] = useState<ValidateFieldsError>();
+  const content = () => {
+    if (!data) {
+      return (<FormLoader loadData={loadData} errorMessage={errorMessage} />);
+    }
 
-  const validateAndSubmit = async () => {
-    if (data) {
+    const validateAndSubmit = async () => {
       try {
         setFieldErrors(undefined);
         await validate(OTA_SETTINGS_VALIDATOR, data);
@@ -34,13 +33,7 @@ const OTASettingsForm: FC = () => {
       } catch (errors: any) {
         setFieldErrors(errors);
       }
-    }
-  };
-
-  const content = () => {
-    if (!data) {
-      return (<FormLoader loadData={loadData} errorMessage={errorMessage} />);
-    }
+    };
 
     return (
       <>

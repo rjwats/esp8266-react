@@ -2,7 +2,7 @@ import { FC, useState } from 'react';
 import { ValidateFieldsError } from 'async-validator';
 import { range } from 'lodash';
 
-import {  Button, Checkbox, MenuItem  } from '@mui/material';
+import { Button, Checkbox, MenuItem } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 
 import { createAPSettingsValidator, validate } from '../../validators';
@@ -16,20 +16,19 @@ export const isAPEnabled = ({ provision_mode }: APSettings) => {
 };
 
 const APSettingsForm: FC = () => {
-
+  const [fieldErrors, setFieldErrors] = useState<ValidateFieldsError>();
   const {
     loadData, saving, data, setData, saveData, errorMessage
   } = useRest<APSettings>({ read: APApi.readAPSettings, update: APApi.updateAPSettings });
 
   const updateFormValue = updateValue(setData);
 
-  // TODO - extend the above hook to validate the input on submit and only save to the backend if valid.
-  // NB: Saving must be asserted while validation takes place
-  // NB: Must also set saving to true while validating
-  const [fieldErrors, setFieldErrors] = useState<ValidateFieldsError>();
+  const content = () => {
+    if (!data) {
+      return (<FormLoader loadData={loadData} errorMessage={errorMessage} />);
+    }
 
-  const validateAndSubmit = async () => {
-    if (data) {
+    const validateAndSubmit = async () => {
       try {
         setFieldErrors(undefined);
         await validate(createAPSettingsValidator(data), data);
@@ -37,13 +36,7 @@ const APSettingsForm: FC = () => {
       } catch (errors: any) {
         setFieldErrors(errors);
       }
-    }
-  };
-
-  const content = () => {
-    if (!data) {
-      return (<FormLoader loadData={loadData} errorMessage={errorMessage} />);
-    }
+    };
 
     return (
       <>

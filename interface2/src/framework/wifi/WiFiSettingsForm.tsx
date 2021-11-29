@@ -21,6 +21,7 @@ import { createWiFiSettingsValidator } from '../../validators/wifi';
 const WiFiSettingsForm: FC = () => {
   const { selectedNetwork, deselectNetwork } = useContext(WiFiConnectionContext);
 
+  const [fieldErrors, setFieldErrors] = useState<ValidateFieldsError>();
   const [initialized, setInitialized] = useState(false);
   const {
     loadData, saving, data, setData, saveData, errorMessage
@@ -42,13 +43,14 @@ const WiFiSettingsForm: FC = () => {
 
   const updateFormValue = updateValue(setData);
 
-  // TODO - extend the above hook to validate the input on submit and only save to the backend if valid.
-  // NB: Saving must be asserted while validation takes place
-  // NB: Must also set saving to true while validating
-  const [fieldErrors, setFieldErrors] = useState<ValidateFieldsError>();
+  useEffect(() => deselectNetwork, [deselectNetwork]);
 
-  const validateAndSubmit = async () => {
-    if (data) {
+  const content = () => {
+    if (!data) {
+      return (<FormLoader loadData={loadData} errorMessage={errorMessage} />);
+    }
+
+    const validateAndSubmit = async () => {
       try {
         setFieldErrors(undefined);
         await validate(createWiFiSettingsValidator(data), data);
@@ -56,15 +58,7 @@ const WiFiSettingsForm: FC = () => {
       } catch (errors: any) {
         setFieldErrors(errors);
       }
-    }
-  };
-
-  useEffect(() => deselectNetwork, [deselectNetwork]);
-
-  const content = () => {
-    if (!data) {
-      return (<FormLoader loadData={loadData} errorMessage={errorMessage} />);
-    }
+    };
 
     return (
       <>
