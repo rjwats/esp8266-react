@@ -4,10 +4,10 @@ import { useSnackbar } from 'notistack';
 import { Box, Button, LinearProgress, Typography } from '@mui/material';
 import PermScanWifiIcon from '@mui/icons-material/PermScanWifi';
 
-import { ButtonRow, SectionContent } from '../../components';
-import { WiFiNetwork, WiFiNetworkList } from '../../types';
-import { extractErrorMessage } from '../../utils';
 import * as WiFiApi from "../../api/wifi";
+import { WiFiNetwork, WiFiNetworkList } from '../../types';
+import { ButtonRow, SectionContent } from '../../components';
+import { extractErrorMessage } from '../../utils';
 
 import WiFiNetworkSelector from './WiFiNetworkSelector';
 

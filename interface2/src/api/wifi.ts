@@ -1,7 +1,6 @@
 import { AxiosPromise } from 'axios';
 
 import { WiFiNetworkList, WiFiSettings, WiFiStatus } from '../types';
-
 import { AXIOS } from './endpoints';
 
 export function readWiFiStatus(): AxiosPromise<WiFiStatus> {

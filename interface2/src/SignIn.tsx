@@ -7,12 +7,11 @@ import ForwardIcon from '@mui/icons-material/Forward';
 
 import * as AuthenticationApi from './api/authentication';
 import { PROJECT_NAME } from './api/env';
-import { AuthenticationContext } from './contexts/authentication';
-
-import { extractErrorMessage, onEnterCallback, updateValue } from './utils';
 import { SignInRequest } from './types';
 import { ValidatedTextField } from './components';
 import { SIGN_IN_REQUEST_VALIDATOR, validate } from './validators';
+import { extractErrorMessage, onEnterCallback, updateValue } from './utils';
+import { AuthenticationContext } from './contexts/authentication';
 
 const SignIn: FC = () => {
   const authenticationContext = useContext(AuthenticationContext);

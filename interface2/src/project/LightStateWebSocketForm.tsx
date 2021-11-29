@@ -1,12 +1,12 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 
+import { Box, Switch, Typography } from '@mui/material';
+
+import { WEB_SOCKET_ROOT } from '../api/endpoints';
 import { BlockFormControlLabel, FormLoader, SectionContent } from '../components';
+import { updateValue, useWs } from '../utils';
 
 import { LightState } from './types';
-import { useWs } from '../utils/useWs';
-import { WEB_SOCKET_ROOT } from '../api/endpoints';
-import { Box, Switch, Typography } from '@mui/material';
-import { updateValue } from '../utils';
 
 export const LIGHT_SETTINGS_WEBSOCKET_URL = WEB_SOCKET_ROOT + "lightState";
 

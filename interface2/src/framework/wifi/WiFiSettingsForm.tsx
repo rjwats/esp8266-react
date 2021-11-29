@@ -1,22 +1,20 @@
-import React, { FC, useContext, useEffect, useState } from 'react';
+import { FC, useContext, useEffect, useState } from 'react';
+import { ValidateFieldsError } from 'async-validator';
 
 import { Avatar, Button, Checkbox, IconButton, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText } from '@mui/material';
-
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SaveIcon from '@mui/icons-material/Save';
 import LockIcon from '@mui/icons-material/Lock';
 
-import { BlockFormControlLabel, ButtonRow, FormLoader, SectionContent, ValidatedPasswordField, ValidatedTextField } from '../../components';
-import { WiFiSettings } from '../../types';
 import * as WiFiApi from "../../api/wifi";
+import { WiFiSettings } from '../../types';
+import { BlockFormControlLabel, ButtonRow, FormLoader, SectionContent, ValidatedPasswordField, ValidatedTextField } from '../../components';
+import { validate, createWiFiSettingsValidator } from '../../validators';
 import { updateValue, useRest } from '../../utils';
 
-import { WiFiConnectionContext } from './WiFiConnectionContext';
 import { isNetworkOpen, networkSecurityMode } from './WiFiNetworkSelector';
-import { ValidateFieldsError } from 'async-validator';
-import { validate } from '../../validators';
-import { createWiFiSettingsValidator } from '../../validators/wifi';
+import { WiFiConnectionContext } from './WiFiConnectionContext';
 
 const WiFiSettingsForm: FC = () => {
   const { selectedNetwork, deselectNetwork } = useContext(WiFiConnectionContext);

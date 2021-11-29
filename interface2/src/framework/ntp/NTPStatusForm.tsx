@@ -5,7 +5,6 @@ import {
   Avatar, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle,
   Divider, List, ListItem, ListItemAvatar, ListItemText, TextField, Theme, useTheme
 } from "@mui/material";
-
 import RefreshIcon from '@mui/icons-material/Refresh';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import SwapVerticalCircleIcon from '@mui/icons-material/SwapVerticalCircle';
@@ -13,10 +12,10 @@ import UpdateIcon from '@mui/icons-material/Update';
 import DnsIcon from '@mui/icons-material/Dns';
 import AvTimerIcon from '@mui/icons-material/AvTimer';
 
-import { FormLoader, SectionContent } from "../../components";
 import * as NTPApi from "../../api/ntp";
-import { extractErrorMessage, formatDateTime, formatDuration, formatLocalDateTime, useRest } from "../../utils";
 import { NTPStatus, NTPSyncStatus } from "../../types";
+import { FormLoader, SectionContent } from "../../components";
+import { extractErrorMessage, formatDateTime, formatDuration, formatLocalDateTime, useRest } from "../../utils";
 import { AuthenticatedContext } from "../../contexts/authentication";
 
 export const isNtpActive = ({ status }: NTPStatus) => status === NTPSyncStatus.NTP_ACTIVE;

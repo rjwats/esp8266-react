@@ -1,10 +1,10 @@
 import { FC, useContext, useState } from "react";
 import { useSnackbar } from "notistack";
+
 import {
   Avatar, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle,
   Divider, List, ListItem, ListItemAvatar, ListItemText
 } from "@mui/material";
-
 import DevicesIcon from '@mui/icons-material/Devices';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
 import MemoryIcon from '@mui/icons-material/Memory';
@@ -16,11 +16,10 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
 
-import { ButtonRow, FormLoader, SectionContent } from "../../components";
-import { EspPlatform, SystemStatus } from "../../types";
 import * as SystemApi from "../../api/system";
+import { EspPlatform, SystemStatus } from "../../types";
+import { ButtonRow, FormLoader, SectionContent } from "../../components";
 import { extractErrorMessage, useRest } from "../../utils";
-
 import { AuthenticatedContext } from "../../contexts/authentication";
 
 function formatNumber(num: number) {

@@ -1,13 +1,13 @@
 import { FC } from "react";
-import { Avatar, Button, Divider, List, ListItem, ListItemAvatar, ListItemText, Theme, useTheme } from "@mui/material";
 
+import { Avatar, Button, Divider, List, ListItem, ListItemAvatar, ListItemText, Theme, useTheme } from "@mui/material";
 import DeviceHubIcon from '@mui/icons-material/DeviceHub';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import ReportIcon from '@mui/icons-material/Report';
 
-import { ButtonRow, FormLoader, SectionContent } from "../../components";
-import { MqttStatus, MqttDisconnectReason } from "../../types";
 import * as MqttApi from "../../api/mqtt";
+import { MqttStatus, MqttDisconnectReason } from "../../types";
+import { ButtonRow, FormLoader, SectionContent } from "../../components";
 import { useRest } from "../../utils";
 
 export const mqttStatusHighlight = ({ enabled, connected }: MqttStatus, theme: Theme) => {

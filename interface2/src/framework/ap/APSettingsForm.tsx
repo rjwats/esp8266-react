@@ -5,11 +5,11 @@ import { range } from 'lodash';
 import { Button, Checkbox, MenuItem } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 
-import { createAPSettingsValidator, validate } from '../../validators';
-import { BlockFormControlLabel, ButtonRow, FormLoader, SectionContent, ValidatedPasswordField, ValidatedTextField } from '../../components';
-import { APProvisionMode, APSettings } from '../../types';
-import { updateValue, useRest } from '../../utils';
 import * as APApi from "../../api/ap";
+import { APProvisionMode, APSettings } from '../../types';
+import { BlockFormControlLabel, ButtonRow, FormLoader, SectionContent, ValidatedPasswordField, ValidatedTextField } from '../../components';
+import { createAPSettingsValidator, validate } from '../../validators';
+import { updateValue, useRest } from '../../utils';
 
 export const isAPEnabled = ({ provision_mode }: APSettings) => {
   return provision_mode === APProvisionMode.AP_MODE_ALWAYS || provision_mode === APProvisionMode.AP_MODE_DISCONNECTED;

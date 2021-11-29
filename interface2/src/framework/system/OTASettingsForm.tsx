@@ -1,16 +1,14 @@
 import React, { FC, useState } from 'react';
+import { ValidateFieldsError } from 'async-validator';
 
 import { Button, Checkbox } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 
 import * as SystemApi from "../../api/system";
-import { BlockFormControlLabel, ButtonRow, FormLoader, SectionContent, ValidatedPasswordField, ValidatedTextField } from '../../components';
 import { OTASettings } from '../../types';
+import { BlockFormControlLabel, ButtonRow, FormLoader, SectionContent, ValidatedPasswordField, ValidatedTextField } from '../../components';
+import { validate, OTA_SETTINGS_VALIDATOR } from '../../validators';
 import { updateValue, useRest } from '../../utils';
-
-import { ValidateFieldsError } from 'async-validator';
-import { validate } from '../../validators';
-import { OTA_SETTINGS_VALIDATOR } from '../../validators/system';
 
 const OTASettingsForm: FC = () => {
   const [fieldErrors, setFieldErrors] = useState<ValidateFieldsError>();

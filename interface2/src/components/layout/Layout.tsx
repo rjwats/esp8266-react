@@ -3,10 +3,10 @@ import { FC, useState } from 'react';
 
 import { Box, Toolbar } from '@mui/material';
 
+import { PROJECT_NAME } from '../../api/env';
 import LayoutDrawer from './LayoutDrawer';
 import LayoutAppBar from './LayoutAppBar';
 import { LayoutContext } from './context';
-import { PROJECT_NAME } from '../../api/env';
 
 export const DRAWER_WIDTH = 280;
 

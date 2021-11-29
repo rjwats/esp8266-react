@@ -4,11 +4,11 @@ import { ValidateFieldsError } from 'async-validator';
 import { Button, Checkbox } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 
-import { MQTT_SETTINGS_VALIDATOR, validate } from '../../validators';
-import { BlockFormControlLabel, ButtonRow, FormLoader, SectionContent, ValidatedPasswordField, ValidatedTextField } from '../../components';
-import { MqttSettings } from '../../types';
-import { updateValue, useRest } from '../../utils';
 import * as MqttApi from "../../api/mqtt";
+import { MqttSettings } from '../../types';
+import { BlockFormControlLabel, ButtonRow, FormLoader, SectionContent, ValidatedPasswordField, ValidatedTextField } from '../../components';
+import { MQTT_SETTINGS_VALIDATOR, validate } from '../../validators';
+import { updateValue, useRest } from '../../utils';
 
 const MqttSettingsForm: FC = () => {
   const [fieldErrors, setFieldErrors] = useState<ValidateFieldsError>();

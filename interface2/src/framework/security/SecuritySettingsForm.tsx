@@ -5,10 +5,10 @@ import { Box, Button, Typography } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 
 import * as SecurityApi from "../../api/security";
+import { SecuritySettings } from '../../types';
 import { ButtonRow, FormLoader, SectionContent, ValidatedPasswordField } from '../../components';
 import { SECURITY_SETTINGS_VALIDATOR, validate } from '../../validators';
 import { updateValue, useRest } from '../../utils';
-import { SecuritySettings } from '../../types';
 import { AuthenticatedContext } from '../../contexts/authentication';
 
 const SecuritySettingsForm: FC = () => {

@@ -1,7 +1,6 @@
 import { AxiosPromise } from 'axios';
 
 import { SecuritySettings } from '../types';
-
 import { AXIOS } from './endpoints';
 
 export function readSecuritySettings(): AxiosPromise<SecuritySettings> {

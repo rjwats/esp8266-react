@@ -3,8 +3,8 @@ import { FC } from 'react';
 import { List } from '@mui/material';
 import SettingsRemoteIcon from '@mui/icons-material/SettingsRemote';
 
-import LayoutMenuItem from '../components/layout/LayoutMenuItem';
 import { PROJECT_PATH } from '../api/env';
+import LayoutMenuItem from '../components/layout/LayoutMenuItem';
 
 const ProjectMenu: FC = () => (
   <List>

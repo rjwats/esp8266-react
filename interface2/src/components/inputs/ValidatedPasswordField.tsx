@@ -1,4 +1,3 @@
-
 import { FC, useState } from 'react';
 
 import { IconButton, InputAdornment } from '@mui/material';

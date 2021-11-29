@@ -1,5 +1,7 @@
 import Schema from "async-validator";
+
 import { WiFiSettings } from "../types";
+
 import { HOSTNAME_VALIDATOR, IP_ADDRESS_VALIDATOR } from "./shared";
 
 export const createWiFiSettingsValidator = (wifiSettings: WiFiSettings) => new Schema({

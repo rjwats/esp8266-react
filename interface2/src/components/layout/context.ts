@@ -1,10 +1,4 @@
-import {
-  useRef,
-  useEffect,
-  useContext
-} from 'react';
-
-import React from 'react';
+import React, { useRef, useEffect, useContext } from 'react';
 
 export interface LayoutContextValue {
   title: string;

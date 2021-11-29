@@ -1,10 +1,9 @@
-import React, { FC, useContext, useState } from 'react';
+import { FC, useContext, useState } from 'react';
 
 import {
   Box, Button, IconButton, Table, TableBody, TableCell, TableFooter, TableHead, TableRow, Typography,
   useTheme, useMediaQuery
 } from '@mui/material';
-
 import SaveIcon from '@mui/icons-material/Save';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
@@ -13,10 +12,10 @@ import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 
 import * as SecurityApi from "../../api/security";
+import { SecuritySettings, User } from '../../types';
 import { ButtonRow, FormLoader, SectionContent } from '../../components';
 import { createUserValidator } from '../../validators';
 import { useRest } from '../../utils';
-import { SecuritySettings, User } from '../../types';
 import { AuthenticatedContext } from '../../contexts/authentication';
 
 import UserForm from './UserForm';

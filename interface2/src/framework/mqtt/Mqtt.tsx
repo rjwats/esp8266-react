@@ -3,11 +3,11 @@ import { Redirect, Route, Switch, useHistory, useRouteMatch } from 'react-router
 
 import { Tab, Tabs } from '@mui/material';
 
-import { useLayoutTitle } from '../../components/layout';
+import { AdminRoute, useLayoutTitle } from '../../components';
 import { AuthenticatedContext } from '../../contexts/authentication';
+
 import MqttStatusForm from './MqttStatusForm';
 import MqttSettingsForm from './MqttSettingsForm';
-import { AdminRoute } from '../../components';
 
 const MqttRouting: FC = () => {
   useLayoutTitle("Network Time");

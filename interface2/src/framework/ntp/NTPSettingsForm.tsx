@@ -4,13 +4,13 @@ import { ValidateFieldsError } from 'async-validator';
 import { Button, Checkbox, MenuItem } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 
-import { validate } from '../../validators';
-import { BlockFormControlLabel, ButtonRow, FormLoader, SectionContent, ValidatedTextField } from '../../components';
-import { NTPSettings } from '../../types';
-import { updateValue, useRest } from '../../utils';
 import * as NTPApi from "../../api/ntp";
+import { NTPSettings } from '../../types';
+import { BlockFormControlLabel, ButtonRow, FormLoader, SectionContent, ValidatedTextField } from '../../components';
+import { validate, NTP_SETTINGS_VALIDATOR } from '../../validators';
+import { updateValue, useRest } from '../../utils';
+
 import { selectedTimeZone, timeZoneSelectItems, TIME_ZONES } from './TZ';
-import { NTP_SETTINGS_VALIDATOR } from '../../validators/ntp';
 
 const NTPSettingsForm: FC = () => {
   const [fieldErrors, setFieldErrors] = useState<ValidateFieldsError>();

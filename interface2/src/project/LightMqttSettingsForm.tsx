@@ -5,12 +5,12 @@ import { Box, Button, Typography } from "@mui/material";
 import SaveIcon from '@mui/icons-material/Save';
 
 import { ButtonRow, FormLoader, SectionContent, ValidatedTextField } from "../components";
-import { useRest, updateValue } from "../utils";
 import { validate } from "../validators";
+import { useRest, updateValue } from "../utils";
 
 import * as DemoApi from './api';
-import { LIGHT_MQTT_SETTINGS_VALIDATOR } from "./validators";
 import { LightMqttSettings } from "./types";
+import { LIGHT_MQTT_SETTINGS_VALIDATOR } from "./validators";
 
 const LightMqttSettingsForm: FC = () => {
   const [fieldErrors, setFieldErrors] = useState<ValidateFieldsError>();

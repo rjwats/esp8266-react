@@ -1,7 +1,6 @@
 import { AxiosPromise } from 'axios';
 
 import { OTASettings, SystemStatus } from '../types';
-
 import { AXIOS, FileUploadConfig, uploadFile } from './endpoints';
 
 export function readSystemStatus(): AxiosPromise<SystemStatus> {

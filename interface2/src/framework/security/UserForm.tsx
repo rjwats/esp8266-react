@@ -3,10 +3,10 @@ import Schema, { ValidateFieldsError } from 'async-validator';
 
 import { Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 
-import { BlockFormControlLabel, ValidatedPasswordField, ValidatedTextField } from '../../components';
 import { User } from '../../types';
-import { updateValue } from '../../utils';
+import { BlockFormControlLabel, ValidatedPasswordField, ValidatedTextField } from '../../components';
 import { validate } from '../../validators';
+import { updateValue } from '../../utils';
 
 interface UserFormProps {
   creating: boolean;

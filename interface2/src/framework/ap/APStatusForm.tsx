@@ -1,14 +1,14 @@
 import { FC } from "react";
-import { Avatar, Button, Divider, List, ListItem, ListItemAvatar, ListItemText, Theme, useTheme } from "@mui/material";
 
+import { Avatar, Button, Divider, List, ListItem, ListItemAvatar, ListItemText, Theme, useTheme } from "@mui/material";
 import SettingsInputAntennaIcon from '@mui/icons-material/SettingsInputAntenna';
 import DeviceHubIcon from '@mui/icons-material/DeviceHub';
 import ComputerIcon from '@mui/icons-material/Computer';
 import RefreshIcon from '@mui/icons-material/Refresh';
 
-import { ButtonRow, FormLoader, SectionContent } from "../../components";
-import { APNetworkStatus, APStatus } from "../../types";
 import * as APApi from "../../api/ap";
+import { APNetworkStatus, APStatus } from "../../types";
+import { ButtonRow, FormLoader, SectionContent } from "../../components";
 import { useRest } from "../../utils";
 
 // TODO - Move some of the below to 'types' as required

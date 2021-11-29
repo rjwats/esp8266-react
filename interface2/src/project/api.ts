@@ -1,6 +1,6 @@
 import { AxiosPromise } from "axios";
-import { AXIOS } from "../api/endpoints";
 
+import { AXIOS } from "../api/endpoints";
 import { LightMqttSettings, LightState } from "./types";
 
 export function readLightState(): AxiosPromise<LightState> {

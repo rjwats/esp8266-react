@@ -11,9 +11,8 @@ import WifiIcon from '@mui/icons-material/Wifi';
 
 import { FeaturesContext } from '../../contexts/features';
 import ProjectMenu from '../../project/ProjectMenu';
-
-import LayoutMenuItem from './LayoutMenuItem';
 import { AuthenticatedContext } from '../../contexts/authentication';
+import LayoutMenuItem from './LayoutMenuItem';
 
 const LayoutMenu: FC = () => {
   const { features } = useContext(FeaturesContext);

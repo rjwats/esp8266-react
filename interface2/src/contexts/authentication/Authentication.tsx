@@ -1,14 +1,12 @@
-import { useSnackbar } from 'notistack';
 import { FC, useCallback, useContext, useEffect, useState } from 'react';
+import { useSnackbar } from 'notistack';
 import { useHistory } from 'react-router-dom';
 
 import * as AuthenticationApi from '../../api/authentication';
 import { ACCESS_TOKEN } from '../../api/endpoints';
-
 import { LoadingSpinner } from '../../components';
 import { Me } from '../../types';
 import { FeaturesContext } from '../features';
-
 import { AuthenticationContext } from './context';
 
 const Authentication: FC = ({ children }) => {

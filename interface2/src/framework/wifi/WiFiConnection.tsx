@@ -3,15 +3,13 @@ import { Redirect, Route, Switch, useHistory, useRouteMatch } from 'react-router
 
 import { Tab, Tabs } from '@mui/material';
 
-import { useLayoutTitle } from '../../components/layout';
-import { AuthenticatedContext } from '../../contexts/authentication';
+import { AdminRoute, useLayoutTitle } from '../../components';
 import { WiFiNetwork } from '../../types';
-
+import { AuthenticatedContext } from '../../contexts/authentication';
 import { WiFiConnectionContext } from './WiFiConnectionContext';
 import WiFiStatusForm from './WiFiStatusForm';
 import WiFiNetworkScanner from './WiFiNetworkScanner';
 import WiFiSettingsForm from './WiFiSettingsForm';
-import { AdminRoute } from '../../components';
 
 const WiFiConnectionRouting: FC = () => {
   useLayoutTitle("WiFi Connection");

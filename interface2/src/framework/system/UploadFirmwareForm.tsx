@@ -1,8 +1,9 @@
 import { FC } from 'react';
+
 import { Box } from '@mui/material';
 
-import { SectionContent, SingleUpload, useFileUpload } from '../../components';
 import * as SystemApi from "../../api/system";
+import { SectionContent, SingleUpload, useFileUpload } from '../../components';
 
 const UploadFirmwareForm: FC = () => {
 

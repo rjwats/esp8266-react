@@ -3,21 +3,19 @@ import { Redirect, Switch } from 'react-router';
 import { Route, useHistory, useLocation } from 'react-router-dom';
 import { AxiosError } from 'axios';
 
+import * as AuthenticationApi from './api/authentication';
 import { PROJECT_PATH } from './api/env';
 import { AXIOS } from './api/endpoints';
-import { getDefaultRoute, storeLoginRedirect } from './api/authentication';
-import { Layout } from './components/layout';
+import { AdminRoute, Layout } from './components';
 import { FeaturesContext } from './contexts/features';
 
 import ProjectRouting from './project/ProjectRouting';
-
 import WiFiConnection from './framework/wifi/WiFiConnection';
-import System from './framework/system/System';
 import AccessPoint from './framework/ap/AccessPoint';
 import NetworkTime from './framework/ntp/NetworkTime';
 import Mqtt from './framework/mqtt/Mqtt';
 import Security from './framework/security/Security';
-import { AdminRoute } from './components';
+import System from './framework/system/System';
 
 const AuthenticatedRouting: FC = () => {
 
@@ -27,7 +25,7 @@ const AuthenticatedRouting: FC = () => {
 
   const handleApiResponseError = useCallback((error: AxiosError) => {
     if (error.response && error.response.status === 401) {
-      storeLoginRedirect(location);
+      AuthenticationApi.storeLoginRedirect(location);
       history.push("/unauthorized");
     }
     return Promise.reject(error);
@@ -70,7 +68,7 @@ const AuthenticatedRouting: FC = () => {
         <Route path="/system">
           <System />
         </Route>
-        <Redirect to={getDefaultRoute(features)} />
+        <Redirect to={AuthenticationApi.getDefaultRoute(features)} />
       </Switch>
     </Layout>
   );
