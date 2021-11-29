@@ -13,7 +13,7 @@ const theme = responsiveFontSizes(
       primary: indigo,
       secondary: blueGrey,
       info: {
-        main: blueGrey[900]
+        main: indigo[500]
       },
       warning: {
         main: orange[500]
