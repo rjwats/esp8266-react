@@ -71,87 +71,89 @@ const WiFiStatusForm: FC = () => {
 
   const content = () => {
     if (!data) {
-      return (<FormLoader loadData={loadData} errorMessage={errorMessage} />);
+      return (<FormLoader onRetry={loadData} errorMessage={errorMessage} />);
     }
 
     return (
-      <List>
-        <ListItem>
-          <ListItemAvatar>
-            <Avatar sx={{ bgcolor: wifiStatusHighlight(data, theme) }}>
-              <WifiIcon />
-            </Avatar>
-          </ListItemAvatar>
-          <ListItemText primary="Status" secondary={wifiStatus(data)} />
-        </ListItem>
-        <Divider variant="inset" component="li" />
-        {
-          isConnected(data) &&
-          <>
-            <ListItem>
-              <ListItemAvatar>
-                <Avatar>
-                  <SettingsInputAntennaIcon />
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText primary="SSID" secondary={data.ssid} />
-            </ListItem>
-            <Divider variant="inset" component="li" />
-            <ListItem>
-              <ListItemAvatar>
-                <Avatar>IP</Avatar>
-              </ListItemAvatar>
-              <ListItemText primary="IP Address" secondary={data.local_ip} />
-            </ListItem>
-            <Divider variant="inset" component="li" />
-            <ListItem>
-              <ListItemAvatar>
-                <Avatar>
-                  <DeviceHubIcon />
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText primary="MAC Address" secondary={data.mac_address} />
-            </ListItem>
-            <Divider variant="inset" component="li" />
-            <ListItem>
-              <ListItemAvatar>
-                <Avatar>#</Avatar>
-              </ListItemAvatar>
-              <ListItemText primary="Subnet Mask" secondary={data.subnet_mask} />
-            </ListItem>
-            <Divider variant="inset" component="li" />
-            <ListItem>
-              <ListItemAvatar>
-                <Avatar>
-                  <SettingsInputComponentIcon />
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText primary="Gateway IP" secondary={data.gateway_ip || "none"} />
-            </ListItem>
-            <Divider variant="inset" component="li" />
-            <ListItem>
-              <ListItemAvatar>
-                <Avatar>
-                  <DnsIcon />
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText primary="DNS Server IP" secondary={dnsServers(data)} />
-            </ListItem>
-            <Divider variant="inset" component="li" />
-          </>
-        }
-      </List>
+      <>
+        <List>
+          <ListItem>
+            <ListItemAvatar>
+              <Avatar sx={{ bgcolor: wifiStatusHighlight(data, theme) }}>
+                <WifiIcon />
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary="Status" secondary={wifiStatus(data)} />
+          </ListItem>
+          <Divider variant="inset" component="li" />
+          {
+            isConnected(data) &&
+            <>
+              <ListItem>
+                <ListItemAvatar>
+                  <Avatar>
+                    <SettingsInputAntennaIcon />
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText primary="SSID" secondary={data.ssid} />
+              </ListItem>
+              <Divider variant="inset" component="li" />
+              <ListItem>
+                <ListItemAvatar>
+                  <Avatar>IP</Avatar>
+                </ListItemAvatar>
+                <ListItemText primary="IP Address" secondary={data.local_ip} />
+              </ListItem>
+              <Divider variant="inset" component="li" />
+              <ListItem>
+                <ListItemAvatar>
+                  <Avatar>
+                    <DeviceHubIcon />
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText primary="MAC Address" secondary={data.mac_address} />
+              </ListItem>
+              <Divider variant="inset" component="li" />
+              <ListItem>
+                <ListItemAvatar>
+                  <Avatar>#</Avatar>
+                </ListItemAvatar>
+                <ListItemText primary="Subnet Mask" secondary={data.subnet_mask} />
+              </ListItem>
+              <Divider variant="inset" component="li" />
+              <ListItem>
+                <ListItemAvatar>
+                  <Avatar>
+                    <SettingsInputComponentIcon />
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText primary="Gateway IP" secondary={data.gateway_ip || "none"} />
+              </ListItem>
+              <Divider variant="inset" component="li" />
+              <ListItem>
+                <ListItemAvatar>
+                  <Avatar>
+                    <DnsIcon />
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText primary="DNS Server IP" secondary={dnsServers(data)} />
+              </ListItem>
+              <Divider variant="inset" component="li" />
+            </>
+          }
+        </List>
+        <ButtonRow pt={2}>
+          <Button startIcon={<RefreshIcon />} variant="contained" color="secondary" onClick={loadData}>
+            Refresh
+          </Button>
+        </ButtonRow>
+      </>
     );
   };
 
   return (
     <SectionContent title='WiFi Status' titleGutter>
       {content()}
-      <ButtonRow pt={2}>
-        <Button startIcon={<RefreshIcon />} variant="contained" color="secondary" onClick={loadData}>
-          Refresh
-        </Button>
-      </ButtonRow>
     </SectionContent>
   );
 

@@ -118,84 +118,86 @@ const NTPStatusForm: FC = () => {
 
   const content = () => {
     if (!data) {
-      return (<FormLoader loadData={loadData} errorMessage={errorMessage} />);
+      return (<FormLoader onRetry={loadData} errorMessage={errorMessage} />);
     }
 
     return (
-      <List>
-        <ListItem>
-          <ListItemAvatar>
-            <Avatar sx={{ bgcolor: ntpStatusHighlight(data, theme) }}>
-              <UpdateIcon />
-            </Avatar>
-          </ListItemAvatar>
-          <ListItemText primary="Status" secondary={ntpStatus(data)} />
-        </ListItem>
-        <Divider variant="inset" component="li" />
-        {isNtpActive(data) && (
-          <>
-            <ListItem>
-              <ListItemAvatar>
-                <Avatar>
-                  <DnsIcon />
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText primary="NTP Server" secondary={data.server} />
-            </ListItem>
-            <Divider variant="inset" component="li" />
-          </>
-        )}
-        <ListItem>
-          <ListItemAvatar>
-            <Avatar>
-              <AccessTimeIcon />
-            </Avatar>
-          </ListItemAvatar>
-          <ListItemText primary="Local Time" secondary={formatDateTime(data.local_time)} />
-        </ListItem>
-        <Divider variant="inset" component="li" />
-        <ListItem>
-          <ListItemAvatar>
-            <Avatar>
-              <SwapVerticalCircleIcon />
-            </Avatar>
-          </ListItemAvatar>
-          <ListItemText primary="UTC Time" secondary={formatDateTime(data.utc_time)} />
-        </ListItem>
-        <Divider variant="inset" component="li" />
-        <ListItem>
-          <ListItemAvatar>
-            <Avatar>
-              <AvTimerIcon />
-            </Avatar>
-          </ListItemAvatar>
-          <ListItemText primary="Uptime" secondary={formatDuration(data.uptime)} />
-        </ListItem>
-        <Divider variant="inset" component="li" />
-      </List>
+      <>
+        <List>
+          <ListItem>
+            <ListItemAvatar>
+              <Avatar sx={{ bgcolor: ntpStatusHighlight(data, theme) }}>
+                <UpdateIcon />
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary="Status" secondary={ntpStatus(data)} />
+          </ListItem>
+          <Divider variant="inset" component="li" />
+          {isNtpActive(data) && (
+            <>
+              <ListItem>
+                <ListItemAvatar>
+                  <Avatar>
+                    <DnsIcon />
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText primary="NTP Server" secondary={data.server} />
+              </ListItem>
+              <Divider variant="inset" component="li" />
+            </>
+          )}
+          <ListItem>
+            <ListItemAvatar>
+              <Avatar>
+                <AccessTimeIcon />
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary="Local Time" secondary={formatDateTime(data.local_time)} />
+          </ListItem>
+          <Divider variant="inset" component="li" />
+          <ListItem>
+            <ListItemAvatar>
+              <Avatar>
+                <SwapVerticalCircleIcon />
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary="UTC Time" secondary={formatDateTime(data.utc_time)} />
+          </ListItem>
+          <Divider variant="inset" component="li" />
+          <ListItem>
+            <ListItemAvatar>
+              <Avatar>
+                <AvTimerIcon />
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary="Uptime" secondary={formatDuration(data.uptime)} />
+          </ListItem>
+          <Divider variant="inset" component="li" />
+        </List>
+        <Box display="flex" flexWrap="wrap">
+          <Box flexGrow={1}>
+            <Button startIcon={<RefreshIcon />} variant="contained" color="secondary" onClick={loadData}>
+              Refresh
+            </Button>
+          </Box>
+          {
+            me.admin && data && !isNtpActive(data) && (
+              <Box flexWrap="nowrap" whiteSpace="nowrap">
+                <Button onClick={openSetTime} variant="contained" color="primary" startIcon={<AccessTimeIcon />}>
+                  Set Time
+                </Button>
+              </Box>
+            )
+          }
+        </Box>
+        {renderSetTimeDialog()}.
+      </>
     );
   };
 
   return (
     <SectionContent title='NTP Status' titleGutter>
       {content()}
-      <Box display="flex" flexWrap="wrap">
-        <Box flexGrow={1}>
-          <Button startIcon={<RefreshIcon />} variant="contained" color="secondary" onClick={loadData}>
-            Refresh
-          </Button>
-        </Box>
-        {
-          me.admin && data && !isNtpActive(data) && (
-            <Box flexWrap="nowrap" whiteSpace="nowrap">
-              <Button onClick={openSetTime} variant="contained" color="primary" startIcon={<AccessTimeIcon />}>
-                Set Time
-              </Button>
-            </Box>
-          )
-        }
-      </Box>
-      {renderSetTimeDialog()}
     </SectionContent>
   );
 

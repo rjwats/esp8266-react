@@ -60,7 +60,7 @@ const MqttStatusForm: FC = () => {
 
   const content = () => {
     if (!data) {
-      return (<FormLoader loadData={loadData} errorMessage={errorMessage} />);
+      return (<FormLoader onRetry={loadData} errorMessage={errorMessage} />);
     }
 
     const renderConnectionStatus = () => {
@@ -93,29 +93,31 @@ const MqttStatusForm: FC = () => {
     };
 
     return (
-      <List>
-        <ListItem>
-          <ListItemAvatar>
-            <Avatar sx={{ bgcolor: mqttStatusHighlight(data, theme) }}>
-              <DeviceHubIcon />
-            </Avatar>
-          </ListItemAvatar>
-          <ListItemText primary="Status" secondary={mqttStatus(data)} />
-        </ListItem>
-        <Divider variant="inset" component="li" />
-        {data.enabled && renderConnectionStatus()}
-      </List >
+      <>
+        <List>
+          <ListItem>
+            <ListItemAvatar>
+              <Avatar sx={{ bgcolor: mqttStatusHighlight(data, theme) }}>
+                <DeviceHubIcon />
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary="Status" secondary={mqttStatus(data)} />
+          </ListItem>
+          <Divider variant="inset" component="li" />
+          {data.enabled && renderConnectionStatus()}
+        </List >
+        <ButtonRow pt={2}>
+          <Button startIcon={<RefreshIcon />} variant="contained" color="secondary" onClick={loadData}>
+            Refresh
+          </Button>
+        </ButtonRow>
+      </>
     );
   };
 
   return (
     <SectionContent title='MQTT Status' titleGutter>
       {content()}
-      <ButtonRow pt={2}>
-        <Button startIcon={<RefreshIcon />} variant="contained" color="secondary" onClick={loadData}>
-          Refresh
-        </Button>
-      </ButtonRow>
     </SectionContent>
   );
 

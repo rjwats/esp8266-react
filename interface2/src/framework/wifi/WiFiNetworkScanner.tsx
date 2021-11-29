@@ -1,12 +1,12 @@
 import { useEffect, FC, useState, useCallback, useRef } from 'react';
 import { useSnackbar } from 'notistack';
 
-import { Box, Button, LinearProgress, Typography } from '@mui/material';
+import { Button, } from '@mui/material';
 import PermScanWifiIcon from '@mui/icons-material/PermScanWifi';
 
 import * as WiFiApi from "../../api/wifi";
 import { WiFiNetwork, WiFiNetworkList } from '../../types';
-import { ButtonRow, SectionContent } from '../../components';
+import { ButtonRow, FormLoader, SectionContent } from '../../components';
 import { extractErrorMessage } from '../../utils';
 
 import WiFiNetworkSelector from './WiFiNetworkSelector';
@@ -72,24 +72,8 @@ const WiFiNetworkScanner: FC = () => {
   useEffect(() => { startNetworkScan(); }, [startNetworkScan]);
 
   const renderNetworkScanner = () => {
-    if (errorMessage) {
-      return (
-        <Box p={.5}>
-          <Typography variant="h6" textAlign="center">
-            {errorMessage}
-          </Typography>
-        </Box>
-      );
-    }
     if (!networkList) {
-      return (
-        <Box p={.5}>
-          <LinearProgress sx={{ m: 4 }} />
-          <Typography variant="h6" textAlign="center">
-            Scanning&hellip;
-          </Typography>
-        </Box>
-      );
+      return (<FormLoader message="Scanning&hellip;" errorMessage={errorMessage} />);
     }
     return (
       <WiFiNetworkSelector networkList={networkList} />

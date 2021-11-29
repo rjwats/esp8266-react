@@ -8,16 +8,16 @@ import { MessageBox } from '..';
 interface FormLoaderProps {
   message?: string;
   errorMessage?: string;
-  loadData?: () => void;
+  onRetry?: () => void;
 }
 
-const FormLoader: FC<FormLoaderProps> = ({ errorMessage, loadData, message = "Loading…" }) => {
+const FormLoader: FC<FormLoaderProps> = ({ errorMessage, onRetry, message = "Loading…" }) => {
   if (errorMessage) {
     return (
       <MessageBox my={2} level="error" message={errorMessage}>
         {
-          loadData &&
-          <Button startIcon={<RefreshIcon />} variant="contained" color="error" onClick={loadData}>
+          onRetry &&
+          <Button startIcon={<RefreshIcon />} variant="contained" color="error" onClick={onRetry}>
             Retry
           </Button>
         }

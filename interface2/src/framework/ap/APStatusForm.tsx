@@ -46,58 +46,59 @@ const APStatusForm: FC = () => {
 
   const content = () => {
     if (!data) {
-      return (<FormLoader loadData={loadData} errorMessage={errorMessage} />);
+      return (<FormLoader onRetry={loadData} errorMessage={errorMessage} />);
     }
 
     return (
-      <List>
-        <ListItem>
-          <ListItemAvatar>
-            <Avatar sx={{ bgcolor: apStatusHighlight(data, theme) }}>
-              <SettingsInputAntennaIcon />
-            </Avatar>
-          </ListItemAvatar>
-          <ListItemText primary="Status" secondary={apStatus(data)} />
-        </ListItem>
-        <Divider variant="inset" component="li" />
-        <ListItem>
-          <ListItemAvatar>
-            <Avatar>IP</Avatar>
-          </ListItemAvatar>
-          <ListItemText primary="IP Address" secondary={data.ip_address} />
-        </ListItem>
-        <Divider variant="inset" component="li" />
-        <ListItem>
-          <ListItemAvatar>
-            <Avatar>
-              <DeviceHubIcon />
-            </Avatar>
-          </ListItemAvatar>
-          <ListItemText primary="MAC Address" secondary={data.mac_address} />
-        </ListItem>
-        <Divider variant="inset" component="li" />
-        <ListItem>
-          <ListItemAvatar>
-            <Avatar>
-              <ComputerIcon />
-            </Avatar>
-          </ListItemAvatar>
-          <ListItemText primary="AP Clients" secondary={data.station_num} />
-        </ListItem>
-        <Divider variant="inset" component="li" />
-
-      </List>
+      <>
+        <List>
+          <ListItem>
+            <ListItemAvatar>
+              <Avatar sx={{ bgcolor: apStatusHighlight(data, theme) }}>
+                <SettingsInputAntennaIcon />
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary="Status" secondary={apStatus(data)} />
+          </ListItem>
+          <Divider variant="inset" component="li" />
+          <ListItem>
+            <ListItemAvatar>
+              <Avatar>IP</Avatar>
+            </ListItemAvatar>
+            <ListItemText primary="IP Address" secondary={data.ip_address} />
+          </ListItem>
+          <Divider variant="inset" component="li" />
+          <ListItem>
+            <ListItemAvatar>
+              <Avatar>
+                <DeviceHubIcon />
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary="MAC Address" secondary={data.mac_address} />
+          </ListItem>
+          <Divider variant="inset" component="li" />
+          <ListItem>
+            <ListItemAvatar>
+              <Avatar>
+                <ComputerIcon />
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary="AP Clients" secondary={data.station_num} />
+          </ListItem>
+          <Divider variant="inset" component="li" />
+        </List>
+        <ButtonRow pt={2}>
+          <Button startIcon={<RefreshIcon />} variant="contained" color="secondary" onClick={loadData}>
+            Refresh
+          </Button>
+        </ButtonRow>
+      </>
     );
   };
 
   return (
     <SectionContent title='Access Point Status' titleGutter>
       {content()}
-      <ButtonRow pt={2}>
-        <Button startIcon={<RefreshIcon />} variant="contained" color="secondary" onClick={loadData}>
-          Refresh
-        </Button>
-      </ButtonRow>
     </SectionContent>
   );
 
