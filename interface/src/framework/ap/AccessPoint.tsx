@@ -42,7 +42,7 @@ const AccessPointRouting: FC = () => {
 
 const AccessPoint: FC = () => (
   <Switch>
-    <Route exact path={`/ap/*`}>
+    <Route exact path="/ap/*">
       <AccessPointRouting />
     </Route>
     <Redirect to="/ap/status" />
