@@ -2,6 +2,8 @@ type UpdateEntity<S> = (
   state: ((prevState: Readonly<S>) => S)
 ) => void;
 
+export const numberValue = (value: number) => isNaN(value) ? "" : value.toString();
+
 export const extractEventValue = (event: React.ChangeEvent<HTMLInputElement>) => {
   switch (event.target.type) {
     case "number":

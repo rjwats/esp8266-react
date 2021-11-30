@@ -8,7 +8,7 @@ import * as MqttApi from "../../api/mqtt";
 import { MqttSettings } from '../../types';
 import { BlockFormControlLabel, ButtonRow, FormLoader, SectionContent, ValidatedPasswordField, ValidatedTextField } from '../../components';
 import { MQTT_SETTINGS_VALIDATOR, validate } from '../../validators';
-import { updateValue, useRest } from '../../utils';
+import { numberValue, updateValue, useRest } from '../../utils';
 
 const MqttSettingsForm: FC = () => {
   const [fieldErrors, setFieldErrors] = useState<ValidateFieldsError>();
@@ -61,7 +61,7 @@ const MqttSettingsForm: FC = () => {
           label="Port"
           fullWidth
           variant="outlined"
-          value={data.port}
+          value={numberValue(data.port)}
           type="number"
           onChange={updateFormValue}
           margin="normal"
@@ -99,7 +99,7 @@ const MqttSettingsForm: FC = () => {
           label="Keep Alive (seconds)"
           fullWidth
           variant="outlined"
-          value={data.keep_alive}
+          value={numberValue(data.keep_alive)}
           type="number"
           onChange={updateFormValue}
           margin="normal"
@@ -120,7 +120,7 @@ const MqttSettingsForm: FC = () => {
           label="Max Topic Length"
           fullWidth
           variant="outlined"
-          value={data.max_topic_length}
+          value={numberValue(data.max_topic_length)}
           type="number"
           onChange={updateFormValue}
           margin="normal"

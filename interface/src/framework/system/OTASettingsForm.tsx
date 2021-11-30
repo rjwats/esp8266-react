@@ -8,7 +8,7 @@ import * as SystemApi from "../../api/system";
 import { OTASettings } from '../../types';
 import { BlockFormControlLabel, ButtonRow, FormLoader, SectionContent, ValidatedPasswordField, ValidatedTextField } from '../../components';
 import { validate, OTA_SETTINGS_VALIDATOR } from '../../validators';
-import { updateValue, useRest } from '../../utils';
+import { numberValue, updateValue, useRest } from '../../utils';
 
 const OTASettingsForm: FC = () => {
   const [fieldErrors, setFieldErrors] = useState<ValidateFieldsError>();
@@ -51,7 +51,7 @@ const OTASettingsForm: FC = () => {
           label="Port"
           fullWidth
           variant="outlined"
-          value={data.port}
+          value={numberValue(data.port)}
           type="number"
           onChange={updateFormValue}
           margin="normal"
