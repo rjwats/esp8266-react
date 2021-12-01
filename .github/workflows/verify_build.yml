@@ -1,6 +1,6 @@
 name: Build Framework
 
-on: [push]
+on:
   push:
     branches:
       - master
