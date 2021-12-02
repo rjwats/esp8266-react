@@ -1,43 +1,52 @@
-import React, { Component } from 'react';
-import { Redirect, Switch, RouteComponentProps } from 'react-router-dom'
 
-import { Tabs, Tab } from '@material-ui/core';
+import React, { FC } from 'react';
+import { Redirect, Route, Switch, useHistory, useRouteMatch } from 'react-router-dom';
 
-import { PROJECT_PATH } from '../api';
-import { MenuAppBar } from '../components';
-import { AuthenticatedRoute } from '../authentication';
+import { Tab, Tabs } from '@mui/material';
+
+import { PROJECT_PATH } from '../api/env';
+import { useLayoutTitle } from '../components/layout';
 
 import DemoInformation from './DemoInformation';
-import LightStateRestController from './LightStateRestController';
-import LightStateWebSocketController from './LightStateWebSocketController';
-import LightMqttSettingsController from './LightMqttSettingsController';
+import LightStateRestForm from './LightStateRestForm';
+import LightMqttSettingsForm from './LightMqttSettingsForm';
+import LightStateWebSocketForm from './LightStateWebSocketForm';
 
-class DemoProject extends Component<RouteComponentProps> {
+const DemoProject: FC = () => {
+  const history = useHistory();
+  const { url } = useRouteMatch();
 
-  handleTabChange = (event: React.ChangeEvent<{}>, path: string) => {
-    this.props.history.push(path);
+  useLayoutTitle("Demo Project");
+
+  const handleTabChange = (event: React.ChangeEvent<{}>, path: string) => {
+    history.push(path);
   };
 
-  render() {
-    return (
-      <MenuAppBar sectionTitle="Demo Project">
-        <Tabs value={this.props.match.url} onChange={this.handleTabChange} variant="fullWidth">
-          <Tab value={`/${PROJECT_PATH}/demo/information`} label="Information" />
-          <Tab value={`/${PROJECT_PATH}/demo/rest`} label="REST Controller" />
-          <Tab value={`/${PROJECT_PATH}/demo/socket`} label="WebSocket Controller" />
-          <Tab value={`/${PROJECT_PATH}/demo/mqtt`} label="MQTT Controller" />
-        </Tabs>
-        <Switch>
-          <AuthenticatedRoute exact path={`/${PROJECT_PATH}/demo/information`} component={DemoInformation} />
-          <AuthenticatedRoute exact path={`/${PROJECT_PATH}/demo/rest`} component={LightStateRestController} />
-          <AuthenticatedRoute exact path={`/${PROJECT_PATH}/demo/socket`} component={LightStateWebSocketController} />
-          <AuthenticatedRoute exact path={`/${PROJECT_PATH}/demo/mqtt`} component={LightMqttSettingsController} />
-          <Redirect to={`/${PROJECT_PATH}/demo/information`} />
-        </Switch>
-      </MenuAppBar>
-    )
-  }
-
-}
+  return (
+    <>
+      <Tabs value={url} onChange={handleTabChange} variant="fullWidth">
+        <Tab value={`/${PROJECT_PATH}/demo/information`} label="Information" />
+        <Tab value={`/${PROJECT_PATH}/demo/rest`} label="REST Example" />
+        <Tab value={`/${PROJECT_PATH}/demo/socket`} label="WebSocket Example" />
+        <Tab value={`/${PROJECT_PATH}/demo/mqtt`} label="MQTT Settings" />
+      </Tabs>
+      <Switch>
+        <Route exact path={`/${PROJECT_PATH}/demo/information`}>
+          <DemoInformation />
+        </Route>
+        <Route exact path={`/${PROJECT_PATH}/demo/rest`}>
+          <LightStateRestForm />
+        </Route>
+        <Route exact path={`/${PROJECT_PATH}/demo/mqtt`}>
+          <LightMqttSettingsForm />
+        </Route>
+        <Route exact path={`/${PROJECT_PATH}/demo/socket`}>
+          <LightStateWebSocketForm />
+        </Route>
+        <Redirect to={`/${PROJECT_PATH}/demo/information`} />
+      </Switch>
+    </>
+  );
+};
 
 export default DemoProject;

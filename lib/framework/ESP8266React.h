@@ -34,6 +34,10 @@
 #include <WWWData.h>
 #endif
 
+#ifndef CORS_ORIGIN
+#define CORS_ORIGIN "*"
+#endif
+
 class ESP8266React {
  public:
   ESP8266React(AsyncWebServer* server);
