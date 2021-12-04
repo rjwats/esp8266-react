@@ -4,11 +4,10 @@ import { useSnackbar, VariantType } from 'notistack';
 
 import { Authentication, AuthenticationContext } from './contexts/authentication';
 import { FeaturesContext } from './contexts/features';
+import { RequireAuthenticated, RequireUnauthenticated } from './components';
 
 import SignIn from './SignIn';
 import AuthenticatedRouting from './AuthenticatedRouting';
-import RequireUnauthenticated from './components/routing/RequireUnauthenticated';
-import RequireAuthenticated from './components/routing/RequireAuthenticated';
 
 interface SecurityRedirectProps {
   message: string;
