@@ -1,30 +1,20 @@
 import { FC } from 'react';
-import { Redirect, Switch } from 'react-router';
-import { Route } from 'react-router-dom';
-
-import { PROJECT_PATH } from '../api/env';
+import { Navigate, Routes, Route } from 'react-router-dom';
 
 import DemoProject from './DemoProject';
 
 const ProjectRouting: FC = () => {
   return (
-    <Switch>
+    <Routes>
       {
-        /*
-        * Add your project page routing below.
-        */
+        // Add the default route for your project below
       }
-      <Route exact path={`/${PROJECT_PATH}/demo/*`}>
-        <DemoProject />
-      </Route>
+      <Route path="/*" element={<Navigate to="demo/information" />} />
       {
-        /*
-        * The redirect below caters for the default project route and redirecting invalid paths.
-        * The "to" property must match one of the routes above for this to work correctly.
-        */
+        // Add your project page routes below.
       }
-      <Redirect to={`/${PROJECT_PATH}/demo/information`} />
-    </Switch>
+      <Route path="demo/*" element={<DemoProject />} />
+    </Routes>
   );
 };
 

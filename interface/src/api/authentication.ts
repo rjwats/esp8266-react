@@ -1,6 +1,7 @@
 import { AxiosPromise } from "axios";
 import * as H from 'history';
 import jwtDecode from 'jwt-decode';
+import { Path } from "react-router-dom";
 
 import { Features, Me, SignInRequest, SignInResponse } from "../types";
 
@@ -39,7 +40,7 @@ export function clearLoginRedirect() {
   getStorage().removeItem(SIGN_IN_SEARCH);
 }
 
-export function fetchLoginRedirect(features: Features): H.LocationDescriptorObject {
+export function fetchLoginRedirect(features: Features): Partial<Path> {
   const signInPathname = getStorage().getItem(SIGN_IN_PATHNAME);
   const signInSearch = getStorage().getItem(SIGN_IN_SEARCH);
   clearLoginRedirect();
