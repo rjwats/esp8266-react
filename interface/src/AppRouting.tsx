@@ -1,14 +1,14 @@
 import { FC, useContext, useEffect } from 'react';
-import { Route, useLocation } from 'react-router-dom';
-import { Switch, Redirect } from 'react-router';
+import { Navigate, Routes, Route, useLocation } from 'react-router-dom';
 import { useSnackbar, VariantType } from 'notistack';
 
 import { Authentication, AuthenticationContext } from './contexts/authentication';
 import { FeaturesContext } from './contexts/features';
-import { AuthenticatedRoute, UnauthenticatedRoute } from './components';
 
 import SignIn from './SignIn';
 import AuthenticatedRouting from './AuthenticatedRouting';
+import RequireUnauthenticated from './components/routing/RequireUnauthenticated';
+import RequireAuthenticated from './components/routing/RequireAuthenticated';
 
 interface SecurityRedirectProps {
   message: string;
@@ -22,29 +22,48 @@ const SecurityRedirect: FC<SecurityRedirectProps> = ({ message, variant }) => {
     authenticationContext.signOut(false);
     enqueueSnackbar(message, { variant });
   }, [message, variant, authenticationContext, enqueueSnackbar]);
-  return (<Redirect to="/" />);
+  return (<Navigate to="/" />);
+};
+
+export const RemoveTrailingSlashes = () => {
+  const location = useLocation();
+  return location.pathname.match('/.*/$') && (
+    <Navigate
+      to={{
+        pathname: location.pathname.replace(/\/+$/, ""),
+        search: location.search
+      }}
+    />
+  );
 };
 
 const AppRouting: FC = () => {
-  const { pathname } = useLocation();
   const { features } = useContext(FeaturesContext);
 
   return (
     <Authentication>
-      <Switch>
-        <Redirect from="/:url*(/+)" to={pathname.slice(0, -1)} />
-        <Route exact path="/unauthorized">
-          <SecurityRedirect message="Please log in to continue" />
-        </Route>
-        {features.security && (
-          <UnauthenticatedRoute exact path="/" >
-            <SignIn />
-          </UnauthenticatedRoute>
-        )}
-        <AuthenticatedRoute path="/" >
-          <AuthenticatedRouting />
-        </AuthenticatedRoute>
-      </Switch>
+      <RemoveTrailingSlashes />
+      <Routes>
+        <Route path="/unauthorized" element={<SecurityRedirect message="Please log in to continue" />} />
+        {features.security &&
+          <Route
+            path="/"
+            element={
+
+              <RequireUnauthenticated>
+                <SignIn />
+              </RequireUnauthenticated>
+            }
+          />}
+        <Route
+          path="/*"
+          element={
+            <RequireAuthenticated>
+              <AuthenticatedRouting />
+            </RequireAuthenticated>
+          }
+        />
+      </Routes>
     </Authentication>
   );
 };

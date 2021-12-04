@@ -1,11 +1,10 @@
 
 import React, { FC } from 'react';
-import { Redirect, Route, Switch, useHistory, useRouteMatch } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 
-import { Tab, Tabs } from '@mui/material';
+import { Tab } from '@mui/material';
 
-import { PROJECT_PATH } from '../api/env';
-import { useLayoutTitle } from '../components/layout';
+import { RouterTabs, useRouterTab, useLayoutTitle } from '../components';
 
 import DemoInformation from './DemoInformation';
 import LightStateRestForm from './LightStateRestForm';
@@ -13,38 +12,24 @@ import LightMqttSettingsForm from './LightMqttSettingsForm';
 import LightStateWebSocketForm from './LightStateWebSocketForm';
 
 const DemoProject: FC = () => {
-  const history = useHistory();
-  const { url } = useRouteMatch();
-
   useLayoutTitle("Demo Project");
-
-  const handleTabChange = (event: React.ChangeEvent<{}>, path: string) => {
-    history.push(path);
-  };
+  const { routerTab } = useRouterTab();
 
   return (
     <>
-      <Tabs value={url} onChange={handleTabChange} variant="fullWidth">
-        <Tab value={`/${PROJECT_PATH}/demo/information`} label="Information" />
-        <Tab value={`/${PROJECT_PATH}/demo/rest`} label="REST Example" />
-        <Tab value={`/${PROJECT_PATH}/demo/socket`} label="WebSocket Example" />
-        <Tab value={`/${PROJECT_PATH}/demo/mqtt`} label="MQTT Settings" />
-      </Tabs>
-      <Switch>
-        <Route exact path={`/${PROJECT_PATH}/demo/information`}>
-          <DemoInformation />
-        </Route>
-        <Route exact path={`/${PROJECT_PATH}/demo/rest`}>
-          <LightStateRestForm />
-        </Route>
-        <Route exact path={`/${PROJECT_PATH}/demo/mqtt`}>
-          <LightMqttSettingsForm />
-        </Route>
-        <Route exact path={`/${PROJECT_PATH}/demo/socket`}>
-          <LightStateWebSocketForm />
-        </Route>
-        <Redirect to={`/${PROJECT_PATH}/demo/information`} />
-      </Switch>
+      <RouterTabs value={routerTab}>
+        <Tab value="information" label="Information" />
+        <Tab value="rest" label="REST Example" />
+        <Tab value="socket" label="WebSocket Example" />
+        <Tab value="mqtt" label="MQTT Settings" />
+      </RouterTabs>
+      <Routes>
+        <Route path="information" element={<DemoInformation />} />
+        <Route path="rest" element={<LightStateRestForm />} />
+        <Route path="mqtt" element={<LightMqttSettingsForm />} />
+        <Route path="socket" element={<LightStateWebSocketForm />} />
+        <Route path="/*" element={<Navigate replace to="information" />} />
+      </Routes>
     </>
   );
 };

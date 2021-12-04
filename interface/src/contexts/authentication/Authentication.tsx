@@ -1,6 +1,6 @@
 import { FC, useCallback, useContext, useEffect, useState } from 'react';
 import { useSnackbar } from 'notistack';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import * as AuthenticationApi from '../../api/authentication';
 import { ACCESS_TOKEN } from '../../api/endpoints';
@@ -11,7 +11,7 @@ import { AuthenticationContext } from './context';
 
 const Authentication: FC = ({ children }) => {
   const { features } = useContext(FeaturesContext);
-  const history = useHistory();
+  const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
 
   const [initialized, setInitialized] = useState<boolean>(false);
@@ -33,7 +33,7 @@ const Authentication: FC = ({ children }) => {
     AuthenticationApi.clearAccessToken();
     setMe(undefined);
     if (redirect) {
-      history.push('/');
+      navigate('/');
     }
   };
 
