@@ -33,7 +33,6 @@ const PaletteSettingsForm: FC = () => {
 
   const startEditingPalette = (toEdit: Palette) => {
     setCreating(false);
-    // TODO - copy here?
     setPalette(toEdit);
   };
 
@@ -107,18 +106,14 @@ const PaletteSettingsForm: FC = () => {
             Save
           </Button>
         </ButtonRow>
-        {
-          palette &&
-          // TODO - render dialog properly
-          <PaletteForm
-            creating={creating}
-            validator={createPaletteValidator(data.palettes, creating)}
-            palette={palette}
-            setPalette={setPalette}
-            onDoneEditing={doneEditingPalette}
-            onCancelEditing={cancelEditingPalette}
-          />
-        }
+        <PaletteForm
+          creating={creating}
+          validator={createPaletteValidator(data.palettes, creating)}
+          palette={palette}
+          setPalette={setPalette}
+          onDoneEditing={doneEditingPalette}
+          onCancelEditing={cancelEditingPalette}
+        />
       </SectionContent>
     </Container>
   );

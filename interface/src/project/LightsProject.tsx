@@ -7,6 +7,7 @@ import { RouterTabs, useRouterTab, useLayoutTitle } from '../components';
 
 import PaletteSettingsForm from './PaletteSettingsForm';
 import SpectrumAnalyzer from './SpectrumAnalyzer';
+import LedSettingsForm from './LedSettingsForm';
 
 const LightsProject: FC = () => {
   useLayoutTitle("Christmas Lights");
@@ -16,10 +17,12 @@ const LightsProject: FC = () => {
     <>
       <RouterTabs value={routerTab}>
         <Tab value="palettes" label="Palettes" />
+        <Tab value="led" label="LED Settings" />
         <Tab value="spectrum" label="Spectrum Analyzer" />
       </RouterTabs>
       <Routes>
         <Route path="palettes" element={<PaletteSettingsForm />} />
+        <Route path="led" element={<LedSettingsForm />} />
         <Route path="spectrum" element={<SpectrumAnalyzer />} />
         <Route path="/*" element={<Navigate replace to="spectrum" />} />
       </Routes>
