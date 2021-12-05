@@ -1,17 +1,24 @@
 #include <ESP8266React.h>
-#include <LightMqttSettingsService.h>
-#include <LightStateService.h>
+#include <LedSettingsService.h>
+#include <FrequencySampler.h>
+#include <AudioLightSettingsService.h>
+#include <FrequencyTransmitter.h>
 
 #define SERIAL_BAUD_RATE 115200
 
 AsyncWebServer server(80);
 ESP8266React esp8266React(&server);
-LightMqttSettingsService lightMqttSettingsService =
-    LightMqttSettingsService(&server, esp8266React.getFS(), esp8266React.getSecurityManager());
-LightStateService lightStateService = LightStateService(&server,
-                                                        esp8266React.getSecurityManager(),
-                                                        esp8266React.getMqttClient(),
-                                                        &lightMqttSettingsService);
+
+LedSettingsService ledSettingsService(&server, esp8266React.getFS(), esp8266React.getSecurityManager());
+PaletteSettingsService paletteSettingsService(&server, esp8266React.getFS(), esp8266React.getSecurityManager());
+FrequencySampler frequencySampler(&ledSettingsService);
+FrequencyTransmitter frequencyTransmitter(&server, esp8266React.getSecurityManager(), &frequencySampler);
+AudioLightSettingsService audioLightSettingsService(&server,
+                                                    esp8266React.getFS(),
+                                                    esp8266React.getSecurityManager(),
+                                                    &ledSettingsService,
+                                                    &paletteSettingsService,
+                                                    &frequencySampler);
 
 void setup() {
   // start serial and filesystem
@@ -20,11 +27,17 @@ void setup() {
   // start the framework and demo project
   esp8266React.begin();
 
-  // load the initial light settings
-  lightStateService.begin();
+  // load general settings
+  ledSettingsService.begin();
 
-  // start the light service
-  lightMqttSettingsService.begin();
+  // set up the sampler
+  frequencySampler.begin();
+
+  // load the palettes
+  paletteSettingsService.begin();
+
+  // load all of the defaults
+  audioLightSettingsService.begin();
 
   // start the server
   server.begin();
@@ -33,4 +46,10 @@ void setup() {
 void loop() {
   // run the framework's loop function
   esp8266React.loop();
+
+  // allow the sampler to run if needed
+  frequencySampler.loop();
+
+  // refresh the LEDs
+  audioLightSettingsService.loop();
 }
