@@ -1,3 +1,13 @@
+import AudioLightColorMode from "./modes/AudioLightColorMode";
+import AudioLightConfettiMode from "./modes/AudioLightConfettiMode";
+import AudioLightFireMode from "./modes/AudioLightFireMode";
+import AudioLightLightningMode from "./modes/AudioLightLightningMode";
+import { AudioLightModeRendererProps } from "./modes/AudioLightMode";
+import AudioLightPacificaMode from "./modes/AudioLightPacificaMode";
+import AudioLightPrideMode from "./modes/AudioLightPrideMode";
+import AudioLightRainbowMode from "./modes/AudioLightRainbowMode";
+import AudioLightRotateMode from "./modes/AudioLightRotateMode";
+
 export interface FrequencyData {
   bands: number[];
 }
@@ -130,24 +140,14 @@ export const DEFAULT_PALETTE = [
   "#ab0055",
   "#d5002b"
 ];
-/**
- *
-import AudioLightColorMode from "./modes/AudioLightColorMode";
-import AudioLightConfettiMode from "./modes/AudioLightConfettiMode";
-import AudioLightFireMode from "./modes/AudioLightFireMode";
-import AudioLightLightningMode from "./modes/AudioLightLightningMode";
-import AudioLightPacificaMode from "./modes/AudioLightPacificaMode";
-import AudioLightPrideMode from "./modes/AudioLightPrideMode";
-import AudioLightRainbowMode from "./modes/AudioLightRainbowMode";
-import AudioLightRotateMode from "./modes/AudioLightRotateMode";
 
 export interface AudioLightModeMetadata {
   label: string;
-  renderer?: React.ComponentType<WebSocketFormProps<AudioLightMode>>;
+  renderer?: React.ComponentType<AudioLightModeRendererProps>;
   rotate: boolean;
 }
 
-export const AUDIO_LIGHT_MODE_METADATA: { [type in AudioLightModeType]: AudioLightModeMetadata } = {
+export const AUDIO_LIGHT_MODE_METADATA: Record<AudioLightModeType, AudioLightModeMetadata> = {
   off: {
     label: "Off",
     rotate: false
@@ -197,4 +197,3 @@ export const AUDIO_LIGHT_MODE_METADATA: { [type in AudioLightModeType]: AudioLig
 export const AUDIO_LIGHT_MODES = Object.entries(AudioLightModeType).map((value) => value[1]);
 export const ROTATE_AUDIO_LIGHT_MODES = Object.entries(AudioLightModeType)
   .map((value) => value[1]).filter((value) => AUDIO_LIGHT_MODE_METADATA[value].rotate);
-*/

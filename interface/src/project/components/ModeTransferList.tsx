@@ -1,4 +1,3 @@
-/*
 import React, { FC, useEffect } from 'react';
 import { Button, Checkbox, Grid, List, ListItem, ListItemText, Paper, styled } from '@mui/material';
 
@@ -144,7 +143,3 @@ const ModeTransferList: FC<TranserListProps> = ({ selected, onSelectionChanged }
 };
 
 export default ModeTransferList;
-*/
-
-const TEMP = 1;
-export default TEMP;

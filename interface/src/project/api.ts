@@ -18,3 +18,11 @@ export function readLedSettings(): AxiosPromise<LedSettings> {
 export function updateLedSettings(ledSettings: LedSettings): AxiosPromise<LedSettings> {
   return AXIOS.post('/ledSettings', ledSettings);
 }
+
+export function loadModeSettings(): AxiosPromise<void> {
+  return AXIOS.post('/loadModeSettings');
+}
+
+export function saveModeSettings(): AxiosPromise<void> {
+  return AXIOS.post('/saveModeSettings');
+}

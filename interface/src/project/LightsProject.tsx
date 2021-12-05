@@ -5,9 +5,10 @@ import { Tab } from '@mui/material';
 
 import { RouterTabs, useRouterTab, useLayoutTitle } from '../components';
 
+import AudioLightSettingsForm from './AudioLightSettingsForm';
 import PaletteSettingsForm from './PaletteSettingsForm';
-import SpectrumAnalyzer from './SpectrumAnalyzer';
 import LedSettingsForm from './LedSettingsForm';
+import SpectrumAnalyzer from './SpectrumAnalyzer';
 
 const LightsProject: FC = () => {
   useLayoutTitle("Christmas Lights");
@@ -16,35 +17,20 @@ const LightsProject: FC = () => {
   return (
     <>
       <RouterTabs value={routerTab}>
+        <Tab value="settings" label="Lighting Settings" />
         <Tab value="palettes" label="Palettes" />
         <Tab value="led" label="LED Settings" />
         <Tab value="spectrum" label="Spectrum Analyzer" />
       </RouterTabs>
       <Routes>
+        <Route path="settings" element={<AudioLightSettingsForm />} />
         <Route path="palettes" element={<PaletteSettingsForm />} />
         <Route path="led" element={<LedSettingsForm />} />
         <Route path="spectrum" element={<SpectrumAnalyzer />} />
-        <Route path="/*" element={<Navigate replace to="spectrum" />} />
+        <Route path="/*" element={<Navigate replace to="settings" />} />
       </Routes>
     </>
   );
 };
 
 export default LightsProject;
-
-/**
- *
- * <Tabs value={this.props.match.url} onChange={this.handleTabChange} variant="scrollable">
-          <Tab value={`/${PROJECT_PATH}/lights/settings`} label="Lighting Settings" />
-          <Tab value={`/${PROJECT_PATH}/lights/palettes`} label="Palettes" />
-          <Tab value={`/${PROJECT_PATH}/lights/led`} label="LED Settings" />
-          <Tab value={`/${PROJECT_PATH}/lights/spectrum`} label="Spectrum Analyzer" />
-        </Tabs>
-        <Switch>
-          <AuthenticatedRoute exact path={`/${PROJECT_PATH}/lights/settings`} component={AudioLightSettingsController} />
-          <AuthenticatedRoute exact path={`/${PROJECT_PATH}/lights/palettes`} component={PaletteSettingsController} />
-          <AuthenticatedRoute exact path={`/${PROJECT_PATH}/lights/led`} component={LedSettingsController} />
-          <AuthenticatedRoute exact path={`/${PROJECT_PATH}/lights/spectrum`} component={SpectrumAnalyzer} />
-          <Redirect to={`/${PROJECT_PATH}/lights/settings`} />
-        </Switch>
- */
