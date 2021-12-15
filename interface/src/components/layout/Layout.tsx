@@ -1,5 +1,6 @@
 
-import { FC, useState } from 'react';
+import { FC, useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 import { Box, Toolbar } from '@mui/material';
 
@@ -7,8 +8,6 @@ import { PROJECT_NAME } from '../../api/env';
 import LayoutDrawer from './LayoutDrawer';
 import LayoutAppBar from './LayoutAppBar';
 import { LayoutContext } from './context';
-import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
 
 export const DRAWER_WIDTH = 280;
 
