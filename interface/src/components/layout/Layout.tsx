@@ -1,5 +1,6 @@
 
-import { FC, useState } from 'react';
+import { FC, useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 import { Box, Toolbar } from '@mui/material';
 
@@ -14,23 +15,24 @@ const Layout: FC = ({ children }) => {
 
   const [mobileOpen, setMobileOpen] = useState(false);
   const [title, setTitle] = useState(PROJECT_NAME);
+  const { pathname } = useLocation();
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
+  useEffect(() => setMobileOpen(false), [pathname]);
+
   return (
     <LayoutContext.Provider value={{ title, setTitle }}>
-      <Box sx={{ display: 'flex' }}>
-        <LayoutAppBar title={title} onToggleDrawer={handleDrawerToggle} />
-        <LayoutDrawer mobileOpen={mobileOpen} onClose={handleDrawerToggle} />
-        <Box
-          component="main"
-          sx={{ flexGrow: 1, width: { md: `calc(100% - ${DRAWER_WIDTH}px)` } }}
-        >
-          <Toolbar />
-          {children}
-        </Box>
+      <LayoutAppBar title={title} onToggleDrawer={handleDrawerToggle} />
+      <LayoutDrawer mobileOpen={mobileOpen} onClose={handleDrawerToggle} />
+      <Box
+        component="main"
+        sx={{ marginLeft: { md: `${DRAWER_WIDTH}px` } }}
+      >
+        <Toolbar />
+        {children}
       </Box>
     </LayoutContext.Provider >
   );
