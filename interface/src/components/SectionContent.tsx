@@ -10,7 +10,7 @@ interface SectionContentProps {
 const SectionContent: React.FC<SectionContentProps> = (props) => {
   const { children, title, titleGutter } = props;
   return (
-    <Paper sx={{ p: 2, m: 3 }}>
+    <Paper sx={{ p: 2, m: 2 }}>
       <Typography variant="h6" gutterBottom={titleGutter}>
         {title}
       </Typography>

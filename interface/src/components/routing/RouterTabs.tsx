@@ -2,7 +2,7 @@
 import React, { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Tabs } from '@mui/material';
+import { Tabs, useMediaQuery, useTheme } from '@mui/material';
 
 interface RouterTabsProps {
   value: string | false;
@@ -11,12 +11,15 @@ interface RouterTabsProps {
 const RouterTabs: FC<RouterTabsProps> = ({ value, children }) => {
   const navigate = useNavigate();
 
+  const theme = useTheme();
+  const smallDown = useMediaQuery(theme.breakpoints.down('sm'));
+
   const handleTabChange = (event: React.ChangeEvent<{}>, path: string) => {
     navigate(path);
   };
 
   return (
-    <Tabs value={value} onChange={handleTabChange} variant="fullWidth">
+    <Tabs value={value} onChange={handleTabChange} variant={smallDown ? "scrollable" : "fullWidth"} allowScrollButtonsMobile>
       {children}
     </Tabs>
   );
