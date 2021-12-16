@@ -3,8 +3,8 @@ import { AxiosPromise } from 'axios';
 import { OTASettings, SystemStatus } from '../types';
 import { AXIOS, FileUploadConfig, uploadFile } from './endpoints';
 
-export function readSystemStatus(): AxiosPromise<SystemStatus> {
-  return AXIOS.get('/systemStatus');
+export function readSystemStatus(timeout?: number): AxiosPromise<SystemStatus> {
+  return AXIOS.get('/systemStatus', { timeout });
 }
 
 export function restart(): AxiosPromise<void> {
