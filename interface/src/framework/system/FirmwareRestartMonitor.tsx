@@ -4,13 +4,8 @@ import { FC, useRef, useState } from 'react';
 import * as SystemApi from "../../api/system";
 import { FormLoader } from '../../components';
 
-// Two minute timeout
 const RESTART_TIMEOUT = 2 * 60 * 1000;
-
-// Two second poll timeout
 const POLL_TIMEOUT = 2000;
-
-// Five second poll interval
 const POLL_INTERVAL = 5000;
 
 const FirmwareRestartMonitor: FC = () => {
@@ -22,7 +17,7 @@ const FirmwareRestartMonitor: FC = () => {
   const poll = useRef(async () => {
     try {
       await SystemApi.readSystemStatus(POLL_TIMEOUT);
-      document.location.href="/firmwareUpdated";
+      document.location.href = "/firmwareUpdated";
     } catch (error: any) {
       if (new Date().getTime() < timeoutAt.current) {
         setTimeoutId(setTimeout(poll.current, POLL_INTERVAL));
