@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/rjwats/esp8266-react.svg?branch=master)](https://travis-ci.org/rjwats/esp8266-react)
 
-A simple, secure and extensible framework for IoT projects built on ESP8266/ESP32 platforms with responsive [React](https://reactjs.org/) front-end built with [Material-UI](https://material-ui.com/).
+A simple, secure and extensible framework for IoT projects built on ESP8266/ESP32 platforms with responsive [React](https://reactjs.org/) front-end built with [Material-UI](https://mui.com/).
 
 Designed to work with the PlatformIO IDE with [limited setup](#getting-started). Please read below for setup, build and upload instructions.
 
@@ -269,32 +269,38 @@ The framework, and MaterialUI allows for a reasonable degree of customization wi
 
 ### Theming the app
 
-The app can be easily themed by editing the [MaterialUI theme](https://material-ui.com/customization/theming/). Edit the theme in ['interface/src/CustomMuiTheme.tsx'](interface/src/CustomMuiTheme.tsx) as you desire. For example, here is a dark theme:
+The app can be easily themed by editing the [MaterialUI theme](https://mui.com/customization/typography/). Edit the theme in ['interface/src/CustomMuiTheme.tsx'](interface/src/CustomTheme.tsx) as you desire. For example, here is a dark theme:
 
 ```js
-const theme = createMuiTheme({
-  palette: {
-    type:"dark",
-    primary: {
-      main: '#222',
-    },
-    secondary: {
-      main: '#666',
-    },
-    info: {
-      main: blueGrey[500]
-    },
-    warning: {
-      main: orange[500]
-    },
-    error: {
-      main: red[500]
-    },
-    success: {
-      main: green[500]
+const theme = responsiveFontSizes(
+  createTheme({
+    palette: {
+      mode: "dark",
+      text: {
+        primary: '#fff',
+        secondary: grey[500],
+      },
+      primary: {
+        main: indigo[500]
+      },
+      secondary: {
+        main: blueGrey[800]
+      },
+      info: {
+        main: indigo[800]
+      },
+      warning: {
+        main: orange[800]
+      },
+      error: {
+        main: red[800]
+      },
+      success: {
+        main: green[800]
+      }
     }
-  }
-});
+  })
+);
 ```
 
 ![Dark Theme](/media/dark.png?raw=true "Dark Theme")
@@ -655,7 +661,7 @@ esp8266React.getWiFiSettingsService()->addUpdateHandler(
 ## Libraries Used
 
 * [React](https://reactjs.org/)
-* [Material-UI](https://material-ui.com/)
+* [Material-UI](https://mui.com/)
 * [notistack](https://github.com/iamhosseindhv/notistack)
 * [ArduinoJson](https://github.com/bblanchon/ArduinoJson)
 * [ESPAsyncWebServer](https://github.com/me-no-dev/ESPAsyncWebServer)
