@@ -8,7 +8,6 @@
 #include <WebSocketTxRx.h>
 
 #define LED_PIN 2
-#define PRINT_DELAY 5000
 
 #define DEFAULT_LED_STATE false
 #define OFF_STATE "OFF"
