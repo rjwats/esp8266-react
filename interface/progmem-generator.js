@@ -6,14 +6,14 @@ var mime = require('mime-types');
 const ARDUINO_INCLUDES = "#include <Arduino.h>\n\n";
 
 function getFilesSync(dir, files = []) {
-  readdirSync(dir, { withFileTypes: true }).forEach(entry => {
+  readdirSync(dir, { withFileTypes: true }).forEach((entry) => {
     const entryPath = resolve(dir, entry.name);
     if (entry.isDirectory()) {
       getFilesSync(entryPath, files);
     } else {
       files.push(entryPath);
     }
-  })
+  });
   return files;
 }
 
@@ -45,7 +45,7 @@ class ProgmemGenerator {
         try {
           const writeIncludes = () => {
             writeStream.write(includes);
-          }
+          };
 
           const writeFile = (relativeFilePath, buffer) => {
             const variable = "ESP_REACT_DATA_" + fileInfo.length;
@@ -86,23 +86,24 @@ class ProgmemGenerator {
             Object.keys(assets).forEach((relativeFilePath) => {
               writeFile(relativeFilePath, coherseToBuffer(assets[relativeFilePath].source()));
             });
-          }
+          };
 
           const generateWWWClass = () => {
-            return `typedef std::function<void(const String& uri, const String& contentType, const uint8_t * content, size_t len)> RouteRegistrationHandler;          
+            // eslint-disable-next-line max-len
+            return `typedef std::function<void(const String& uri, const String& contentType, const uint8_t * content, size_t len)> RouteRegistrationHandler;
 
 class WWWData {
 ${indent}public:
 ${indent.repeat(2)}static void registerRoutes(RouteRegistrationHandler handler) {
-${fileInfo.map(file => `${indent.repeat(3)}handler("${file.uri}", "${file.mimeType}", ${file.variable}, ${file.size});`).join('\n')}
+${fileInfo.map((file) => `${indent.repeat(3)}handler("${file.uri}", "${file.mimeType}", ${file.variable}, ${file.size});`).join('\n')}
 ${indent.repeat(2)}}
 };
 `;
-          }
+          };
 
           const writeWWWClass = () => {
             writeStream.write(generateWWWClass());
-          }
+          };
 
           writeIncludes();
           writeFiles();

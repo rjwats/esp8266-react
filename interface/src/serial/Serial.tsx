@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Redirect, Switch, RouteComponentProps } from 'react-router-dom'
+import { Navigate, Switch, useParams } from 'react-router-dom'
 
 import { Tabs, Tab } from '@material-ui/core';
 
@@ -30,7 +30,7 @@ class Serial extends Component<SerialProps> {
           <AuthenticatedRoute exact path="/serial/status" component={SerialStatusController} />
           <AuthenticatedRoute exact path="/serial/log" component={LogEventController} />
           <AuthenticatedRoute exact path="/serial/settings" component={SerialSettingsController} />
-          <Redirect to="/serial/status" />
+          <Navigate to="/serial/status" />
         </Switch>
       </MenuAppBar>
     )

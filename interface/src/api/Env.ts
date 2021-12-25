@@ -1,5 +1,5 @@
-export const PROJECT_NAME = process.env.REACT_APP_PROJECT_NAME!;
-export const PROJECT_PATH = process.env.REACT_APP_PROJECT_PATH!;
+export const PROJECT_NAME = process.env.REACT_APP_PROJECT_NAME || 'ESP8266 React';
+export const PROJECT_PATH = process.env.REACT_APP_PROJECT_PATH || 'project';
 
 export const ENDPOINT_ROOT = calculateEndpointRoot("/rest/");
 export const EVENT_SOURCE_ROOT = calculateEndpointRoot("/es/");

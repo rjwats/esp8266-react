@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/rjwats/esp8266-react.svg?branch=master)](https://travis-ci.org/rjwats/esp8266-react)
 
-A simple, secure and extensible framework for IoT projects built on ESP8266/ESP32 platforms with responsive [React](https://reactjs.org/) front-end built with [Material-UI](https://material-ui.com/).
+A simple, secure and extensible framework for IoT projects built on ESP8266/ESP32 platforms with responsive [React](https://reactjs.org/) front-end built with [Material-UI](https://mui.com/).
 
 Designed to work with the PlatformIO IDE with [limited setup](#getting-started). Please read below for setup, build and upload instructions.
 
@@ -118,37 +118,24 @@ UI development is an iterative process so it's best to run a development server 
 
 The following steps can get you up and running for local interface development:
 
-- [Enable CORS](#enabling-cors) in platformio.ini
 - Deploy firmware to device
-- [Configure endpoint root](#configuring-the-endpoint-root) with device's IP in interface/.env.development
+- [Configuring the dev proxy](#configuring-the-dev-proxy) with device's IP in interface/package.json
 - [Start the development server](#starting-the-development-server) with "npm start"
 - Develop interface locally
 
-#### Enabling CORS
+#### Configuring the dev proxy
 
-You can enable CORS on the back end by uncommenting the -D ENABLE_CORS build flag in ['platformio.ini'](platformio.ini) then re-building and uploading the firmware to the device. The default settings assume you will be accessing the development server on the default port on [http://localhost:3000](http://localhost:3000) this can also be changed if required:
+The interface has a development environment which is enabled when running the development server using `npm start`. The [package.json](interface/package.json) file defines the location of the services which the development server will proxy. This is defined by the "proxy" propery, which will need to be change to the the IP address or hostname of the device running the firmware.
 
-```ini
--D ENABLE_CORS
--D CORS_ORIGIN=\"http://localhost:3000\"
+```json
+"proxy": "http://192.168.0.77"
 ```
 
-#### Configuring the endpoint root
-
-The interface has a development environment which is enabled when running the development server using `npm start`. The environment file can be found in ['interface/.env.development'](interface/.env.development) and contains the HTTP root URL and the WebSocket root URL:
-
-```ini
-REACT_APP_HTTP_ROOT=http://192.168.0.99
-REACT_APP_WEB_SOCKET_ROOT=ws://192.168.0.99
-```
-
-The `REACT_APP_HTTP_ROOT` and `REACT_APP_WEB_SOCKET_ROOT` properties can be modified to point a ESP device running the back end.
-
-> **Tip**: You must restart the development server for changes to the environment file to come into effect.
+> **Tip**: You must restart the development server for changes to the proxy location to come into effect. Note that the proxy is configured to handle http and WebSocket connections from this location, see [setupProxy.js](interface/src/setupProxy.js) for details.
 
 #### Starting the development server
 
-Change to the ['interface'](interface) directory with your bash shell (or Git Bash) and use the standard commands you would with any react app built with create-react-app:
+Change to the [interface](interface) directory with your bash shell (or Git Bash) and use the standard commands you would with any react app built with create-react-app:
 
 ```bash
 cd interface
@@ -283,32 +270,38 @@ The framework, and MaterialUI allows for a reasonable degree of customization wi
 
 ### Theming the app
 
-The app can be easily themed by editing the [MaterialUI theme](https://material-ui.com/customization/theming/). Edit the theme in ['interface/src/CustomMuiTheme.tsx'](interface/src/CustomMuiTheme.tsx) as you desire. For example, here is a dark theme:
+The app can be easily themed by editing the [MaterialUI theme](https://mui.com/customization/typography/). Edit the theme in ['interface/src/CustomMuiTheme.tsx'](interface/src/CustomTheme.tsx) as you desire. For example, here is a dark theme:
 
 ```js
-const theme = createMuiTheme({
-  palette: {
-    type:"dark",
-    primary: {
-      main: '#222',
-    },
-    secondary: {
-      main: '#666',
-    },
-    info: {
-      main: blueGrey[500]
-    },
-    warning: {
-      main: orange[500]
-    },
-    error: {
-      main: red[500]
-    },
-    success: {
-      main: green[500]
+const theme = responsiveFontSizes(
+  createTheme({
+    palette: {
+      mode: "dark",
+      text: {
+        primary: '#fff',
+        secondary: grey[500],
+      },
+      primary: {
+        main: indigo[500]
+      },
+      secondary: {
+        main: blueGrey[800]
+      },
+      info: {
+        main: indigo[800]
+      },
+      warning: {
+        main: orange[800]
+      },
+      error: {
+        main: red[800]
+      },
+      success: {
+        main: green[800]
+      }
     }
-  }
-});
+  })
+);
 ```
 
 ![Dark Theme](/media/dark.png?raw=true "Dark Theme")
@@ -669,7 +662,7 @@ esp8266React.getWiFiSettingsService()->addUpdateHandler(
 ## Libraries Used
 
 * [React](https://reactjs.org/)
-* [Material-UI](https://material-ui.com/)
+* [Material-UI](https://mui.com/)
 * [notistack](https://github.com/iamhosseindhv/notistack)
 * [ArduinoJson](https://github.com/bblanchon/ArduinoJson)
 * [ESPAsyncWebServer](https://github.com/me-no-dev/ESPAsyncWebServer)

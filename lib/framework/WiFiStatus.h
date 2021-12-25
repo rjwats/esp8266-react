@@ -12,7 +12,7 @@
 #include <ArduinoJson.h>
 #include <AsyncJson.h>
 #include <ESPAsyncWebServer.h>
-#include <IPAddress.h>
+#include <IPUtils.h>
 #include <SecurityManager.h>
 
 #define MAX_WIFI_STATUS_SIZE 1024
