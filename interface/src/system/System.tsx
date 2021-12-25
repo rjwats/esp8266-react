@@ -11,7 +11,7 @@ import { MenuAppBar } from '../components';
 import SystemStatusController from './SystemStatusController';
 import OTASettingsController from './OTASettingsController';
 import UploadFirmwareController from './UploadFirmwareController';
-import LogEventController from './LogEventController';
+// import LogEventController from './LogEventController';
 
 type SystemProps = AuthenticatedContextProps & RouteComponentProps & WithFeaturesProps;
 
@@ -37,7 +37,7 @@ class System extends Component<SystemProps> {
         </Tabs>
         <Switch>
           <AuthenticatedRoute exact path="/system/status" component={SystemStatusController} />
-          <AuthenticatedRoute exact path="/system/log" component={LogEventController} />
+          {/* <AuthenticatedRoute exact path="/system/log" component={LogEventController} /> */}
           {features.ota && (
             <AuthenticatedRoute exact path="/system/ota" component={OTASettingsController} />
           )}
