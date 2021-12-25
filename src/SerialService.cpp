@@ -17,7 +17,7 @@
 #include "StreamServer.h"
 
 void StreamServer::setup() {
-    Serial.println("Setting up stream server...");
+    Serial.println("Setting up serial service...");
     this->stream_->begin(this->baud,this->config,this->rx_pin);
     this->recv_buf_.reserve(128);
 

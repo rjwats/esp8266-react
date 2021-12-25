@@ -1,5 +1,5 @@
-/* Copyright (C) 2020 Oxan van Leeuwen
- *
+/* Copyright (C) 2021 Maarten Kleijwegt
+
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -20,23 +20,19 @@
 #include <string>
 #include <vector>
 #include <Stream.h>
+#include <HardwareSerial.h>
+#include <PipedStream.h>
 
-#ifdef ESP32
-#include <WiFi.h>
-#include <AsyncTCP.h>
-#elif defined(ESP8266)
-#include <ESP8266WiFi.h>
-#include <ESPAsyncTCP.h>
-#endif
-
-class StreamServer {
+class SerialService {
 public:
     void setup();
     void loop() ;
     void dump_config() ;
     void on_shutdown() ;
+    Stream
 
-    void set_port(uint16_t port) { this->port_ = port; }
+    void set_pin(uint8_t pin) { this->pin_ = pin; }
+    void set_uart(uint8_t uart) { this->uart_ = uart; }
 
 protected:
     void cleanup();
@@ -44,20 +40,18 @@ protected:
     void write();
 
     struct Client {
-        Client(AsyncClient *client, std::vector<uint8_t> &recv_buf);
+        Client(Stream *stream, std::vector<uint8_t> &recv_buf);
         ~Client();
 
-        AsyncClient *tcp_client{nullptr};
+            Stream *stream_;
         std::string identifier{};
         bool disconnected{false};
     };
 
-    Stream *stream_{};
-    AsyncServer server_{0};
-    uint16_t port_{6638};
+    uint8_t uart_{2}
+    uint8_t pin_{26};
     std::vector<uint8_t> recv_buf_{};
     std::vector<std::unique_ptr<Client>> clients_{};
-    //uint8_t rx_pin{26};
-    //unsigned long baud{115200};
-    //uint32_t config{SERIAL_8N1};
+    unsigned long baud{115200};
+    uint32_t config{SERIAL_8N1};
 };
