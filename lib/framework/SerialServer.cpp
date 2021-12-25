@@ -21,7 +21,7 @@ SerialServer::SerialServer() {
 }
 
 void SerialServer::begin() {
-    Serial.println("Setting up serial service on pins %s"+String(this->rxPin)+" and "+String(this->txPin));
+    Serial.println("Setting up serial service on pins %s"+String(this->rxPin)+" and "+String(this->txPin)+"baud: "+String(this->baud)+"config: "+String(this->config, HEX));
     this->serial.begin(this->baud,this->config,this->rxPin,this->txPin,this->invert,this->timeout_ms);
     if (this->baud == 0) {
         this->baud = this->serial.baudRate();

@@ -11,6 +11,7 @@
 
 #include <StreamServer.h>
 #include <SerialServer.h>
+#include <SerialMonitor.h>
 
 #define SERIAL_SETTINGS_FILE "/config/serialSettings.json"
 #define SERIAL_SETTINGS_SERVICE_PATH "/rest/serialSettings"
@@ -58,6 +59,7 @@ public:
 
 private:
     HttpEndpoint<SerialSettings> httpEndpoint;
+    WebSocketSerialHandler webSocketSerialHandler;
     FSPersistence<SerialSettings> fsPersistence;
     SerialServer serialServer;
     StreamServer tcpServer{nullptr};

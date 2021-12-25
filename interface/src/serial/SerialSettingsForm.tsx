@@ -68,6 +68,18 @@ class SerialSettingsForm extends React.Component<SerialSettingsFormProps> {
           onChange={handleValueChange('baud')}
           margin="normal"
         />
+        <TextValidator
+          validators={['required', 'isNumber', 'minNumber:134217744', 'maxNumber:134217791']}
+          errorMessages={['Config is required', "Must be a number", "Must be greater than 134217744 ", "Max value is 134217791"]}
+          name="config"
+          label="Config"
+          fullWidth
+          variant="outlined"
+          value={data.config}
+          type="number"
+          onChange={handleValueChange('config')}
+          margin="normal"
+        />
         <BlockFormControlLabel
           control={
             <Checkbox

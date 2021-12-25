@@ -10,6 +10,7 @@ import { MenuAppBar } from '../components';
 
 import SystemStatusController from './SystemStatusController';
 import OTASettingsController from './OTASettingsController';
+import LogEventController from './LogEventController';
 import UploadFirmwareController from './UploadFirmwareController';
 
 type SystemProps = AuthenticatedContextProps & RouteComponentProps & WithFeaturesProps;
@@ -26,6 +27,7 @@ class System extends Component<SystemProps> {
       <MenuAppBar sectionTitle="System">
         <Tabs id="system-tabs" value={this.props.match.url} onChange={this.handleTabChange} variant="fullWidth">
           <Tab value="/system/status" label="System Status" />
+          <Tab value="/system/log" label="Remote Log" />
           {features.ota && (
             <Tab value="/system/ota" label="OTA Settings" disabled={!authenticatedContext.me.admin} />
           )}
@@ -35,6 +37,7 @@ class System extends Component<SystemProps> {
         </Tabs>
         <Switch>
           <AuthenticatedRoute exact path="/system/status" component={SystemStatusController} />
+          <AuthenticatedRoute exact path="/system/log" component={LogEventController} />
           {features.ota && (
             <AuthenticatedRoute exact path="/system/ota" component={OTASettingsController} />
           )}

@@ -13,8 +13,8 @@ interface Offsets {
   leftOffset: () => number;
 }
 
-const topOffset = () => document.getElementById('serial-tabs')?.getBoundingClientRect().bottom || 0;
-const leftOffset = () => document.getElementById('serial-tabs')?.getBoundingClientRect().left || 0;
+const topOffset = () => document.getElementById('system-tabs')?.getBoundingClientRect().bottom || 0;
+const leftOffset = () => document.getElementById('system-tabs')?.getBoundingClientRect().left || 0;
 
 const useStyles = makeStyles((theme: Theme) => ({
   console: {
@@ -100,6 +100,8 @@ const LogEventConsole: FC<LogEventConsoleProps> = (props) => {
       {events.map(e => (
         <div className={classes.entry}>
           <span>{formatIsoDateTimeToHr(e.time)} </span>
+          <span className={styleLevel(e.level)}>{paddedLevelLabel(e.level)} </span>
+          <span className={classes.file}>{`${e.file}[${e.line}]`} </span>
           <span>{e.message}</span>
         </div>
       ))}

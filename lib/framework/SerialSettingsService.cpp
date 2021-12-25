@@ -2,6 +2,7 @@
 
 SerialSettingsService::SerialSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) :
     httpEndpoint(SerialSettings::read, SerialSettings::update, this, server, SERIAL_SETTINGS_SERVICE_PATH, securityManager),
+    webSocketSerialHandler(server, securityManager),
     fsPersistence(SerialSettings::read, SerialSettings::update, this, fs, SERIAL_SETTINGS_FILE) {
         addUpdateHandler([&](const String& originId) { configureSerial(); }, false);
 }
@@ -11,12 +12,14 @@ void SerialSettingsService::begin() {
   configureSerial();
   this->tcpServer = StreamServer{this->serialServer.connect("tcpServer")};
   this->tcpServer.setup();
+  this->webSocketSerialHandler.stream = this->serialServer.connect("websocket");
 }
 
 void SerialSettingsService::loop() {
     if(this->_state.enabled) {
         this->serialServer.loop();
         this->tcpServer.loop();
+        this->webSocketSerialHandler.loop();
     }
 }
 

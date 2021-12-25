@@ -33,6 +33,7 @@
 #include <WiFiSettingsService.h>
 #include <WiFiStatus.h>
 #include <ESPFS.h>
+#include <WebSocketLogHandler.h>
 
 #ifdef PROGMEM_WWW
 #include <WWWData.h>
@@ -100,6 +101,7 @@ class ESP8266React {
   }
 
  private:
+  FS* _fs;
   FeaturesService _featureService;
   SecuritySettingsService _securitySettingsService;
   WiFiSettingsService _wifiSettingsService;
@@ -131,6 +133,7 @@ class ESP8266React {
   RestartService _restartService;
   FactoryResetService _factoryResetService;
   SystemStatus _systemStatus;
+  WebSocketLogHandler _webSocketLogHandler;
 };
 
 #endif

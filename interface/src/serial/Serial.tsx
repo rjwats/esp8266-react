@@ -21,7 +21,7 @@ class Serial extends Component<SerialProps> {
     const { authenticatedContext } = this.props;
     return (
       <MenuAppBar sectionTitle="Serial">
-        <Tabs value={this.props.match.url} onChange={this.handleTabChange} variant="fullWidth">
+        <Tabs id="serial-tabs" value={this.props.match.url} onChange={this.handleTabChange} variant="fullWidth">
           <Tab value="/serial/status" label="Serial Status" />
           <Tab value="/serial/log" label="Remote Log" />
           <Tab value="/serial/settings" label="Serial Settings" disabled={!authenticatedContext.me.admin} />

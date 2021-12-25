@@ -31,7 +31,8 @@ ESP8266React::ESP8266React(AsyncWebServer* server) :
 #endif
     _restartService(server, &_securitySettingsService),
     _factoryResetService(server, &ESPFS, &_securitySettingsService),
-    _systemStatus(server, &_securitySettingsService) {
+    _systemStatus(server, &_securitySettingsService),
+    _webSocketLogHandler(server, &_securitySettingsService) {
 #ifdef PROGMEM_WWW
   // Serve static resources from PROGMEM
   WWWData::registerRoutes(
@@ -90,6 +91,11 @@ void ESP8266React::begin() {
 #elif defined(ESP8266)
   ESPFS.begin();
 #endif
+  // Begin logging
+  //Logger::begin(_fs);
+  //Logger::getInstance()->addEventHandler(SerialLogHandler::logEvent);
+  _webSocketLogHandler.begin();
+
   _wifiSettingsService.begin();
   _apSettingsService.begin();
 #if FT_ENABLED(FT_NTP)
@@ -110,6 +116,9 @@ void ESP8266React::begin() {
 }
 
 void ESP8266React::loop() {
+  //Logger::loop();
+  _webSocketLogHandler.loop();
+
   _wifiSettingsService.loop();
   _apSettingsService.loop();
 #if FT_ENABLED(FT_OTA)

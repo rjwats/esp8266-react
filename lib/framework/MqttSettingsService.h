@@ -6,6 +6,7 @@
 #include <FSPersistence.h>
 #include <AsyncMqttClient.h>
 #include <SettingValue.h>
+#include <ESPUtils.h>
 
 #ifndef FACTORY_MQTT_ENABLED
 #define FACTORY_MQTT_ENABLED false
