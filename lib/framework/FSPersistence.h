@@ -38,9 +38,11 @@ class FSPersistence {
       settingsFile.close();
     }
 
-    // If we reach here we have not been successful in loading the config,
-    // hard-coded emergency defaults are now applied.
+    // If we reach here we have not been successful in loading the config and hard-coded defaults are now applied.
+    // The settings are then written back to the file system so the defaults persist between resets. This last step is
+    // required as in some cases defaults contain randomly generated values which would otherwise be modified on reset.
     applyDefaults();
+    writeToFS();
   }
 
   bool writeToFS() {

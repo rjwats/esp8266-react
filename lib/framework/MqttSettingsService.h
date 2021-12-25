@@ -5,12 +5,7 @@
 #include <HttpEndpoint.h>
 #include <FSPersistence.h>
 #include <AsyncMqttClient.h>
-#include <ESPUtils.h>
-
-#define MQTT_RECONNECTION_DELAY 5000
-
-#define MQTT_SETTINGS_FILE "/config/mqttSettings.json"
-#define MQTT_SETTINGS_SERVICE_PATH "/rest/mqttSettings"
+#include <SettingValue.h>
 
 #ifndef FACTORY_MQTT_ENABLED
 #define FACTORY_MQTT_ENABLED false
@@ -33,7 +28,7 @@
 #endif
 
 #ifndef FACTORY_MQTT_CLIENT_ID
-#define FACTORY_MQTT_CLIENT_ID generateClientId()
+#define FACTORY_MQTT_CLIENT_ID "#{platform}-#{unique_id}"
 #endif
 
 #ifndef FACTORY_MQTT_KEEP_ALIVE
@@ -48,13 +43,10 @@
 #define FACTORY_MQTT_MAX_TOPIC_LENGTH 128
 #endif
 
-static String generateClientId() {
-#ifdef ESP32
-  return ESPUtils::defaultDeviceValue("esp32-");
-#elif defined(ESP8266)
-  return ESPUtils::defaultDeviceValue("esp8266-");
-#endif
-}
+#define MQTT_SETTINGS_FILE "/config/mqttSettings.json"
+#define MQTT_SETTINGS_SERVICE_PATH "/rest/mqttSettings"
+
+#define MQTT_RECONNECTION_DELAY 5000
 
 class MqttSettings {
  public:
@@ -91,9 +83,9 @@ class MqttSettings {
     settings.enabled = root["enabled"] | FACTORY_MQTT_ENABLED;
     settings.host = root["host"] | FACTORY_MQTT_HOST;
     settings.port = root["port"] | FACTORY_MQTT_PORT;
-    settings.username = root["username"] | FACTORY_MQTT_USERNAME;
+    settings.username = root["username"] | SettingValue::format(FACTORY_MQTT_USERNAME);
     settings.password = root["password"] | FACTORY_MQTT_PASSWORD;
-    settings.clientId = root["client_id"] | FACTORY_MQTT_CLIENT_ID;
+    settings.clientId = root["client_id"] | SettingValue::format(FACTORY_MQTT_CLIENT_ID);
     settings.keepAlive = root["keep_alive"] | FACTORY_MQTT_KEEP_ALIVE;
     settings.cleanSession = root["clean_session"] | FACTORY_MQTT_CLEAN_SESSION;
     settings.maxTopicLength = root["max_topic_length"] | FACTORY_MQTT_MAX_TOPIC_LENGTH;

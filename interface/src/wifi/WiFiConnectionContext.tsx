@@ -1,13 +1,13 @@
 import React from 'react';
 import { WiFiNetwork } from './types';
 
-export interface WiFiConnectionContext {
+export interface WiFiConnectionContextValue {
   selectedNetwork?: WiFiNetwork;
   selectNetwork: (network: WiFiNetwork) => void;
   deselectNetwork: () => void;
 }
 
-const WiFiConnectionContextDefaultValue = {} as WiFiConnectionContext
+const WiFiConnectionContextDefaultValue = {} as WiFiConnectionContextValue
 export const WiFiConnectionContext = React.createContext(
   WiFiConnectionContextDefaultValue
 );
