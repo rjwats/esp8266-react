@@ -95,6 +95,9 @@ void ESP8266React::begin() {
 #if FT_ENABLED(FT_NTP)
   _ntpSettingsService.begin();
 #endif
+#if FT_ENABLED(FT_SER2NET)
+  _ser2netSettingsService.begin();
+#endif
 #if FT_ENABLED(FT_OTA)
   _otaSettingsService.begin();
 #endif

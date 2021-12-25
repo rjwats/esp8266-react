@@ -13,6 +13,7 @@ import AccessPoint from './ap/AccessPoint';
 import NetworkTime from './ntp/NetworkTime';
 import Security from './security/Security';
 import System from './system/System';
+import Ser2net from './ser2net/Ser2net';
 
 import { PROJECT_PATH } from './api';
 import Mqtt from './mqtt/Mqtt';
@@ -45,6 +46,9 @@ class AppRouting extends Component<WithFeaturesProps> {
           )}
           {features.mqtt && (
             <AuthenticatedRoute exact path="/mqtt/*" component={Mqtt} />
+          )}
+          {features.ser2net && (
+            <AuthenticatedRoute exact path="/ser2net/*" component={Ser2net} />
           )}
           {features.security && (
             <AuthenticatedRoute exact path="/security/*" component={Security} />

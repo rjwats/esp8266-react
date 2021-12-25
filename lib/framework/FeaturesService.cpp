@@ -22,6 +22,11 @@ void FeaturesService::features(AsyncWebServerRequest* request) {
 #else
   root["mqtt"] = false;
 #endif
+#if FT_ENABLED(FT_SER2NET)
+  root["ser2net"] = true;
+#else
+  root["ser2net"] = false;
+#endif
 #if FT_ENABLED(FT_NTP)
   root["ntp"] = true;
 #else

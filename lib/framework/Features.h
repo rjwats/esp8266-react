@@ -18,6 +18,11 @@
 #define FT_MQTT 1
 #endif
 
+// mqtt feature on by default
+#ifndef FT_SER2NET
+#define FT_SER2NET 1
+#endif
+
 // ntp feature on by default
 #ifndef FT_NTP
 #define FT_NTP 1
