@@ -173,7 +173,7 @@ Customize the settings as you see fit. A value of 0 will disable the specified f
     -D FT_SECURITY=1
     -D FT_MQTT=1
     -D FT_NTP=1
-    -D FT_SER2NET=1
+    -D FT_SERIAL=1
     -D FT_OTA=1
     -D FT_UPLOAD_FIRMWARE=1
 ```

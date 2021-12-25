@@ -166,12 +166,12 @@ class MenuAppBar extends React.Component<MenuAppBarProps, MenuAppBarState> {
               <ListItemText primary="MQTT" />
             </ListItem>
           )}
-          {features.ser2net && (
-            <ListItem to='/ser2net/' selected={path.startsWith('/ser2net/')} button component={Link}>
+          {features.serial && (
+            <ListItem to='/serial/' selected={path.startsWith('/serial/')} button component={Link}>
               <ListItemIcon>
                 <Icon icon={serialPort} width="24" height="24" />
               </ListItemIcon>
-              <ListItemText primary="Ser2net" />
+              <ListItemText primary="Serial" />
             </ListItem>
           )}
           {features.security && (

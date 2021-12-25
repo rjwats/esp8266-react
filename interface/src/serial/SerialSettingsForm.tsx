@@ -6,11 +6,11 @@ import SaveIcon from '@material-ui/icons/Save';
 
 import { RestFormProps, FormActions, FormButton, BlockFormControlLabel } from '../components';
 
-import { Ser2netSettings } from './types';
+import { SerialSettings } from './types';
 
-type Ser2netSettingsFormProps = RestFormProps<Ser2netSettings>;
+type SerialSettingsFormProps = RestFormProps<SerialSettings>;
 
-class Ser2netSettingsForm extends React.Component<Ser2netSettingsFormProps> {
+class SerialSettingsForm extends React.Component<SerialSettingsFormProps> {
 
   componentDidMount() {
   }
@@ -30,7 +30,7 @@ class Ser2netSettingsForm extends React.Component<Ser2netSettingsFormProps> {
                 color="primary"
               />
             }
-          label="Enable Ser2net"
+          label="Enable Serial"
         />
         <FormActions>
           <FormButton startIcon={<SaveIcon />} variant="contained" color="primary" type="submit">
@@ -42,4 +42,4 @@ class Ser2netSettingsForm extends React.Component<Ser2netSettingsFormProps> {
   }
 }
 
-export default Ser2netSettingsForm;
+export default SerialSettingsForm;

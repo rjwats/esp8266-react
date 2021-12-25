@@ -20,8 +20,8 @@
 #include <MqttStatus.h>
 #include <NTPSettingsService.h>
 #include <NTPStatus.h>
-#include <Ser2netStatus.h>
-#include <Ser2netSettingsService.h>
+#include <SerialStatus.h>
+#include <SerialSettingsService.h>
 #include <OTASettingsService.h>
 #include <UploadFirmwareService.h>
 #include <RestartService.h>

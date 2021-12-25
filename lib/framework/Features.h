@@ -19,8 +19,8 @@
 #endif
 
 // mqtt feature on by default
-#ifndef FT_SER2NET
-#define FT_SER2NET 1
+#ifndef FT_SERIAL
+#define FT_SERIAL 1
 #endif
 
 // ntp feature on by default

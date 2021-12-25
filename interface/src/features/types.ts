@@ -2,7 +2,7 @@ export interface Features {
   project: boolean;
   security: boolean;
   mqtt: boolean;
-  ser2net: boolean;
+  serial: boolean;
   ntp: boolean;
   ota: boolean;
   upload_firmware: boolean;

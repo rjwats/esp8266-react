@@ -9,12 +9,12 @@ import ReportIcon from '@material-ui/icons/Report';
 
 import { RestFormProps, FormActions, FormButton, HighlightAvatar } from '../components';
 import { SectionContent, BlockFormControlLabel } from '../components';
-import { ser2netStatusHighlight, ser2netStatus, disconnectReason } from './Ser2netStatus';
-import { Ser2netStatus } from './types';
+import { serialStatusHighlight, serialStatus, disconnectReason } from './SerialStatus';
+import { SerialStatus } from './types';
 
-type Ser2netStatusFormProps = RestFormProps<Ser2netStatus> & WithTheme;
+type SerialStatusFormProps = RestFormProps<SerialStatus> & WithTheme;
 
-class Ser2netStatusForm extends Component<Ser2netStatusFormProps> {
+class SerialStatusForm extends Component<SerialStatusFormProps> {
   renderConnectionStatus() {
     const { data, saveData, setData } = this.props;
 
@@ -57,11 +57,11 @@ class Ser2netStatusForm extends Component<Ser2netStatusFormProps> {
       <Fragment>
         <ListItem>
           <ListItemAvatar>
-            <HighlightAvatar color={ser2netStatusHighlight(data, theme)}>
+            <HighlightAvatar color={serialStatusHighlight(data, theme)}>
               <DeviceHubIcon />
             </HighlightAvatar>
           </ListItemAvatar>
-          <ListItemText primary="Status" secondary={ser2netStatus(data)} />
+          <ListItemText primary="Status" secondary={serialStatus(data)} />
         </ListItem>
         <Divider variant="inset" component="li" />
         {data.enabled && this.renderConnectionStatus()}
@@ -86,4 +86,4 @@ class Ser2netStatusForm extends Component<Ser2netStatusFormProps> {
 
 }
 
-export default withTheme(Ser2netStatusForm);
+export default withTheme(SerialStatusForm);
