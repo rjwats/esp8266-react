@@ -5,7 +5,7 @@ import { Checkbox } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
 
 import { RestFormProps, BlockFormControlLabel, PasswordValidator, FormButton, FormActions } from '../components';
-import {isIP,isHostname,or}  from '../validators';
+import { isIP, isHostname, or } from '../validators';
 
 import { OTASettings } from './types';
 

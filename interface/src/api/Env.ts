@@ -2,6 +2,7 @@ export const PROJECT_NAME = process.env.REACT_APP_PROJECT_NAME!;
 export const PROJECT_PATH = process.env.REACT_APP_PROJECT_PATH!;
 
 export const ENDPOINT_ROOT = calculateEndpointRoot("/rest/");
+export const EVENT_SOURCE_ROOT = calculateEndpointRoot("/es/");
 export const WEB_SOCKET_ROOT = calculateWebSocketRoot("/ws/");
 
 function calculateEndpointRoot(endpointPath: string) {

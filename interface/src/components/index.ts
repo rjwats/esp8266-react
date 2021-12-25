@@ -15,3 +15,4 @@ export * from './RestController';
 
 export * from './WebSocketFormLoader';
 export * from './WebSocketController';
+export * from './WindowSize';

@@ -98,6 +98,8 @@ export function restController<D, P extends RestControllerProps<D>>(endpointUrl:
         this.setState({ data });
       }
 
+
+
       render() {
         return <RestController
           {...this.state}
