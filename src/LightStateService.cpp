@@ -11,7 +11,7 @@ LightStateService::LightStateService(AsyncWebServer* server,
                   LIGHT_SETTINGS_ENDPOINT_PATH,
                   securityManager,
                   AuthenticationPredicates::IS_AUTHENTICATED),
-    _mqttPubSub(LightState::haRead, LightState::haUpdate, this, mqttClient),
+    _mqttPubSub(LightState::haRead, LightState::haUpdate, this, mqttClient, true),
     _webSocket(LightState::read,
                LightState::update,
                this,
@@ -67,7 +67,8 @@ void LightStateService::registerConfig() {
 
   String payload;
   serializeJson(doc, payload);
-  _mqttClient->publish(configTopic.c_str(), 0, false, payload.c_str());
+
+  _mqttPubSub.publish(configTopic.c_str(), payload.c_str());
 
   _mqttPubSub.configureTopics(pubTopic, subTopic);
 }
