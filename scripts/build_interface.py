@@ -3,9 +3,13 @@ from shutil import copytree, rmtree, copyfileobj
 from subprocess import check_output, Popen, PIPE, STDOUT, CalledProcessError
 import os
 import gzip
+import inspect
 
 Import("env")
 
+filename = inspect.getframeinfo(inspect.currentframe()).filename
+dir_path = os.path.dirname(os.path.abspath(filename))
+    
 def gzipFile(file):
     with open(file, 'rb') as f_in:
         with gzip.open(file + '.gz', 'wb') as f_out:
@@ -19,7 +23,7 @@ def flagExists(flag):
             return True
 
 def buildWeb():
-    os.chdir("interface")
+    os.chdir(dir_path + '/../interface')
     print("Building interface with npm")
     try:
         env.Execute("npm install")
