@@ -71,10 +71,10 @@ void WiFiSettingsService::manageSTA() {
     } else {
       // configure for DHCP
 #ifdef ESP32
-      WiFi.config(INADDR_NONE, INADDR_NONE, INADDR_NONE);
+      //WiFi.config(INADDR_NONE, INADDR_NONE, INADDR_NONE);
       WiFi.setHostname(_state.hostname.c_str());
 #elif defined(ESP8266)
-      WiFi.config(INADDR_ANY, INADDR_ANY, INADDR_ANY);
+      //WiFi.config(INADDR_ANY, INADDR_ANY, INADDR_ANY);
       WiFi.hostname(_state.hostname);
 #endif
     }
