@@ -8,3 +8,4 @@
 /interface/node_modules
 /interface/.eslintcache
 .vscode
+src/WWWData.h
