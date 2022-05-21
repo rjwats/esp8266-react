@@ -2,7 +2,9 @@ import React from 'react';
 
 import { Paper, Typography } from '@mui/material';
 
-interface SectionContentProps {
+import { RequiredChildrenProps } from '../utils';
+
+interface SectionContentProps extends RequiredChildrenProps {
   title: string;
   titleGutter?: boolean;
 }
