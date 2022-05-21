@@ -53,7 +53,7 @@ class FSPersistence {
 
     // make directories if required
     mkdirs();
-    
+
     // serialize it to filesystem
     File settingsFile = _fs->open(_filePath, "w");
 
@@ -91,16 +91,15 @@ class FSPersistence {
   update_handler_id_t _updateHandlerId;
 
   // We assume we have a _filePath with format "/directory1/directory2/filename"
-  // We ignore the leading slash & create a directory for each missing parent
+  // We create a directory for each missing parent
   void mkdirs() {
     String path(_filePath);
-    int index = 1;
-    while ((index = path.indexOf('/', index)) != -1) {
+    int index = 0;
+    while ((index = path.indexOf('/', index + 1)) != -1) {
       String segment = path.substring(0, index);
       if (!_fs->exists(segment)) {
         _fs->mkdir(segment);
       }
-      index++;
     }
   }
 
