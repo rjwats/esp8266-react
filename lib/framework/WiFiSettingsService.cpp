@@ -19,9 +19,9 @@ WiFiSettingsService::WiFiSettingsService(AsyncWebServer* server, FS* fs, Securit
   WiFi.mode(WIFI_MODE_NULL);
   WiFi.onEvent(
       std::bind(&WiFiSettingsService::onStationModeDisconnected, this, std::placeholders::_1, std::placeholders::_2),
-      WiFiEvent_t::SYSTEM_EVENT_STA_DISCONNECTED);
+      WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_DISCONNECTED);
   WiFi.onEvent(std::bind(&WiFiSettingsService::onStationModeStop, this, std::placeholders::_1, std::placeholders::_2),
-               WiFiEvent_t::SYSTEM_EVENT_STA_STOP);
+               WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_STOP);
 #elif defined(ESP8266)
   _onStationModeDisconnectedHandler = WiFi.onStationModeDisconnected(
       std::bind(&WiFiSettingsService::onStationModeDisconnected, this, std::placeholders::_1));
