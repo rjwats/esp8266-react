@@ -51,6 +51,9 @@ class FSPersistence {
     JsonObject jsonObject = jsonDocument.to<JsonObject>();
     _statefulService->read(jsonObject, _stateReader);
 
+    // make directories if required
+    mkdirs();
+    
     // serialize it to filesystem
     File settingsFile = _fs->open(_filePath, "w");
 
@@ -86,6 +89,20 @@ class FSPersistence {
   const char* _filePath;
   size_t _bufferSize;
   update_handler_id_t _updateHandlerId;
+
+  // We assume we have a _filePath with format "/directory1/directory2/filename"
+  // We ignore the leading slash & create a directory for each missing parent
+  void mkdirs() {
+    String path(_filePath);
+    int index = 1;
+    while ((index = path.indexOf('/', index)) != -1) {
+      String segment = path.substring(0, index);
+      if (!_fs->exists(segment)) {
+        _fs->mkdir(segment);
+      }
+      index++;
+    }
+  }
 
  protected:
   // We assume the updater supplies sensible defaults if an empty object
