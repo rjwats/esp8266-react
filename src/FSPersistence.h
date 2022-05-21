@@ -3,6 +3,7 @@
 
 #include <StatefulService.h>
 #include <FS.h>
+#include <FactoryResetService.h>
 
 template <class T>
 class FSPersistence {
@@ -51,12 +52,32 @@ class FSPersistence {
     JsonObject jsonObject = jsonDocument.to<JsonObject>();
     _statefulService->read(jsonObject, _stateReader);
 
+    if(!_fs->exists(FS_CONFIG_DIRECTORY)){
+      Serial.println(F("Directory doesn't exists."));
+
+    if(_fs->mkdir(FS_CONFIG_DIRECTORY)){
+        Serial.println(F("Directory created."));
+      }
+      else{
+         Serial.println(F("Can't create the directory."));
+      }
+    }
+    else{
+      Serial.println(F("Directory exists."));
+    }
+
     // serialize it to filesystem
     File settingsFile = _fs->open(_filePath, "w");
 
     // failed to open file, return false
     if (!settingsFile) {
+      Serial.print(F("Can't open the file: "));
+      Serial.println(_filePath);
       return false;
+    }
+    else{
+      Serial.print(_filePath);
+      Serial.println(F(" was opened."));
     }
 
     // serialize the data to the file

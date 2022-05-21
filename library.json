@@ -1,0 +1,24 @@
+{
+  "name": "esp8266-react",
+  "description": "A framework for ESP8266 & ESP32 microcontrollers with a React UI ",
+  "keywords": "react,framework,wifimanager,http,async,websocket,webserver",
+  "authors": {
+    "name": "rjwats",
+    "maintainer": true
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rjwats/esp8266-react.git"
+  },
+  "build": {
+    "extraScript": "scripts/build_interface.py"
+  },
+  "version": "1.0.0",
+  "license": "LGPL-3.0",
+  "frameworks": "arduino",
+  "platforms": [
+    "espressif8266",
+    "espressif32"
+  ],
+  "dependencies": []
+}
