@@ -22,7 +22,9 @@ void FactoryResetService::factoryReset() {
   File root = fs->open(FS_CONFIG_DIRECTORY);
   File file;
   while (file = root.openNextFile()) {
-    fs->remove(file.name());
+    String path = file.path();
+    file.close();
+    fs->remove(path);
   }
 #elif defined(ESP8266)
   Dir configDirectory = fs->openDir(FS_CONFIG_DIRECTORY);
