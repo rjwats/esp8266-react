@@ -9,6 +9,9 @@
 #include <DNSServer.h>
 #include <IPAddress.h>
 
+#define CHECK_LEN(s, min_len, max_len) \
+  static_assert(min_len <= sizeof(s) && sizeof(s) <= max_len, #s " should have " #min_len "-" #max_len " characters.")
+
 #ifndef FACTORY_AP_PROVISION_MODE
 #define FACTORY_AP_PROVISION_MODE AP_MODE_DISCONNECTED
 #endif
@@ -17,9 +20,13 @@
 #define FACTORY_AP_SSID "ESP8266-React-#{unique_id}"
 #endif
 
+CHECK_LEN(FACTORY_AP_SSID, 1, 64);
+
 #ifndef FACTORY_AP_PASSWORD
 #define FACTORY_AP_PASSWORD "esp-react"
 #endif
+
+CHECK_LEN(FACTORY_AP_PASSWORD, 8, 64);
 
 #ifndef FACTORY_AP_LOCAL_IP
 #define FACTORY_AP_LOCAL_IP "192.168.4.1"
