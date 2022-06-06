@@ -2,12 +2,12 @@ import React from 'react';
 import Sockette from 'sockette';
 import { withSnackbar, WithSnackbarProps } from 'notistack';
 
-import { addAccessTokenParameter } from '../authentication';
-import { LogEvent } from './types';
-import { WEB_SOCKET_ROOT } from '../api/Env';
+import { addAccessTokenParameter } from '../../api/authentication';
+import { LogEvent } from '../../types';
+import { WEB_SOCKET_ROOT } from '../../api/env';
 import LogEventConsole from './LogEventConsole';
 
-const LOG_EVENT_WEB_SOCKET_URL = WEB_SOCKET_ROOT + "log";
+const LOG_EVENT_WEB_SOCKET_URL = WEB_SOCKET_ROOT + "serial";
 
 interface LogEventControllerState {
   ws: Sockette;

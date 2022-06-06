@@ -7,6 +7,7 @@
 #include <SecurityManager.h>
 #include <NTPStatus.h>
 #include <SerialServer.h>
+#include <ESPUtils.h>
 
 #define WEB_SOCKET_SERIAL_PATH "/ws/serial"
 #define WEB_SOCKET_SERIAL_BUFFER 512
@@ -61,7 +62,7 @@ class WebSocketSerialHandler {
     DynamicJsonDocument jsonDocument = DynamicJsonDocument(WEB_SOCKET_SERIAL_BUFFER);
     JsonObject jsonObject = jsonDocument.to<JsonObject>();
     auto tempTime = time(nullptr);
-    jsonObject["time"] = toISOString(localtime(&tempTime), true);
+    jsonObject["time"] = ESPUtils::toISOString(localtime(&tempTime), true);
     jsonObject["message"] = message;
 
     // transmit serial event to all clients

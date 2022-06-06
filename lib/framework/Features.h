@@ -18,7 +18,7 @@
 #define FT_MQTT 1
 #endif
 
-// mqtt feature on by default
+// serial feature on by default
 #ifndef FT_SERIAL
 #define FT_SERIAL 1
 #endif

@@ -1,5 +1,5 @@
 import { Theme } from "@material-ui/core";
-import { SerialStatus  } from "./types";
+import { SerialStatus  } from "../../types";
 
 export const serialStatusHighlight = ({ enabled }: SerialStatus, theme: Theme) => {
   if (!enabled) {

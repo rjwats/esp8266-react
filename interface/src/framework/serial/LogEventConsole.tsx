@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 
-import { LogEvent, LogLevel } from './types';
+import { LogEvent, LogLevel } from '../../types';
 import { Theme, makeStyles, Box } from '@material-ui/core';
-import { useWindowSize } from '../components';
-import { formatIsoDateTimeToHr } from '../ntp/TimeFormat';
+import { useWindowSize } from '../../components';
+import { formatIsoDateTimeToHr } from "../../utils";
 
 interface LogEventConsoleProps {
   events: LogEvent[];
