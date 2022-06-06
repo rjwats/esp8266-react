@@ -1,7 +1,7 @@
 import React, { FC, useContext } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 
-import { Tabs, Tab } from '@material-ui/core';
+import { Tab } from '@mui/material';
 
 import { RequireAdmin, RouterTabs, useLayoutTitle, useRouterTab } from '../../components';
 import { AuthenticatedContext } from '../../contexts/authentication';

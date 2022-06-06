@@ -1,4 +1,4 @@
-import { Theme } from "@material-ui/core";
+import { Theme } from "@@mui/material";
 import { SerialStatus  } from "../../types";
 
 export const serialStatusHighlight = ({ enabled }: SerialStatus, theme: Theme) => {

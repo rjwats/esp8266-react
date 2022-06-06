@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 
 import { LogEvent, LogLevel } from '../../types';
-import { Theme, makeStyles, Box } from '@material-ui/core';
+import { Theme, makeStyles, Box } from '@mui/material';
 import { useWindowSize } from '../../components';
 import { formatIsoDateTimeToHr } from "../../utils";
 
