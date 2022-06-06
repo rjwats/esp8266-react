@@ -3,8 +3,9 @@ import { Navigate, useLocation } from "react-router-dom";
 
 import { AuthenticatedContext, AuthenticatedContextValue, AuthenticationContext } from '../../contexts/authentication/context';
 import { storeLoginRedirect } from '../../api/authentication';
+import { RequiredChildrenProps } from '../../utils';
 
-const RequireAuthenticated: FC = ({ children }) => {
+const RequireAuthenticated: FC<RequiredChildrenProps> = ({ children }) => {
   const authenticationContext = useContext(AuthenticationContext);
   const location = useLocation();
 

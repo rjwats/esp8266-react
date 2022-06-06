@@ -1,7 +1,7 @@
-#ifdef ESP32
-#include <SPIFFS.h>
-#define ESPFS SPIFFS
-#elif defined(ESP8266)
+#ifndef ESPFS_H_
+#define ESPFS_H_
+
 #include <LittleFS.h>
 #define ESPFS LittleFS
+
 #endif

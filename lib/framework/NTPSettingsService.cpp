@@ -13,9 +13,9 @@ NTPSettingsService::NTPSettingsService(AsyncWebServer* server, FS* fs, SecurityM
 #ifdef ESP32
   WiFi.onEvent(
       std::bind(&NTPSettingsService::onStationModeDisconnected, this, std::placeholders::_1, std::placeholders::_2),
-      WiFiEvent_t::SYSTEM_EVENT_STA_DISCONNECTED);
+      WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_DISCONNECTED);
   WiFi.onEvent(std::bind(&NTPSettingsService::onStationModeGotIP, this, std::placeholders::_1, std::placeholders::_2),
-               WiFiEvent_t::SYSTEM_EVENT_STA_GOT_IP);
+               WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_GOT_IP);
 #elif defined(ESP8266)
   _onStationModeDisconnectedHandler = WiFi.onStationModeDisconnected(
       std::bind(&NTPSettingsService::onStationModeDisconnected, this, std::placeholders::_1));
