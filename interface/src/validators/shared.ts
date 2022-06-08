@@ -58,19 +58,19 @@ export const ESP32_PIN_VALIDATOR: RuleItem = {
   type: "number",
   min: 0,
   max: 42,
-  message: "ESP32 pin must be between 0 and 16" 
+  message: "ESP32 pin must be between 0 and 16"
 };
 
 export const ESP8266_PIN_VALIDATOR: RuleItem = {
     type: "number",
     min: 0,
     max: 16,
-    message: "ESP8266 pin must be between 0 and 16" 
+    message: "ESP8266 pin must be between 0 and 16"
 };
 
 export const TCP_PORT_VALIDATOR: RuleItem = {
-  type: "number", 
-  min: 0, 
-  max: 65535, 
-  message: "Port must be between 0 and 65535" 
-}
+  type: "number",
+  min: 0,
+  max: 65535,
+  message: "Port must be between 0 and 65535"
+};

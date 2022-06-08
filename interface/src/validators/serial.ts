@@ -1,7 +1,7 @@
 import Schema from 'async-validator';
 
 //TODO Determine what esp we are dealing with
-import { ESP32_PIN_VALIDATOR, ESP8266_PIN_VALIDATOR } from './shared';
+import { ESP32_PIN_VALIDATOR } from './shared';
 
 export const SERIAL_SETTINGS_VALIDATOR = new Schema({
   rxpin: [

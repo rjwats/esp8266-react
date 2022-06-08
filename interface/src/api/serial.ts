@@ -1,6 +1,6 @@
 import { AxiosPromise } from "axios";
 
-import { SerialSettings, SerialStatus, Time } from "../types";
+import { SerialSettings, SerialStatus } from "../types";
 import { AXIOS } from "./endpoints";
 
 export function readSerialStatus(): AxiosPromise<SerialStatus> {

@@ -43,7 +43,6 @@ export enum LogLevel {
   ERROR = 3
 }
 
-
 export interface LogEvent {
   time: string;
   level: LogLevel;

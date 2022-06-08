@@ -1,7 +1,7 @@
 import { FC, useState } from 'react';
 import { ValidateFieldsError } from 'async-validator';
 
-import { Button, Checkbox, MenuItem } from '@mui/material';
+import { Button, Checkbox} from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 
 import * as SerialApi from "../../api/serial";
@@ -41,7 +41,7 @@ const SerialSettingsForm: FC = () => {
               name="enabled"
               checked={data.enabled}
               onChange={updateFormValue}
-              />
+            />
             }
           label="Enable Serial"
         />

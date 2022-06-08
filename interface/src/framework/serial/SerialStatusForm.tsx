@@ -1,25 +1,15 @@
-import { FC, useContext, useState } from "react";
-import { useSnackbar } from "notistack";
+import { FC } from "react";
 
 import {
-  Avatar, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle,
-  Divider, List, ListItem, ListItemAvatar, ListItemText, TextField, Theme, useTheme
+  Avatar, Button, Divider, List, ListItem, ListItemAvatar, ListItemText, Theme, useTheme
 } from "@mui/material";
 import DeviceHubIcon from '@mui/icons-material/DeviceHub';
 import RefreshIcon from '@mui/icons-material/Refresh';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import ReportIcon from '@mui/icons-material/Report';
 
 import * as SerialApi from "../../api/serial";
 import { SerialStatus } from "../../types";
 import { ButtonRow, FormLoader, SectionContent } from "../../components";
-import { extractErrorMessage, formatDateTime, formatDuration, formatLocalDateTime, useRest } from "../../utils";
-import { AuthenticatedContext } from "../../contexts/authentication";
-
-// import { RestFormProps, FormActions, FormButton, HighlightAvatar } from '../../components';
-// import { SectionContent, BlockFormControlLabel } from '../../components';
-// import { serialStatusHighlight, serialStatus  } from './SerialStatus';
-// import { SerialStatus, Config } from '../../types';
+import { useRest } from "../../utils";
 
 export const serialStatusHighlight = ({ enabled }: SerialStatus, theme: Theme) => {
   if (!enabled) {
