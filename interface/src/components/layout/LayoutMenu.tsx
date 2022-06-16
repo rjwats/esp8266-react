@@ -8,6 +8,7 @@ import DeviceHubIcon from '@mui/icons-material/DeviceHub';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LockIcon from '@mui/icons-material/Lock';
 import WifiIcon from '@mui/icons-material/Wifi';
+import CableIcon from '@mui/icons-material/Cable';
 
 import { FeaturesContext } from '../../contexts/features';
 import ProjectMenu from '../../project/ProjectMenu';
@@ -34,6 +35,9 @@ const LayoutMenu: FC = () => {
         )}
         {features.mqtt && (
           <LayoutMenuItem icon={DeviceHubIcon} label="MQTT" to="/mqtt" />
+        )}
+        {features.serial && (
+          <LayoutMenuItem icon={CableIcon} label="Serial" to="/serial" />
         )}
         {features.security && (
           <LayoutMenuItem icon={LockIcon} label="Security" to="/security" disabled={!authenticatedContext.me.admin} />

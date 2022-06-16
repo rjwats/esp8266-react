@@ -4,7 +4,7 @@ import { withSnackbar, WithSnackbarProps } from 'notistack';
 
 import { addAccessTokenParameter } from '../../api/authentication';
 import { LogEvent } from '../../types';
-import { WEB_SOCKET_ROOT } from '../../api/env';
+import { WEB_SOCKET_ROOT } from '../../api/endpoints';
 import LogEventConsole from './LogEventConsole';
 
 const LOG_EVENT_WEB_SOCKET_URL = WEB_SOCKET_ROOT + "serial";

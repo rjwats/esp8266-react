@@ -1,9 +1,11 @@
 import React, { FC } from 'react';
 
 import { LogEvent, LogLevel } from '../../types';
-import { Theme, makeStyles, Box } from '@mui/material';
+import { Box } from '@mui/system';
 import { useWindowSize } from '../../components';
 import { formatIsoDateTimeToHr } from "../../utils";
+
+import { useTheme } from "@mui/material/styles"
 
 interface LogEventConsoleProps {
   events: LogEvent[];
@@ -16,62 +18,24 @@ interface Offsets {
 const topOffset = () => document.getElementById('serial-tabs')?.getBoundingClientRect().bottom || 0;
 const leftOffset = () => document.getElementById('serial-tabs')?.getBoundingClientRect().left || 0;
 
-const useStyles = makeStyles((theme: Theme) => ({
-  console: {
-    padding: theme.spacing(2),
-    position: "absolute",
-    left: (offsets: Offsets) => offsets.leftOffset(),
-    right: 0,
-    top: (offsets: Offsets) => offsets.topOffset(),
-    bottom: 0,
-    backgroundColor: "black",
-    overflow: "auto"
-  },
-  entry: {
-    color: "#bbbbbb",
-    fontFamily: "Courier New, monospace",
-    fontSize: "14px",
-    letterSpacing: "normal",
-    whiteSpace: "nowrap"
-  },
-  file: {
-    color: "#00ffff"
-  },
-  debug: {
-    color: "#0000ff"
-  },
-  info: {
-    color: "#00ff00"
-  },
-  warning: {
-    color: "#ffff00"
-  },
-  error: {
-    color: "#ff0000"
-  },
-  unknown: {
-    color: "#ffffff"
-  }
-}));
-
 
 const LogEventConsole: FC<LogEventConsoleProps> = (props) => {
   useWindowSize();
-  const classes = useStyles({ topOffset, leftOffset });
   const { events } = props;
+  const theme = useTheme()
 
   const styleLevel = (level: LogLevel) => {
     switch (level) {
       case LogLevel.DEBUG:
-        return classes.debug;
+        return styles.debug;
       case LogLevel.INFO:
-        return classes.info;
+        return styles.info;
       case LogLevel.WARNING:
-        return classes.warning;
+        return styles.warning;
       case LogLevel.ERROR:
-        return classes.error;
+        return styles.error;
       default:
-        return classes.unknown;
+        return styles.unknown;
     }
   }
 
@@ -95,13 +59,51 @@ const LogEventConsole: FC<LogEventConsoleProps> = (props) => {
     return label.padStart(7, '\xa0');
   }
 
+  const  styles = {
+    console: {
+      padding: theme.spacing(2),
+      position: "absolute",
+      //left: (offsets: Offsets) => offsets.leftOffset(),
+      right: 0,
+      //top: (offsets: Offsets) => offsets.topOffset(),
+      bottom: 0,
+      backgroundColor: "black",
+      overflow: "auto"
+    },
+    entry: {
+      color: "#bbbbbb",
+      fontFamily: "Courier New, monospace",
+      fontSize: "14px",
+      letterSpacing: "normal",
+      whiteSpace: "nowrap"
+    },
+    file: {
+      color: "#00ffff"
+    },
+    debug: {
+      color: "#0000ff"
+    },
+    info: {
+      color: "#00ff00"
+    },
+    warning: {
+      color: "#ffff00"
+    },
+    error: {
+      color: "#ff0000"
+    },
+    unknown: {
+      color: "#ffffff"
+    }
+  };
+
   return (
-    <Box className={classes.console}>
+    <Box sx={styles.console}>
       {events.map(e => (
-        <div className={classes.entry}>
-          <span>{formatIsoDateTimeToHr(e.time)} </span>
-          <span>{e.message}</span>
-        </div>
+        <Box sx={styles.entry}>
+           <Box component="span">{formatIsoDateTimeToHr(e.time)} </Box>
+          <Box component="span">{e.message}</Box>
+        </Box>
       ))}
     </Box>
   );

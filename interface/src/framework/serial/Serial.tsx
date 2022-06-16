@@ -8,7 +8,6 @@ import { AuthenticatedContext } from '../../contexts/authentication';
 
 import SerialStatusForm from './SerialStatusForm';
 import SerialSettingsForm from './SerialSettingsForm';
-import LogEventConsole from './LogEventConsole';
 
 const Serial: FC= () => {
   useLayoutTitle("Serial");
@@ -20,13 +19,12 @@ const Serial: FC= () => {
     <>
       <RouterTabs value={routerTab}>
         <Tab value="status" label="Serial Status" />
-        <Tab value="log" label="Remote Log" />
+        {/* <Tab value="log" label="Remote Log" /> */}
         <Tab value="settings" label="Serial Settings" disabled={!authenticatedContext.me.admin} />
       </RouterTabs>
       <Routes>
-        <Route path="status" element={SerialStatusForm} />
-        <Route path="log" element={LogEventConsole} />
-        <Route 
+        <Route path="status" element={<SerialStatusForm />} />
+        <Route
         path="settings"
         element={
           <RequireAdmin>
@@ -38,6 +36,6 @@ const Serial: FC= () => {
       </Routes>
     </>
   );
-}
+};
 
 export default Serial;
