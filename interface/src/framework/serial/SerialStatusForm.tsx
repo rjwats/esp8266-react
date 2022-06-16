@@ -71,7 +71,7 @@ const SerialStatusForm: FC = () => {
   };
 
 return (
-    <SectionContent title='NTP Status' titleGutter>
+    <SectionContent title='Serial Status' titleGutter>
       {content()}
     </SectionContent>
   );
