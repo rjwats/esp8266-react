@@ -95,6 +95,16 @@ const SerialSettingsForm: FC = () => {
           }
           label="Inverted signal"
         />
+        <ValidatedTextField
+          fieldErrors={fieldErrors}
+          name="port"
+          label="Port"
+          fullWidth
+          variant="outlined"
+          value={data.port}
+          onChange={updateFormValue}
+          margin="normal"
+        />
         <ButtonRow mt={1}>
           <Button startIcon={<SaveIcon />} disabled={saving} variant="contained" color="primary" type="submit" onClick={validateAndSubmit}>
             Save

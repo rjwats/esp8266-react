@@ -15,14 +15,14 @@ export const serialStatusHighlight = ({ enabled }: SerialStatus, theme: Theme) =
   if (!enabled) {
     return theme.palette.info.main;
   }
-  return theme.palette.error.main;
+  return theme.palette.success.main;
 };
 
 export const serialStatus = ({ enabled }: SerialStatus) => {
   if (!enabled) {
     return "Not enabled";
   }
-  return "Disconnected";
+  return "Enabled";
 };
 
 const SerialStatusForm: FC = () => {

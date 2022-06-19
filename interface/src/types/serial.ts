@@ -38,4 +38,5 @@ export interface SerialSettings {
   txpin: number;
   config: Config;
   invert: boolean;
+  port: number;
 }

@@ -40,7 +40,7 @@ void StreamServer::cleanup() {
     auto discriminator = [](std::unique_ptr<Client> &client) { return !client->disconnected; };
     auto last_client = std::partition(this->clients_.begin(), this->clients_.end(), discriminator);
     for (auto it = last_client; it != this->clients_.end(); it++)
-        Serial.println("Client %s disconnected"+String((*it)->identifier.c_str()));
+        Serial.printf("Client %s disconnected\n", (*it)->identifier.c_str());
 
     this->clients_.erase(last_client, this->clients_.end());
 }
@@ -73,9 +73,14 @@ void StreamServer::on_shutdown() {
         client->tcp_client->close(true);
 }
 
+void StreamServer::end() {
+    this->on_shutdown();
+    this->server_.end();
+}
+
 StreamServer::Client::Client(AsyncClient *client, std::vector<uint8_t> &recv_buf) :
         tcp_client{client}, identifier{client->remoteIP().toString().c_str()}, disconnected{false} {
-    Serial.println("New client connected from %s"+String(this->identifier.c_str()));
+    Serial.printf("New client connected from %s\n",this->identifier.c_str());
 
     this->tcp_client->onError(     [this](void *h, AsyncClient *client, int8_t error)  { this->disconnected = true; });
     this->tcp_client->onDisconnect([this](void *h, AsyncClient *client)                { this->disconnected = true; });

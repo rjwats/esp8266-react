@@ -2,7 +2,6 @@
 
 SerialSettingsService::SerialSettingsService(AsyncWebServer* server, FS* fs, SecurityManager* securityManager) :
     httpEndpoint(SerialSettings::read, SerialSettings::update, this, server, SERIAL_SETTINGS_SERVICE_PATH, securityManager),
-    webSocketSerialHandler(server, securityManager),
     fsPersistence(SerialSettings::read, SerialSettings::update, this, fs, SERIAL_SETTINGS_FILE) {
         addUpdateHandler([&](const String& originId) { configureSerial(); }, false);
 }
@@ -10,31 +9,33 @@ SerialSettingsService::SerialSettingsService(AsyncWebServer* server, FS* fs, Sec
 void SerialSettingsService::begin() {
   this->fsPersistence.readFromFS();
   configureSerial();
-  this->tcpServer = StreamServer{this->serialServer.connect("tcpServer")};
+  Serial.println("Stopping ser2net server");
+  this->tcpServer = StreamServer{&this->serial};
   this->tcpServer.setup();
-  this->webSocketSerialHandler.stream = this->serialServer.connect("websocket");
 }
 
 void SerialSettingsService::loop() {
     if(this->_state.enabled) {
-        this->serialServer.loop();
         this->tcpServer.loop();
-        this->webSocketSerialHandler.loop();
     }
+}
+
+void SerialSettingsService::end() {
+  Serial.println("Stopping ser2net server");
+  this->tcpServer.end();
+  this->serial.end();
 }
 
 void SerialSettingsService::configureSerial() {
   // disconnect if currently connected
-  this->serialServer.end();
-    this->serialServer.setBaud(this->_state.baud);
-    this->serialServer.setRxPin(this->_state.rxPin);
-    this->serialServer.setTxPin(this->_state.txPin);
-    this->serialServer.setInvert(this->_state.invert);
-    this->serialServer.setConfig(this->_state.config);
-
+  this->end();
   // only connect if Serial is enabled
   if (this->_state.enabled) {
-    this->serialServer.begin();
+    Serial.println("Starting serial with pins ");
+    this->serial.begin(this->_state.baud, this->_state.config, this->_state.rxPin, this->_state.txPin, this->_state.invert);
+    Serial.printf("Starting tcp server on port %u\n", this->_state.tCPPort);
+    this->tcpServer.set_port(this->_state.tCPPort);
+    this->tcpServer.setup();
   }
 }
 

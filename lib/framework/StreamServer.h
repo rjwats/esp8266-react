@@ -37,6 +37,7 @@ public:
     void loop() ;
     void dump_config() ;
     void on_shutdown() ;
+    void end() ;
 
     void set_port(uint16_t port) { this->port_ = port; }
 
@@ -59,7 +60,4 @@ protected:
     uint16_t port_{6638};
     std::vector<uint8_t> recv_buf_{};
     std::vector<std::unique_ptr<Client>> clients_{};
-    //uint8_t rx_pin{26};
-    //unsigned long baud{115200};
-    //uint32_t config{SERIAL_8N1};
 };
