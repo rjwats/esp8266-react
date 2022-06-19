@@ -8,7 +8,7 @@ import * as SerialApi from "../../api/serial";
 import { SerialSettings } from '../../types';
 import { BlockFormControlLabel, ButtonRow, FormLoader, SectionContent, ValidatedTextField } from '../../components';
 import { validate, SERIAL_SETTINGS_VALIDATOR } from '../../validators';
-import { updateValue, useRest } from '../../utils';
+import { numberValue, updateValue, useRest } from '../../utils';
 
 const SerialSettingsForm: FC = () => {
   const [fieldErrors, setFieldErrors] = useState<ValidateFieldsError>();
@@ -51,7 +51,7 @@ const SerialSettingsForm: FC = () => {
           label="rx pin"
           fullWidth
           variant="outlined"
-          value={data.rxpin}
+          value={numberValue(data.rxpin)}
           onChange={updateFormValue}
           margin="normal"
         />
@@ -61,7 +61,7 @@ const SerialSettingsForm: FC = () => {
           label="tx pin"
           fullWidth
           variant="outlined"
-          value={data.txpin}
+          value={numberValue(data.txpin)}
           onChange={updateFormValue}
           margin="normal"
         />
@@ -71,7 +71,7 @@ const SerialSettingsForm: FC = () => {
           label="Baud rate"
           fullWidth
           variant="outlined"
-          value={data.baud}
+          value={numberValue(data.baud)}
           onChange={updateFormValue}
           margin="normal"
         />
@@ -81,7 +81,7 @@ const SerialSettingsForm: FC = () => {
           label="Config"
           fullWidth
           variant="outlined"
-          value={data.config}
+          value={numberValue(data.config)}
           onChange={updateFormValue}
           margin="normal"
         />
@@ -101,7 +101,7 @@ const SerialSettingsForm: FC = () => {
           label="Port"
           fullWidth
           variant="outlined"
-          value={data.port}
+          value={numberValue(data.port)}
           onChange={updateFormValue}
           margin="normal"
         />
