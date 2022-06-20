@@ -58,7 +58,7 @@ export const ESP32_PIN_VALIDATOR: RuleItem = {
   type: "number",
   min: 0,
   max: 42,
-  message: "ESP32 pin must be between 0 and 16"
+  message: "ESP32 pin must be between 0 and 36"
 };
 
 export const ESP8266_PIN_VALIDATOR: RuleItem = {

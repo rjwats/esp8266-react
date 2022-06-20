@@ -52,6 +52,7 @@ const SerialSettingsForm: FC = () => {
           fullWidth
           variant="outlined"
           value={numberValue(data.rxpin)}
+          type="number"
           onChange={updateFormValue}
           margin="normal"
         />
@@ -62,6 +63,7 @@ const SerialSettingsForm: FC = () => {
           fullWidth
           variant="outlined"
           value={numberValue(data.txpin)}
+          type="number"
           onChange={updateFormValue}
           margin="normal"
         />
@@ -72,6 +74,7 @@ const SerialSettingsForm: FC = () => {
           fullWidth
           variant="outlined"
           value={numberValue(data.baud)}
+          type="number"
           onChange={updateFormValue}
           margin="normal"
         />
@@ -82,6 +85,7 @@ const SerialSettingsForm: FC = () => {
           fullWidth
           variant="outlined"
           value={numberValue(data.config)}
+          type="number"
           onChange={updateFormValue}
           margin="normal"
         />
@@ -102,6 +106,7 @@ const SerialSettingsForm: FC = () => {
           fullWidth
           variant="outlined"
           value={numberValue(data.port)}
+          type="number"
           onChange={updateFormValue}
           margin="normal"
         />
