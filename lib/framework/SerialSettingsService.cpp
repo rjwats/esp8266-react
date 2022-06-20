@@ -7,35 +7,35 @@ SerialSettingsService::SerialSettingsService(AsyncWebServer* server, FS* fs, Sec
 }
 
 void SerialSettingsService::begin() {
-  this->fsPersistence.readFromFS();
+  fsPersistence.readFromFS();
   configureSerial();
   Serial.println("Stopping ser2net server");
-  this->tcpServer = StreamServer{&this->serial};
-  this->tcpServer.setup();
+  _tcpServer = StreamServer{&_serial};
+  _tcpServer.setup();
 }
 
 void SerialSettingsService::loop() {
-    if(this->_state.enabled) {
-        this->tcpServer.loop();
+    if(_state.enabled) {
+        _tcpServer.loop();
     }
 }
 
 void SerialSettingsService::end() {
   Serial.println("Stopping ser2net server");
-  this->tcpServer.end();
-  this->serial.end();
+  _tcpServer.end();
+  _serial.end();
 }
 
 void SerialSettingsService::configureSerial() {
   // disconnect if currently connected
-  this->end();
+  end();
   // only connect if Serial is enabled
-  if (this->_state.enabled) {
-    Serial.println("Starting serial with pins ");
-    this->serial.begin(this->_state.baud, this->_state.config, this->_state.rxPin, this->_state.txPin, this->_state.invert);
-    Serial.printf("Starting tcp server on port %u\n", this->_state.tCPPort);
-    this->tcpServer.set_port(this->_state.tCPPort);
-    this->tcpServer.setup();
+  if (_state.enabled) {
+    Serial.printf("Starting serial with rx pin %u and tx pin %u at %u baud\n",_state.rxPin, _state.txPin, _state.baud);
+    _serial.begin(_state.baud, _state.config, _state.rxPin, _state.txPin, _state.invert);
+    Serial.printf("Starting tcp server on port %u\n", _state.tCPPort);
+    _tcpServer.set_port(_state.tCPPort);
+    _tcpServer.setup();
   }
 }
 

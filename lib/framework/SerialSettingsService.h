@@ -22,13 +22,13 @@
 
 class SerialSettings    {
     public:
-    bool enabled{false};
-    uint8_t rxPin{15};
-    uint8_t txPin{17};
-    unsigned long baud{};
-    uint32_t config{SERIAL_8N1};
-    bool invert{true};
-    uint16_t tCPPort{1963};
+    bool enabled;
+    uint8_t rxPin;
+    uint8_t txPin;
+    uint32_t baud;
+    uint32_t config;
+    bool invert;
+    uint16_t tCPPort;
     
     static void read(SerialSettings& settings, JsonObject& root) {
         root["enabled"] = settings.enabled;
@@ -48,6 +48,7 @@ class SerialSettings    {
         settings.config = root["config"] | FACTORY_SERIAL_CONFIG;
         settings.invert = root["invert"] | FACTORY_SERIAL_INVERTED;
         settings.tCPPort = root["port"] | FACTORY_TCP_PORT;
+        serializeJsonPretty(root, Serial);
         return StateUpdateResult::CHANGED;
     }
 };
@@ -60,9 +61,9 @@ public:
     void loop();
     void end();
     void dump_config() ;
-    bool isEnabled() { return this->_state.enabled; };
-    uint32_t baud() { return this->_state.baud; };
-    uint32_t returnConfig() { return this->_state.config; };
+    bool isEnabled() { return _state.enabled; };
+    uint32_t baud() { return _state.baud; };
+    uint32_t returnConfig() { return _state.config; };
     void onConfigUpdate() {  configureSerial(); } ;
 
 private:
@@ -70,12 +71,12 @@ private:
     FSPersistence<SerialSettings> fsPersistence;
 
     #ifdef ESP32
-    HardwareSerial serial{HARDWARE_SERIAL_NUMBER};
+    HardwareSerial _serial{HARDWARE_SERIAL_NUMBER};
     #elif defined(ESP8266)
-    SoftwareSerial serial;
+    SoftwareSerial _serial;
     #endif
 
-    StreamServer tcpServer{nullptr};
+    StreamServer _tcpServer{nullptr};
 
     void configureSerial();
 };
