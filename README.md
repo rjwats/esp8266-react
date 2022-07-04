@@ -156,12 +156,13 @@ Many of the framework's built in features may be enabled or disabled as required
 Customize the settings as you see fit. A value of 0 will disable the specified feature:
 
 ```ini
-  -D FT_PROJECT=1
-  -D FT_SECURITY=1
-  -D FT_MQTT=1
-  -D FT_NTP=1
-  -D FT_OTA=1
-  -D FT_UPLOAD_FIRMWARE=1
+    -D FT_PROJECT=1
+    -D FT_SECURITY=1
+    -D FT_MQTT=1
+    -D FT_NTP=1
+    -D FT_SERIAL=1
+    -D FT_OTA=1
+    -D FT_UPLOAD_FIRMWARE=1
 ```
 
 Flag               | Description

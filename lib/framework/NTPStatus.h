@@ -28,4 +28,6 @@ class NTPStatus {
   void ntpStatus(AsyncWebServerRequest* request);
 };
 
+String toISOString(tm* time, bool incOffset);
+
 #endif  // end NTPStatus_h

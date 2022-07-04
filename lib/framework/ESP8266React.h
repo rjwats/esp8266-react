@@ -20,15 +20,20 @@
 #include <MqttStatus.h>
 #include <NTPSettingsService.h>
 #include <NTPStatus.h>
+#include <SerialStatus.h>
+#include <SerialSettingsService.h>
 #include <OTASettingsService.h>
 #include <UploadFirmwareService.h>
 #include <RestartService.h>
 #include <SecuritySettingsService.h>
+#include <SerialSettingsService.h>
+#include <SerialStatus.h>
 #include <SystemStatus.h>
 #include <WiFiScanner.h>
 #include <WiFiSettingsService.h>
 #include <WiFiStatus.h>
 #include <ESPFS.h>
+#include <WebSocketLogHandler.h>
 
 #ifdef PROGMEM_WWW
 #include <WWWData.h>
@@ -73,6 +78,12 @@ class ESP8266React {
   }
 #endif
 
+#if FT_ENABLED(FT_SERIAL)
+  StatefulService<SerialSettings>* getSerialSettingsService() {
+    return &_serialSettingsService;
+  }
+#endif
+
 #if FT_ENABLED(FT_OTA)
   StatefulService<OTASettings>* getOTASettingsService() {
     return &_otaSettingsService;
@@ -94,6 +105,7 @@ class ESP8266React {
   }
 
  private:
+  FS* _fs;
   FeaturesService _featureService;
   SecuritySettingsService _securitySettingsService;
   WiFiSettingsService _wifiSettingsService;
@@ -104,6 +116,10 @@ class ESP8266React {
 #if FT_ENABLED(FT_NTP)
   NTPSettingsService _ntpSettingsService;
   NTPStatus _ntpStatus;
+#endif
+#if FT_ENABLED(FT_SERIAL)
+  SerialSettingsService _serialSettingsService;
+  SerialStatus _serialStatus;
 #endif
 #if FT_ENABLED(FT_OTA)
   OTASettingsService _otaSettingsService;
@@ -121,6 +137,7 @@ class ESP8266React {
   RestartService _restartService;
   FactoryResetService _factoryResetService;
   SystemStatus _systemStatus;
+  WebSocketLogHandler _webSocketLogHandler;
 };
 
 #endif

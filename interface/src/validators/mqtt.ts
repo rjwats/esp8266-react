@@ -1,6 +1,6 @@
 import Schema from "async-validator";
 
-import { IP_OR_HOSTNAME_VALIDATOR } from './shared';
+import { IP_OR_HOSTNAME_VALIDATOR, TCP_PORT_VALIDATOR } from './shared';
 
 export const MQTT_SETTINGS_VALIDATOR = new Schema({
   host: [
@@ -9,7 +9,7 @@ export const MQTT_SETTINGS_VALIDATOR = new Schema({
   ],
   port: [
     { required: true, message: "Port is required" },
-    { type: "number", min: 0, max: 65535, message: "Port must be between 0 and 65535" }
+    TCP_PORT_VALIDATOR
   ],
   keep_alive: [
     { required: true, message: "Keep alive is required" },

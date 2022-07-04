@@ -1,4 +1,4 @@
-import Schema, { InternalRuleItem, ValidateOption } from "async-validator";
+import Schema, {RuleItem, InternalRuleItem, ValidateOption } from "async-validator";
 
 export const validate = <T extends object>(validator: Schema, source: Partial<T>, options?: ValidateOption): Promise<T> => {
   return new Promise(
@@ -52,4 +52,25 @@ export const IP_OR_HOSTNAME_VALIDATOR = {
       callback();
     }
   }
+};
+
+export const ESP32_PIN_VALIDATOR: RuleItem = {
+  type: "number",
+  min: 0,
+  max: 42,
+  message: "ESP32 pin must be between 0 and 36"
+};
+
+export const ESP8266_PIN_VALIDATOR: RuleItem = {
+    type: "number",
+    min: 0,
+    max: 16,
+    message: "ESP8266 pin must be between 0 and 16"
+};
+
+export const TCP_PORT_VALIDATOR: RuleItem = {
+  type: "number",
+  min: 0,
+  max: 65535,
+  message: "Port must be between 0 and 65535"
 };

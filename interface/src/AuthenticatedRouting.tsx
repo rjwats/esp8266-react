@@ -14,6 +14,7 @@ import WiFiConnection from './framework/wifi/WiFiConnection';
 import AccessPoint from './framework/ap/AccessPoint';
 import NetworkTime from './framework/ntp/NetworkTime';
 import Mqtt from './framework/mqtt/Mqtt';
+import Serial from './framework/serial/Serial';
 import System from './framework/system/System';
 import Security from './framework/security/Security';
 
@@ -48,6 +49,9 @@ const AuthenticatedRouting: FC = () => {
         )}
         {features.mqtt && (
           <Route path="/mqtt/*" element={<Mqtt />} />
+        )}
+        {features.serial && (
+          <Route path="/serial/*" element={<Serial />} />
         )}
         {features.security && (
           <Route

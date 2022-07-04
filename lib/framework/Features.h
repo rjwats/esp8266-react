@@ -18,6 +18,11 @@
 #define FT_MQTT 1
 #endif
 
+// serial feature on by default
+#ifndef FT_SERIAL
+#define FT_SERIAL 1
+#endif
+
 // ntp feature on by default
 #ifndef FT_NTP
 #define FT_NTP 1

@@ -42,4 +42,8 @@ export const formatDuration = (duration: number) => {
   return formatted;
 };
 
+export const formatIsoDateTimeToHr = (dateTime: string) => {
+  return LOCALE_FORMAT.format(new Date(dateTime));
+};
+
 const pluralize = (count: number, noun: string, suffix: string = 's') => ` ${count} ${noun}${count !== 1 ? suffix : ''} `;

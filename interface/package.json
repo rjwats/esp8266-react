@@ -2,7 +2,7 @@
   "name": "esp8266-react",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://192.168.0.23",
+  "proxy": "http://192.168.4.1",
   "dependencies": {
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",

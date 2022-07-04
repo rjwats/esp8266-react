@@ -12,6 +12,10 @@ ESP8266React::ESP8266React(AsyncWebServer* server) :
     _ntpSettingsService(server, &ESPFS, &_securitySettingsService),
     _ntpStatus(server, &_securitySettingsService),
 #endif
+#if FT_ENABLED(FT_SERIAL)
+    _serialSettingsService(server, &ESPFS, &_securitySettingsService),
+    _serialStatus(server, &_serialSettingsService, &_securitySettingsService),
+#endif
 #if FT_ENABLED(FT_OTA)
     _otaSettingsService(server, &ESPFS, &_securitySettingsService),
 #endif
@@ -27,7 +31,8 @@ ESP8266React::ESP8266React(AsyncWebServer* server) :
 #endif
     _restartService(server, &_securitySettingsService),
     _factoryResetService(server, &ESPFS, &_securitySettingsService),
-    _systemStatus(server, &_securitySettingsService) {
+    _systemStatus(server, &_securitySettingsService),
+    _webSocketLogHandler(server, &_securitySettingsService) {
 #ifdef PROGMEM_WWW
   // Serve static resources from PROGMEM
   WWWData::registerRoutes(
@@ -86,6 +91,11 @@ void ESP8266React::begin() {
 #elif defined(ESP8266)
   ESPFS.begin();
 #endif
+  // Begin logging
+  //Logger::begin(_fs);
+  //Logger::getInstance()->addEventHandler(SerialLogHandler::logEvent);
+  _webSocketLogHandler.begin();
+
   _wifiSettingsService.begin();
   _apSettingsService.begin();
 #if FT_ENABLED(FT_NTP)
@@ -100,9 +110,15 @@ void ESP8266React::begin() {
 #if FT_ENABLED(FT_SECURITY)
   _securitySettingsService.begin();
 #endif
+#if FT_ENABLED(FT_SERIAL)
+  _serialSettingsService.begin();
+#endif
 }
 
 void ESP8266React::loop() {
+  //Logger::loop();
+  _webSocketLogHandler.loop();
+
   _wifiSettingsService.loop();
   _apSettingsService.loop();
 #if FT_ENABLED(FT_OTA)
@@ -110,5 +126,8 @@ void ESP8266React::loop() {
 #endif
 #if FT_ENABLED(FT_MQTT)
   _mqttSettingsService.loop();
+#endif
+#if FT_ENABLED(FT_SERIAL)
+  _serialSettingsService.loop();
 #endif
 }
