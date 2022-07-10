@@ -3,7 +3,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 
 import { CssBaseline } from '@mui/material';
 import { createTheme, responsiveFontSizes, ThemeProvider } from '@mui/material/styles';
-import { indigo, blueGrey, orange, red, green } from '@mui/material/colors';
+import { indigo, blueGrey, orange, red, green} from '@mui/material/colors';
 
 import { RequiredChildrenProps } from './utils';
 
@@ -16,6 +16,16 @@ const CustomTheme: FC<RequiredChildrenProps> = ({ children }) => {
         createTheme({
           palette: {
             mode: prefersDarkMode ? 'dark' : 'light',
+            ...(prefersDarkMode
+              ? {
+                // palette values for dark mode
+              }
+              : {
+                  // palette values for light mode
+                  background: {
+                    default: "#fafafa",
+                  },
+                }),
             primary: indigo,
             secondary: blueGrey,
             info: {
