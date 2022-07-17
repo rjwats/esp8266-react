@@ -80,6 +80,7 @@ void WiFiSettingsService::manageSTA() {
     }
     // attempt to connect to the network
     WiFi.begin(_state.ssid.c_str(), _state.password.c_str());
+    MDNS.begin(_state.hostname.c_str());
   }
 }
 
