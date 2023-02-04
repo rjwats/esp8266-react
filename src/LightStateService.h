@@ -7,7 +7,7 @@
 #include <MqttPubSub.h>
 #include <WebSocketTxRx.h>
 
-#define LED_PIN 2
+#define LED_PIN BUILTIN_LED
 
 #define DEFAULT_LED_STATE false
 #define OFF_STATE "OFF"
