@@ -7,7 +7,7 @@
 #include <MqttPubSub.h>
 #include <WebSocketTxRx.h>
 
-#define LED_PIN 2
+#define LED_PIN LED_BUILTIN
 
 #define DEFAULT_LED_STATE false
 #define OFF_STATE "OFF"
@@ -16,8 +16,8 @@
 // Note that the built-in LED is on when the pin is low on most NodeMCU boards.
 // This is because the anode is tied to VCC and the cathode to the GPIO 4 (Arduino pin 2).
 #ifdef ESP32
-#define LED_ON 0x1
-#define LED_OFF 0x0
+#define LED_ON 0x0
+#define LED_OFF 0x1
 #elif defined(ESP8266)
 #define LED_ON 0x0
 #define LED_OFF 0x1
