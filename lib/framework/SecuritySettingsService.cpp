@@ -15,7 +15,7 @@ void SecuritySettingsService::begin() {
 }
 
 Authentication SecuritySettingsService::authenticateRequest(AsyncWebServerRequest* request) {
-  AsyncWebHeader* authorizationHeader = request->getHeader(AUTHORIZATION_HEADER);
+  const AsyncWebHeader* authorizationHeader = request->getHeader(AUTHORIZATION_HEADER);
   if (authorizationHeader) {
     String value = authorizationHeader->value();
     if (value.startsWith(AUTHORIZATION_HEADER_PREFIX)) {
@@ -23,7 +23,7 @@ Authentication SecuritySettingsService::authenticateRequest(AsyncWebServerReques
       return authenticateJWT(value);
     }
   } else if (request->hasParam(ACCESS_TOKEN_PARAMATER)) {
-    AsyncWebParameter* tokenParamater = request->getParam(ACCESS_TOKEN_PARAMATER);
+    const AsyncWebParameter* tokenParamater = request->getParam(ACCESS_TOKEN_PARAMATER);
     String value = tokenParamater->value();
     return authenticateJWT(value);
   }
