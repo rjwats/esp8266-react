@@ -15,7 +15,7 @@ void SecuritySettingsService::begin() {
 }
 
 Authentication SecuritySettingsService::authenticateRequest(AsyncWebServerRequest* request) {
-  AsyncWebHeader* authorizationHeader = request->getHeader(AUTHORIZATION_HEADER);
+  const AsyncWebHeader* authorizationHeader = request->getHeader(AUTHORIZATION_HEADER);
   if (authorizationHeader) {
     String value = authorizationHeader->value();
     if (value.startsWith(AUTHORIZATION_HEADER_PREFIX)) {
@@ -23,7 +23,7 @@ Authentication SecuritySettingsService::authenticateRequest(AsyncWebServerReques
       return authenticateJWT(value);
     }
   } else if (request->hasParam(ACCESS_TOKEN_PARAMATER)) {
-    AsyncWebParameter* tokenParamater = request->getParam(ACCESS_TOKEN_PARAMATER);
+    const AsyncWebParameter* tokenParamater = request->getParam(ACCESS_TOKEN_PARAMATER);
     String value = tokenParamater->value();
     return authenticateJWT(value);
   }
@@ -35,7 +35,7 @@ void SecuritySettingsService::configureJWTHandler() {
 }
 
 Authentication SecuritySettingsService::authenticateJWT(String& jwt) {
-  DynamicJsonDocument payloadDocument(MAX_JWT_SIZE);
+  JsonDocument payloadDocument;
   _jwtHandler.parseJWT(jwt, payloadDocument);
   if (payloadDocument.is<JsonObject>()) {
     JsonObject parsedPayload = payloadDocument.as<JsonObject>();
@@ -64,14 +64,14 @@ inline void populateJWTPayload(JsonObject& payload, User* user) {
 }
 
 boolean SecuritySettingsService::validatePayload(JsonObject& parsedPayload, User* user) {
-  DynamicJsonDocument jsonDocument(MAX_JWT_SIZE);
+  JsonDocument jsonDocument;
   JsonObject payload = jsonDocument.to<JsonObject>();
   populateJWTPayload(payload, user);
   return payload == parsedPayload;
 }
 
 String SecuritySettingsService::generateJWT(User* user) {
-  DynamicJsonDocument jsonDocument(MAX_JWT_SIZE);
+  JsonDocument jsonDocument;
   JsonObject payload = jsonDocument.to<JsonObject>();
   populateJWTPayload(payload, user);
   return _jwtHandler.buildJWT(payload);

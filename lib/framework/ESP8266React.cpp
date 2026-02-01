@@ -33,7 +33,7 @@ ESP8266React::ESP8266React(AsyncWebServer* server) :
   WWWData::registerRoutes(
       [server, this](const String& uri, const String& contentType, const uint8_t* content, size_t len) {
         ArRequestHandlerFunction requestHandler = [contentType, content, len](AsyncWebServerRequest* request) {
-          AsyncWebServerResponse* response = request->beginResponse_P(200, contentType, content, len);
+          AsyncWebServerResponse* response = request->beginResponse(200, contentType, content, len);
           response->addHeader("Content-Encoding", "gzip");
           request->send(response);
         };

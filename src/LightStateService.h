@@ -4,8 +4,16 @@
 #include <LightMqttSettingsService.h>
 
 #include <HttpEndpoint.h>
-#include <MqttPubSub.h>
 #include <WebSocketTxRx.h>
+
+// For ESP8266, use espMqttClient
+// For ESP32, you can use espMqttClient or espMqttClientSecure (with TLS)
+#ifdef ESP8266
+#include <espMqttClient.h>
+#else
+#include <espMqttClient.h>
+// Or for TLS: #include <espMqttClientSecure.h>
+#endif
 
 #define LED_PIN 2
 
@@ -49,7 +57,7 @@ class LightState {
 
   static StateUpdateResult haUpdate(JsonObject& root, LightState& lightState) {
     String state = root["state"];
-    // parse new led state 
+    // parse new led state
     boolean newState = false;
     if (state.equals(ON_STATE)) {
       newState = true;
@@ -69,7 +77,7 @@ class LightStateService : public StatefulService<LightState> {
  public:
   LightStateService(AsyncWebServer* server,
                     SecurityManager* securityManager,
-                    AsyncMqttClient* mqttClient,
+                    espMqttClient* mqttClient,
                     LightMqttSettingsService* lightMqttSettingsService);
   void begin();
 
@@ -77,7 +85,7 @@ class LightStateService : public StatefulService<LightState> {
   HttpEndpoint<LightState> _httpEndpoint;
   MqttPubSub<LightState> _mqttPubSub;
   WebSocketTxRx<LightState> _webSocket;
-  AsyncMqttClient* _mqttClient;
+  espMqttClient* _mqttClient;
   LightMqttSettingsService* _lightMqttSettingsService;
 
   void registerConfig();

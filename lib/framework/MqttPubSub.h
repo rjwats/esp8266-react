@@ -2,7 +2,7 @@
 #define MqttPubSub_h
 
 #include <StatefulService.h>
-#include <AsyncMqttClient.h>
+#include <espMqttClient.h>
 
 #define MQTT_ORIGIN_ID "mqtt"
 
@@ -10,18 +10,17 @@ template <class T>
 class MqttConnector {
  protected:
   StatefulService<T>* _statefulService;
-  AsyncMqttClient* _mqttClient;
-  size_t _bufferSize;
+  espMqttClient* _mqttClient;
 
-  MqttConnector(StatefulService<T>* statefulService, AsyncMqttClient* mqttClient, size_t bufferSize) :
-      _statefulService(statefulService), _mqttClient(mqttClient), _bufferSize(bufferSize) {
+  MqttConnector(StatefulService<T>* statefulService, espMqttClient* mqttClient) :
+      _statefulService(statefulService), _mqttClient(mqttClient) {
     _mqttClient->onConnect(std::bind(&MqttConnector::onConnect, this));
   }
 
   virtual void onConnect() = 0;
 
  public:
-  inline AsyncMqttClient* getMqttClient() const {
+  inline espMqttClient* getMqttClient() const {
     return _mqttClient;
   }
 };
@@ -31,14 +30,10 @@ class MqttPub : virtual public MqttConnector<T> {
  public:
   MqttPub(JsonStateReader<T> stateReader,
           StatefulService<T>* statefulService,
-          AsyncMqttClient* mqttClient,
+          espMqttClient* mqttClient,
           const String& pubTopic = "",
-          bool retain = false,
-          size_t bufferSize = DEFAULT_BUFFER_SIZE) :
-      MqttConnector<T>(statefulService, mqttClient, bufferSize),
-      _stateReader(stateReader),
-      _pubTopic(pubTopic),
-      _retain(retain) {
+          bool retain = false) :
+      MqttConnector<T>(statefulService, mqttClient), _stateReader(stateReader), _pubTopic(pubTopic), _retain(retain) {
     MqttConnector<T>::_statefulService->addUpdateHandler([&](const String& originId) { publish(); }, false);
   }
 
@@ -65,7 +60,7 @@ class MqttPub : virtual public MqttConnector<T> {
   void publish() {
     if (_pubTopic.length() > 0 && MqttConnector<T>::_mqttClient->connected()) {
       // serialize to json doc
-      DynamicJsonDocument json(MqttConnector<T>::_bufferSize);
+      JsonDocument json;
       JsonObject jsonObject = json.to<JsonObject>();
       MqttConnector<T>::_statefulService->read(jsonObject, _stateReader);
 
@@ -84,18 +79,16 @@ class MqttSub : virtual public MqttConnector<T> {
  public:
   MqttSub(JsonStateUpdater<T> stateUpdater,
           StatefulService<T>* statefulService,
-          AsyncMqttClient* mqttClient,
-          const String& subTopic = "",
-          size_t bufferSize = DEFAULT_BUFFER_SIZE) :
-      MqttConnector<T>(statefulService, mqttClient, bufferSize), _stateUpdater(stateUpdater), _subTopic(subTopic) {
-    MqttConnector<T>::_mqttClient->onMessage(std::bind(&MqttSub::onMqttMessage,
-                                                       this,
-                                                       std::placeholders::_1,
-                                                       std::placeholders::_2,
-                                                       std::placeholders::_3,
-                                                       std::placeholders::_4,
-                                                       std::placeholders::_5,
-                                                       std::placeholders::_6));
+          espMqttClient* mqttClient,
+          const String& subTopic = "") :
+      MqttConnector<T>(statefulService, mqttClient), _stateUpdater(stateUpdater), _subTopic(subTopic) {
+    MqttConnector<T>::_mqttClient->onMessage(
+        [this](const espMqttClientTypes::MessageProperties& properties,
+               const char* topic,
+               const uint8_t* payload,
+               size_t len,
+               size_t index,
+               size_t total) { this->onMqttMessage(properties, topic, payload, len, index, total); });
   }
 
   void setSubTopic(const String& subTopic) {
@@ -125,19 +118,19 @@ class MqttSub : virtual public MqttConnector<T> {
     }
   }
 
-  void onMqttMessage(char* topic,
-                     char* payload,
-                     AsyncMqttClientMessageProperties properties,
+  void onMqttMessage(const espMqttClientTypes::MessageProperties& properties,
+                     const char* topic,
+                     const uint8_t* payload,
                      size_t len,
                      size_t index,
                      size_t total) {
     // we only care about the topic we are watching in this class
-    if (strcmp(_subTopic.c_str(), topic)) {
+    if (strcmp(_subTopic.c_str(), topic) != 0) {
       return;
     }
 
-    // deserialize from string
-    DynamicJsonDocument json(MqttConnector<T>::_bufferSize);
+    // deserialize from
+    JsonDocument json;
     DeserializationError error = deserializeJson(json, payload, len);
     if (!error && json.is<JsonObject>()) {
       JsonObject jsonObject = json.as<JsonObject>();
@@ -152,14 +145,13 @@ class MqttPubSub : public MqttPub<T>, public MqttSub<T> {
   MqttPubSub(JsonStateReader<T> stateReader,
              JsonStateUpdater<T> stateUpdater,
              StatefulService<T>* statefulService,
-             AsyncMqttClient* mqttClient,
+             espMqttClient* mqttClient,
              const String& pubTopic = "",
              const String& subTopic = "",
-             bool retain = false,
-             size_t bufferSize = DEFAULT_BUFFER_SIZE) :
-      MqttConnector<T>(statefulService, mqttClient, bufferSize),
-      MqttPub<T>(stateReader, statefulService, mqttClient, pubTopic, retain, bufferSize),
-      MqttSub<T>(stateUpdater, statefulService, mqttClient, subTopic, bufferSize) {
+             bool retain = false) :
+      MqttConnector<T>(statefulService, mqttClient),
+      MqttPub<T>(stateReader, statefulService, mqttClient, pubTopic, retain),
+      MqttSub<T>(stateUpdater, statefulService, mqttClient, subTopic) {
   }
 
  public:

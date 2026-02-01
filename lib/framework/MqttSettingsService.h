@@ -4,7 +4,7 @@
 #include <StatefulService.h>
 #include <HttpEndpoint.h>
 #include <FSPersistence.h>
-#include <AsyncMqttClient.h>
+#include <espMqttClient.h>
 #include <SettingValue.h>
 
 #ifndef FACTORY_MQTT_ENABLED
@@ -103,8 +103,8 @@ class MqttSettingsService : public StatefulService<MqttSettings> {
   bool isEnabled();
   bool isConnected();
   const char* getClientId();
-  AsyncMqttClientDisconnectReason getDisconnectReason();
-  AsyncMqttClient* getMqttClient();
+  espMqttClientTypes::DisconnectReason getDisconnectReason();
+  espMqttClient* getMqttClient();
 
  protected:
   void onConfigUpdated();
@@ -114,7 +114,7 @@ class MqttSettingsService : public StatefulService<MqttSettings> {
   FSPersistence<MqttSettings> _fsPersistence;
 
   // Pointers to hold retained copies of the mqtt client connection strings.
-  // This is required as AsyncMqttClient holds refrences to the supplied connection strings.
+  // This is required as espMqttClient holds references to the supplied connection strings.
   char* _retainedHost;
   char* _retainedClientId;
   char* _retainedUsername;
@@ -125,10 +125,10 @@ class MqttSettingsService : public StatefulService<MqttSettings> {
   unsigned long _disconnectedAt;
 
   // connection status
-  AsyncMqttClientDisconnectReason _disconnectReason;
+  espMqttClientTypes::DisconnectReason _disconnectReason;
 
   // the MQTT client instance
-  AsyncMqttClient _mqttClient;
+  espMqttClient _mqttClient;
 
 #ifdef ESP32
   void onStationModeGotIP(WiFiEvent_t event, WiFiEventInfo_t info);
@@ -141,7 +141,7 @@ class MqttSettingsService : public StatefulService<MqttSettings> {
 #endif
 
   void onMqttConnect(bool sessionPresent);
-  void onMqttDisconnect(AsyncMqttClientDisconnectReason reason);
+  void onMqttDisconnect(espMqttClientTypes::DisconnectReason reason);
   void configureMqtt();
 };
 

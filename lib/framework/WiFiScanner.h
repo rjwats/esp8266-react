@@ -17,6 +17,7 @@
 #define SCAN_NETWORKS_SERVICE_PATH "/rest/scanNetworks"
 #define LIST_NETWORKS_SERVICE_PATH "/rest/listNetworks"
 
+// TODO - remove?
 #define MAX_WIFI_SCANNER_SIZE 1024
 
 class WiFiScanner {

@@ -48,7 +48,7 @@ void WiFiStatus::onStationModeGotIP(const WiFiEventStationModeGotIP& event) {
 #endif
 
 void WiFiStatus::wifiStatus(AsyncWebServerRequest* request) {
-  AsyncJsonResponse* response = new AsyncJsonResponse(false, MAX_WIFI_STATUS_SIZE);
+  AsyncJsonResponse* response = new AsyncJsonResponse(false);
   JsonObject root = response->getRoot();
   wl_status_t status = WiFi.status();
   root["status"] = (uint8_t)status;

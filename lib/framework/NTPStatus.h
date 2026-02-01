@@ -17,7 +17,9 @@
 #include <ESPAsyncWebServer.h>
 #include <SecurityManager.h>
 
+// TODO - remove?
 #define MAX_NTP_STATUS_SIZE 1024
+
 #define NTP_STATUS_SERVICE_PATH "/rest/ntpStatus"
 
 class NTPStatus {

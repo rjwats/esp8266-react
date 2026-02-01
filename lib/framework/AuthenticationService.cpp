@@ -6,9 +6,9 @@ AuthenticationService::AuthenticationService(AsyncWebServer* server, SecurityMan
     _securityManager(securityManager),
     _signInHandler(SIGN_IN_PATH,
                    std::bind(&AuthenticationService::signIn, this, std::placeholders::_1, std::placeholders::_2)) {
-  server->on(VERIFY_AUTHORIZATION_PATH,
-             HTTP_GET,
-             std::bind(&AuthenticationService::verifyAuthorization, this, std::placeholders::_1));
+  server->on(VERIFY_AUTHORIZATION_PATH, HTTP_GET, [this](AsyncWebServerRequest* request) {
+    this->verifyAuthorization(request);
+  });
   _signInHandler.setMethod(HTTP_POST);
   _signInHandler.setMaxContentLength(MAX_AUTHENTICATION_SIZE);
   server->addHandler(&_signInHandler);
@@ -33,7 +33,7 @@ void AuthenticationService::signIn(AsyncWebServerRequest* request, JsonVariant& 
     Authentication authentication = _securityManager->authenticate(username, password);
     if (authentication.authenticated) {
       User* user = authentication.user;
-      AsyncJsonResponse* response = new AsyncJsonResponse(false, MAX_AUTHENTICATION_SIZE);
+      AsyncJsonResponse* response = new AsyncJsonResponse(false);
       JsonObject jsonObject = response->getRoot();
       jsonObject["access_token"] = _securityManager->generateJWT(user);
       response->setLength();
@@ -45,4 +45,4 @@ void AuthenticationService::signIn(AsyncWebServerRequest* request, JsonVariant& 
   request->send(response);
 }
 
-#endif // end FT_ENABLED(FT_SECURITY)
+#endif  // end FT_ENABLED(FT_SECURITY)

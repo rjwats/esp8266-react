@@ -1,11 +1,13 @@
 #include <FeaturesService.h>
 
 FeaturesService::FeaturesService(AsyncWebServer* server) {
-  server->on(FEATURES_SERVICE_PATH, HTTP_GET, std::bind(&FeaturesService::features, this, std::placeholders::_1));
+  server->on(FEATURES_SERVICE_PATH, HTTP_GET, [this](AsyncWebServerRequest* request) {
+    this->features(request);
+  });
 }
 
 void FeaturesService::features(AsyncWebServerRequest* request) {
-  AsyncJsonResponse* response = new AsyncJsonResponse(false, MAX_FEATURES_SIZE);
+  AsyncJsonResponse* response = new AsyncJsonResponse(false);
   JsonObject root = response->getRoot();
 #if FT_ENABLED(FT_PROJECT)
   root["project"] = true;

@@ -11,6 +11,7 @@
 #include <freertos/semphr.h>
 #endif
 
+//TODO - remove?
 #ifndef DEFAULT_BUFFER_SIZE
 #define DEFAULT_BUFFER_SIZE 1024
 #endif

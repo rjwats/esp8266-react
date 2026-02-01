@@ -2,7 +2,7 @@
 
 LightStateService::LightStateService(AsyncWebServer* server,
                                      SecurityManager* securityManager,
-                                     AsyncMqttClient* mqttClient,
+                                     espMqttClient* mqttClient,  // Changed type
                                      LightMqttSettingsService* lightMqttSettingsService) :
     _httpEndpoint(LightState::read,
                   LightState::update,
@@ -51,7 +51,7 @@ void LightStateService::registerConfig() {
   String subTopic;
   String pubTopic;
 
-  DynamicJsonDocument doc(256);
+  JsonDocument doc;
   _lightMqttSettingsService->read([&](LightMqttSettings& settings) {
     configTopic = settings.mqttPath + "/config";
     subTopic = settings.mqttPath + "/set";
