@@ -4,6 +4,10 @@ WiFiSettingsService::WiFiSettingsService(AsyncWebServer* server, FS* fs, Securit
     _httpEndpoint(WiFiSettings::read, WiFiSettings::update, this, server, WIFI_SETTINGS_SERVICE_PATH, securityManager),
     _fsPersistence(WiFiSettings::read, WiFiSettings::update, this, fs, WIFI_SETTINGS_FILE),
     _lastConnectionAttempt(0) {
+  addUpdateHandler([&](const String& originId) { reconfigureWiFiConnection(); }, false);
+}
+
+void WiFiSettingsService::begin() {
   // We want the device to come up in opmode=0 (WIFI_OFF), when erasing the flash this is not the default.
   // If needed, we save opmode=0 before disabling persistence so the device boots with WiFi disabled in the future.
   if (WiFi.getMode() != WIFI_OFF) {
@@ -13,6 +17,7 @@ WiFiSettingsService::WiFiSettingsService(AsyncWebServer* server, FS* fs, Securit
   // Disable WiFi config persistance and auto reconnect
   WiFi.persistent(false);
   WiFi.setAutoReconnect(false);
+
 #ifdef ESP32
   // Init the wifi driver on ESP32
   WiFi.mode(WIFI_MODE_MAX);
@@ -27,11 +32,8 @@ WiFiSettingsService::WiFiSettingsService(AsyncWebServer* server, FS* fs, Securit
       std::bind(&WiFiSettingsService::onStationModeDisconnected, this, std::placeholders::_1));
 #endif
 
-  addUpdateHandler([&](const String& originId) { reconfigureWiFiConnection(); }, false);
-}
-
-void WiFiSettingsService::begin() {
   _fsPersistence.readFromFS();
+
   reconfigureWiFiConnection();
 }
 
