@@ -1,6 +1,6 @@
 # ESP8266 React
 
-[![Build Status](https://travis-ci.org/rjwats/esp8266-react.svg?branch=master)](https://travis-ci.org/rjwats/esp8266-react)
+[![Build Framework](https://github.com/rjwats/esp8266-react/actions/workflows/verify_build.yml/badge.svg)](https://github.com/rjwats/esp8266-react/actions/workflows/verify_build.yml)
 
 A simple, secure and extensible framework for IoT projects built on ESP8266/ESP32 platforms with responsive [React](https://reactjs.org/) front-end built with [Material-UI](https://mui.com/).
 
