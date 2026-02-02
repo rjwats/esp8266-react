@@ -116,7 +116,7 @@ class WebSocketTx : virtual public WebSocketConnector<T> {
     size_t len = measureJson(jsonDocument);
     AsyncWebSocketMessageBuffer* buffer = WebSocketConnector<T>::_webSocket.makeBuffer(len);
     if (buffer) {
-      serializeJson(jsonDocument, (char*)buffer->get(), len + 1);
+      serializeJson(jsonDocument, (char*)buffer->get(), len);
       client->text(buffer);
     }
   }
@@ -139,7 +139,7 @@ class WebSocketTx : virtual public WebSocketConnector<T> {
     size_t len = measureJson(jsonDocument);
     AsyncWebSocketMessageBuffer* buffer = WebSocketConnector<T>::_webSocket.makeBuffer(len);
     if (buffer) {
-      serializeJson(jsonDocument, (char*)buffer->get(), len + 1);
+      serializeJson(jsonDocument, (char*)buffer->get(), len);
       if (client) {
         client->text(buffer);
       } else {

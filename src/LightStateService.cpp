@@ -2,7 +2,7 @@
 
 LightStateService::LightStateService(AsyncWebServer* server,
                                      SecurityManager* securityManager,
-                                     espMqttClient* mqttClient,  // Changed type
+                                     espMqttClient* mqttClient,
                                      LightMqttSettingsService* lightMqttSettingsService) :
     _httpEndpoint(LightState::read,
                   LightState::update,
