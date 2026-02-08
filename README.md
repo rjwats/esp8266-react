@@ -112,7 +112,7 @@ platformio run -t uploadfs
 
 ### Developing the interface locally
 
-UI development is an iterative process so it's best to run a development server locally during interface development (using `npm start`). This can be accomplished by deploying the backend to a device and configuring the interface to point to it:
+UI development is an iterative process so it's best to run a development server locally during interface development (using `npm run dev`). This can be accomplished by deploying the backend to a device and configuring the interface to point to it:
 
 ![Development Server](/media/devserver.png?raw=true "Development Server")
 
@@ -125,7 +125,7 @@ The following steps can get you up and running for local interface development:
 
 #### Configuring the dev proxy
 
-The interface has a development environment which is enabled when running the development server using `npm start`. The [package.json](interface/package.json) file defines the location of the services which the development server will proxy. This is defined by the "proxy" propery, which will need to be change to the the IP address or hostname of the device running the firmware.
+The interface has a development environment which is enabled when running the development server using `npm run dev`. The [package.json](interface/package.json) file defines the location of the services which the development server will proxy. This is defined by the "proxy" propery, which will need to be change to the the IP address or hostname of the device running the firmware.
 
 ```json
 "proxy": "http://192.168.0.77"
@@ -145,7 +145,7 @@ Install the npm dependencies, if required and start the development server:
 
 ```bash
 npm install
-npm start
+npm run dev
 ```
 > **Tip**: You can (optionally) speed up the build by commenting out the call to build_interface.py under "extra scripts" during local development. This will prevent the npm process from building the production release every time the firmware is compiled significantly decreasing the build time.
 
@@ -255,7 +255,7 @@ platform = espressif32
 board = node32s
 ```
 
-If you want to build for a different device, all you need to do is re-configure ['platformio.ini'](platformio.ini) and select an alternative environment by modifying the default_envs variable. Building for the common esp32 "node32s" board for example:
+If you want to build for a different device, all you need to do is re-configure ['platformio.ini'](platformio.ini) and select an alternative environment by modifying the default_envs variable or choosing the desired device in the IDE. Building for the common esp32 "node32s" board for example:
 
 ```ini
 [platformio]
@@ -661,8 +661,11 @@ esp8266React.getWiFiSettingsService()->addUpdateHandler(
 ## Libraries Used
 
 * [React](https://reactjs.org/)
+* [Vite](https://vite.dev/)
 * [Material-UI](https://mui.com/)
 * [notistack](https://github.com/iamhosseindhv/notistack)
 * [ArduinoJson](https://github.com/bblanchon/ArduinoJson)
-* [ESPAsyncWebServer](https://github.com/me-no-dev/ESPAsyncWebServer)
-* [AsyncMqttClient](https://github.com/marvinroger/async-mqtt-client)
+* [ESPAsyncTCP (ESP8266)](https://github.com/ESP32Async/ESPAsyncTCP)
+* [AsyncTCP (ESP32)](https://github.com/ESP32Async/AsyncTCP)
+* [ESPAsyncWebServer](https://github.com/ESP32Async/ESPAsyncWebServer)
+* [espMqttClient](https://github.com/bertmelis/espMqttClient)
