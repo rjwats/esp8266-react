@@ -7,4 +7,5 @@
 /interface/dist
 /interface/node_modules
 /interface/.eslintcache
+/interface/*.tsbuildinfo
 .vscode
