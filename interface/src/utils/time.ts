@@ -26,7 +26,7 @@ export const formatLocalDateTime = (date: Date) => {
 
 export const formatDuration = (duration: number) => {
   const { days, hours, minutes, seconds } = parseMilliseconds(duration * 1000);
-  var formatted = '';
+  let formatted = '';
   if (days) {
     formatted += pluralize(days, 'day');
   }

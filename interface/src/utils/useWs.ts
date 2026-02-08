@@ -54,7 +54,15 @@ export const useWs = <D>(wsUrl: string, wsThrottle: number = 100) => {
     ws.current.json(newData);
   }, []);
 
-  const saveData = useRef(debounce(doSaveData, wsThrottle));
+  const saveData = useRef<ReturnType<typeof debounce>>();
+
+  useEffect(() => {
+    saveData.current = debounce(doSaveData, wsThrottle);
+
+    return () => {
+      saveData.current?.cancel();
+    };
+  }, [doSaveData, wsThrottle]);
 
   const updateData = (newData: React.SetStateAction<D | undefined>, transmitData: boolean = true, clearData: boolean = false) => {
     setData(newData);
@@ -66,7 +74,9 @@ export const useWs = <D>(wsUrl: string, wsThrottle: number = 100) => {
     if (!transmit) {
       return;
     }
-    data && saveData.current(data, clear);
+    if (data) {
+      saveData.current?.(data, clear);
+    }
     setTransmit(false);
     setClear(false);
   }, [doSaveData, data, transmit, clear]);

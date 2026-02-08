@@ -1,8 +1,6 @@
 import Schema from 'async-validator';
 
-import { APSettings } from '../types';
-import { isAPEnabled } from '../framework/ap/APSettingsForm';
-
+import { APSettings, isAPEnabled } from '../types';
 import { IP_ADDRESS_VALIDATOR } from './shared';
 
 export const createAPSettingsValidator = (apSettings: APSettings) => new Schema({

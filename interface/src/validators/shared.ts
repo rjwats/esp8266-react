@@ -19,7 +19,7 @@ const IP_ADDRESS_REGEXP = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0
 const isValidIpAddress = (value: string) => IP_ADDRESS_REGEXP.test(value);
 
 export const IP_ADDRESS_VALIDATOR = {
-  validator(rule: InternalRuleItem, value: string, callback: (error?: string) => void) {
+  validator(_rule: InternalRuleItem, value: string, callback: (error?: string) => void) {
     if (value && !isValidIpAddress(value)) {
       callback("Must be an IP address");
     } else {
@@ -35,7 +35,7 @@ const HOSTNAME_PATTERN_REGEXP =
 const isValidHostname = (value: string) => HOSTNAME_LENGTH_REGEXP.test(value) && HOSTNAME_PATTERN_REGEXP.test(value);
 
 export const HOSTNAME_VALIDATOR = {
-  validator(rule: InternalRuleItem, value: string, callback: (error?: string) => void) {
+  validator(_rule: InternalRuleItem, value: string, callback: (error?: string) => void) {
     if (value && !isValidHostname(value)) {
       callback("Must be a valid hostname of up to 253 characters");
     } else {
@@ -45,7 +45,7 @@ export const HOSTNAME_VALIDATOR = {
 };
 
 export const IP_OR_HOSTNAME_VALIDATOR = {
-  validator(rule: InternalRuleItem, value: string, callback: (error?: string) => void) {
+  validator(_rule: InternalRuleItem, value: string, callback: (error?: string) => void) {
     if (value && !(isValidIpAddress(value) || isValidHostname(value))) {
       callback("Must be a valid IP address or hostname of up to 253 characters");
     } else {

@@ -18,7 +18,7 @@ const FirmwareRestartMonitor: FC = () => {
     try {
       await SystemApi.readSystemStatus(POLL_TIMEOUT);
       document.location.href = "/firmwareUpdated";
-    } catch (error: any) {
+    } catch {
       if (new Date().getTime() < timeoutAt.current) {
         setTimeoutId(setTimeout(poll.current, POLL_INTERVAL));
       } else {

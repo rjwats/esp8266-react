@@ -5,7 +5,7 @@ import { FileUploadConfig } from '../../api/endpoints';
 import { MessageBox, SingleUpload, useFileUpload } from '../../components';
 
 interface UploadFirmwareProps {
-  uploadFirmware: ((file: File, config?: FileUploadConfig) => AxiosPromise<void>)
+  uploadFirmware: ((file: File, config?: FileUploadConfig) => AxiosPromise<void>);
 }
 
 const FirmwareFileUpload: FC<UploadFirmwareProps> = ({ uploadFirmware }) => {

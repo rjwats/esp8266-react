@@ -18,9 +18,9 @@ import { ButtonRow, FormLoader, SectionContent } from "../../components";
 import { extractErrorMessage, formatDateTime, formatDuration, formatLocalDateTime, useRest } from "../../utils";
 import { AuthenticatedContext } from "../../contexts/authentication";
 
-export const isNtpActive = ({ status }: NTPStatus) => status === NTPSyncStatus.NTP_ACTIVE;
+const isNtpActive = ({ status }: NTPStatus) => status === NTPSyncStatus.NTP_ACTIVE;
 
-export const ntpStatusHighlight = ({ status }: NTPStatus, theme: Theme) => {
+const ntpStatusHighlight = ({ status }: NTPStatus, theme: Theme) => {
   switch (status) {
     case NTPSyncStatus.NTP_INACTIVE:
       return theme.palette.info.main;
@@ -31,7 +31,7 @@ export const ntpStatusHighlight = ({ status }: NTPStatus, theme: Theme) => {
   }
 };
 
-export const ntpStatus = ({ status }: NTPStatus) => {
+const ntpStatus = ({ status }: NTPStatus) => {
   switch (status) {
     case NTPSyncStatus.NTP_INACTIVE:
       return "Inactive";

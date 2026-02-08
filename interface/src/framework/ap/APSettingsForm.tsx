@@ -6,14 +6,10 @@ import { Button, Checkbox, MenuItem } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 
 import * as APApi from "../../api/ap";
-import { APProvisionMode, APSettings } from '../../types';
+import { APProvisionMode, APSettings, isAPEnabled } from '../../types';
 import { BlockFormControlLabel, ButtonRow, FormLoader, SectionContent, ValidatedPasswordField, ValidatedTextField } from '../../components';
 import { createAPSettingsValidator, validate } from '../../validators';
 import { numberValue, updateValue, useRest } from '../../utils';
-
-export const isAPEnabled = ({ provision_mode }: APSettings) => {
-  return provision_mode === APProvisionMode.AP_MODE_ALWAYS || provision_mode === APProvisionMode.AP_MODE_DISCONNECTED;
-};
 
 const APSettingsForm: FC = () => {
   const [fieldErrors, setFieldErrors] = useState<ValidateFieldsError>();

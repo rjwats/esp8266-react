@@ -1,7 +1,6 @@
+import { Location as RouterLocation, Path } from "react-router-dom";
 import { AxiosPromise } from "axios";
-import * as H from 'history';
 import jwtDecode from 'jwt-decode';
-import { Path } from "react-router-dom";
 
 import { Features, Me, SignInRequest, SignInResponse } from "../types";
 
@@ -28,7 +27,7 @@ export function getStorage() {
   return localStorage || sessionStorage;
 }
 
-export function storeLoginRedirect(location?: H.Location) {
+export function storeLoginRedirect(location?: RouterLocation) {
   if (location) {
     getStorage().setItem(SIGN_IN_PATHNAME, location.pathname);
     getStorage().setItem(SIGN_IN_SEARCH, location.search);

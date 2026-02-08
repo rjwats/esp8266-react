@@ -28,3 +28,7 @@ export interface APSettings {
   gateway_ip: string;
   subnet_mask: string;
 }
+
+export const isAPEnabled = ({ provision_mode }: APSettings) => {
+  return provision_mode === APProvisionMode.AP_MODE_ALWAYS || provision_mode === APProvisionMode.AP_MODE_DISCONNECTED;
+};

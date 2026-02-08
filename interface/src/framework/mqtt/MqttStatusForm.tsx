@@ -10,7 +10,7 @@ import { MqttStatus, MqttDisconnectReason } from "../../types";
 import { ButtonRow, FormLoader, SectionContent } from "../../components";
 import { useRest } from "../../utils";
 
-export const mqttStatusHighlight = ({ enabled, connected }: MqttStatus, theme: Theme) => {
+const mqttStatusHighlight = ({ enabled, connected }: MqttStatus, theme: Theme) => {
   if (!enabled) {
     return theme.palette.info.main;
   }
@@ -20,7 +20,7 @@ export const mqttStatusHighlight = ({ enabled, connected }: MqttStatus, theme: T
   return theme.palette.error.main;
 };
 
-export const mqttStatus = ({ enabled, connected }: MqttStatus) => {
+const mqttStatus = ({ enabled, connected }: MqttStatus) => {
   if (!enabled) {
     return "Not enabled";
   }
@@ -30,10 +30,11 @@ export const mqttStatus = ({ enabled, connected }: MqttStatus) => {
   return "Disconnected";
 };
 
-export const disconnectReason = ({ disconnect_reason }: MqttStatus) => {
+const disconnectReason = ({ disconnect_reason }: MqttStatus) => {
   switch (disconnect_reason) {
-    case MqttDisconnectReason.TCP_DISCONNECTED:
-      return "TCP disconnected";
+    case MqttDisconnectReason.USER_OK:
+      return "User disconnected";
+
     case MqttDisconnectReason.MQTT_UNACCEPTABLE_PROTOCOL_VERSION:
       return "Unacceptable protocol version";
     case MqttDisconnectReason.MQTT_IDENTIFIER_REJECTED:
@@ -44,12 +45,12 @@ export const disconnectReason = ({ disconnect_reason }: MqttStatus) => {
       return "Malformed credentials";
     case MqttDisconnectReason.MQTT_NOT_AUTHORIZED:
       return "Not authorized";
-    case MqttDisconnectReason.ESP8266_NOT_ENOUGH_SPACE:
-      return "Device out of memory";
     case MqttDisconnectReason.TLS_BAD_FINGERPRINT:
       return "Server fingerprint invalid";
+    case MqttDisconnectReason.TCP_DISCONNECTED:
+      return "TCP disconnected";
     default:
-      return "Unknown";
+      return `Unknown error (${disconnect_reason})`;
   }
 };
 

@@ -51,7 +51,7 @@ const Authentication: FC<RequiredChildrenProps> = ({ children }) => {
         await AuthenticationApi.verifyAuthorization();
         setMe(AuthenticationApi.decodeMeJWT(accessToken));
         setInitialized(true);
-      } catch (error: any) {
+      } catch {
         setMe(undefined);
         setInitialized(true);
       }

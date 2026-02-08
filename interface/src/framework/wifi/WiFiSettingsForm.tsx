@@ -1,4 +1,4 @@
-import { FC, useContext, useEffect, useState } from 'react';
+import { FC, useContext, useEffect, useRef, useState } from 'react';
 import { ValidateFieldsError } from 'async-validator';
 
 import { Avatar, Button, Checkbox, IconButton, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText } from '@mui/material';
@@ -13,20 +13,21 @@ import { BlockFormControlLabel, ButtonRow, FormLoader, SectionContent, Validated
 import { validate, createWiFiSettingsValidator } from '../../validators';
 import { updateValue, useRest } from '../../utils';
 
-import { isNetworkOpen, networkSecurityMode } from './WiFiNetworkSelector';
 import { WiFiConnectionContext } from './WiFiConnectionContext';
+import { isNetworkOpen, networkSecurityMode } from './wifiUtils';
 
 const WiFiSettingsForm: FC = () => {
   const { selectedNetwork, deselectNetwork } = useContext(WiFiConnectionContext);
 
+  const initalizedRef = useRef(false);
   const [fieldErrors, setFieldErrors] = useState<ValidateFieldsError>();
-  const [initialized, setInitialized] = useState(false);
+
   const {
     loadData, saving, data, setData, saveData, errorMessage
   } = useRest<WiFiSettings>({ read: WiFiApi.readWiFiSettings, update: WiFiApi.updateWiFiSettings });
 
   useEffect(() => {
-    if (!initialized && data) {
+    if (!initalizedRef.current && data) {
       if (selectedNetwork) {
         setData({
           ssid: selectedNetwork.ssid,
@@ -35,9 +36,9 @@ const WiFiSettingsForm: FC = () => {
           static_ip_config: false,
         });
       }
-      setInitialized(true);
+      initalizedRef.current = true;
     }
-  }, [initialized, setInitialized, data, setData, selectedNetwork]);
+  }, [data, setData, selectedNetwork]);
 
   const updateFormValue = updateValue(setData);
 
