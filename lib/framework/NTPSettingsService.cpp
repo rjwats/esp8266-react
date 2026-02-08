@@ -8,7 +8,6 @@ NTPSettingsService::NTPSettingsService(AsyncWebServer* server, FS* fs, SecurityM
                      std::bind(&NTPSettingsService::configureTime, this, std::placeholders::_1, std::placeholders::_2),
                      AuthenticationPredicates::IS_ADMIN)) {
   _timeHandler.setMethod(HTTP_POST);
-  _timeHandler.setMaxContentLength(MAX_TIME_SIZE);
   server->addHandler(&_timeHandler);
 #ifdef ESP32
   WiFi.onEvent(
