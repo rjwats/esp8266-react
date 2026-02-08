@@ -5,15 +5,7 @@
 
 #include <HttpEndpoint.h>
 #include <WebSocketTxRx.h>
-
-// For ESP8266, use espMqttClient
-// For ESP32, you can use espMqttClient or espMqttClientSecure (with TLS)
-#ifdef ESP8266
 #include <espMqttClient.h>
-#else
-#include <espMqttClient.h>
-// Or for TLS: #include <espMqttClientSecure.h>
-#endif
 
 #define LED_PIN 2
 

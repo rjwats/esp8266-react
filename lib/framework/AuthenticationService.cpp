@@ -10,7 +10,6 @@ AuthenticationService::AuthenticationService(AsyncWebServer* server, SecurityMan
     this->verifyAuthorization(request);
   });
   _signInHandler.setMethod(HTTP_POST);
-  _signInHandler.setMaxContentLength(MAX_AUTHENTICATION_SIZE);
   server->addHandler(&_signInHandler);
 }
 

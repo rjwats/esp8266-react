@@ -11,11 +11,6 @@
 #include <freertos/semphr.h>
 #endif
 
-//TODO - remove?
-#ifndef DEFAULT_BUFFER_SIZE
-#define DEFAULT_BUFFER_SIZE 1024
-#endif
-
 enum class StateUpdateResult {
   CHANGED = 0,  // The update changed the state and propagation should take place if required
   UNCHANGED,    // The state was unchanged, propagation should not take place

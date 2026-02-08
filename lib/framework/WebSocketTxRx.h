@@ -5,9 +5,6 @@
 #include <ESPAsyncWebServer.h>
 #include <SecurityManager.h>
 
-// TODO - need this any more?
-#define WEB_SOCKET_CLIENT_ID_MSG_SIZE 128
-
 #define WEB_SOCKET_ORIGIN "websocket"
 #define WEB_SOCKET_ORIGIN_CLIENT_ID_PREFIX "websocket:"
 

@@ -15,9 +15,6 @@
 #include <AsyncJson.h>
 #include <ESPAsyncWebServer.h>
 
-// TODO - remove?
-#define MAX_FEATURES_SIZE 256
-
 #define FEATURES_SERVICE_PATH "/rest/features"
 
 class FeaturesService {
