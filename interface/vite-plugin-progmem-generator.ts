@@ -102,9 +102,9 @@ export function progmemGenerator(
         });
       });
 
-      // C++ class generation
       outputContent +=
-        'typedef std::function<void(const String& uri, const String& contentType, const uint8_t * content, size_t len)> RouteRegistrationHandler;\n\n';
+        'typedef std::function<void(const String& uri, const String& contentType, const uint8_t * content, size_t len)> ' +
+        'RouteRegistrationHandler;\n\n';
 
       outputContent += `class WWWData {\n${indent}public:\n${indent.repeat(
         2
