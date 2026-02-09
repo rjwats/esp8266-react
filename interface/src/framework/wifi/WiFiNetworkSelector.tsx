@@ -1,6 +1,6 @@
 import { FC, useContext } from 'react';
 
-import { Avatar, Badge, List, ListItem, ListItemAvatar, ListItemIcon, ListItemText } from '@mui/material';
+import { Avatar, Badge, List, ListItem, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import LockIcon from '@mui/icons-material/Lock';
 import WifiIcon from '@mui/icons-material/Wifi';
@@ -20,21 +20,23 @@ const WiFiNetworkSelector: FC<WiFiNetworkSelectorProps> = ({ networkList }) => {
 
   const renderNetwork = (network: WiFiNetwork) => {
     return (
-      <ListItem key={network.bssid} button onClick={() => wifiConnectionContext.selectNetwork(network)}>
-        <ListItemAvatar>
-          <Avatar>
-            {isNetworkOpen(network) ? <LockOpenIcon /> : <LockIcon />}
-          </Avatar>
-        </ListItemAvatar>
-        <ListItemText
-          primary={network.ssid}
-          secondary={"Security: " + networkSecurityMode(network) + ", Ch: " + network.channel}
-        />
-        <ListItemIcon>
-          <Badge badgeContent={network.rssi + "db"}>
-            <WifiIcon />
-          </Badge>
-        </ListItemIcon>
+      <ListItem key={network.bssid}>
+        <ListItemButton onClick={() => wifiConnectionContext.selectNetwork(network)}>
+          <ListItemAvatar>
+            <Avatar>
+              {isNetworkOpen(network) ? <LockOpenIcon /> : <LockIcon />}
+            </Avatar>
+          </ListItemAvatar>
+          <ListItemText
+            primary={network.ssid}
+            secondary={"Security: " + networkSecurityMode(network) + ", Ch: " + network.channel}
+          />
+          <ListItemIcon>
+            <Badge badgeContent={network.rssi + "db"}>
+              <WifiIcon />
+            </Badge>
+          </ListItemIcon>
+        </ListItemButton>
       </ListItem>
     );
   };

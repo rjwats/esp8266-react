@@ -16,8 +16,8 @@ const LayoutMenuItem: FC<LayoutMenuItemProps> = ({ icon: Icon, label, to, disabl
   const { pathname } = useLocation();
 
   return (
-    <ListItem disablePadding selected={routeMatches(to, pathname)}>
-      <ListItemButton component={Link} to={to} disabled={disabled}>
+    <ListItem disablePadding>
+      <ListItemButton component={Link} to={to} disabled={disabled} selected={routeMatches(to, pathname)}>
         <ListItemIcon>
           <Icon />
         </ListItemIcon>
