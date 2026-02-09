@@ -1,6 +1,7 @@
 #ifndef LightMqttSettingsService_h
 #define LightMqttSettingsService_h
 
+#include <MqttPubSub.h>
 #include <HttpEndpoint.h>
 #include <FSPersistence.h>
 #include <SettingValue.h>

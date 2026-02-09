@@ -4,8 +4,8 @@
 #include <LightMqttSettingsService.h>
 
 #include <HttpEndpoint.h>
-#include <MqttPubSub.h>
 #include <WebSocketTxRx.h>
+#include <espMqttClient.h>
 
 #define LED_PIN 2
 
@@ -49,7 +49,7 @@ class LightState {
 
   static StateUpdateResult haUpdate(JsonObject& root, LightState& lightState) {
     String state = root["state"];
-    // parse new led state 
+    // parse new led state
     boolean newState = false;
     if (state.equals(ON_STATE)) {
       newState = true;
@@ -69,7 +69,7 @@ class LightStateService : public StatefulService<LightState> {
  public:
   LightStateService(AsyncWebServer* server,
                     SecurityManager* securityManager,
-                    AsyncMqttClient* mqttClient,
+                    espMqttClient* mqttClient,
                     LightMqttSettingsService* lightMqttSettingsService);
   void begin();
 
@@ -77,7 +77,7 @@ class LightStateService : public StatefulService<LightState> {
   HttpEndpoint<LightState> _httpEndpoint;
   MqttPubSub<LightState> _mqttPubSub;
   WebSocketTxRx<LightState> _webSocket;
-  AsyncMqttClient* _mqttClient;
+  espMqttClient* _mqttClient;
   LightMqttSettingsService* _lightMqttSettingsService;
 
   void registerConfig();

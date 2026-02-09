@@ -29,7 +29,7 @@ MqttSettingsService::MqttSettingsService(AsyncWebServer* server, FS* fs, Securit
     _retainedPassword(nullptr),
     _reconfigureMqtt(false),
     _disconnectedAt(0),
-    _disconnectReason(AsyncMqttClientDisconnectReason::TCP_DISCONNECTED),
+    _disconnectReason(espMqttClientTypes::DisconnectReason::TCP_DISCONNECTED),
     _mqttClient() {
 #ifdef ESP32
   WiFi.onEvent(
@@ -78,11 +78,11 @@ const char* MqttSettingsService::getClientId() {
   return _mqttClient.getClientId();
 }
 
-AsyncMqttClientDisconnectReason MqttSettingsService::getDisconnectReason() {
+espMqttClientTypes::DisconnectReason MqttSettingsService::getDisconnectReason() {
   return _disconnectReason;
 }
 
-AsyncMqttClient* MqttSettingsService::getMqttClient() {
+espMqttClient* MqttSettingsService::getMqttClient() {
   return &_mqttClient;
 }
 
@@ -95,7 +95,7 @@ void MqttSettingsService::onMqttConnect(bool sessionPresent) {
   }
 }
 
-void MqttSettingsService::onMqttDisconnect(AsyncMqttClientDisconnectReason reason) {
+void MqttSettingsService::onMqttDisconnect(espMqttClientTypes::DisconnectReason reason) {
   Serial.print(F("Disconnected from MQTT reason: "));
   Serial.println((uint8_t)reason);
   _disconnectReason = reason;
@@ -155,7 +155,8 @@ void MqttSettingsService::configureMqtt() {
     _mqttClient.setClientId(retainCstr(_state.clientId.c_str(), &_retainedClientId));
     _mqttClient.setKeepAlive(_state.keepAlive);
     _mqttClient.setCleanSession(_state.cleanSession);
-    _mqttClient.setMaxTopicLength(_state.maxTopicLength);
+    // Note: espMqttClient doesn't have setMaxTopicLength, remove or comment out
+    // _mqttClient.setMaxTopicLength(_state.maxTopicLength);
     _mqttClient.connect();
   }
 }

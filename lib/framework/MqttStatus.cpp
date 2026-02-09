@@ -11,7 +11,7 @@ MqttStatus::MqttStatus(AsyncWebServer* server,
 }
 
 void MqttStatus::mqttStatus(AsyncWebServerRequest* request) {
-  AsyncJsonResponse* response = new AsyncJsonResponse(false, MAX_MQTT_STATUS_SIZE);
+  AsyncJsonResponse* response = new AsyncJsonResponse(false);
   JsonObject root = response->getRoot();
 
   root["enabled"] = _mqttSettingsService->isEnabled();

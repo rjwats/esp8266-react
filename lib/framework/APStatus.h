@@ -16,7 +16,6 @@
 #include <SecurityManager.h>
 #include <APSettingsService.h>
 
-#define MAX_AP_STATUS_SIZE 1024
 #define AP_STATUS_SERVICE_PATH "/rest/apStatus"
 
 class APStatus {

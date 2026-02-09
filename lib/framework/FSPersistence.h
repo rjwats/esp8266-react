@@ -11,14 +11,12 @@ class FSPersistence {
                 JsonStateUpdater<T> stateUpdater,
                 StatefulService<T>* statefulService,
                 FS* fs,
-                const char* filePath,
-                size_t bufferSize = DEFAULT_BUFFER_SIZE) :
+                const char* filePath) :
       _stateReader(stateReader),
       _stateUpdater(stateUpdater),
       _statefulService(statefulService),
       _fs(fs),
       _filePath(filePath),
-      _bufferSize(bufferSize),
       _updateHandlerId(0) {
     enableUpdateHandler();
   }
@@ -27,7 +25,7 @@ class FSPersistence {
     File settingsFile = _fs->open(_filePath, "r");
 
     if (settingsFile) {
-      DynamicJsonDocument jsonDocument = DynamicJsonDocument(_bufferSize);
+      JsonDocument jsonDocument;
       DeserializationError error = deserializeJson(jsonDocument, settingsFile);
       if (error == DeserializationError::Ok && jsonDocument.is<JsonObject>()) {
         JsonObject jsonObject = jsonDocument.as<JsonObject>();
@@ -47,7 +45,7 @@ class FSPersistence {
 
   bool writeToFS() {
     // create and populate a new json object
-    DynamicJsonDocument jsonDocument = DynamicJsonDocument(_bufferSize);
+    JsonDocument jsonDocument;
     JsonObject jsonObject = jsonDocument.to<JsonObject>();
     _statefulService->read(jsonObject, _stateReader);
 
@@ -87,7 +85,6 @@ class FSPersistence {
   StatefulService<T>* _statefulService;
   FS* _fs;
   const char* _filePath;
-  size_t _bufferSize;
   update_handler_id_t _updateHandlerId;
 
   // We assume we have a _filePath with format "/directory1/directory2/filename"
@@ -107,7 +104,7 @@ class FSPersistence {
   // We assume the updater supplies sensible defaults if an empty object
   // is supplied, this virtual function allows that to be changed.
   virtual void applyDefaults() {
-    DynamicJsonDocument jsonDocument = DynamicJsonDocument(_bufferSize);
+    JsonDocument jsonDocument;
     JsonObject jsonObject = jsonDocument.as<JsonObject>();
     _statefulService->updateWithoutPropagation(jsonObject, _stateUpdater);
   }

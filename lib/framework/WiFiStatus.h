@@ -15,7 +15,6 @@
 #include <IPUtils.h>
 #include <SecurityManager.h>
 
-#define MAX_WIFI_STATUS_SIZE 1024
 #define WIFI_STATUS_SERVICE_PATH "/rest/wifiStatus"
 
 class WiFiStatus {

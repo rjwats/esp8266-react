@@ -8,7 +8,7 @@ SystemStatus::SystemStatus(AsyncWebServer* server, SecurityManager* securityMana
 }
 
 void SystemStatus::systemStatus(AsyncWebServerRequest* request) {
-  AsyncJsonResponse* response = new AsyncJsonResponse(false, MAX_ESP_STATUS_SIZE);
+  AsyncJsonResponse* response = new AsyncJsonResponse(false);
   JsonObject root = response->getRoot();
 #ifdef ESP32
   root["esp_platform"] = "esp32";
