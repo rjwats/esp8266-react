@@ -22,7 +22,7 @@ export const createUserValidator = (users: User[], creating: boolean) => new Sch
 });
 
 export const createUniqueUsernameValidator = (users: User[]) => ({
-  validator(rule: InternalRuleItem, username: string, callback: (error?: string) => void) {
+  validator(_rule: InternalRuleItem, username: string, callback: (error?: string) => void) {
     if (username && users.find((u) => u.username === username)) {
       callback("Username already in use");
     } else {

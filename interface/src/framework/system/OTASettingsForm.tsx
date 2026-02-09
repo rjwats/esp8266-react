@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import { FC, useState } from 'react';
 import { ValidateFieldsError } from 'async-validator';
 
 import { Button, Checkbox } from '@mui/material';

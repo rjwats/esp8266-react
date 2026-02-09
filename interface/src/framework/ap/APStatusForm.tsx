@@ -11,7 +11,7 @@ import { APNetworkStatus, APStatus } from "../../types";
 import { ButtonRow, FormLoader, SectionContent } from "../../components";
 import { useRest } from "../../utils";
 
-export const apStatusHighlight = ({ status }: APStatus, theme: Theme) => {
+const apStatusHighlight = ({ status }: APStatus, theme: Theme) => {
   switch (status) {
     case APNetworkStatus.ACTIVE:
       return theme.palette.success.main;
@@ -24,7 +24,7 @@ export const apStatusHighlight = ({ status }: APStatus, theme: Theme) => {
   }
 };
 
-export const apStatus = ({ status }: APStatus) => {
+const apStatus = ({ status }: APStatus) => {
   switch (status) {
     case APNetworkStatus.ACTIVE:
       return "Active";

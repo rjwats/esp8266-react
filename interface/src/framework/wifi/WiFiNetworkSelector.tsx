@@ -5,34 +5,15 @@ import LockOpenIcon from '@mui/icons-material/LockOpen';
 import LockIcon from '@mui/icons-material/Lock';
 import WifiIcon from '@mui/icons-material/Wifi';
 
-import { WiFiEncryptionType, WiFiNetwork, WiFiNetworkList } from '../../types';
+import { WiFiNetwork, WiFiNetworkList } from '../../types';
+import { MessageBox } from '../../components';
 
 import { WiFiConnectionContext } from './WiFiConnectionContext';
-import { MessageBox } from '../../components';
+import { isNetworkOpen, networkSecurityMode } from './wifiUtils';
 
 interface WiFiNetworkSelectorProps {
   networkList: WiFiNetworkList;
 }
-
-export const isNetworkOpen = ({ encryption_type }: WiFiNetwork) => encryption_type === WiFiEncryptionType.WIFI_AUTH_OPEN;
-
-export const networkSecurityMode = ({ encryption_type }: WiFiNetwork) => {
-  switch (encryption_type) {
-    case WiFiEncryptionType.WIFI_AUTH_WEP:
-    case WiFiEncryptionType.WIFI_AUTH_WEP_PSK:
-      return "WEP";
-    case WiFiEncryptionType.WIFI_AUTH_WEP2_PSK:
-      return "WEP2";
-    case WiFiEncryptionType.WIFI_AUTH_WPA_WPA2_PSK:
-      return "WPA/WEP2";
-    case WiFiEncryptionType.WIFI_AUTH_WPA2_ENTERPRISE:
-      return "WEP2 Enterprise";
-    case WiFiEncryptionType.WIFI_AUTH_OPEN:
-      return "None";
-    default:
-      return "Unknown";
-  }
-};
 
 const WiFiNetworkSelector: FC<WiFiNetworkSelectorProps> = ({ networkList }) => {
   const wifiConnectionContext = useContext(WiFiConnectionContext);

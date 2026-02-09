@@ -1,4 +1,4 @@
-import { FC, useRef, useState } from 'react';
+import { FC, useCallback, useState } from 'react';
 
 import * as SystemApi from "../../api/system";
 import { SectionContent } from '../../components';
@@ -11,11 +11,11 @@ const UploadFirmwareForm: FC = () => {
 
   const [restarting, setRestarting] = useState<boolean>();
 
-  const uploadFirmware = useRef(async (file: File, config?: FileUploadConfig) => {
+  const uploadFirmware = useCallback(async (file: File, config?: FileUploadConfig) => {
     const response = await SystemApi.uploadFirmware(file, config);
     setRestarting(true);
     return response;
-  });
+  }, []);
 
   return (
     <SectionContent title='Upload Firmware' titleGutter>
@@ -23,7 +23,7 @@ const UploadFirmwareForm: FC = () => {
         restarting ?
           <FirmwareRestartMonitor />
           :
-          <FirmwareFileUpload uploadFirmware={uploadFirmware.current} />
+          <FirmwareFileUpload uploadFirmware={uploadFirmware} />
       }
     </SectionContent>
   );

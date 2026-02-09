@@ -19,7 +19,9 @@ const RootRedirect: FC<SecurityRedirectProps> = ({ message, variant, signOut }) 
   const authenticationContext = useContext(AuthenticationContext);
   const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
-    signOut && authenticationContext.signOut(false);
+    if (signOut) {
+      authenticationContext.signOut(false);
+    }
     enqueueSnackbar(message, { variant });
   }, [message, variant, signOut, authenticationContext, enqueueSnackbar]);
   return (<Navigate to="/" />);

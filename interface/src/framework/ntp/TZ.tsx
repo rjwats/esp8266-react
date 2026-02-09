@@ -1,7 +1,7 @@
 import { MenuItem } from "@mui/material";
 
 type TimeZones = {
-  [name: string]: string
+  [name: string]: string;
 };
 
 export const TIME_ZONES: TimeZones = {

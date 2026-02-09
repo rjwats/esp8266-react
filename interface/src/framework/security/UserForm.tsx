@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect } from 'react';
+import React, { FC, useState } from 'react';
 import Schema, { ValidateFieldsError } from 'async-validator';
 
 import { Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
@@ -20,16 +20,13 @@ interface UserFormProps {
 }
 
 const UserForm: FC<UserFormProps> = ({ creating, validator, user, setUser, onDoneEditing, onCancelEditing }) => {
-
   const updateFormValue = updateValue(setUser);
   const [fieldErrors, setFieldErrors] = useState<ValidateFieldsError>();
-  const open = !!user;
 
-  useEffect(() => {
-    if (open) {
-      setFieldErrors(undefined);
-    }
-  }, [open]);
+  const handleCancel = () => {
+    setFieldErrors(undefined);
+    onCancelEditing();
+  };
 
   const validateAndDone = async () => {
     if (user) {
@@ -44,7 +41,7 @@ const UserForm: FC<UserFormProps> = ({ creating, validator, user, setUser, onDon
   };
 
   return (
-    <Dialog onClose={onCancelEditing} aria-labelledby="user-form-dialog-title" open={!!user} fullWidth maxWidth="sm">
+    <Dialog onClose={handleCancel} aria-labelledby="user-form-dialog-title" open={!!user} fullWidth maxWidth="sm">
       {
         user &&
         <>
@@ -83,7 +80,7 @@ const UserForm: FC<UserFormProps> = ({ creating, validator, user, setUser, onDon
             />
           </DialogContent>
           <DialogActions>
-            <Button variant="contained" onClick={onCancelEditing} color="secondary">
+            <Button variant="contained" onClick={handleCancel} color="secondary">
               Cancel
             </Button>
             <Button
