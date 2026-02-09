@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { AxiosPromise, AxiosProgressEvent } from 'axios';
+import axios, { AxiosPromise, AxiosProgressEvent } from 'axios';
 import { useSnackbar } from 'notistack';
 
 import { extractErrorMessage } from '../../utils';
@@ -13,8 +13,7 @@ const useFileUpload = ({ upload }: MediaUploadOptions) => {
   const { enqueueSnackbar } = useSnackbar();
 
   const [uploading, setUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] =
-    useState<AxiosProgressEvent>();
+  const [uploadProgress, setUploadProgress] = useState<AxiosProgressEvent>();
 
   const abortControllerRef = useRef<AbortController | null>(null);
 
@@ -50,14 +49,11 @@ const useFileUpload = ({ upload }: MediaUploadOptions) => {
       resetUploadingStates();
       enqueueSnackbar('Upload successful', { variant: 'success' });
     } catch (error: any) {
-      if (error?.name === 'CanceledError') {
+      if (axios.isCancel(error)) {
         enqueueSnackbar('Upload aborted', { variant: 'warning' });
       } else {
         resetUploadingStates();
-        enqueueSnackbar(
-          extractErrorMessage(error, 'Upload failed'),
-          { variant: 'error' }
-        );
+        enqueueSnackbar(extractErrorMessage(error, 'Upload failed'), { variant: 'error' });
       }
     }
   };

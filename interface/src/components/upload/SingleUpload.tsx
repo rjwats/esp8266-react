@@ -8,7 +8,6 @@ import CancelIcon from '@mui/icons-material/Cancel';
 
 import { AxiosProgressEvent } from 'axios';
 
-// Updated to handle AxiosProgressEvent safely
 const progressPercentage = (progress: AxiosProgressEvent) => {
   if (!progress.loaded || !progress.total) {
     return 0;
@@ -34,7 +33,7 @@ export interface SingleUploadProps {
   onCancel: () => void;
   accept?: Accept;
   uploading: boolean;
-  progress?: AxiosProgressEvent; // updated type
+  progress?: AxiosProgressEvent;
 }
 
 const SingleUpload: FC<SingleUploadProps> = ({
@@ -50,10 +49,10 @@ const SingleUpload: FC<SingleUploadProps> = ({
 
   const progressText = () => {
     if (uploading) {
-      if (progress?.loaded != null && progress?.total != null) {
+      if (progress?.lengthComputable) {
         return `Uploading: ${progressPercentage(progress)}%`;
       }
-      return "Uploading…";
+      return "Uploading\u2026";
     }
     return "Drop file or click here";
   };
@@ -85,8 +84,8 @@ const SingleUpload: FC<SingleUploadProps> = ({
           <Fragment>
             <Box width="100%" p={2}>
               <LinearProgress
-                variant={progress?.loaded != null && progress?.total != null ? "determinate" : "indeterminate"}
-                value={progress?.loaded != null && progress?.total != null ? progressPercentage(progress) : 0}
+                variant={!progress || progress.lengthComputable ? "determinate" : "indeterminate"}
+                value={!progress ? 0 : progress.lengthComputable ? progressPercentage(progress) : 0}
               />
             </Box>
             <Button startIcon={<CancelIcon />} variant="contained" color="secondary" onClick={onCancel}>
