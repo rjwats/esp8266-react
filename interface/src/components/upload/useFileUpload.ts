@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useState } from 'react';
-import axios, { AxiosPromise, CancelTokenSource } from 'axios';
-import { useSnackbar } from "notistack";
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { AxiosPromise, AxiosProgressEvent } from 'axios';
+import { useSnackbar } from 'notistack';
 
 import { extractErrorMessage } from '../../utils';
 import { FileUploadConfig } from '../../api/endpoints';
@@ -11,44 +11,53 @@ interface MediaUploadOptions {
 
 const useFileUpload = ({ upload }: MediaUploadOptions) => {
   const { enqueueSnackbar } = useSnackbar();
-  const [uploading, setUploading] = useState<boolean>(false);
-  const [uploadProgress, setUploadProgress] = useState<ProgressEvent>();
-  const [uploadCancelToken, setUploadCancelToken] = useState<CancelTokenSource>();
+
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] =
+    useState<AxiosProgressEvent>();
+
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   const resetUploadingStates = () => {
     setUploading(false);
     setUploadProgress(undefined);
-    setUploadCancelToken(undefined);
+    abortControllerRef.current = null;
   };
 
   const cancelUpload = useCallback(() => {
-    uploadCancelToken?.cancel();
+    abortControllerRef.current?.abort();
     resetUploadingStates();
-  }, [uploadCancelToken]);
+  }, []);
 
   useEffect(() => {
     return () => {
-      uploadCancelToken?.cancel();
+      abortControllerRef.current?.abort();
     };
-  }, [uploadCancelToken]);
+  }, []);
 
   const uploadFile = async (images: File[]) => {
     try {
-      const cancelToken = axios.CancelToken.source();
-      setUploadCancelToken(cancelToken);
+      const controller = new AbortController();
+      abortControllerRef.current = controller;
+
       setUploading(true);
+
       await upload(images[0], {
-        onUploadProgress: setUploadProgress,
-        cancelToken: cancelToken.token
+        signal: controller.signal,
+        onUploadProgress: setUploadProgress
       });
+
       resetUploadingStates();
       enqueueSnackbar('Upload successful', { variant: 'success' });
     } catch (error: any) {
-      if (axios.isCancel(error)) {
+      if (error?.name === 'CanceledError') {
         enqueueSnackbar('Upload aborted', { variant: 'warning' });
       } else {
         resetUploadingStates();
-        enqueueSnackbar(extractErrorMessage(error, 'Upload failed'), { variant: 'error' });
+        enqueueSnackbar(
+          extractErrorMessage(error, 'Upload failed'),
+          { variant: 'error' }
+        );
       }
     }
   };

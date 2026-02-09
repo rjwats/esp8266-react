@@ -1,12 +1,20 @@
 import { FC, Fragment } from 'react';
-import { useDropzone, DropzoneState } from 'react-dropzone';
+import { useDropzone, DropzoneState, Accept } from 'react-dropzone';
 
 import { Box, Button, LinearProgress, Theme, Typography, useTheme } from '@mui/material';
 
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import CancelIcon from '@mui/icons-material/Cancel';
 
-const progressPercentage = (progress: ProgressEvent) => Math.round((progress.loaded * 100) / progress.total);
+import { AxiosProgressEvent } from 'axios';
+
+// Updated to handle AxiosProgressEvent safely
+const progressPercentage = (progress: AxiosProgressEvent) => {
+  if (!progress.loaded || !progress.total) {
+    return 0;
+  }
+  return Math.round((progress.loaded * 100) / progress.total);
+};
 
 const getBorderColor = (theme: Theme, props: DropzoneState) => {
   if (props.isDragAccept) {
@@ -24,22 +32,28 @@ const getBorderColor = (theme: Theme, props: DropzoneState) => {
 export interface SingleUploadProps {
   onDrop: (acceptedFiles: File[]) => void;
   onCancel: () => void;
-  accept?: string | string[];
+  accept?: Accept;
   uploading: boolean;
-  progress?: ProgressEvent;
+  progress?: AxiosProgressEvent; // updated type
 }
 
-const SingleUpload: FC<SingleUploadProps> = ({ onDrop, onCancel, accept, uploading, progress }) => {
+const SingleUpload: FC<SingleUploadProps> = ({
+  onDrop,
+  onCancel,
+  accept,
+  uploading,
+  progress
+}) => {
   const dropzoneState = useDropzone({ onDrop, accept, disabled: uploading, multiple: false });
   const { getRootProps, getInputProps } = dropzoneState;
   const theme = useTheme();
 
   const progressText = () => {
     if (uploading) {
-      if (progress?.lengthComputable) {
+      if (progress?.loaded != null && progress?.total != null) {
         return `Uploading: ${progressPercentage(progress)}%`;
       }
-      return "Uploading\u2026";
+      return "Uploading…";
     }
     return "Drop file or click here";
   };
@@ -71,8 +85,8 @@ const SingleUpload: FC<SingleUploadProps> = ({ onDrop, onCancel, accept, uploadi
           <Fragment>
             <Box width="100%" p={2}>
               <LinearProgress
-                variant={!progress || progress.lengthComputable ? "determinate" : "indeterminate"}
-                value={!progress ? 0 : progress.lengthComputable ? progressPercentage(progress) : 0}
+                variant={progress?.loaded != null && progress?.total != null ? "determinate" : "indeterminate"}
+                value={progress?.loaded != null && progress?.total != null ? progressPercentage(progress) : 0}
               />
             </Box>
             <Button startIcon={<CancelIcon />} variant="contained" color="secondary" onClick={onCancel}>
@@ -81,7 +95,7 @@ const SingleUpload: FC<SingleUploadProps> = ({ onDrop, onCancel, accept, uploadi
           </Fragment>
         )}
       </Box>
-    </Box >
+    </Box>
   );
 };
 
