@@ -1,4 +1,4 @@
-import axios, { AxiosPromise, CancelToken } from 'axios';
+import axios, { AxiosProgressEvent, AxiosPromise } from 'axios';
 
 export const WS_BASE_URL = '/ws/';
 export const API_BASE_URL = '/rest/';
@@ -30,8 +30,8 @@ function calculateWebSocketRoot(webSocketPath: string) {
 }
 
 export interface FileUploadConfig {
-  cancelToken?: CancelToken;
-  onUploadProgress?: (progressEvent: ProgressEvent) => void;
+  signal?: AbortSignal;
+  onUploadProgress?: (progressEvent: AxiosProgressEvent) => void;
 }
 
 export const uploadFile = (url: string, file: File, config?: FileUploadConfig): AxiosPromise<void> => {

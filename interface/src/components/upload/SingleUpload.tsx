@@ -1,12 +1,19 @@
 import { FC, Fragment } from 'react';
-import { useDropzone, DropzoneState } from 'react-dropzone';
+import { useDropzone, DropzoneState, Accept } from 'react-dropzone';
 
 import { Box, Button, LinearProgress, Theme, Typography, useTheme } from '@mui/material';
 
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import CancelIcon from '@mui/icons-material/Cancel';
 
-const progressPercentage = (progress: ProgressEvent) => Math.round((progress.loaded * 100) / progress.total);
+import { AxiosProgressEvent } from 'axios';
+
+const progressPercentage = (progress: AxiosProgressEvent) => {
+  if (!progress.loaded || !progress.total) {
+    return 0;
+  }
+  return Math.round((progress.loaded * 100) / progress.total);
+};
 
 const getBorderColor = (theme: Theme, props: DropzoneState) => {
   if (props.isDragAccept) {
@@ -24,12 +31,18 @@ const getBorderColor = (theme: Theme, props: DropzoneState) => {
 export interface SingleUploadProps {
   onDrop: (acceptedFiles: File[]) => void;
   onCancel: () => void;
-  accept?: string | string[];
+  accept?: Accept;
   uploading: boolean;
-  progress?: ProgressEvent;
+  progress?: AxiosProgressEvent;
 }
 
-const SingleUpload: FC<SingleUploadProps> = ({ onDrop, onCancel, accept, uploading, progress }) => {
+const SingleUpload: FC<SingleUploadProps> = ({
+  onDrop,
+  onCancel,
+  accept,
+  uploading,
+  progress
+}) => {
   const dropzoneState = useDropzone({ onDrop, accept, disabled: uploading, multiple: false });
   const { getRootProps, getInputProps } = dropzoneState;
   const theme = useTheme();
@@ -81,7 +94,7 @@ const SingleUpload: FC<SingleUploadProps> = ({ onDrop, onCancel, accept, uploadi
           </Fragment>
         )}
       </Box>
-    </Box >
+    </Box>
   );
 };
 
